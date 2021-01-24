@@ -1,0 +1,269 @@
+ion-menu ion-content {
+  --background: var(--ion-item-background, var(--ion-background-color, #fff));
+}
+
+ion-menu.md ion-content {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+}
+
+ion-menu.md ion-list {
+  padding: 5px 0;
+}
+
+ion-menu.md ion-list.access {
+  padding: 20px 0;
+}
+
+ion-menu.md ion-note {
+  margin-bottom: 15px;
+}
+
+ion-menu.md ion-list-header,
+ion-menu.md ion-note {
+  padding-left: 10px;
+}
+
+ion-menu.md ion-list#inbox-list {
+  border-bottom: 1px solid var(--ion-color-step-150, #d7d8da);
+}
+
+ion-menu.md ion-list#inbox-list ion-list-header {
+  font-size: 22px;
+  font-weight: 600;
+
+  min-height: 20px;
+}
+
+ion-menu.md ion-list#labels-list ion-list-header {
+  font-size: 16px;
+
+  margin-bottom: 18px;
+
+  color: #757575;
+
+  min-height: 26px;
+}
+
+ion-menu.md ion-item {
+  --padding-start: 10px;
+  --padding-end: 10px;
+  border-radius: 4px;
+}
+
+ion-menu.md ion-item.selected {
+  --background: rgba(var(--ion-color-primary-rgb), 0.14);
+}
+
+ion-menu.md ion-item.selected ion-icon {
+  color: var(--ion-color-primary);
+}
+
+ion-menu.md ion-item ion-icon {
+  color: #616e7e;
+}
+
+ion-menu.md ion-item ion-label {
+  font-weight: 500;
+}
+
+ion-menu.ios ion-content {
+  --padding-bottom: 20px;
+}
+
+ion-menu.ios ion-list {
+  padding: 20px 0 0 0;
+}
+
+ion-menu.ios ion-note {
+  line-height: 24px;
+  margin-bottom: 20px;
+}
+
+ion-menu.ios ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --min-height: 50px;
+}
+
+ion-menu.ios ion-item.selected ion-icon {
+  color: var(--ion-color-primary);
+}
+
+ion-menu.ios ion-item ion-icon {
+  font-size: 24px;
+  color: #73849a;
+}
+
+ion-menu.ios ion-list#labels-list ion-list-header {
+  margin-bottom: 8px;
+}
+
+ion-menu.ios ion-list-header,
+ion-menu.ios ion-note {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+ion-menu.ios ion-note {
+  margin-bottom: 8px;
+}
+
+ion-note {
+  display: inline-block;
+  font-size: 16px;
+
+  color: var(--ion-color-medium-shade);
+}
+
+ion-item.selected {
+  --color: var(--ion-color-primary);
+}
+
+.menu-label {
+  font-size: 14px;
+}
+
+.login-note {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.text-aling {
+  text-aling: center;
+}
+
+.border-botton { 
+  border-bottom: 1px solid var(--ion-color-step-150, #d7d8da);
+}
+
+
+ion-list.nav-title { 
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+.pavilions-menu {
+	font-size: 17px;
+	
+}
+
+ion-item.sub-menu {
+	ion-icon {
+		margin: 0px 17px;
+	}
+}
+
+ion-split-pane {
+  --side-max-width: 20%;
+}
+
+.custom-menu {
+  margin-top: 55px;
+}
+
+.title-fair {
+  font-size: 24px;
+  font-weight: 700;
+  margin-right: 47px;
+  line-height: 10px;
+}
+
+.end-menu-button {
+  margin-right: 15px;
+}
+
+.font-light {
+  font-weight: 100 !important;
+  font-family: YoutubeSansLight !important;
+  text-align: center;
+}
+
+.container {
+    width: 1095px !important;
+    height: 657px !important;
+    background-color: #8fbcd4;
+    position: absolute;
+    left: 20%;
+    top: 56px;
+	padding-left: 0px;
+	z-index: 10;
+}
+
+
+@media (max-width: 991px) {
+  .container {
+    left: 0;
+  }
+  ion-split-pane {
+    z-index: 10;
+  }
+}
+
+ion-app {
+  overflow: auto;
+  ion-header {
+     min-width: 658px;
+  }
+}
+
+ion-header {
+  z-index: 11;
+}
+
+.icon-logo {
+  width: 112px;
+  height: 47px;
+}
+
+@media (min-width: 992px) {
+  .icon-logo {
+     margin-left: 46px;
+  }
+}
+
+@media (min-width: 700px) {
+  .app-root {
+    width: 700px;
+    margin: auto;
+    position: relative;
+  }
+
+  .scroll-content {
+    overflow-y:auto;
+  }
+}
+
+
+ion-app > ion-menu {
+  --width: 19%;
+  min-width: 1201px;
+}
+
+ion-menu-toggle>ion-item>ion-icon {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+ion-menu-toggle>ion-item>ion-label {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+::slotted(ion-icon[slot])  {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+::slotted(ion-icon[slot="start"]) {
+    margin-right: unset;
+    margin-inline-end: 20px;
+}
+
+body.backdrop-no-scroll {
+    z-index: 0;
+}
+
+
+
