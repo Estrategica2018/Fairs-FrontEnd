@@ -34,12 +34,12 @@
             </ion-item>
 			<div *ngIf="showPavilions">
 			<ion-item (click)="selectedIndex='pavilion_id_1';onOpenPavilion(1);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" [class.selected]="selectedIndex==='pavilion_id_1'">
-			  <ion-icon slot="start" name="albums-outline"></ion-icon>
-              <ion-label class="menu-label">Pabellón Calzado</ion-label>
+			  <ion-icon slot="start" name="chevron-forward-outline"></ion-icon>
+              <ion-label class="menu-label">Pabellón Principal</ion-label>
             </ion-item>
 			<ion-item (click)="selectedIndex='pavilion_id_2';onOpenPavilion(2);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" [class.selected]="selectedIndex==='pavilion_id_2'">
-			  <ion-icon slot="start" name="albums-outline"></ion-icon>
-              <ion-label class="menu-label">Pabellón Marroquinería</ion-label>
+			  <ion-icon slot="start" name="chevron-forward-outline"></ion-icon>
+              <ion-label class="menu-label">Locales comerciales</ion-label>
             </ion-item>
 			</div>
           </ion-menu-toggle>
@@ -85,7 +85,7 @@
         <ion-list class="border-botton ion-text-center nav-title">  
           <ion-label>LO MEJOR DE LA FERIA</ion-label>
           <ion-menu-toggle auto-hide="false">
-            <ion-item (click)="selectedIndex = 'speakers'" routerDirection="root" [routerLink]="[fair.name+'/conferencistas']" lines="none" detail="false" [class.selected]="selectedIndex === 'speakers'">
+            <ion-item class="mt-10px" (click)="selectedIndex = 'speakers'" routerDirection="root" [routerLink]="[fair.name+'/conferencistas']" lines="none" detail="false" [class.selected]="selectedIndex === 'speakers'">
               <ion-icon slot="start" name="people-sharp"></ion-icon>
               <ion-label class="menu-label">Conferencistas</ion-label>
             </ion-item>

@@ -8,7 +8,6 @@ import { ThreeFairService } from './threejs/three.fair.service';
 import { FairService } from './api/fair.service';
 import { PavilionService } from './api/pavilion.service';
 import { Router } from '@angular/router';
-import { Events } from 'ionic-angular';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +21,7 @@ export class AppComponent implements OnInit {
   menuOpen = false;
   fair: any;
   devWidth: any;
-  
+  showPavilions: any;
   
   constructor(
     private platform: Platform,
@@ -57,6 +56,7 @@ export class AppComponent implements OnInit {
 	     this.selectedIndex = 'main';
 	  }
 	  else if(type === 'pavilion') {
+		 this.showPavilions = true;
 	     this.selectedIndex = 'pavilion_id_' + id;
 	  }
   }
