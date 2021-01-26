@@ -146,14 +146,42 @@ ion-list.nav-title {
 }
 
 .pavilions-menu {
-	font-size: 17px;
-	
+  font-size: 17px;
 }
 
 ion-item.sub-menu {
-	ion-icon {
-		margin: 0px 17px;
-	}
+  ion-icon {
+     margin: 0px 10px 0px 15px;
+  }
+}
+
+ion-item.sub-menu-stand {
+  ion-icon {
+    margin: 0px 5px 0px 25px;
+  }
+  ion-label { 
+    white-space: initial;
+  }
+}
+
+.sub-menu-stand::before {
+  content: "";
+  position: absolute;
+  left: 28px;
+  width: 2px;
+  height: 119%;
+  background-color: #616e7e;
+  z-index: 2;
+}
+
+.sub-menu::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  width: 2px;
+  height: 119%;
+  background-color: #616e7e;
+  z-index: 2;
 }
 
 ion-split-pane {
@@ -265,5 +293,14 @@ body.backdrop-no-scroll {
     z-index: 0;
 }
 
+.loading {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: white;
+    width: 1095px;
+    height: 657px;
+    padding: 25%;
+}
 
 

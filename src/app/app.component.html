@@ -25,25 +25,39 @@
               <ion-label class="menu-label">Principal</ion-label>
             </ion-item>
           </ion-menu-toggle>
-		  <ion-menu-toggle auto-hide="false" class="pavilions-menu">
-            <ion-item (click)="selectedIndex = 'pavilion'; showPavilions = !showPavilions" lines="none" href="javascript:void(0)" detail="false" [class.selected]="selectedIndex === 'pavilion'">
-              <ion-icon slot="start" name="albums-outline"></ion-icon>
-              <ion-label class="menu-label">Pabellones</ion-label>
-			  <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="!showPavilions"></ion-icon>
-			  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilions"></ion-icon>
+		  <ion-menu-toggle auto-hide="false" class="pavilions-menu" *ngFor="let pavilion of pavilionsList">
+		    <ion-item (click)="selectedIndex='pavilion_id_'+pavilion.id; showPavilionsMenu=showPavilionsMenu==='pavilion_id_'+pavilion.id?'none':'pavilion_id_'+pavilion.id; onOpenPavilion(pavilion.id);" href="javascript:void(0)" lines="none" detail="false" [class.selected]="selectedIndex==='pavilion_id_'++pavilion.id">
+			  <ion-icon slot="start" name="albums-outline"></ion-icon>
+              <ion-label class="menu-label">{{pavilion.name}}</ion-label>
+			  <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionsMenu!== 'pavilion_id_'+pavilion.id"></ion-icon>
+			  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionsMenu === 'pavilion_id_'+pavilion.id"></ion-icon>
             </ion-item>
-			<div *ngIf="showPavilions">
-			<ion-item (click)="selectedIndex='pavilion_id_1';onOpenPavilion(1);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" [class.selected]="selectedIndex==='pavilion_id_1'">
-			  <ion-icon slot="start" name="chevron-forward-outline"></ion-icon>
-              <ion-label class="menu-label">Pabellón Principal</ion-label>
-            </ion-item>
-			<ion-item (click)="selectedIndex='pavilion_id_2';onOpenPavilion(2);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" [class.selected]="selectedIndex==='pavilion_id_2'">
-			  <ion-icon slot="start" name="chevron-forward-outline"></ion-icon>
-              <ion-label class="menu-label">Locales comerciales</ion-label>
-            </ion-item>
+			<div *ngIf="showPavilionsMenu==='pavilion_id_'+pavilion.id">
+			<ion-item (click)="selectedIndex='pavilion_id_'+pavilion.id+'_stands'; 
+					  showPavilionsSubMenu=showPavilionsSubMenu==='pavilion_id_'+pavilion.id? false: 'pavilion_id_'+pavilion.id; 
+					  onOpenLocalPavilion(pavilion.id);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" 
+			          [class.selected]="selectedIndex==='pavilion_id_'+pavilion.id+'_stands'">
+			  <ion-icon slot="start" name="chevron-forward-outline" size="small" *ngIf="showPavilionsSubMenu!=='pavilion_id_'+pavilion.id"></ion-icon>
+			  <ion-icon slot="start" name="chevron-down-outline" size="small" *ngIf="showPavilionsSubMenu==='pavilion_id_'+pavilion.id"></ion-icon>
+			  <ion-label class="menu-label">Locales comerciales</ion-label>
+			</ion-item>
+			<div *ngIf="showPavilionsSubMenu==='pavilion_id_'+pavilion.id">
+			<ion-item *ngFor="let stand of pavilion.stands" 
+					  (click)="selectedIndex='pavilion_id_'+pavilion.id+'_stand_'+stand.id;
+					  onOpenStand(stand.id);" 
+					  href="javascript:void(0)" lines="none" detail="false" class="sub-menu-stand" 
+					  [class.selected]="selectedIndex==='pavilion_id_'+pavilion.id+'_stand_'+stand.id">
+			  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+			  <ion-label class="menu-label">{{stand.merchant.name}}</ion-label>
+			</ion-item>
+			</div>
+			<ion-item (click)="selectedIndex='pavilion_id_2_room';onOpenRoomPavilion(2);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" [class.selected]="selectedIndex==='pavilion_id_2_room'">
+			  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+			  <ion-label class="menu-label">Auditorios</ion-label>
+			</ion-item>
 			</div>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
+		  <ion-menu-toggle auto-hide="false">
             <!--ion-item (click)="onOpenTab(newsPage, 'news');" lines="none" href="javascript:void(0)" detail="false" [class.selected]="selectedIndex === 'news'"-->
 			<ion-item (click)="selectedIndex = 'news'" routerDirection="root" [routerLink]="[fair.name+'/noticias']" lines="none" detail="false" [class.selected]="selectedIndex === 'news'">
             
@@ -122,8 +136,14 @@
 
   </ion-split-pane>
   
-  <div [ngStyle]="{'opacity': selectedIndex === 'main' || selectedIndex.indexOf('pavilion') == 0  ? 1 : 0 , 'z-index': ( menuOpen && devWidth < 991 ) ? 0 : ( !menuOpen && devWidth < 991 ) ? 10 : 0 }" class="container" #container></div>
-    
+  <div [ngStyle]="{'opacity': loading === false && (selectedIndex === 'main' || selectedIndex.indexOf('pavilion') == 0)  ? 1 : 0 , 'z-index': ( menuOpen && devWidth < 991 ) ? 0 : ( !menuOpen && devWidth < 991 ) ? 10 : 0 }" class="container" #container></div>
+  <div [ngStyle]="{'opacity': loading  ? 1 : 0, 'z-index': ( menuOpen && devWidth < 991 ) ? 0 : ( !menuOpen && devWidth < 991 ) ? 10 : 0 }" class="loading">
+     <img
+      src="./assets/images/loading.png"
+      class="img"
+      alt=""
+    />
+  </div>
   <!--ion-nav  [ngStyle]="{ 
     'min-width': '100%',
     'position': 'absolute',
@@ -131,7 +151,5 @@
     'left': 270 + 'px',
     'opacity': selectedIndex !== 'main' ? 1 : 0 }" #mySubNav>
   </ion-nav-->
-  
-  
 
 </ion-app>

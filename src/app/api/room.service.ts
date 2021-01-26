@@ -15,7 +15,7 @@ export class RoomService {
 			'id':1,
 			'name': '',
 			'resources': {
-				'image_url': 'assets/images/fair1/auditorio1-background.png',
+				'image_url': 'https://res.cloudinary.com/dfxkgtknu/image/upload/v1611542378/feria1/auditorio1-background_Easy-Resize.com_m1sazv.jpg',
 				'banners': [/*{
 					'image_url': 'assets/images/fair1/banner-680x400.png',
 				    "rotation":{"_x":0,"_y":0,"_z":0,"_order":"XYZ"},"scale":{"x":1,"y":1,"z":1},"position":{"x":0,"y":0,"z":0}

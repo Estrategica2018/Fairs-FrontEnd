@@ -25,7 +25,7 @@ export class FairService {
 		  'description': 'XI Feria Ganadera 2021',
 		  'nick': 'XI Feria Ganadera 2021',
 		  'resources': {
-			 'image_url': 'assets/images/fair1/feria.png',
+			 'image_url': 'https://res.cloudinary.com/dfxkgtknu/image/upload/v1611542204/feria1/feria_Easy-Resize.com_j9svzu.jpg',
 			 'banners': [{
 					'image_url': 'assets/images/fair1/banner-1200x180.png',
 					"rotation":{"_x":-0.04,"_y":-1,"_z":0},"scale":{"x":1.5599999999999998,"y":0.3999999999999999,"z":1},"position":{"x":-1.59,"y":1.5700000000000012,"z":-0.8600000000000005}

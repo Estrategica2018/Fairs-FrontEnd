@@ -25,7 +25,6 @@ export class ThreeFairService {
   model: any;
   textures = [];
   mainScene = null;
-  load = true;
   
   objSel = null;
   objScene = null;
@@ -198,7 +197,7 @@ export class ThreeFairService {
       
     this.container = container;
 	this.mainScene = mainScene;
-	this.load = false;
+	this.mainScene.setLoading(true);
 	
 	if(this.scene && this.scene.children) {
 		while(this.scene.children.length > 0) { 
@@ -227,10 +226,11 @@ export class ThreeFairService {
     let texture = null;
 	if(this.textures[objScene.resources.image_url]) {
 		texture = this.textures[objScene.resources.image_url];
+		this.mainScene.setLoading(false);
 	}
 	else {
 		texture = new THREE.TextureLoader().load(objScene.resources.image_url, ()=>{
-			this.load = true;
+			this.mainScene.setLoading(false);
 		});
 		this.textures[objScene.resources.image_url] = texture;
 	}

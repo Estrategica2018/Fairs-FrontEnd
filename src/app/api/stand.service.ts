@@ -17,7 +17,7 @@ export class StandService {
 			'id': '1',
 		    'name': 'Pabellon-1',
 		    'resources': {
-			   'image_url': 'assets/images/fair1/stand1.png',
+			   'image_url': 'https://res.cloudinary.com/dfxkgtknu/image/upload/v1611542206/feria1/stand1_Easy-Resize.com_ehckdv.jpg',
 			   'banners': [{
 					'image_url': 'assets/images/fair1/pabellon-back-480x400.png',
 					"rotation":{"_x":0,"_y":0,"_z":-0.010000000000000004,"_order":"XYZ"},"scale":{"x":0.08999999999999925,"y":0.18999999999999928,"z":1.2300000000000002},"position":{"x":0.0900000000000003,"y":1.1200000000000008,"z":5.979999999999917},

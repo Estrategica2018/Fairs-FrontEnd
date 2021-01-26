@@ -6,9 +6,54 @@ import { Injectable } from '@angular/core';
 export class PavilionService {
   
   private pavilion = null;
+  private pavilion_list = [];
   
   constructor() { }
-  
+    list(fair_id) {
+		this.pavilion_list = [{
+			'id': '1',
+			'name': 'Pabellon Principal',
+			'stands': [{
+				'id': '1',
+				'name': '',
+				'merchant': {'id': 1,'name': 'Sura S.A.S'}
+			},{
+				'id': '2',
+				'name': '',
+				'merchant': {'id': 2,'name': 'Yulu SCS'}
+			},{
+				'id': '3',
+				'name': '',
+				'merchant': {'id': 3,'name': 'Macumba S.A'}
+			},{
+				'id': '4',
+				'name': '',
+				'merchant': {'id': 4,'name': 'Ganadera Tiacuane S.A.S'}
+			},{
+				'id': '5',
+				'name': '',
+				'merchant': {'id': 5,'name': 'Los Robles S.A.S'}
+			},{
+				'id': '6',
+				'name': '',
+				'merchant': {'id': 6,'name': 'La Arboleda S.A.S'}
+			},{
+				'id': '7',
+				'name': '',
+				'merchant': {'id': 7,'name': 'La Fantasia Ltda En Liquidación'}
+			},{
+				'id': '8',
+				'name': '',
+				'merchant': {'id': 8,'name': 'Villasol S.A '}
+			},{
+				'id': '9',
+				'name': '',
+				'merchant': {'id': 9,'name': 'Sociedad Ganadera de Exportaciones'}
+			}]
+		}];
+		
+		return this.pavilion_list;
+	}
 	get(pavilion_id){
 	  
 	  if(!this.pavilion || this.pavilion.id != pavilion_id ) {
@@ -16,9 +61,9 @@ export class PavilionService {
 		if(Number(pavilion_id) === 1) 
 		this.pavilion = {
 		  'id': '1',
-		  'name': 'Pabellon-1',
+		  'name': 'Pabellon Principal',
 		  'resources': {
-			 'image_url': 'assets/images/fair1/pabellon1.png',
+			 'image_url': 'https://res.cloudinary.com/dfxkgtknu/image/upload/v1611542205/feria1/pabellon1_Easy-Resize.com_tl2yqr.jpg',
 			 'banners': [{
 					'image_url': 'assets/images/fair1/banner-680x400.png',
 					"rotation":{"_x":-0.10999999999999999,"_y":0.9100000000000014,"_z":-0.01,"_order":"XYZ"},"scale":{"x":0.659999999999999,"y":1.690000000000001,"z":1},"position":{"x":-2.5099999999999896,"y":1.9400000000000013,"z":-0.15}
@@ -33,7 +78,7 @@ export class PavilionService {
 			  },
 			  {
 					'image_url': 'assets/images/fair1/banner-1366x768.png',
-					"rotation":{"_x":-0.09999999999999991,"_y":0.570000000000001,"_z":-0.06999999999999992,"_order":"XYZ"},"scale":{"x":0.45999999999999885,"y":0.48,"z":1.3800000000000003},"position":{"x":-2.3799999999999923,"y":0.09999999999999999,"z":1.2600000000000011}
+					"rotation":{"_x":-0.06999999999999992,"_y":0.620000000000001,"_z":-0.06999999999999992,"_order":"XYZ"},"scale":{"x":0.1799999999999986,"y":0.23999999999999977,"z":1.3800000000000003},"position":{"x":-0.9499999999999995,"y":0.3300000000000001,"z":5.919999999999918}
 			  },
 			  {
 					'image_url': 'assets/images/fair1/pavillion1-480x400.png',
@@ -67,7 +112,7 @@ export class PavilionService {
 		  'id': '2',
 		  'name': 'Pabellon-2',
 		  'resources': {
-			 'image_url': 'assets/images/fair1/pabellon2.png',
+			 'image_url': 'https://res.cloudinary.com/dfxkgtknu/image/upload/v1611542206/feria1/pabellon2_Easy-Resize.com_i9o9nv.jpg',
 			 'banners': [{
 					'image_url': 'assets/images/fair1/banner-680x400.png',
 					"rotation":{"_x":0,"_y":0,"_z":0,"_order":"XYZ"},"scale":{"x":0.08999999999999925,"y":0.27999999999999936,"z":1},"position":{"x":-1.3800000000000008,"y":-0.11999999999999995,"z":5.81999999999992},
