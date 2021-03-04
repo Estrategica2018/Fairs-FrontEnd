@@ -106,10 +106,12 @@ export class SignupPage {
 		'last_name': this.signupForm.value['last_name'],
 		'password': this.signupForm.value['password'],
 		'email': this.signupForm.value['email'],
-		'confirmPassword': this.signupForm.value['password']	
+		'confirmPassword': this.signupForm.value['password'],
+		'rol_id': 1,
+		'fair_id': 1
 	  }
       this.usersService.signup(signupData)
-      .subscribe(
+      .then(
 		data => {
 			if(data.success === 201) {
 				this.loading.dismiss();

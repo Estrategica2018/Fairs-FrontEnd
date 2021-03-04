@@ -16,7 +16,7 @@ export class MeetingsService {
 
   constructor(private http: HttpClient) { }
 
-  list(): any {
+  list(): Promise<any> {
 	if(this.meetings === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
 		return new Promise((resolve, reject) => {
 			this.http.get(`/api/meetings`)
