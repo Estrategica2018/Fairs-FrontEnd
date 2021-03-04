@@ -81,7 +81,15 @@ export class UsersService {
 			  })
 			)
 			.subscribe((data : any )=> {
-				resolve(data);
+				if(data.success === 201) {
+				  resolve(data);
+				}
+				else if(data.data && data.data.email) {
+					reject(`Correo electrónico ya registrado`);
+				}
+				else {
+					reject(`Consumiendo el servicio para creación del usuario`);
+				}
 			},error => reject(error));
 		});
 	});

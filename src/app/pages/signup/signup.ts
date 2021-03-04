@@ -119,7 +119,12 @@ export class SignupPage {
 			}
 			else {
 				this.loading.dismiss();
-				this.errors = 'Correo electrónico ya registrado';
+				if(data.email) {
+				  this.errors = 'Correo electrónico ya registrado';
+				}
+				else {
+					this.errors = 'Consumiendo el servicio para creación del usuario';
+				}
 			}
 		},
 		error => {
