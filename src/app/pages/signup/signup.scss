@@ -1,0 +1,42 @@
+.signup-logo {
+  padding: 61px 0px 0px 0px;
+  min-height: 128px;
+  text-align: center;
+}
+
+.signup-logo img {
+  max-width: 150px;
+}
+
+.list {
+  margin-bottom: 0;
+}
+
+  
+.padding-container {
+  padding: 0px 10% 0 10%;
+}
+
+.font-18px {
+  font-size: 21px;
+}
+
+ion-item.item-has-focus > ion-label{
+  color:  var(--color) !important;
+}
+
+ion-input {
+  font-size: 14px;
+}
+
+.border-item {
+   border-bottom: 1px solid gray;
+}
+
+ion-label {
+  height: 50px;
+}
+
+.label-terms {
+    margin-top: 8px;
+}

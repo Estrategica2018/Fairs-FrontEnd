@@ -1,0 +1,23 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="selectAll(true)" *ngIf="deselectAll">Seleccionar todo</ion-button>
+	  <ion-button (click)="selectAll(false)" *ngIf="!deselectAll">Deseleccionar todo</ion-button>
+	  <ion-title>
+        Filtrar por categoría
+      </ion-title>
+      <ion-button class="ml-auto" (click)="applyFilters()" strong>Aplicar</ion-button>
+    </ion-buttons>
+
+    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list [lines]="ios ? 'inset' : 'full'">
+    <ion-item *ngFor="let track of tracks" [attr.track]="track.name | lowercase">
+      <ion-label [ngStyle]="{'border-left': '2px solid ' + track.color}" style="padding-left:10px">{{track.name}}</ion-label>
+      <ion-checkbox (ionChange)="deselectAll=true" [(ngModel)]="track.isChecked"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,137 @@
+
+<ion-content fullscreen="true">
+  
+  <div class="padding-container">
+  <div class="signup-logo">
+    <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
+	<img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
+  </div>
+
+  <form [formGroup]="signupForm" novalidate>
+    <ion-list lines="none">
+	  <h6> 
+	     Formulario de registro para la creación de usuarios:
+	  </h6>
+      <ion-item class="border-item">
+        <ion-label position="stacked" class="font-18px">
+		    Nombre
+	    </ion-label>
+        <ion-input formControlName="name" name="name" type="text">
+        </ion-input>
+      </ion-item>
+	  <ng-container *ngFor="let validation of validation_messages?.name">
+        <ion-text color="danger" *ngIf="signupForm.get('name').hasError(validation.type) && (signupForm.get('name').dirty || signupForm.get('name').touched)">
+          <p class="ion-padding-start">
+            {{ validation.message }}
+          </p>
+        </ion-text>
+	  </ng-container>
+	  
+      <ion-item class="border-item">
+        <ion-label position="stacked" class="font-18px">
+		    Apellido
+	    </ion-label>
+        <ion-input formControlName="last_name" name="last_name" type="text">
+        </ion-input>
+      </ion-item>
+	  <ng-container *ngFor="let validation of validation_messages?.last_name">
+        <ion-text color="danger" *ngIf="signupForm.get('last_name').hasError(validation.type) && (signupForm.get('last_name').dirty || signupForm.get('last_name').touched)">
+          <p class="ion-padding-start">
+            {{ validation.message }}
+          </p>
+        </ion-text>
+	  </ng-container>
+
+      <ion-item class="border-item">
+        <ion-label position="stacked" class="font-18px">
+		    Email
+	    </ion-label>
+        <ion-input formControlName="email" name="email" type="text">
+        </ion-input>
+      </ion-item>
+	  <ng-container *ngFor="let validation of validation_messages?.email">
+        <ion-text color="danger" *ngIf="signupForm.get('email').hasError(validation.type) && (signupForm.get('email').dirty || signupForm.get('email').touched)">
+          <p class="ion-padding-start">
+            {{ validation.message }}
+          </p>
+        </ion-text>
+	  </ng-container>
+	  
+      <ion-item class="border-item">
+        <ion-label position="stacked" class="font-18px">
+		    Contraseña
+	    </ion-label>
+        <ion-input formControlName="password" name="password" type="text">
+        </ion-input>
+      </ion-item>
+	  <ng-container *ngFor="let validation of validation_messages?.password">
+        <ion-text color="danger" *ngIf="signupForm.get('password').hasError(validation.type) && (signupForm.get('password').dirty || signupForm.get('password').touched)">
+          <p class="ion-padding-start">
+            {{ validation.message }}
+          </p>
+        </ion-text>
+	  </ng-container>
+	  <ng-container *ngIf="noPasswordEquals">
+        <ion-text color="danger">
+          <p class="ion-padding-start">
+            Contraseñas no coinciden
+          </p>
+        </ion-text>
+	  </ng-container>
+	  
+      <ion-item class="border-item">
+        <ion-label position="stacked" class="font-18px">
+		    Confirmar contraseña
+	    </ion-label>
+        <ion-input formControlName="confirmPassword" name="confirmPassword" type="text">
+        </ion-input>
+      </ion-item>
+	  <ng-container *ngFor="let validation of validation_messages?.confirmPassword">
+        <ion-text color="danger" *ngIf="signupForm.get('confirmPassword').hasError(validation.type) && (signupForm.get('confirmPassword').dirty || signupForm.get('confirmPassword').touched)">
+          <p class="ion-padding-start">
+            {{ validation.message }}
+          </p>
+        </ion-text>
+	  </ng-container>
+	  <ng-container *ngIf="noPasswordEquals">
+        <ion-text color="danger">
+          <p class="ion-padding-start">
+            Contraseñas no coinciden
+          </p>
+        </ion-text>
+	  </ng-container>
+
+      <ion-item class="border-item">
+        <ion-label position="stacked" class="font-18px">
+		    Términos y condiciones
+	    </ion-label>
+		<div class="d-flex">
+		<ion-toggle formControlName="terms"></ion-toggle>
+		<a class="label-terms"href="javascript:void(0);" (click)="presentTermsModal()">Ver terminos y condiciones</a>
+		</div>
+		
+      </ion-item>
+	  
+	  <ng-container *ngFor="let validation of validation_messages?.terms">
+        <ion-text color="danger" *ngIf="signupForm.get('terms').hasError(validation.type) && (signupForm.get('terms').dirty || signupForm.get('terms').touched)">
+          <p class="ion-padding-start">
+            {{ validation.message }}
+          </p>
+        </ion-text>
+	  </ng-container>
+	  
+    </ion-list>
+	
+	<ion-row [hidden]="!errors" class="not-found">
+	   <div class="alert alert-danger alert-dismissible">
+		 <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+		 <strong>Error!</strong> {{errors}}
+	   </div>
+	</ion-row>
+
+    <div class="ion-padding">
+      <ion-button [disabled]="!signupForm.valid" (click)="onSignup(signupForm)" type="submit" expand="block">Crear registro</ion-button>
+    </div>
+  </form>
+ </div>
+</ion-content>

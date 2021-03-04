@@ -1,155 +1,204 @@
-<ion-app>
-  <ion-header [translucent]="true">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button (click)="onMenuBotton()"></ion-menu-button>
-      </ion-buttons>
-      <ion-img class="icon-logo" src="assets/icon/icon.png"></ion-img>
-      <ion-label slot="end" class="title-fair"> {{ fair?.description }} </ion-label>
-      <ion-buttons slot="end">
-        <ion-button fill="outline" shape="round" color="primary" class="end-menu-button" routerDirection="root" [routerLink]="[fair.name+'/login']">
-            <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-            Acceder
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
- 
-  <ion-split-pane contentId="main-content" (window:resize)="onResize($event)">
-    <ion-menu contentId="main-content" side="start" swipeGesture="false" type="overlay" class="custom-menu" swipeEnabled="false">
+<ion-app [class.dark-theme]="dark">
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-buttons *ngIf="!showSearchbar" slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+	<div class="d-flex">
+	  <ion-img *ngIf="!dark" class="icon-logo" src="assets/icon/icon.png"></ion-img>
+	  <ion-img *ngIf="dark" class="icon-logo" src="assets/icon/icon-black.png"></ion-img>
+      <ion-label *ngIf="!showSearchbar" class="title-fair"> XI Feria Ganadera 2021 </ion-label>
+	</div>
+	<ion-buttons slot="end" class="d-none d-md-block">
+	  <ion-button routerLink="/login/" routerLinkActive="selected" routerDirection="root" detail="false" *ngIf="!loggedIn" fill="outline" shape="round" color="primary" class="end-menu-button">
+        <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+         Acceder
+      </ion-button>
+	  <ion-item *ngIf="loggedIn" routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
+        <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+         Cuenta
+      </ion-item>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+  <ion-split-pane contentId="main-content">
+
+    <ion-menu contentId="main-content" class="menu-main-content">
       <ion-content>
-        <ion-list class="border-botton">
-          <ion-menu-toggle auto-hide="false">
-		    <ion-item (click)="selectedIndex = 'main'; onMainMenuToggle()" lines="none" href="javascript:void(0)" detail="false" [class.selected]="selectedIndex === 'main'">
-			  <ion-icon slot="start" name="home-sharp"></ion-icon>
-              <ion-label class="menu-label">Principal</ion-label>
+        <ion-list lines="none">
+          <ion-menu-toggle autoHide="false">
+            <ion-item routerLink="/app/tabs/map" routerLinkActive="selected" routerDirection="root" detail="false">
+              <ion-icon slot="start" [name]="'map-outline'"></ion-icon>
+              <ion-label>
+                Mapa
+              </ion-label>
             </ion-item>
           </ion-menu-toggle>
+		  <ion-menu-toggle autoHide="false">
+            <ion-item routerLink="/app/tabs/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
+              <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
+              <ion-label>
+                Agenda
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle autoHide="false">
+            <ion-item routerLink="/app/tabs/speakers" routerLinkActive="selected" routerDirection="root" detail="false">
+              <ion-icon slot="start" [name]="'people-outline'"></ion-icon>
+              <ion-label>
+                Conferencistas
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+		  <ion-menu-toggle auto-hide="false">
+            <ion-item routerLink="/app/tabs/news" routerLinkActive="selected" routerDirection="root" detail="false">
+			  <ion-icon slot="start" name="newspaper-outline"></ion-icon>
+              <ion-label class="menu-label">Noticias</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle autoHide="false">
+            <ion-item routerLink="/app/tabs/about" routerLinkActive="selected" routerDirection="root" detail="false">
+              <ion-icon slot="start" [name]="'information-circle-outline'"></ion-icon>
+              <ion-label>
+                Acerca de
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>		  
+        </ion-list>
+		
+		<ion-list class="border-botton">
 		  <ion-menu-toggle auto-hide="false" class="pavilions-menu" *ngFor="let pavilion of pavilionsList">
-		    <ion-item (click)="selectedIndex='pavilion_id_'+pavilion.id; showPavilionsMenu=showPavilionsMenu==='pavilion_id_'+pavilion.id?'none':'pavilion_id_'+pavilion.id; onOpenPavilion(pavilion.id);" href="javascript:void(0)" lines="none" detail="false" [class.selected]="selectedIndex==='pavilion_id_'++pavilion.id">
+		    <ion-item (click)="selectedIndex='pavilion_id_'+pavilion.id; showPavilionsMenu=showPavilionsMenu==='pavilion_id_'+pavilion.id?'none':'pavilion_id_'+pavilion.id; onOpenPavilion(pavilion.id);" 
+					  href="javascript:void(0)" 
+					  lines="none" detail="false" [class.selected]="selectedIndex==='pavilion_id_'++pavilion.id">
 			  <ion-icon slot="start" name="albums-outline"></ion-icon>
               <ion-label class="menu-label">{{pavilion.name}}</ion-label>
 			  <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionsMenu!== 'pavilion_id_'+pavilion.id"></ion-icon>
 			  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionsMenu === 'pavilion_id_'+pavilion.id"></ion-icon>
             </ion-item>
 			<div *ngIf="showPavilionsMenu==='pavilion_id_'+pavilion.id">
-			<ion-item (click)="selectedIndex='pavilion_id_'+pavilion.id+'_stands'; 
-					  showPavilionsSubMenu=showPavilionsSubMenu==='pavilion_id_'+pavilion.id? false: 'pavilion_id_'+pavilion.id; 
-					  onOpenLocalPavilion(pavilion.id);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" 
-			          [class.selected]="selectedIndex==='pavilion_id_'+pavilion.id+'_stands'">
-			  <ion-icon slot="start" name="chevron-forward-outline" size="small" *ngIf="showPavilionsSubMenu!=='pavilion_id_'+pavilion.id"></ion-icon>
-			  <ion-icon slot="start" name="chevron-down-outline" size="small" *ngIf="showPavilionsSubMenu==='pavilion_id_'+pavilion.id"></ion-icon>
-			  <ion-label class="menu-label">Locales comerciales</ion-label>
-			</ion-item>
-			<div *ngIf="showPavilionsSubMenu==='pavilion_id_'+pavilion.id">
-			<ion-item *ngFor="let stand of pavilion.stands" 
-					  (click)="selectedIndex='pavilion_id_'+pavilion.id+'_stand_'+stand.id;
-					  onOpenStand(stand.id);" 
-					  href="javascript:void(0)" lines="none" detail="false" class="sub-menu-stand" 
-					  [class.selected]="selectedIndex==='pavilion_id_'+pavilion.id+'_stand_'+stand.id">
-			  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-			  <ion-label class="menu-label">{{stand.merchant.name}}</ion-label>
-			</ion-item>
+				<ion-item (click)="selectedIndex='pavilion_id_'+pavilion.id+'_stands'; 
+						  showPavilionsSubMenu=showPavilionsSubMenu==='pavilion_id_'+pavilion.id? false: 'pavilion_id_'+pavilion.id; 
+						  onOpenLocalPavilion(pavilion.id);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" 
+						  [class.selected]="selectedIndex==='pavilion_id_'+pavilion.id+'_stands'">
+				  <ion-icon slot="start" name="chevron-forward-outline" size="small" *ngIf="showPavilionsSubMenu!=='pavilion_id_'+pavilion.id"></ion-icon>
+				  <ion-icon slot="start" name="chevron-down-outline" size="small" *ngIf="showPavilionsSubMenu==='pavilion_id_'+pavilion.id"></ion-icon>
+				  <ion-label class="menu-label">Locales comerciales</ion-label>
+				</ion-item>
+				<div *ngIf="showPavilionsSubMenu==='pavilion_id_'+pavilion.id">
+					<ion-item *ngFor="let stand of pavilion.stands" 
+							  (click)="selectedIndex='pavilion_id_'+pavilion.id+'_stand_'+stand.id;
+							  onOpenStand(stand.id);" 
+							  href="javascript:void(0)" lines="none" detail="false" class="sub-menu-stand" 
+							  [class.selected]="selectedIndex==='pavilion_id_'+pavilion.id+'_stand_'+stand.id">
+					  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+					  <ion-label class="menu-label">{{stand.merchant.name}}</ion-label>
+					</ion-item>
+				</div>
+				<ion-item (click)="selectedIndex='pavilion_id_2_room';onOpenRoomPavilion(2);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" [class.selected]="selectedIndex==='pavilion_id_2_room'">
+				  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+				  <ion-label class="menu-label">Auditorios</ion-label>
+				</ion-item>
 			</div>
-			<ion-item (click)="selectedIndex='pavilion_id_2_room';onOpenRoomPavilion(2);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" [class.selected]="selectedIndex==='pavilion_id_2_room'">
-			  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-			  <ion-label class="menu-label">Auditorios</ion-label>
-			</ion-item>
-			</div>
-          </ion-menu-toggle>
-		  <ion-menu-toggle auto-hide="false">
-            <!--ion-item (click)="onOpenTab(newsPage, 'news');" lines="none" href="javascript:void(0)" detail="false" [class.selected]="selectedIndex === 'news'"-->
-			<ion-item (click)="selectedIndex = 'news'" routerDirection="root" [routerLink]="[fair.name+'/noticias']" lines="none" detail="false" [class.selected]="selectedIndex === 'news'">
-            
-              <ion-icon slot="start" name="newspaper-outline"></ion-icon>
-              <ion-label class="menu-label">Noticias</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item (click)="selectedIndex = 'agenda'" routerDirection="root" [routerLink]="[fair.name+'/agenda']" lines="none" detail="false" [class.selected]="selectedIndex === 'agenda'">
-              <ion-icon slot="start" name="calendar"></ion-icon>
-              <ion-label class="menu-label">Agenda</ion-label>
-            </ion-item>
-          </ion-menu-toggle>          
+          </ion-menu-toggle>         
         </ion-list>
-        <ion-list class="border-botton">
-          <ion-menu-toggle auto-hide="false">
-            <ion-item (click)="selectedIndex = 'library'" routerDirection="root" [routerLink]="[fair.name+'/biblioteca']" lines="none" detail="false" [class.selected]="selectedIndex === 'library'">
+
+        <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
+          
+          <ion-menu-toggle autoHide="false">
+            <ion-item routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
+              <ion-icon slot="start" name="person"></ion-icon>
+              <ion-label>
+                Cuenta
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle autoHide="false">
+            <ion-item button (click)="logout()" detail="false">
+              <ion-icon slot="start" name="log-out"></ion-icon>
+              <ion-label>
+                Salir
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+        </ion-list>
+
+        
+        <ion-list *ngIf="!loggedIn" class="border-botton ion-text-center access">
+		  <ion-menu-toggle autoHide="false" class="ion-text-center"> 
+		    <ion-note class="login-note ion-text-start font-light">Accede para dar participar en los eventos, realizar comentarios y suscribirte a los comercios.</ion-note>
+            
+			<ion-button fill="outline" shape="round" routerLink="/login/" routerLinkActive="selected" routerDirection="root">
+                <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+                Acceder
+            </ion-button>
+          </ion-menu-toggle> 
+        </ion-list>
+        
+		<!--ion-list class="border-botton ion-text-center nav-title"-->
+		<ion-list lines="none">
+		  <ion-menu-toggle auto-hide="false">
+		    <ion-item routerLink="/app/tabs/library" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" name="albums-sharp"></ion-icon>
               <ion-label class="menu-label">Biblioteca</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item (click)="selectedIndex = 'history'" routerDirection="root" [routerLink]="[fair.name+'/historial']" lines="none" detail="false" [class.selected]="selectedIndex === 'history'">
-              <ion-icon slot="start" name="refresh-sharp"></ion-icon>
+            <ion-item routerLink="/app/tabs/history" routerLinkActive="selected" routerDirection="root" detail="false">
+			  <ion-icon slot="start" name="refresh-sharp"></ion-icon>
               <ion-label class="menu-label">Historial</ion-label>
             </ion-item>
           </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+		    <ion-item routerLink="/app/tabs/memories" routerLinkActive="selected" routerDirection="root" detail="false">
+              <ion-icon slot="start" ios="ios-bookmarks-outline" md="bookmarks-sharp"></ion-icon>
+              <ion-label class="menu-label">Lo mejor de la feria</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+		
+        <ion-list lines="none">
+          <ion-list-header>
+            Tutorial
+          </ion-list-header>
+          <ion-menu-toggle autoHide="false">
+            <ion-item button (click)="openTutorial()" detail="false">
+              <ion-icon slot="start" name="hammer"></ion-icon>
+              <ion-label>Ver Tutorial</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+		  
+		  <ion-menu-toggle autoHide="false">
+            <ion-item routerLink="/support" routerLinkActive="active" routerDirection="root" detail="false">
+              <ion-icon slot="start" name="help"></ion-icon>
+              <ion-label>
+                Soporte
+              </ion-label>
+            </ion-item>
+			
+			<ion-item>
+				<ion-icon slot="start" name="moon-outline"></ion-icon>
+				<ion-label>
+					Dark Mode
+				</ion-label>
+				<ion-toggle [(ngModel)]="dark" (ionChange)="onChangeDarkModel($event)"></ion-toggle>
+			</ion-item>
+          </ion-menu-toggle>
+
         </ion-list>
       
-        <ion-list class="border-botton ion-text-center access">
-          <div class="ion-text-center">
-            <ion-note class="login-note ion-text-start font-light">Accede para dar participar en los eventos, realizar comentarios y suscribirte a los comercios.</ion-note>
-            <ion-button fill="outline" shape="round" routerDirection="root" [routerLink]="[fair.name+'/login']">
-                <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-                Acceder
-            </ion-button>
-          </div>
-        </ion-list>
-        <ion-list class="border-botton ion-text-center nav-title">  
-          <ion-label>LO MEJOR DE LA FERIA</ion-label>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item class="mt-10px" (click)="selectedIndex = 'speakers'" routerDirection="root" [routerLink]="[fair.name+'/conferencistas']" lines="none" detail="false" [class.selected]="selectedIndex === 'speakers'">
-              <ion-icon slot="start" name="people-sharp"></ion-icon>
-              <ion-label class="menu-label">Conferencistas</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item (click)="selectedIndex = 'memories'" routerDirection="root" [routerLink]="[fair.name+'/memorias']" lines="none" detail="false" [class.selected]="selectedIndex === 'memories'">
-              <ion-icon slot="start" ios="ios-bookmarks-outline" md="bookmarks-sharp"></ion-icon>
-              <ion-label class="menu-label">Memorias</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
         <ion-list class="border-botton ion-text-center">  
-          <ion-menu-toggle auto-hide="false">
-            <ion-item (click)="selectedIndex = 'aboutus'" routerDirection="root" [routerLink]="[fair.name + '/acerca-de']" lines="none" detail="false" [class.selected]="selectedIndex === 'aboutus'">
-              <ion-icon slot="start" ios="ios-bookmark-outline" md="bookmark-sharp"></ion-icon>
-              <ion-label class="menu-label">Acerca de </ion-label>
-            </ion-item>
-          </ion-menu-toggle>  
-          <ion-menu-toggle auto-hide="false">
-             <ion-item (click)="selectedIndex = 'politics'" routerDirection="root" [routerLink]="[fair.name+'/politicas']" lines="none" detail="false" [class.selected]="selectedIndex === 'politics'">
-              <ion-icon slot="start" ios="ios-bookmark-outline" md="bookmark-sharp"></ion-icon>
-              <ion-label class="menu-label">Política y seguridad </ion-label>
-            </ion-item>
-          </ion-menu-toggle>  
-          
           <ion-item>
               <ion-label class="font-light menu-label">© 2021 Estratégica S.A </ion-label>
           </ion-item>
         </ion-list>
       </ion-content>
     </ion-menu>
-    
-    <ion-router-outlet id="main-content" [ngStyle]="{'opacity': selectedIndex !== 'main' ? 1 : 0 }"></ion-router-outlet>
+
+    <ion-router-outlet id="main-content"></ion-router-outlet>
 
   </ion-split-pane>
-  
-  <div [ngStyle]="{'opacity': loading === false && (selectedIndex === 'main' || selectedIndex.indexOf('pavilion') == 0)  ? 1 : 0 , 'z-index': ( menuOpen && devWidth < 991 ) ? 0 : ( !menuOpen && devWidth < 991 ) ? 10 : 0 }" class="container" #container></div>
-  <div [ngStyle]="{'opacity': loading  ? 1 : 0, 'z-index': ( menuOpen && devWidth < 991 ) ? 0 : ( !menuOpen && devWidth < 991 ) ? 10 : 0 }" class="loading">
-     <img
-      src="./assets/images/loading.png"
-      class="img"
-      alt=""
-    />
-  </div>
-  <!--ion-nav  [ngStyle]="{ 
-    'min-width': '100%',
-    'position': 'absolute',
-    'top': 56 + 'px',
-    'left': 270 + 'px',
-    'opacity': selectedIndex !== 'main' ? 1 : 0 }" #mySubNav>
-  </ion-nav-->
 
 </ion-app>

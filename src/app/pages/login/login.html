@@ -1,0 +1,58 @@
+
+<ion-content fullscreen="true">
+  
+  <div class="padding-container">
+  <div class="login-logo">
+    <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
+	<img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
+  </div>
+
+  <form #loginForm="ngForm" novalidate>
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked" class="font-18px">
+		    Nombre de usuario o correo
+	    </ion-label>
+        <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-text color="danger">
+        <p [hidden]="username.valid || submitted == false" class="ion-padding-start">
+          Nombre de usuario o correo requerido
+        </p>
+      </ion-text>
+
+      <ion-item>
+		<ion-label position="stacked"  class="font-18px">
+          Contraseña
+		</ion-label>
+        <ion-input [(ngModel)]="login.password" name="password" type="password" #password="ngModel" required>
+        </ion-input>
+      </ion-item>
+
+      <ion-text color="danger">
+        <p [hidden]="password.valid || submitted == false" class="ion-padding-start">
+          Contraseña requerida
+        </p>
+      </ion-text>
+    </ion-list>
+
+	<ion-row [hidden]="!errors" class="not-found">
+	   <div class="alert alert-danger alert-dismissible">
+		 <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+		 <strong>Error!</strong> {{errors}}
+	   </div>
+	</ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="onLogin(loginForm)" type="submit" expand="block">Ingresar</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="onSignup()" color="light" expand="block">Crear cuenta</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</div>
+</ion-content>

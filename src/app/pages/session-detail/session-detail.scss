@@ -1,0 +1,28 @@
+ion-thumbnail.img-session {
+    width: 464px;
+    height: 307px;
+}
+
+@media (min-width: 600px) {
+  .padding-container {
+    padding: 0px 10% 0 10%;
+  }
+}
+
+.speaker-name {
+    align-self: center;
+    margin-left: 13px;
+}
+
+.speaker-card {
+	
+}
+
+ion-avatar {
+	width: 32px;
+	height: 28px;
+}
+
+ion-card-header {
+    padding: 11px;
+}

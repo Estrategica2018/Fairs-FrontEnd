@@ -1,0 +1,62 @@
+
+<ion-content fullscreen="true">
+  <ion-header  translucent="true" class="ion-no-border">
+    <ion-toolbar>
+      <ion-title>Conferencistas</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-grid fixed>
+    <ion-row *ngIf="speakers">
+      <ion-col size="12" size-md="6" *ngFor="let speaker of speakers">
+        <ion-card class="speaker-card">
+          <ion-card-header>
+            <ion-item detail="false" lines="none" class="speaker-item" routerLink="/app/tabs/speakers/speaker-details/{{speaker.id}}">
+              <ion-avatar slot="start">
+                <img [src]="speaker.resources?.url_imagen" [alt]="speaker.name + ' profile picture'">
+              </ion-avatar>
+              <ion-label>
+                <h2 class="white-space">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
+                <p class="white-space">{{speaker.title}}</p>
+				<h3 class="white-space">{{speaker.description}}</h3>
+              </ion-label>
+            </ion-item>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-list lines="none">
+			  <ion-item>
+                <ion-label>
+                  <h4>Conferencias</h4>
+                </ion-label>
+              </ion-item>
+			  <ion-item *ngFor="let agenda of speaker.agenda" detail="false" routerLink="/app/tabs/schedule/session/{{agenda.id}}">
+			    <ion-label slot="start">
+				  <h4 class="white-space">{{agenda.title}}</h4>
+				  <h4 class="white-space">{{ (agenda.start_at * 1000) | date:'EEEE, MMMM d, y' }}</h4>
+                  <p class="white-space">{{ (agenda.start_at * 10000 ) | date: 'hh:mm a' }} -
+				                          {{ (agenda.start_at * 10000 + agenda.duration_time * 60000 ) | date: 'hh:mm a' }}
+				  </p>
+                </ion-label> 
+				<ion-thumbnail class="m-auto">
+				  <ion-img [src]="agenda.resources.url_imagen" style="width: 73px;" class="ml"></ion-img>
+				</ion-thumbnail>
+              </ion-item>
+	
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+    <ion-list-header *ngIf="speakers && speakers.length === 0" class="not-found">
+    No se encontraron conferencistas
+  </ion-list-header>
+  <ion-list-header [hidden]="!errors" class="not-found">
+   <div class="alert alert-danger alert-dismissible">
+     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+     <strong>Error!</strong> {{errors}}
+   </div>
+  </ion-list-header>
+
+</ion-content>

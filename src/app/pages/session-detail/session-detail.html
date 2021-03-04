@@ -1,0 +1,90 @@
+<ion-content class="toolbar-page">
+  <ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/app/tabs/speakers"></ion-back-button>
+      </ion-buttons>
+      <ion-buttons *ngIf="speaker" slot="end">
+        <ion-button (click)="openContact(speaker)">
+          <ion-icon slot="icon-only" ios="call-outline" md="call-sharp"></ion-icon>
+        </ion-button>
+        <ion-button (click)="openSpeakerShare(speaker)">
+          <ion-icon slot="icon-only" ios="share-outline" md="share-sharp"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+    <ion-list-header [hidden]="!errors">
+      <div class="alert alert-danger fade show alert-dismissible">
+       <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+       <strong>Error!</strong> {{errors}}
+      </div>
+    </ion-list-header>
+  
+	<ion-grid *ngIf="session" class="padding-container">
+	  <ion-row>
+		<ion-col>
+		  <div>
+			<ion-thumbnail slot="start" class="img-session">
+			  <ion-img [src]="session.resources.url_imagen"></ion-img>
+			</ion-thumbnail>
+			<br /><br />
+			<ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.color,'color': session.category?.color}"> 
+			<span class="ml-1 text-uppercase"> {{session?.category?.name}}</span></ion-label>
+			<br /><br />
+			<ion-text color="medium">
+			  {{session.strDay}}
+			  <br />
+			  {{session.timeStart}} &ndash; {{session.timeEnd}}
+			  <br /> {{session.location}}
+			</ion-text>
+		  </div>
+		</ion-col>
+		<ion-col>
+		  <div style="margin-left: 16px;">
+			<h1>{{session.title}}</h1>
+			<br />
+			<p>{{session.description}}</p>
+			<h2 *ngIf="session.speakers.length > 1">Conferencistas</h2>
+			<h2 *ngIf="session.speakers.length === 1">Conferencista</h2>
+			<div *ngFor="let speaker of session.speakers" >
+			<ion-card class="speaker-card" routerLink="/app/tabs/speakers/speaker-details/{{speaker.data_speaker.id}}" >
+			   <ion-card-header>
+				  <div class="d-flex">
+					<ion-avatar slot="start">
+					   <img [src]="speaker?.data_speaker?.resources?.url_imagen" [alt]="speaker?.data_user?.name + ' profile picture'">
+					</ion-avatar>
+					<ion-label class="speaker-name">
+						<h5>{{ speaker?.data_user?.name + '  ' + speaker?.data_user?.last_name }} </h5>
+						<small>{{speaker?.data_speaker?.title}}</small>
+					</ion-label>
+				  </div>
+			  </ion-card-header>
+			 </ion-card>
+			</div>
+		  </div>
+		</ion-col>
+	  </ion-row>
+	  <ion-row>
+		<ion-col>
+		  <ion-list>
+			<ion-item (click)="goToMeeting(session.id)" button >
+			  <ion-label color="primary">Entrar al evento</ion-label>
+			</ion-item>
+			<ion-item (click)="sessionClick('add to calendar')" button>
+			  <ion-label color="primary">Agregar al calendario</ion-label>
+			</ion-item>
+			<ion-item (click)="sessionClick('download video')" button>
+			  <ion-label color="primary">Descargar Video</ion-label>
+			  <ion-icon slot="end" color="primary" size="small" name="cloud-download"></ion-icon>
+			</ion-item>
+			<ion-item (click)="sessionClick('leave feedback')" button>
+			  <ion-label color="primary">Dejar un comentario</ion-label>
+			</ion-item>
+		  </ion-list>
+		</ion-col>
+	  </ion-row>
+	</ion-grid>
+
+</ion-content>

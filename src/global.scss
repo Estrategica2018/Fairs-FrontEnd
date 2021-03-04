@@ -16,7 +16,6 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -24,6 +23,16 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+
+/*
+ * App CSS
+ * ----------------------------------------------------------------------------
+ * Imports a file that can contain Sass/CSS that should be used throughout
+ * the entire app.
+ */
+
+@import "./app/app.scss";
 
 
 @font-face {   
@@ -51,8 +60,42 @@ html {
     --ion-default-font: YoutubeSansMedium !important;
 }
 
+//*Global Styles*//
+ion-router-outlet {
+   margin-top: 28px;
+}
+
+.menu-main-content {
+  margin-top: 57px;
+}
+
+.white-space {
+    white-space: initial;
+}
+
+.alert.alert-dismissible {
+    margin: auto;
+    text-align: center;
+	padding-right: 2rem;
+	a.close {
+		text-decoration: none !important;
+		font-size: 18px !important;
+		position: relative;
+		top: -2px;
+		right: -4px;
+		color: inherit;
+		float: right;
+		font-weight: 700;
+		line-height: 1;
+		color: #000;
+		text-shadow: 0 1px 0 #fff;
+		opacity: .2;
+		padding: 0;
+	}
+}
 
 
-.mt-10px {
-    margin-top: 10px;
+
+.padding-container {
+  padding: 59px 10% 0 10%;
 }

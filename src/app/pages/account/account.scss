@@ -1,0 +1,27 @@
+img {
+  max-width: 140px;
+  border-radius: 50%;
+}
+
+.input_file {
+  margin-left: 10px;
+}
+
+
+.input_file {
+  display: none;
+}
+
+.label-uploadInput {
+    border-radius: 5px;
+    border: 2px solid var(--ion-color-primary);
+	color: var(--ion-color-primary);
+    padding: 5px;
+    font-size: 12px;
+    cursor: pointer;
+	font-weight: 500;
+}
+
+.card-alert {
+
+}

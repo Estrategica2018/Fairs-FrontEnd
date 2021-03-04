@@ -1,0 +1,31 @@
+<ion-header class="mt-4">
+  <ion-toolbar>
+    <ion-title>Contacto de soporte</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <div class="support-logo">
+    <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
+	<img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
+  </div>
+
+  <form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)">
+    <ion-list lines="none">
+      <ion-item>
+        <ion-label position="stacked" color="primary">Ingresa tu mensaje para el grupo de soporte</ion-label>
+        <ion-textarea [(ngModel)]="supportMessage" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <ion-text color="danger">
+      <p [hidden]="supportQuestion.valid || submitted === false" class="ion-padding-start">
+        Campo mensaje requerido
+      </p>
+    </ion-text>
+
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit">Enviar</ion-button>
+    </div>
+  </form>
+</ion-content>

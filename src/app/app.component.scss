@@ -172,6 +172,7 @@ ion-item.sub-menu-stand {
   height: 119%;
   background-color: #616e7e;
   z-index: 2;
+  opacity: 0.3;
 }
 
 .sub-menu::before {
@@ -195,8 +196,10 @@ ion-split-pane {
 .title-fair {
   font-size: 24px;
   font-weight: 700;
-  margin-right: 47px;
+  margin-left: auto;
+  margin-right: 171px;
   line-height: 10px;
+  align-self: center;
 }
 
 .end-menu-button {
@@ -291,19 +294,4 @@ ion-menu-toggle>ion-item>ion-label {
 
 body.backdrop-no-scroll {
     z-index: 0;
-}
-
-.loading {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: white;
-    width: 1095px;
-    height: 657px;
-    padding: 25%;
-}
-
-.display-none {
-  height: 0% !important;
-  padding: 0% !important;
 }
