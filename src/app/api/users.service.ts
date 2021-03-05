@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import { Storage } from '@ionic/storage';
-import { FairService } from './fair.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +17,7 @@ export class UsersService {
   
   constructor(
     private http: HttpClient,
-	private storage: Storage,
-	private fairService : FairService) { 
+	private storage: Storage) { 
   }
   
   login(email: string, password: string): Observable<any> {
@@ -60,38 +59,35 @@ export class UsersService {
   
   signup(userData: any): Promise<any> {
 	return new Promise((resolve, reject) => {
-		this.fairService.get('FeriaGanadera2021')
-		.then( fair => {
-			userData = Object.assign( { role_id: 4, fair_id : fair.id } , userData);
-			this.http.post(`${this.url}/api/user/create`,userData)
-		   .pipe(
-			  timeout(2000),
-			  catchError(e => {
-				if(e.status == 401) {
-				   throw new Error(`Usuario ya existe`);
-				}
-				else {
-				   if(e.status && e.statusText) {
-					  throw new Error(`Consumiendo el servicio para creación del usuario: ${e.status} - ${e.statusText}`);
-				   }
-				   else {
-					   throw new Error(`Consumiendo el servicio para creación del usuario`);
-				   }
-				}
-			  })
-			)
-			.subscribe((data : any )=> {
-				if(data.success === 201) {
-				  resolve(data);
-				}
-				else if(data.data && data.data.email) {
-					reject(`Correo electrónico ya registrado`);
-				}
-				else {
-					reject(`Consumiendo el servicio para creación del usuario`);
-				}
-			},error => reject(error));
-		});
+		this.http.post(`${this.url}/api/user/create`,userData)
+	   .pipe(
+		  timeout(2000),
+		  catchError(e => {
+			if(e.status == 401) {
+			   throw new Error(`Usuario ya existe`);
+			}
+			else {
+			   if(e.status && e.statusText) {
+				  throw new Error(`Consumiendo el servicio para creación del usuario: ${e.status} - ${e.statusText}`);
+			   }
+			   else {
+				   throw new Error(`Consumiendo el servicio para creación del usuario`);
+			   }
+			}
+		  })
+		)
+		.subscribe((data : any )=> {
+			if(data.success === 201) {
+			  resolve(data);
+			}
+			else if(data.data && data.data.email) {
+				reject(`Correo electrónico ya registrado`);
+			}
+			else {
+				reject(`Consumiendo el servicio para creación del usuario`);
+			}
+		},error => reject(error));
+		
 	});
   }
 

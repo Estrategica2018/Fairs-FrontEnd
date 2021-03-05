@@ -6,6 +6,7 @@ import { Config, ModalController, NavParams } from '@ionic/angular';
 import { AlertController, IonRouterOutlet } from '@ionic/angular';
 
 import { UsersService } from '../../api/users.service';
+import { FairsService } from '../../api/fairs.service';
 import { LoadingService } from './../../providers/loading.service';
 import { TermsPage } from './../terms/terms.page';
 
@@ -70,10 +71,12 @@ export class SignupPage {
 	private loading: LoadingService,
 	private modalCtrl: ModalController,
 	private routerOutlet: IonRouterOutlet,
+	private fairsService: FairsService
   ) {
 	
 	this.validation_messages = {
-      'user_name': this.events, 'name': this.events,'last_name': this.events,'email': this.events,'password': this.events, 'confirmPassword': this.events, 'terms': this.events
+      'user_name': this.events, 'name': this.events,'last_name': this.events,'email': this.events,'password': this.events, 'confirmPassword': this.events, 
+	  'terms': Object.assign(this.events,{ type: 'pattern', message: 'Aceptación de términos requerida'} )	
     } 
     
     this.listenForDarkModeEvents();
@@ -100,38 +103,41 @@ export class SignupPage {
 	  this.noPasswordEquals = false;
 	  this.loading.present({message:'Cargando...'});
 	  
-	  const signupData = {
-		'user_name': this.signupForm.value['name'].replace(' ','') + '_' + Date.now(),
-		'name': this.signupForm.value['name'],
-		'last_name': this.signupForm.value['last_name'],
-		'password': this.signupForm.value['password'],
-		'email': this.signupForm.value['email'],
-		'confirmPassword': this.signupForm.value['password'],
-		'rol_id': 1,
-		'fair_id': 1
-	  }
-      this.usersService.signup(signupData)
-      .then(
-		data => {
-			if(data.success === 201) {
-				this.loading.dismiss();
-				this.onLogin(Object.assign({password:this.signupForm.value['password']}, data.data));
-			}
-			else {
-				this.loading.dismiss();
-				if(data.email) {
-				  this.errors = 'Correo electrónico ya registrado';
+	  this.fairsService.setCurrentFair().
+	  then( fair => {
+		  const signupData = {
+			'user_name': this.signupForm.value['name'].replace(' ','') + '_' + Date.now(),
+			'name': this.signupForm.value['name'],
+			'last_name': this.signupForm.value['last_name'],
+			'password': this.signupForm.value['password'],
+			'email': this.signupForm.value['email'],
+			'confirmPassword': this.signupForm.value['password'],
+			'role_id': 4,
+			'fair_id': fair.id
+		  }
+		  this.usersService.signup(signupData)
+		  .then(
+			data => {
+				if(data.success === 201) {
+					this.loading.dismiss();
+					this.onLogin(Object.assign({password:this.signupForm.value['password']}, data.data));
 				}
 				else {
-					this.errors = 'Consumiendo el servicio para creación del usuario';
+					this.loading.dismiss();
+					if(data.email) {
+					  this.errors = 'Correo electrónico ya registrado';
+					}
+					else {
+						this.errors = 'Consumiendo el servicio para creación del usuario';
+					}
 				}
-			}
-		},
-		error => {
-			this.loading.dismiss();
-			this.errors = error;
+			},
+			error => {
+				this.loading.dismiss();
+				this.errors = error;
+		  });
 	  });
-    }
+	}
   }
   
   onLogin(userData) {
