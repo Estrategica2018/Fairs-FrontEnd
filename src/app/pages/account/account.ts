@@ -18,12 +18,12 @@ export class AccountPage implements AfterViewInit {
   keyUpdate: string = null;
   objectUpdate: string = null;
   errors: string = null;
-  url_imagen: string = null;
+  url_image: string = null;
 
   constructor(
     private alertCtrl: AlertController,
     private router: Router,
-	private loading: LoadingService,
+    private loading: LoadingService,
     private usersService: UsersService
   ) { }
 
@@ -38,9 +38,9 @@ export class AccountPage implements AfterViewInit {
       reader.readAsDataURL(event.target.files[0]); // read file as data url
 
       reader.onload = (event: any) => { // called once readAsDataURL is completed
-	    this.onChangeImag = true;
-        this.url_imagen = event.target.result;
-		this.updateImage();
+        this.onChangeImag = true;
+        this.url_image = event.target.result;
+        this.updateImage();
       }
     }
   }
@@ -48,17 +48,17 @@ export class AccountPage implements AfterViewInit {
   async updateImage() {
     const alert = await this.alertCtrl.create({
       header: 'Confirma para cambiar la imagen',
-	  message: `<img src="${this.url_imagen}" class="card-alert">`,
+      message: `<img src="${this.url_image}" class="card-alert">`,
       buttons: [
-	    { text: 'Cancelar',
-		  role: 'cancel'
-		},
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
         {
           text: 'Aceptar',
           handler: (data: any) => {
-			this.keyUpdate = 'url_imagen';
-			this.objectUpdate = this.url_imagen;
-			this.updateUser();
+            this.keyUpdate = 'image';
+            this.objectUpdate = this.url_image;
+            this.onUpdateUser();
           }
         }
       ]
@@ -72,15 +72,15 @@ export class AccountPage implements AfterViewInit {
     const alert = await this.alertCtrl.create({
       header: 'Cambiar Nombre',
       buttons: [
-	    { text: 'Cancelar',
-		  role: 'cancel'
-		},
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
         {
           text: 'Aceptar',
           handler: (data: any) => {
-			this.keyUpdate = 'name';
-			this.objectUpdate = data[this.keyUpdate];
-			this.updateUser();
+            this.keyUpdate = 'name';
+            this.objectUpdate = data[this.keyUpdate];
+            this.onUpdateUser();
           }
         }
       ],
@@ -100,15 +100,15 @@ export class AccountPage implements AfterViewInit {
     const alert = await this.alertCtrl.create({
       header: 'Cambiar Apellido',
       buttons: [
-	    { text: 'Cancelar',
-		  role: 'cancel'
-		},
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
         {
           text: 'Aceptar',
           handler: (data: any) => {
-			this.keyUpdate = 'last_name';
-			this.objectUpdate = data[this.keyUpdate];
-			this.updateUser();
+            this.keyUpdate = 'last_name';
+            this.objectUpdate = data[this.keyUpdate];
+            this.onUpdateUser();
           }
         }
       ],
@@ -143,24 +143,32 @@ export class AccountPage implements AfterViewInit {
   }
   
   
-  updateUser() {
+  onUpdateUser() {
     
     this.loading.present({message:'Cargando...'});
     const dt = {};
-	dt[this.keyUpdate] = this.objectUpdate;
-	this.usersService.updateUser(dt)
-	.subscribe(
-		data => {
-			console.log('actualizado Exitosamente');
-			this.loading.dismiss();
-			this.userData = Object.assign(dt,this.userData);
-			this.usersService.setUser(this.userData).then(() => {
-			  console.log('guardado Exitosamente');
-			});
-		},
-		error => {
-			this.loading.dismiss();
-			this.errors = error;
-	  });
+    this.errors = null;
+    dt[this.keyUpdate] = this.objectUpdate;
+    this.usersService.getUser().then((userDataSession: any)=>{
+       this.usersService.updateUser(userDataSession,dt)
+       .subscribe(
+        data => {
+            console.log('actualizado Exitosamente', data);
+            this.loading.dismiss();
+            if(data.success == 201 ) {
+              this.userData = Object.assign(dt,data.data);
+              this.userData = Object.assign({token:userDataSession.token},data.data);
+              this.usersService.setUser(this.userData).then((data) => {
+                console.log('guardado Exitosamente',data);
+              });
+            }
+            else { this.errors = "actualizando los datos"; }
+            
+        },
+        error => {
+            this.loading.dismiss();
+            this.errors = error;
+      });
+    });
   }
 }

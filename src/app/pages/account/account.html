@@ -2,54 +2,55 @@
 <ion-content fullscreen="true">
   
   <div *ngIf="userData" class="padding-container ion-padding-top ion-text-center">
-    <img src="https://www.gravatar.com/avatar?d=mm&s=140" alt="avatar">
+    <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar" *ngIf="!userData.url_image">
+    <img [src]="userData.url_image" class="avatar" *ngIf="userData.url_image">
     <h2>{{userData.name}} - {{userData.last_name}}</h2>
 
-	<ion-row [hidden]="!errors" class="not-found">
-	   <div class="alert alert-danger alert-dismissible">
-		 <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-		 <strong>Error!</strong> {{errors}}
-	   </div>
-	</ion-row>
+    <ion-row [hidden]="!errors" class="not-found">
+       <div class="alert alert-danger alert-dismissible">
+         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+         <strong>Error!</strong> {{errors}}
+       </div>
+    </ion-row>
     <ion-list inset>
       <ion-item>
-	    <ion-grid>
-		<ion-row>
-		<ion-col class="text-center">
+        <ion-grid>
+        <ion-row>
+        <ion-col class="text-center">
         <ion-thumbnail class="m-auto">
-          <img src="https://www.gravatar.com/avatar?d=mm&s=140" *ngIf="!url_imagen">
-		  <img [src]="url_imagen" *ngIf="url_imagen">
+          <img src="https://www.gravatar.com/avatar?d=mm&s=140" *ngIf="!url_image">
+          <img [src]="url_image" *ngIf="url_image">
         </ion-thumbnail>
-		
-		<label class="mt-2 label-uploadInput" for="uploadInput">Cambiar Imagen</label>
-		<input id="uploadInput" type="file" class="d-none" (change)="onSelectFile($event)" />
+        
+        <label class="mt-2 label-uploadInput" for="uploadInput">Cambiar Imagen</label>
+        <input id="uploadInput" type="file" class="d-none" (change)="onSelectFile($event)" />
 
-		</ion-col>
-		<ion-col>
-		<ion-label>
+        </ion-col>
+        <ion-col>
+        <ion-label>
           <h2 class="white-space">{{userData.name}}</h2>
-		  <p>
+          <p>
           <label class="mt-2 label-uploadInput ml-auto" (click)="changeName()">Cambiar Nombre</label>
-		  </p>
+          </p>
         </ion-label>
-		
-		<ion-label>
-		  <h3 class="white-space">{{userData.last_name}}</h3>
-		  <p>
-	  	  <label class="mt-2 label-uploadInput ml-auto" (click)="changeLastName()">Cambiar Apellido</label>
-		  </p>
-		</ion-label>
-		</ion-col>
-		</ion-row>
-		</ion-grid>
+        
+        <ion-label>
+          <h3 class="white-space">{{userData.last_name}}</h3>
+          <p>
+            <label class="mt-2 label-uploadInput ml-auto" (click)="changeLastName()">Cambiar Apellido</label>
+          </p>
+        </ion-label>
+        </ion-col>
+        </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item>
         <ion-label>
           <h2>Correo electrónico</h2>
         </ion-label>
-		<ion-label>
-		{{userData.email}}
-		</ion-label>
+        <ion-label>
+        {{userData.email}}
+        </ion-label>
       </ion-item>
     </ion-list>
   </div>
