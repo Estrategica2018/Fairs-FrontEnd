@@ -94,10 +94,16 @@ ion-router-outlet {
 	}
 }
 
-.padding-container {
-  padding: 59px 10% 0 10%;
-}
-
 .d-flex {
   display: flex;
+}
+
+.padding-container {
+  padding: 53px 10% 0 10%;
+}
+
+@media (min-width: 600px) {
+  .padding-container {
+    padding: 0px 10% 0 10%;
+  }
 }

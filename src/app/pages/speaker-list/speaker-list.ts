@@ -14,23 +14,23 @@ export class SpeakerListPage {
   errors = null;
 
   constructor(
-	private confData: ConferenceData,
+    private confData: ConferenceData,
     private loading: LoadingService,
-	private speakersService: SpeakersService
+    private speakersService: SpeakersService
   ) {}
 
   ionViewDidEnter() {
     
-	this.loading.present({message:'Cargando...'});
-	this.speakersService.list()
-	 .then((data) => {
-		this.loading.dismiss();
-		this.speakers = data;
-	 })
+    this.loading.present({message:'Cargando...'});
+    this.speakersService.list()
+     .then((data) => {
+        this.loading.dismiss();
+        this.speakers = data;
+     })
      .catch(error => {
-		this.loading.dismiss();
-		this.errors = `Consultando el servicio para conferencistas`;
-		console.log(error);
-	 });
+        this.loading.dismiss();
+        this.errors = `Consultando el servicio para conferencistas`;
+        console.log(error);
+     });
   }
 }

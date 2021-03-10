@@ -1,0 +1,55 @@
+
+<ion-content fullscreen="true">
+  <ion-header class="mt-4">
+    <ion-toolbar>
+       <ion-title slot="start">Administración de la feria</ion-title>
+       <ion-label *ngIf="fair">{{fair.name}}</ion-label>
+    </ion-toolbar>
+  </ion-header>
+  <div class="fair-logo">
+    <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
+	<img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
+  </div>
+
+  <form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container">
+    <ion-list lines="" *ngIf="fair">
+	  <ion-item>
+	    <ion-label> Descripción </ion-label>
+	    <ion-input class="ml-auto" class="text-right" [(ngModel)]="fair.description" name="description"></ion-input>
+      </ion-item>
+	  <ion-item>
+          <ion-label>Fecha de inicio</ion-label>
+          <ion-datetime value="1990-02-19"  placeholder="Select Date"></ion-datetime>
+      </ion-item>
+	  <ion-item>
+          <ion-label>Fecha final</ion-label>
+          <ion-datetime value="1990-02-19" placeholder="Select Date"></ion-datetime>
+      </ion-item>
+	  <ion-list-header> Pabellones </ion-list-header> 
+	  <ion-item>
+	    <ion-grid>
+	      <ion-row>
+		    <ion-col *ngFor="let pavilion of fair?.pavilions">
+	          <ion-avatar slot="start">
+                <img [src]="pavilion.resources.url_imagen">
+              </ion-avatar>
+              <ion-label>
+                <h2>{{pavilion.name}}</h2>
+                <h3>{{pavilion.description}}</h3>
+                <p>{{pavilion?.stands?.length }} locales asociados</p>
+              </ion-label>
+			</ion-col>  
+		  </ion-row>
+	    </ion-grid>
+     </ion-item>
+	  
+    </ion-list>
+
+    <div class="ion-padding">
+      <ion-button expand="block" [disabled]="!editSave">
+	    <ion-label > Guardar </ion-label>
+	    <ion-icon slot="end" name="save-outline"></ion-icon>
+	  </ion-button>
+    </div>
+  </form>
+</ion-content>

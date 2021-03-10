@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
+import { FairsService } from '../api/fairs.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,41 +15,48 @@ export class SpeakersService {
   refresTime = null;
   speakers = null;
   
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private fairsService: FairsService
+  ) { }
 
   list(): any {
     if(this.speakers === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
         return new Promise((resolve, reject) => {
-            this.http.get(`/api/speakers/meetings`)
-           .pipe(
-              timeout(30000),
-              catchError(e => {
-                console.log(e);
-                if(e.status && e.statusText) {
-                  throw new Error(`Error consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);    
-                }
-                else {
-                  throw new Error(`Error consultando el servicio de conferencistas`);    
-                }
-              })
-            )
-            .subscribe( (data: any) => { 
-                this.refresTime = moment();
-                this.speakers = data.data;
-                for(let speaker of this.speakers ) {
-                    if(speaker.resources && typeof speaker.resources === 'string') {
-                      speaker.resources = JSON.parse(speaker.resources);
-                    }
-                    if(speaker.agenda) {
-                        for(let agenda of speaker.agenda ) {
-                          if(agenda.resources && typeof agenda.resources === 'string') {
-                            agenda.resources = JSON.parse(agenda.resources);
-                          }     
+            this.fairsService.setCurrentFair().
+              then( fair => {
+                  
+                    this.http.get(`/api/speakers/meetings?fair_id=${fair.id}`)
+                   .pipe(
+                      timeout(30000),
+                      catchError(e => {
+                        console.log(e);
+                        if(e.status && e.statusText) {
+                          throw new Error(`Error consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);    
                         }
-                    }
-                }
-                resolve(this.speakers);
-            },error => reject(error));
+                        else {
+                          throw new Error(`Error consultando el servicio de conferencistas`);    
+                        }
+                      })
+                    )
+                    .subscribe( (data: any) => { 
+                        this.refresTime = moment();
+                        this.speakers = data.data;
+                        for(let speaker of this.speakers ) {
+                            if(speaker.resources && typeof speaker.resources === 'string') {
+                              speaker.resources = JSON.parse(speaker.resources);
+                            }
+                            if(speaker.agenda) {
+                                for(let agenda of speaker.agenda ) {
+                                  if(agenda.resources && typeof agenda.resources === 'string') {
+                                    agenda.resources = JSON.parse(agenda.resources);
+                                  }     
+                                }
+                            }
+                        }
+                        resolve(this.speakers);
+                    },error => reject(error));
+              });
         })
     }
     else {

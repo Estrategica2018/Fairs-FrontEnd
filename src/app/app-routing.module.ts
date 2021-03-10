@@ -40,6 +40,10 @@ const routes: Routes = [
   {
     path: 'terms',
     loadChildren: () => import('./pages/terms/terms.module').then( m => m.TermsPageModule)
+  },
+  {
+    path: 'super-admin/fair',
+	loadChildren: () => import('./pages/super-admin/fair/fair.module').then( m => m.FairPageModule)
   }
 
 ];

@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage';
 import { UsersService } from './api/users.service';
 import { MenuController, Platform, ToastController } from '@ionic/angular';
 import { LoadingService } from './providers/loading.service';
+import { FairsService } from './api/fairs.service';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit {
   loggedIn = false;
   dark = false;
   errors: string = null;
+  fair: any;
 
   constructor(
     private menu: MenuController,
@@ -31,14 +33,27 @@ export class AppComponent implements OnInit {
     private usersService: UsersService,
     private swUpdate: SwUpdate,
     private toastCtrl: ToastController,
-	private loading: LoadingService
+	private loading: LoadingService,
+	private fairsService: FairsService
   ) {
     this.initializeApp();
+	this.initializeFair();
+  }
+  
+  initializeFair() {
+	  this.fairsService.setCurrentFair().
+      then( fair => {
+		this.fair = fair;
+		
+	  }, errors => {
+		  
+	  });
   }
 
   async ngOnInit() {
     this.checkLoginStatus();
     this.listenForLoginEvents();
+	
 	
     this.swUpdate.available.subscribe(async res => {
       const toast = await this.toastCtrl.create({

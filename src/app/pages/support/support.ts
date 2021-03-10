@@ -13,14 +13,19 @@ export class SupportPage {
   submitted = false;
   supportMessage: string;
   dark = false;
+  fair = null;
 
   constructor(
     public alertCtrl: AlertController,
     public toastCtrl: ToastController
   ) { 
       this.listenForDarkModeEvents();
+	  this.retriveFair();
   }
 
+  retriveFair() {
+	this.fair = { };
+  }
   listenForDarkModeEvents() {
   	window.addEventListener('dark:change', (e:any) => {
       setTimeout(() => {
@@ -50,6 +55,11 @@ export class SupportPage {
       });
       await toast.present();
     }
+  }
+  
+  openInNewTab(url) {
+    var win = window.open(url, '_blank');
+    win.focus();
   }
 
   // If the user enters text in the support question and then navigates

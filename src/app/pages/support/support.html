@@ -1,20 +1,111 @@
-<ion-header class="mt-4">
+<ion-content fullscreen="true">
+ <ion-header class="mt-4">
   <ion-toolbar>
-    <ion-title>Contacto de soporte</ion-title>
+  <ion-title>Contacto de soporte</ion-title>
+    <ion-buttons slot="secondary">
+	  <ion-grid class="d-none d-md-block">
+		<ion-row>
+		  <ion-col>
+		   <ion-thumbnail  class="social-network" (click)="openInNewTab('https://api.whatsapp.com/send/?phone=573212713666&text=I%27m+interested+in+your+car+for+sale&app_absent=0')">
+		     <ion-img [src]="'assets/icon/whatsapp.png'" (mouseover)="isHover1 = true" (mouseout)="isHover1 = false">
+	         </ion-img>
+		    </ion-thumbnail>
+		  </ion-col>
+		  <ion-col>
+		   <span class="tooltip-social" style="  left: -210px;" *ngIf="isHover1">Contacto Whatsappp</span>
+		  </ion-col>
+		  <ion-col>
+		    <ion-thumbnail  class="social-network" (click)="openInNewTab('mailto:mail@example.org')">
+              <ion-img [src]="'assets/icon/email.png'" (mouseover)="isHover2 = true" (mouseout)="isHover2 = false">
+	          </ion-img>
+		     </ion-thumbnail>
+		  </ion-col>
+		  <ion-col>
+ 	         <span class="tooltip-social" *ngIf="isHover2">Enviar Email</span>
+		  </ion-col>
+		  <ion-col>
+ 		     <ion-thumbnail  class="social-network" (click)="openInNewTab('https://www.facebook.com/FacebookforDevelopers/')">
+		       <ion-img [src]="'assets/icon/facebook.png'" (mouseover)="isHover3 = true" (mouseout)="isHover3 = false">
+	           </ion-img>
+		    </ion-thumbnail>
+		 </ion-col>
+		 <ion-col>
+  	        <span class="tooltip-social" style="left: -170px;" *ngIf="isHover3">Perfil facebook</span>
+		  </ion-col>
+		  <ion-col>
+  		    <ion-thumbnail  class="social-network" (click)="openInNewTab('mailto:mail@example.org')">
+		        <ion-img [src]="'assets/icon/gmail.png'" (mouseover)="isHover4 = true" (mouseout)="isHover4 = false">
+	            </ion-img>
+		    </ion-thumbnail>
+		  </ion-col>
+		  <ion-col>
+  	        <span class="tooltip-social" *ngIf="isHover4">Enviar Email</span>
+		  </ion-col>
+	    </ion-row>
+      </ion-grid> 
+    </ion-buttons>
+	<p  class="d-block d-md-none p-0 m-0">
+       <ion-grid style="padding: 0px 176px;">
+		<ion-row>
+		  <ion-col>
+		   <ion-thumbnail  class="social-network" (click)="openInNewTab('https://api.whatsapp.com/send/?phone=573212713666&text=I%27m+interested+in+your+car+for+sale&app_absent=0')">
+		     <ion-img [src]="'assets/icon/whatsapp.png'" (mouseover)="isHover1 = true" (mouseout)="isHover1 = false">
+	         </ion-img>
+		    </ion-thumbnail>
+		  </ion-col>
+		  <ion-col>
+		   <span class="tooltip-social" style="  left: -210px;" *ngIf="isHover1">Contacto Whatsappp</span>
+		  </ion-col>
+		  <ion-col>
+		    <ion-thumbnail  class="social-network" (click)="openInNewTab('mailto:mail@example.org')">
+              <ion-img [src]="'assets/icon/email.png'" (mouseover)="isHover2 = true" (mouseout)="isHover2 = false">
+	          </ion-img>
+		     </ion-thumbnail>
+		  </ion-col>
+		  <ion-col>
+ 	         <span class="tooltip-social" *ngIf="isHover2">Enviar Email</span>
+		  </ion-col>
+		  <ion-col>
+ 		     <ion-thumbnail  class="social-network" (click)="openInNewTab('https://www.facebook.com/FacebookforDevelopers/')">
+		       <ion-img [src]="'assets/icon/facebook.png'" (mouseover)="isHover3 = true" (mouseout)="isHover3 = false">
+	           </ion-img>
+		    </ion-thumbnail>
+		 </ion-col>
+		 <ion-col>
+  	        <span class="tooltip-social" style="left: -170px;" *ngIf="isHover3">Perfil facebook</span>
+		  </ion-col>
+		  <ion-col>
+  		    <ion-thumbnail  class="social-network" (click)="openInNewTab('mailto:mail@example.org')">
+		        <ion-img [src]="'assets/icon/gmail.png'" (mouseover)="isHover4 = true" (mouseout)="isHover4 = false">
+	            </ion-img>
+		    </ion-thumbnail>
+		  </ion-col>
+		  <ion-col>
+  	        <span class="tooltip-social" *ngIf="isHover4">Enviar Email</span>
+		  </ion-col>
+	    </ion-row>
+      </ion-grid> 
+	  </p>
   </ion-toolbar>
 </ion-header>
-
-<ion-content fullscreen="true">
   <div class="support-logo">
     <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
 	<img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
   </div>
 
-  <form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)">
+  <form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container">
     <ion-list lines="none">
+	  <ion-item>
+        <ion-label class="fs-1 menu-label" position="stacked">Nombre</ion-label>
+        <ion-input  class="border" [(ngModel)]="name" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-input>
+      </ion-item>
+	  <ion-item>
+        <ion-label position="stacked" class="fs-1 menu-label">Email</ion-label>
+        <ion-input  class="border" [(ngModel)]="email" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-input>
+      </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="primary">Ingresa tu mensaje para el grupo de soporte</ion-label>
-        <ion-textarea [(ngModel)]="supportMessage" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-textarea>
+        <ion-label position="stacked" class="menu-label fs-1">Ingresa tu mensaje para el grupo de soporte</ion-label>
+        <ion-textarea  class="border" [(ngModel)]="supportMessage" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-textarea>
       </ion-item>
     </ion-list>
 
@@ -25,7 +116,10 @@
     </ion-text>
 
     <div class="ion-padding">
-      <ion-button expand="block" type="submit">Enviar</ion-button>
+      <ion-button expand="block" [disabled]="!supportMessage || supportMessage.length == 0" type="submit">
+	  <ion-label > Enviar </ion-label>
+	  <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
+	  </ion-button>
     </div>
   </form>
 </ion-content>

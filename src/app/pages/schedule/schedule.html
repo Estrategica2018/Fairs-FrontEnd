@@ -2,7 +2,7 @@
 <ion-content fullscreen="true">
   <ion-header translucent="true" class="ion-no-border">
     <ion-toolbar class="search">
-	  
+      
       <ion-searchbar *ngIf="showSearchbar" showCancelButton="always" [(ngModel)]="queryText" (ionChange)="transformSchedule()" (ionCancel)="showSearchbar = false" placeholder="Buscar"></ion-searchbar>
       <ion-buttons slot="end">
         <ion-button *ngIf="!showSearchbar" (click)="showSearchbar = true">
@@ -34,9 +34,9 @@
               {{session.timeStart}} &mdash; {{session.timeEnd}}: {{session.location}}
             </p>
           </ion-label>
-		  <ion-thumbnail class="m-auto p-10px">
-			<ion-img [src]="session.resources.url_imagen" style="width: 73px;" class="ml-1"></ion-img>
-		   </ion-thumbnail>
+          <ion-thumbnail class="m-auto p-10px">
+            <ion-img [src]="session.resources.url_imagen" style="width: 73px;" class="ml-1"></ion-img>
+           </ion-thumbnail>
         </ion-item>
       </ion-item-sliding>
     </ion-item-group>

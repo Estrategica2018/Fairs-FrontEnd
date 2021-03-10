@@ -1,6 +1,10 @@
+.padding-container {
+  padding: 0 10% 0 10%;
+}
+
 .support-logo {
-  padding: 61px 0px 0px 0px;
-  min-height: 128px;
+  padding: 30px 0px 0px 0px;
+  min-height: 96px;
   text-align: center;
 }
 
@@ -10,4 +14,48 @@
 
 .list {
   margin-bottom: 0;
+}
+
+ion-item.item-has-focus > ion-label{
+  color:  var(--color) !important;
+}
+
+.fs-1 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.border {
+    border: 1px solid #d8e2ef !important;
+}
+
+
+.social-network {
+   padding: 7px;
+  
+   ion-img { 
+      cursor: pointer;
+      border-radius: 23px;
+   }
+   ion-img:hover { 
+	outline: none;
+    border: 2px solid #9ecaed;
+    box-shadow: 0 0 6px #9ecaed;
+   }
+   
+}
+
+.tooltip-social {
+  position: absolute;
+  left: -150px;
+  top: 7px;
+  background-color: black;
+  padding: 8px;
+  border-radius: 11px;
+  color: #fff;
+}
+
+
+.toolbar-container {
+    width: 76%;
 }

@@ -51,6 +51,11 @@ export class FairsService {
                     if(fair.name  === this.fairName) {
                       this.refresTime = moment();
                       this.fair = fair;
+                      for(let pavilion of this.fair.pavilions) {
+                          if(pavilion.resources && typeof pavilion.resources == 'string') {
+                            pavilion.resources = JSON.parse(pavilion.resources );
+                          }
+                      }
                       resolve(fair);
                       return;
                     }
