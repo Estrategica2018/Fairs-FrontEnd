@@ -5,8 +5,16 @@ import { SuperAdminPage } from './super-admin.page';
 
 const routes: Routes = [
   {
-    path: '',
-    component: SuperAdminPage
+    path: 'fair',
+    loadChildren: () => import('./fair/fair.module').then( m => m.FairPageModule)
+  },
+  {
+    path: 'pavilion/:pavilionId',
+    loadChildren: () => import('./pavilion/pavilion.module').then( m => m.PavilionPageModule)
+  },
+  {
+    path: 'stand/:pavilionId/:standId',
+    loadChildren: () => import('./stand/stand.module').then( m => m.StandPageModule)
   }
 ];
 

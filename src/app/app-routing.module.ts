@@ -42,8 +42,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/terms/terms.module').then( m => m.TermsPageModule)
   },
   {
-    path: 'super-admin/fair',
-	loadChildren: () => import('./pages/super-admin/fair/fair.module').then( m => m.FairPageModule)
+    path: 'super-admin',
+    loadChildren: () => import('./pages/super-admin/super-admin.module').then( m => m.SuperAdminPageModule)
   }
 
 ];

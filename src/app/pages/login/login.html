@@ -4,16 +4,16 @@
   <div class="padding-container">
   <div class="login-logo">
     <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
-	<img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
+    <img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
   </div>
 
   <form #loginForm="ngForm" novalidate>
     <ion-list>
       <ion-item>
         <ion-label position="stacked" class="font-18px">
-		    Nombre de usuario o correo
-	    </ion-label>
-        <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+            Nombre de usuario o correo
+        </ion-label>
+        <ion-input class="mt-3" [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
           required>
         </ion-input>
       </ion-item>
@@ -25,10 +25,10 @@
       </ion-text>
 
       <ion-item>
-		<ion-label position="stacked"  class="font-18px">
+        <ion-label position="stacked"  class="font-18px">
           Contraseña
-		</ion-label>
-        <ion-input [(ngModel)]="login.password" name="password" type="password" #password="ngModel" required>
+        </ion-label>
+        <ion-input class="mt-3" [(ngModel)]="login.password" name="password" type="password" #password="ngModel" required>
         </ion-input>
       </ion-item>
 
@@ -39,12 +39,12 @@
       </ion-text>
     </ion-list>
 
-	<ion-row [hidden]="!errors" class="not-found">
-	   <div class="alert alert-danger alert-dismissible">
-		 <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-		 <strong>Error!</strong> {{errors}}
-	   </div>
-	</ion-row>
+    <ion-row [hidden]="!errors" class="not-found">
+       <div class="alert alert-danger alert-dismissible">
+         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+         <strong>Error!</strong> {{errors}}
+       </div>
+    </ion-row>
     <ion-row>
       <ion-col>
         <ion-button (click)="onLogin(loginForm)" type="submit" expand="block">Ingresar</ion-button>

@@ -12,13 +12,13 @@ export class FairPage implements OnInit {
   fair: any;
 
   ngOnInit() {
-	  this.fairsService.setCurrentFair().
+      this.fairsService.getCurrentFair().
       then( fair => {
-		this.fair = fair;
-		
-	  }, errors => {
-		  
-	  });
+        this.fair = fair;
+        
+      }, errors => {
+          
+      });
   }
 
 }

@@ -9,7 +9,7 @@ const routes: Routes = [
     path: 'tabs',
     component: TabsPage,
     children: [
-	  {
+      {
         path: 'meeting/:meetingId',
         children: [
           {
@@ -58,6 +58,109 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'maps/pavilion-stands/:pavilionId/:sceneId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion-stands/map-pavilion-stands.module').then(m => m.MapPavilionStandsPageModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion1/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion2/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion3/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion4/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion5/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion6/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion7/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion8/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion9/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+        path: 'maps/pavilion10/:pavilionId',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+          }
+        ]
+      },
+      {
+         path: 'maps/stand/:pavilionId/:standId',
+         loadChildren: () => import('../map-stand/map-stand.module').then( m => m.MapStandPageModule)
+      },
+      {
         path: 'about',
         children: [
           {
@@ -66,7 +169,7 @@ const routes: Routes = [
           }
         ]
       },
-	  {
+      {
         path: 'news',
         loadChildren: () => import('../news/news.module').then( m => m.NewsPageModule)
       },

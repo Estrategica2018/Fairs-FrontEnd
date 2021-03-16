@@ -1,20 +1,20 @@
 <ion-app [class.dark-theme]="dark">
 <ion-header translucent="true">
-  <ion-toolbar>
+  <ion-toolbar [ngClass]="{'full-screen': fullScreen}">
     <ion-buttons *ngIf="!showSearchbar" slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-	<div class="d-flex">
-	  <ion-img *ngIf="!dark" class="icon-logo" src="assets/icon/icon.png"></ion-img>
-	  <ion-img *ngIf="dark" class="icon-logo" src="assets/icon/icon-black.png"></ion-img>
+    <div class="d-flex">
+      <ion-img *ngIf="!dark" class="icon-logo" src="assets/icon/icon.png"></ion-img>
+      <ion-img *ngIf="dark" class="icon-logo" src="assets/icon/icon-black.png"></ion-img>
       <ion-label *ngIf="!showSearchbar" class="title-fair"> {{fair?.description}} </ion-label>
-	</div>
-	<ion-buttons slot="end" class="d-none d-md-block">
-	  <ion-button color="secondary" routerLink="/login/" routerLinkActive="selected" routerDirection="root" detail="false" *ngIf="!loggedIn" fill="outline" shape="round" class="end-menu-button">
+    </div>
+    <ion-buttons slot="end" class="d-none d-md-block">
+      <ion-button color="secondary" routerLink="/login/" routerLinkActive="selected" routerDirection="root" *ngIf="!loggedIn" fill="outline" shape="round" class="end-menu-button">
         <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
          Acceder
       </ion-button>
-	  <ion-item *ngIf="loggedIn" routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
+      <ion-item *ngIf="loggedIn" routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
         <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
          Cuenta
       </ion-item>
@@ -23,10 +23,10 @@
 </ion-header>
   <ion-split-pane contentId="main-content">
 
-    <ion-menu contentId="main-content" class="menu-main-content">
+    <ion-menu [ngClass]="{'full-screen': fullScreen}" contentId="main-content" class="menu-main-content">
       <ion-content>
         <ion-list lines="none" class="border-botton">
-		  <ion-list-header class="md hydrated">Super Administrador </ion-list-header>
+          <ion-list-header class="md hydrated">Super Administrador </ion-list-header>
           <ion-menu-toggle autoHide="false">
             <ion-item routerLink="/super-admin/fair" routerLinkActive="active" routerDirection="root" detail="false">
               <ion-icon slot="start" name="map-outline"></ion-icon>
@@ -38,58 +38,68 @@
         </ion-list>
 
 
-		<ion-list lines="none">
+        <ion-list lines="none">
           <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/app/tabs/map" routerLinkActive="selected" routerDirection="root" detail="false" (click)="showMenuMap = !showMenuMap">
+            <ion-item routerLink="/app/tabs/map" routerLinkActive="selected" routerDirection="root" 
+			(click)="showPavilionDetail = false">
               <ion-icon slot="start" [name]="'map-outline'"></ion-icon>
               <ion-label>
                 Mapa
               </ion-label>
-			  <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="!showMenuMap"></ion-icon>
-			  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showMenuMap"></ion-icon>
             </ion-item>
-			<div *ngIf="showMenuMap">
-		    <ion-item (click)="alert(1);" 
-					  href="javascript:void(0)" 
-					  class="pavilions-menu" *ngFor="let pavilion of fair?.pavilions"
-					  lines="none" detail="false" [class.selected]="selectedIndex==='pavilion_id_'++pavilion?.id">
-			  <ion-icon slot="start" name="albums-outline"></ion-icon>
-              <ion-label class="menu-label">{{pavilion.name}}</ion-label>
-			  <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionsMenu!== 'pavilion_id_'+pavilion.id"></ion-icon>
-			  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionsMenu === 'pavilion_id_'+pavilion.id"></ion-icon>
-            </ion-item>
-			</div>
-			<div *ngIf="showPavilionsMenu==='pavilion_id_'+pavilion?.id">
-				<ion-item (click)="selectedIndex='pavilion_id_'+pavilion.id+'_stands'; 
-						  showPavilionsSubMenu=showPavilionsSubMenu==='pavilion_id_'+pavilion.id? false: 'pavilion_id_'+pavilion.id; 
-						  onOpenLocalPavilion(pavilion.id);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" 
-						  [class.selected]="selectedIndex==='pavilion_id_'+pavilion.id+'_stands'">
-				  <ion-icon slot="start" name="chevron-forward-outline" size="small" *ngIf="showPavilionsSubMenu!=='pavilion_id_'+pavilion.id"></ion-icon>
-				  <ion-icon slot="start" name="chevron-down-outline" size="small" *ngIf="showPavilionsSubMenu==='pavilion_id_'+pavilion.id"></ion-icon>
-				  <ion-label class="menu-label">Locales comerciales</ion-label>
-				</ion-item>
-				<div *ngIf="showPavilionsSubMenu==='pavilion_id_'+pavilion.id">
-					<ion-item *ngFor="let stand of pavilion.stands" 
-							  (click)="selectedIndex='pavilion_id_'+pavilion.id+'_stand_'+stand.id;
-							  onOpenStand(stand.id);" 
-							  href="javascript:void(0)" lines="none" detail="false" class="sub-menu-stand" 
-							  [class.selected]="selectedIndex==='pavilion_id_'+pavilion.id+'_stand_'+stand.id">
-					  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-					  <ion-label class="menu-label">{{stand.merchant.name}}</ion-label>
-					</ion-item>
-				</div>
-				<ion-item (click)="selectedIndex='pavilion_id_2_room';onOpenRoomPavilion(2);" href="javascript:void(0)" lines="none" detail="false" class="sub-menu" [class.selected]="selectedIndex==='pavilion_id_2_room'">
-				  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-				  <ion-label class="menu-label">Auditorios</ion-label>
-				</ion-item>
-			</div>
-        </ion-menu-toggle>
-		</ion-list>
-		  
+            <div *ngFor="let pavilion of fair?.pavilions;let i = index">
+              <ion-item 
+			          [routerLink]="'/app/tabs/maps/pavilion'+(i+1)+'/'+pavilion.id" routerLinkActive="selected" routerDirection="root" 
+					  (click)="showStandDetail = null;
+                               showPavilionDetail =  showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id"
+                      class="pavilions-menu"
+					  button="true"
+                      lines="none">
+                <ion-icon slot="start" name="albums-outline"></ion-icon>
+                <ion-label class="menu-label">{{pavilion.name}}</ion-label>
+                <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionDetail !== 'pavilion_id_'+pavilion.id"></ion-icon>
+                <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionDetail === 'pavilion_id_'+pavilion.id"></ion-icon>
+              </ion-item>
+            
+              <div *ngIf="showPavilionDetail ==='pavilion_id_'+pavilion.id">
+                <ion-item *ngIf="pavilion.hasSceneStands" 
+						  routerLink="/app/tabs/maps/pavilion-stands/{{pavilion.id}}/{{pavilion.hasSceneStands}}" 
+						  routerLinkActive="selected" routerDirection="root" 
+                          (click)="showStandDetail =  showStandDetail ==='pavilion_id_'+pavilion.id ? null : 'pavilion_id_'+pavilion.id"
+                          lines="none" 
+						  button="true"
+						  class="sub-menu">
+                  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+                  <ion-label class="menu-label">Locales comerciales </ion-label>
+                </ion-item>
+				
+                <ion-item [hidden]="pavilion.hasSceneStands"
+						  (click)="showStandDetail=  showStandDetail ==='pavilion_id_'+pavilion.id ? false : 'pavilion_id_'+pavilion.id"
+						  button="true"
+                          lines="none" class="sub-menu">
+                  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+                  <ion-label class="menu-label">Locales comerciales {{pavilion.hasSceneStands}}</ion-label>
+                </ion-item>
 
-         <ion-list lines="none">
-		  <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/app/tabs/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
+                <div *ngIf="showStandDetail ==='pavilion_id_'+pavilion.id">
+                    <ion-item routerLink="/app/tabs/maps/stand/{{pavilion?.id}}/{{stand.id}}" routerLinkActive="selected" routerDirection="root" 
+                              *ngFor="let stand of pavilion.stands" 
+                              lines="none" class="sub-menu-stand">
+                      <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+                      <ion-label class="menu-label">{{stand.merchant.name}}</ion-label>
+                    </ion-item>
+                </div>
+             </div>
+          </div>
+        </ion-menu-toggle>
+        </ion-list>
+          
+
+         <ion-list lines="none" class="border-botton">
+          <ion-menu-toggle autoHide="false">
+            <ion-item 
+			(click)="showPavilionDetail = false"
+			routerLink="/app/tabs/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
               <ion-label>
                 Agenda
@@ -97,29 +107,34 @@
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/app/tabs/speakers" routerLinkActive="selected" routerDirection="root" detail="false">
+            <ion-item 
+			(click)="showPavilionDetail = false"
+			routerLink="/app/tabs/speakers" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" [name]="'people-outline'"></ion-icon>
               <ion-label>
                 Conferencistas
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
-		  <ion-menu-toggle auto-hide="false">
-            <ion-item routerLink="/app/tabs/news" routerLinkActive="selected" routerDirection="root" detail="false">
-			  <ion-icon slot="start" name="newspaper-outline"></ion-icon>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item (click)="showPavilionDetail = false"
+			routerLink="/app/tabs/news" routerLinkActive="selected" routerDirection="root" detail="false">
+              <ion-icon slot="start" name="newspaper-outline"></ion-icon>
               <ion-label class="menu-label">Noticias</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/app/tabs/about" routerLinkActive="selected" routerDirection="root" detail="false">
+            <ion-item 
+			(click)="showPavilionDetail = false"
+			routerLink="/app/tabs/about" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" [name]="'information-circle-outline'"></ion-icon>
               <ion-label>
                 Acerca de
               </ion-label>
             </ion-item>
-          </ion-menu-toggle>		  
+          </ion-menu-toggle>          
         </ion-list>
-		
+        
 
         <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
           
@@ -145,38 +160,38 @@
 
         
         <ion-list *ngIf="!loggedIn" class="border-botton ion-text-center access">
-		  <ion-menu-toggle autoHide="false" class="ion-text-center"> 
-		    <ion-note class="login-note ion-text-start font-light">Accede para dar participar en los eventos, realizar comentarios y suscribirte a los comercios.</ion-note>
+          <ion-menu-toggle autoHide="false" class="ion-text-center"> 
+            <ion-note class="login-note ion-text-start font-light">Accede para dar participar en los eventos, realizar comentarios y suscribirte a los comercios.</ion-note>
             
-			<ion-button color="secondary" fill="outline" shape="round" routerLink="/login/" routerLinkActive="selected" routerDirection="root">
+            <ion-button color="secondary" fill="outline" shape="round" routerLink="/login/" routerLinkActive="selected" routerDirection="root">
                 <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
                 Acceder
             </ion-button>
           </ion-menu-toggle> 
         </ion-list>
         
-		<!--ion-list class="border-botton ion-text-center nav-title"-->
-		<ion-list lines="none">
-		  <ion-menu-toggle auto-hide="false">
-		    <ion-item routerLink="/app/tabs/library" routerLinkActive="selected" routerDirection="root" detail="false">
+        <!--ion-list class="border-botton ion-text-center nav-title"-->
+        <ion-list lines="none" class="border-botton">
+          <ion-menu-toggle auto-hide="false">
+            <ion-item routerLink="/app/tabs/library" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" name="albums-sharp"></ion-icon>
               <ion-label class="menu-label">Biblioteca</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item routerLink="/app/tabs/history" routerLinkActive="selected" routerDirection="root" detail="false">
-			  <ion-icon slot="start" name="refresh-sharp"></ion-icon>
+              <ion-icon slot="start" name="refresh-sharp"></ion-icon>
               <ion-label class="menu-label">Historial</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-		    <ion-item routerLink="/app/tabs/memories" routerLinkActive="selected" routerDirection="root" detail="false">
+            <ion-item routerLink="/app/tabs/memories" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" ios="ios-bookmarks-outline" md="bookmarks-sharp"></ion-icon>
               <ion-label class="menu-label">Lo mejor de la feria</ion-label>
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
-		
+        
         <ion-list lines="none">
           <ion-list-header>
             Tutorial
@@ -187,22 +202,22 @@
               <ion-label>Ver Tutorial</ion-label>
             </ion-item>
           </ion-menu-toggle>
-		  
-		  <ion-menu-toggle autoHide="false">
+          
+          <ion-menu-toggle autoHide="false">
             <ion-item routerLink="/support" routerLinkActive="active" routerDirection="root" detail="false">
               <ion-icon slot="start" name="help"></ion-icon>
               <ion-label>
                 Soporte
               </ion-label>
             </ion-item>
-			
-			<ion-item>
-				<ion-icon slot="start" name="moon-outline"></ion-icon>
-				<ion-label>
-					Dark Mode
-				</ion-label>
-				<ion-toggle [(ngModel)]="dark" (ionChange)="onChangeDarkModel($event)"></ion-toggle>
-			</ion-item>
+            
+            <ion-item>
+                <ion-icon slot="start" name="moon-outline"></ion-icon>
+                <ion-label>
+                    Dark Mode
+                </ion-label>
+                <ion-toggle [(ngModel)]="dark" (ionChange)="onChangeDarkModel($event)"></ion-toggle>
+            </ion-item>
           </ion-menu-toggle>
 
         </ion-list>
@@ -215,7 +230,7 @@
       </ion-content>
     </ion-menu>
 
-    <ion-router-outlet id="main-content"></ion-router-outlet>
+    <ion-router-outlet [ngStyle]="{'margin-top': fullScreen ? '-26px' : '28px' }" id="main-content"></ion-router-outlet>
 
   </ion-split-pane>
 

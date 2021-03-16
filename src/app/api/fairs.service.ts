@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
+import { processData } from '../providers/process-data';
 
 @Injectable({
   providedIn: 'root'
@@ -39,30 +40,44 @@ export class FairsService {
     });
   }
   
-  setCurrentFair(): any {
+  getCurrentFair(): any {
     
     if(this.fair === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
-        this.fairName = "FeriaGanadera2021";
         return new Promise((resolve, reject) => {
+            try {
+                this.fairName = window.location.href.split('.')[0].replace('http://','').replace('https://','');
+            } catch(error) {
+                reject(`No se encontraron datos para la feria`);
+            }
+        
             this.list()
              .then((data) => {
                 if(data && data.success == 201 && data.data )
                 for(let fair of data.data ) {
-                    if(fair.name  === this.fairName) {
+                    if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
                       this.refresTime = moment();
-                      this.fair = fair;
-                      for(let pavilion of this.fair.pavilions) {
-                          if(pavilion.resources && typeof pavilion.resources == 'string') {
-                            pavilion.resources = JSON.parse(pavilion.resources );
-                          }
-                      }
-                      resolve(fair);
+                      this.fair = processData(fair);
+					  let pavilion=null;
+
+					  for(let i=0;i<this.fair.pavilions.length; i++) {
+						 pavilion = this.fair.pavilions[i];
+					     pavilion.hasSceneStands = null;
+						 if(pavilion.resources && pavilion.resources.scenes) {
+						   for(let scene of pavilion.resources.scenes) {
+							  if(scene.type == 'stands') {
+								 pavilion.hasSceneStands = i + 1;
+								 break;
+							  }
+						   }
+						 }
+					  }
+                      resolve(this.fair);
                       return;
                     }
                 }
                 throw new Error(`No se encontraron datos para la feria: ${this.fairName}`);
               })
-            .catch(error => {
+            .catch(error => { 
                 reject(error)
              });
         });

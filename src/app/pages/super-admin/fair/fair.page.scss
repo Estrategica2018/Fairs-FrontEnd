@@ -1,9 +1,29 @@
 .fair-logo {
-  padding: 61px 0px 0px 0px;
-  min-height: 128px;
-  text-align: center;
+  padding: 34px 10% 0 10%;
 }
 
 .fair-logo img {
   max-width: 150px;
+}
+
+ion-item {
+  --background-hover: var(--primary);
+}
+
+.icon {
+  max-width: 100px;
+}
+
+
+.pavilion-button {
+    border: 1px solid;
+    margin-left: 10px;
+    border-radius: 21px;
+    border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+    --border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+}
+
+.pavilion-button-add {
+  max-height: 81%;
+  border-radius: 21px;
 }

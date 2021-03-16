@@ -2,8 +2,8 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="selectAll(true)" *ngIf="deselectAll">Seleccionar todo</ion-button>
-	  <ion-button (click)="selectAll(false)" *ngIf="!deselectAll">Deseleccionar todo</ion-button>
-	  <ion-title>
+      <ion-button (click)="selectAll(false)" *ngIf="!deselectAll">Deseleccionar todo</ion-button>
+      <ion-title>
         Filtrar por categoría
       </ion-title>
       <ion-button class="ml-auto" (click)="applyFilters()" strong>Aplicar</ion-button>

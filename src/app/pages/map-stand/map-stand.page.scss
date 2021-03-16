@@ -1,0 +1,34 @@
+
+.canvas-stand {
+    width: 100% !important;
+    height: calc(100% - 28px);
+    background-color: #8fbcd4;
+    position: absolute;
+    padding-left: 0px;
+    z-index: 10;
+    overflow: auto;
+}
+.canvas-full-screen {
+    height: calc(100% - 26px);
+}
+
+
+@media (max-width: 991px) {
+  .container {
+    left: 0;
+  }
+}
+
+
+.full-screen-button {
+  position: absolute;
+  top: 0;
+  z-index: 11;
+}
+
+.tabs-menu {
+  position: absolute;
+  bottom: 20px;
+  left: calc(34% - 10px);
+  z-index: 11;
+}

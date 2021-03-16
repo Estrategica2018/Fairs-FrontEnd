@@ -15,7 +15,6 @@ import { LoadingService } from './../../providers/loading.service';
 })
 export class SessionDetailPage {
   session: any;
-  isFavorite = false;
   defaultHref = '';
   errors: string = null;
 
@@ -65,21 +64,4 @@ export class SessionDetailPage {
     this.router.navigate(['/app/tabs/meeting/' + agendaId]);
   }
   
-  sessionClick(agendaId: string) {
-    
-  }
-  
-  toggleFavorite() {
-    if (this.userProvider.hasFavorite(this.session.name)) {
-      this.userProvider.removeFavorite(this.session.name);
-      this.isFavorite = false;
-    } else {
-      this.userProvider.addFavorite(this.session.name);
-      this.isFavorite = true;
-    }
-  }
-
-  shareSession() {
-    console.log('Clicked share session');
-  }
 }

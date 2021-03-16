@@ -23,7 +23,7 @@ export class SpeakersService {
   list(): any {
     if(this.speakers === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
         return new Promise((resolve, reject) => {
-            this.fairsService.setCurrentFair().
+            this.fairsService.getCurrentFair().
               then( fair => {
                   
                     this.http.get(`/api/speakers/meetings?fair_id=${fair.id}`)

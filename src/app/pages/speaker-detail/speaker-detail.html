@@ -46,8 +46,8 @@
                                       {{ (agenda.start_at * 10000 + agenda.duration_time * 60000 ) | date: 'hh:mm a' }}
               </p>
             </ion-label> 
-            <ion-thumbnail class="m-auto">
-              <ion-img [src]="agenda.resources?.url_imagen" style="width: 73px;" class="ml"></ion-img>
+            <ion-thumbnail class="m-auto p-0">
+              <ion-img [src]="agenda.resources?.url_imagen" style="width: 73px;"></ion-img>
             </ion-thumbnail>
           </ion-item>
 

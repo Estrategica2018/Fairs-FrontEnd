@@ -26,9 +26,9 @@
       <ion-row>
         <ion-col>
           <div>
-            <ion-thumbnail slot="start" class="img-session">
-              <ion-img [src]="session.resources.url_imagen"></ion-img>
-            </ion-thumbnail>
+            
+              <img [src]="session.resources.url_imagen"/>
+            
             <br /><br />
             <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.color,'color': session.category?.color}"> 
             <span class="ml-1 text-uppercase"> {{session?.category?.name}}</span></ion-label>

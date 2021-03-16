@@ -20,16 +20,16 @@ export class SupportPage {
     public toastCtrl: ToastController
   ) { 
       this.listenForDarkModeEvents();
-	  this.retriveFair();
+      this.retriveFair();
   }
 
   retriveFair() {
-	this.fair = { };
+    this.fair = { };
   }
   listenForDarkModeEvents() {
-  	window.addEventListener('dark:change', (e:any) => {
+      window.addEventListener('dark:change', (e:any) => {
       setTimeout(() => {
-		console.log(e);
+        console.log(e);
        this.dark = e.detail;
       }, 300);
     });

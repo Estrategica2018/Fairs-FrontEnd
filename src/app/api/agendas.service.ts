@@ -25,7 +25,7 @@ export class AgendasService {
         
         return new Promise((resolve, reject) => {
             
-            this.fairsService.setCurrentFair().
+            this.fairsService.getCurrentFair().
               then( fair => {
                 this.http.get(`/api/agenda?fair_id=${fair.id}`)
                 .pipe(

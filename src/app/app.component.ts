@@ -9,6 +9,7 @@ import { UsersService } from './api/users.service';
 import { MenuController, Platform, ToastController } from '@ionic/angular';
 import { LoadingService } from './providers/loading.service';
 import { FairsService } from './api/fairs.service';
+import { PavilionsService } from './api/pavilions.service';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,9 @@ export class AppComponent implements OnInit {
   dark = false;
   errors: string = null;
   fair: any;
+  fullScreen = false;
+  showPavilionDetail: string = null;
+  showStandDetail: string = null;
 
   constructor(
     private menu: MenuController,
@@ -33,47 +37,30 @@ export class AppComponent implements OnInit {
     private usersService: UsersService,
     private swUpdate: SwUpdate,
     private toastCtrl: ToastController,
-	private loading: LoadingService,
-	private fairsService: FairsService
+    private loading: LoadingService,
+    private fairsService: FairsService,
+    private pavilionsService: PavilionsService
   ) {
     this.initializeApp();
-	this.initializeFair();
+    this.initializeFair();
   }
   
   initializeFair() {
-	  this.fairsService.setCurrentFair().
+      this.fairsService.getCurrentFair().
       then( fair => {
-		this.fair = fair;
-		
-	  }, errors => {
-		  
-	  });
+        this.fair = fair;
+        
+      }, errors => {
+          
+      });
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.checkLoginStatus();
     this.listenForLoginEvents();
-	
-	
-    this.swUpdate.available.subscribe(async res => {
-      const toast = await this.toastCtrl.create({
-        message: 'Update available!',
-        position: 'bottom',
-        buttons: [
-          {
-            role: 'cancel',
-            text: 'Reload'
-          }
-        ]
-      });
-
-      await toast.present();
-
-      toast
-        .onDidDismiss()
-        .then(() => this.swUpdate.activateUpdate())
-        .then(() => window.location.reload());
-    });
+    this.listenForFullScreenEvents();
+    
+    
   }
 
   initializeApp() {
@@ -99,8 +86,8 @@ export class AppComponent implements OnInit {
     window.addEventListener('user:login', (user) => {
       this.updateLoggedInStatus(user);
     }); 
-	
-	window.addEventListener('user:signup', (user) => {
+    
+    window.addEventListener('user:signup', (user) => {
       setTimeout(() => {
         this.loggedIn = user !== null;
       }, 300);
@@ -110,38 +97,61 @@ export class AppComponent implements OnInit {
       this.updateLoggedInStatus(null);
     });
   }
+  
+  listenForFullScreenEvents() {
+    window.addEventListener('map:fullscreenOff', (e:any) => {
+      setTimeout(() => {
+        this.fullScreen = false;
+      }, 300);
+    });
+    window.addEventListener('map:fullscreenIn', (e:any) => {
+      setTimeout(() => {
+        this.fullScreen = true;
+      }, 300);
+    });
+  }
 
   logout() {
-	this.loading.present({message:'Cargando...'});
-	this.usersService.getUser().then(userDataSession=>{
-		this.usersService.logout(userDataSession)
-		.subscribe(
-		  data => {
-			this.loading.dismiss();
-			
-			this.usersService.setUser(null).then(() => {
-			  window.dispatchEvent(new CustomEvent('user:logout'));
-			  this.router.navigateByUrl('/app/tabs/schedule');
-			});
-			
-		  },
-		  error => {
-			this.loading.dismiss();
-			this.errors = error;
-		 }
-		); 
-	});
-	
+    this.loading.present({message:'Cargando...'});
+    this.usersService.getUser().then(userDataSession=>{
+        this.usersService.logout(userDataSession)
+        .subscribe(
+          data => {
+            this.loading.dismiss();
+            
+            this.usersService.setUser(null).then(() => {
+              window.dispatchEvent(new CustomEvent('user:logout'));
+              this.router.navigateByUrl(`/app/tabs/schedule`);
+            });
+            
+          },
+          error => {
+            this.loading.dismiss();
+            this.errors = error;
+         }
+        ); 
+    });
+    
   }
 
   openTutorial() {
     this.menu.enable(false);
     this.storage.set('ion_did_tutorial', false);
-    this.router.navigateByUrl('/tutorial');
+    this.router.navigateByUrl(`/tutorial`);
   }
   
   onChangeDarkModel() {
-	window.dispatchEvent(new CustomEvent('dark:change', { detail: this.dark } ));
+    window.dispatchEvent(new CustomEvent('dark:change', { detail: this.dark } ));
   }
+  
+  onPavilionClick(pavilion,index) {
+	  this.showStandDetail = null;
+	  this.showPavilionDetail =  this.showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id
+	  
+	  this.router.navigateByUrl(`/app/tabs/maps/pavilion${index}/${pavilion.id}`,{
+			skipLocationChange: true
+		});
+  }
+
   
 }

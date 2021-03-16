@@ -20,7 +20,7 @@ import { DatePipe } from '@angular/common';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-	ReactiveFormsModule,
+    ReactiveFormsModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
@@ -29,10 +29,10 @@ import { DatePipe } from '@angular/common';
   ],
   declarations: [AppComponent],
   providers: [
-	InAppBrowser, 
-	SplashScreen, 
-	StatusBar, 
-	DatePipe
+    InAppBrowser, 
+    SplashScreen, 
+    StatusBar, 
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

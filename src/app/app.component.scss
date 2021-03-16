@@ -123,7 +123,9 @@ ion-item.selected {
 }
 
 .menu-label {
-  font-size: 14px;
+  text-overflow: unset !important;
+  white-space: initial !important;
+  font-size: 15px !important;
 }
 
 .login-note {
@@ -156,10 +158,11 @@ ion-item.sub-menu {
 }
 
 ion-item.sub-menu-stand {
-  ion-icon {
-    margin: 0px 5px 0px 25px;
-  }
   ion-label { 
+    white-space: initial;
+  }
+  ion-icon { 
+    margin: 0px 0px 0px 19px;
     white-space: initial;
   }
 }
@@ -212,26 +215,6 @@ ion-split-pane {
   text-align: center;
 }
 
-.container {
-    width: 1095px !important;
-    height: 657px !important;
-    background-color: #8fbcd4;
-    position: absolute;
-    left: 20%;
-    top: 56px;
-	padding-left: 0px;
-	z-index: 10;
-}
-
-
-@media (max-width: 991px) {
-  .container {
-    left: 0;
-  }
-  ion-split-pane {
-    z-index: 10;
-  }
-}
 
 ion-app {
   overflow: auto;
@@ -294,4 +277,9 @@ ion-menu-toggle>ion-item>ion-label {
 
 body.backdrop-no-scroll {
     z-index: 0;
+}
+
+.full-screen {
+   height: 0px;
+   display: none;
 }

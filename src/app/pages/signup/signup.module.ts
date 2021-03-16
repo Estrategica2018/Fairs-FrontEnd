@@ -12,8 +12,8 @@ import { TermsPage } from './../terms/terms.page';
     CommonModule,
     FormsModule,
     IonicModule,
-	FormsModule,
-	ReactiveFormsModule,
+    FormsModule,
+    ReactiveFormsModule,
     SignupPageRoutingModule
   ],
   declarations: [

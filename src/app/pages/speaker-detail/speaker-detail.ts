@@ -21,24 +21,24 @@ export class SpeakerDetailPage {
     private actionSheetCtrl: ActionSheetController,
     private confData: ConferenceData,
     private inAppBrowser: InAppBrowser,
-	private loading: LoadingService,
-	private speakersService: SpeakersService
+    private loading: LoadingService,
+    private speakersService: SpeakersService
   ) {}
 
   ionViewWillEnter() {
-	this.loading.present({message:'Cargando...'});
+    this.loading.present({message:'Cargando...'});
     this.dataProvider.load().subscribe((data: any) => {
       const speakerId = this.route.snapshot.paramMap.get('speakerId');
-	  this.speakersService
-	  .get(speakerId)
-	  .then((data) => {
-		  this.loading.dismiss();
-		  this.speaker = data;
-	  })
-	  .catch(error => {
-		this.loading.dismiss();
-		this.errors = error;
-   	  });	
+      this.speakersService
+      .get(speakerId)
+      .then((data) => {
+          this.loading.dismiss();
+          this.speaker = data;
+      })
+      .catch(error => {
+        this.loading.dismiss();
+        this.errors = error;
+         });    
     });
   }
 

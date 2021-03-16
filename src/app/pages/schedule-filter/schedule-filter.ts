@@ -19,14 +19,14 @@ export class ScheduleFilterPage {
     private config: Config,
     private modalCtrl: ModalController,
     private navParams: NavParams,
-	private alertController: AlertController
+    private alertController: AlertController
   ) { }
 
   ionViewWillEnter() {
     this.ios = this.config.get('mode') === `ios`;
 
     // passed in array of track names that should be excluded (unchecked)
-	this.tracks = this.navParams.get('categories');
+    this.tracks = this.navParams.get('categories');
   }
 
   selectAll(check: boolean) {
@@ -34,17 +34,17 @@ export class ScheduleFilterPage {
     this.tracks.forEach(track => {
       track.isChecked = check;
     });
-	this.deselectAll = !check;
+    this.deselectAll = !check;
   }
 
   applyFilters() {
-	let list = this.tracks.filter(c => c.isChecked);
-	if(list.length === 0) {
-		this.presentAlert('Debe seleccionar por lo menos una categoría');
-		return ;
-	}
+    let list = this.tracks.filter(c => c.isChecked);
+    if(list.length === 0) {
+        this.presentAlert('Debe seleccionar por lo menos una categoría');
+        return ;
+    }
     // Pass back a new array of categories to exclude
-	this.dismiss(this.tracks);
+    this.dismiss(this.tracks);
   }
 
   dismiss(data?: any) {

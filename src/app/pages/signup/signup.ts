@@ -83,7 +83,7 @@ export class SignupPage {
   }
   
   listenForDarkModeEvents() {
-      window.addEventListener('dark:change', (e:any) => {
+    window.addEventListener('dark:change', (e:any) => {
       setTimeout(() => {
         console.log(e);
        this.dark = e.detail;
@@ -103,7 +103,7 @@ export class SignupPage {
       this.noPasswordEquals = false;
       this.loading.present({message:'Cargando...'});
       
-      this.fairsService.setCurrentFair().
+      this.fairsService.getCurrentFair().
       then( fair => {
           const signupData = {
             'user_name': this.signupForm.value['name'].replace(' ','') + '_' + Date.now(),

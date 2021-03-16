@@ -1,0 +1,26 @@
+.pavilion-logo {
+  min-height: 128px;
+}
+
+.pavilion-logo img {
+  max-width: 150px;
+  border-radius: 19px;
+  margin: 10px auto;
+}
+
+ion-item.pavilion-logo {
+  --background-hover: var(--primary);
+}
+
+.pavilion-button {
+    border: 1px solid;
+    margin-left: 10px;
+    border-radius: 21px;
+    border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+    --border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+}
+
+.pavilion-button-add {
+  max-height: 88%;
+  border-radius: 21px;
+}
