@@ -62,6 +62,8 @@ export class AgendasService {
                 },error => {
                     reject(error)
                 });
+              },error => {
+                    reject(error)
               });
         })
     }

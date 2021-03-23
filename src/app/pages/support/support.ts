@@ -13,7 +13,14 @@ export class SupportPage {
   submitted = false;
   supportMessage: string;
   dark = false;
+  isHover1: boolean	;
+  isHover2: boolean	;
+  isHover3: boolean	;
+  isHover4: boolean	;
+  isHover5: boolean	;
   fair = null;
+  name: string;
+  email: string;
 
   constructor(
     public alertCtrl: AlertController,

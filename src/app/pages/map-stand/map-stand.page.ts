@@ -27,7 +27,7 @@ export class MapStandPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router) {
         
-        this.listenForFullScreenEvents();
+        
         
     }
 
@@ -41,20 +41,7 @@ export class MapStandPage implements OnInit {
     });
   }
   
-  listenForFullScreenEvents() {
-    window.addEventListener('map:fullscreenOff', (e:any) => {
-      setTimeout(() => {
-        this.fullScreen = false;
-        this.three.onWindowResize(this.fullScreen);
-      }, 300);
-    });
-    window.addEventListener('map:fullscreenIn', (e:any) => {
-      setTimeout(() => {
-        this.fullScreen = true;
-        this.three.onWindowResize(this.fullScreen);
-      }, 300);
-    });
-  }
+  
   
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));    

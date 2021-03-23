@@ -150,7 +150,7 @@ export class ThreeStandService {
 
   // RENDERER
 
-  public onWindowResize = (fullScreen) => {
+  public onWindowResize = () => {
       
     if(typeof this.container === 'undefined') return;
     
@@ -158,16 +158,16 @@ export class ThreeStandService {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     
-    this.setSizeRender(fullScreen);
+    this.setSizeRender();
   }
   
-  private setSizeRender(fullScreen) {
-    let heightFull = fullScreen ? window.innerHeight + 34 : window.innerHeight;
+  private setSizeRender() {
+    let heightFull = this.mainScene.fullScreen ? window.innerHeight + 34 : window.innerHeight;
     let width = heightFull * 1079 / 544;
     let height = heightFull;
     
     if(width<this.container.clientWidth) {
-        let widthFull = fullScreen ? window.innerWidth : this.container.clientWidth;
+        let widthFull = this.mainScene.fullScreen ? window.innerWidth : this.container.clientWidth;
         height = widthFull * 544 / 1079;
         width = widthFull;
     }
@@ -176,7 +176,7 @@ export class ThreeStandService {
 
   private createRenderer = () => {
     
-    this.setSizeRender(false);
+    this.setSizeRender();
     this.renderer.setPixelRatio(window.devicePixelRatio);  
 
     this.renderer.gammaFactor = this.gammaFactor;
@@ -193,7 +193,7 @@ export class ThreeStandService {
     
     let id = setInterval(() => {
       clearInterval(id);
-      this.onWindowResize(false); 
+      this.onWindowResize(); 
     }, 1500);
   }
 
@@ -287,11 +287,20 @@ export class ThreeStandService {
         
     event.preventDefault();
     
-    var rect = this.renderer.domElement.getBoundingClientRect();
-    this.mouse.x = ( ( event.clientX  - rect.left ) / this.container.clientWidth ) * 2 - 1;
-    this.mouse.y = - ( ( event.clientY - rect.top ) / this.container.clientHeight ) * 2 + 1;
+	let heightFull = this.mainScene.fullScreen ? window.innerHeight + 34 : window.innerHeight;
+    let width = heightFull * 1079 / 544;
+    let height = heightFull;
     
-    this.raycaster.setFromCamera( this.mouse, this.camera,  );
+    if(width<this.container.clientWidth) {
+        let widthFull = this.mainScene.fullScreen ? window.innerWidth : this.container.clientWidth;
+        height = widthFull * 544 / 1079;
+        width = widthFull;
+    }
+    var rect = this.renderer.domElement.getBoundingClientRect();
+    this.mouse.x = ( ( event.clientX  - rect.left ) / width ) * 2 - 1;
+    this.mouse.y = - ( ( event.clientY - rect.top ) / height ) * 2 + 1;
+    
+    this.raycaster.setFromCamera( this.mouse, this.camera );
     
     const intersects = this.raycaster.intersectObjects( this.scene.children, true );
     if ( intersects.length > 0 ) {

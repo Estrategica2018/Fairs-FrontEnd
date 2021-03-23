@@ -10,6 +10,8 @@ export class FairPage implements OnInit {
 
   constructor(private fairsService: FairsService) { }
   fair: any;
+  errors: string;
+  editSave: any;
 
   ngOnInit() {
       this.fairsService.getCurrentFair().

@@ -1,7 +1,27 @@
 
-<ion-content fullscreen="true">
+<ion-content id="ionContent">
+
+  <!--iframe width="100%" height="100%" src="http://localhost:8000/map_pavilion/data"></iframe-->
+  <video 
+     [ngStyle]="{'opacity': intro && resources?.video ? 1 : 0, 'position': intro && resources?.video ? 'block' : 'absolute'}"
+	webkit-playsinline
+    autoplay
+    muted playsinline preload="metadata" data-aos="fade-up"
+    ondblclick="toggleFullScreen()"
+    id="video"
+    class="video"
+	[src]="resources?.video"
+  ></video>
+  <!--img src="https://res.cloudinary.com/dfxkgtknu/image/upload/v1616035909/feria1_ldzbzq.jpg"
+    src="https://cdn.kapwing.com/final_6052b424027e13005b09bf06_901908.mp4"
+  [hidden]="intro" class="image-background"> 
+  </div-->
+  <!--img src="assets/final_6052b424027e13005b09bf06_901908.jpg"
+  [hidden]="!intro" class="image-background"--> 
   
-  <div #canvasPavilion class="canvas-pavilion" [ngClass]="{'canvas-full-screen': fullScreen}"></div>
+  <div [ngStyle]="{'opacity':  intro? 0: 1}" 
+  #canvasPavilion class="canvas-pavilion" [ngClass]="{'canvas-full-screen': fullScreen}"></div>
+  
   <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
     <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
     <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
@@ -26,7 +46,7 @@
     <ion-button color="light" (click)="onRouterLink('/app/tabs/about')">
       <ion-icon slot="start" name="information-circle-outline"></ion-icon>
       <ion-label>Acerca de</ion-label>
-    </ion-button>
+    </ion-button> 
     
   </div>
   

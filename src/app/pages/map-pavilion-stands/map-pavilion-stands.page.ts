@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 export class MapPavilionStandsPage implements AfterViewInit {
     
   @ViewChild('canvasPavilionStand', { static: true }) canvas: ElementRef;
+  
   showStandsMap = {};
   fullScreen = false;
 
@@ -27,7 +28,7 @@ export class MapPavilionStandsPage implements AfterViewInit {
     private route: ActivatedRoute,
     private router: Router) {
         
-        this.listenForFullScreenEvents();
+        
   }
 
   ngAfterViewInit() {
@@ -48,20 +49,7 @@ export class MapPavilionStandsPage implements AfterViewInit {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));    
   }
   
-  listenForFullScreenEvents() {
-    window.addEventListener('map:fullscreenOff', (e:any) => {
-      setTimeout(() => {
-        this.fullScreen = false;
-        this.three.onWindowResize(this.fullScreen);
-      }, 300);
-    });
-    window.addEventListener('map:fullscreenIn', (e:any) => {
-      setTimeout(() => {
-        this.fullScreen = true;
-        this.three.onWindowResize(this.fullScreen);
-      }, 300);
-    });
-  }
+  
   
   onRouterLink(tab) {
     this.fullScreen = false;

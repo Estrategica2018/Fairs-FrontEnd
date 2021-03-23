@@ -12,6 +12,7 @@ export class PavilionPage implements OnInit {
 
   pavilion: any;
   errors: string = null;
+  editSave: any;
   
   constructor(
     private pavilionsService: PavilionsService,

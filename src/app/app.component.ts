@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
   fullScreen = false;
   showPavilionDetail: string = null;
   showStandDetail: string = null;
+  showSearchbar: any;
 
   constructor(
     private menu: MenuController,
@@ -155,3 +156,4 @@ export class AppComponent implements OnInit {
 
   
 }
+

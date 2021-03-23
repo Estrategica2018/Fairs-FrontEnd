@@ -20,6 +20,12 @@ export class SignupPage {
   errors = null;
   dark = false; 
   noPasswordEquals = false;
+  name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  terms: string;
   
   signupForm = new FormGroup({
      name: new FormControl('123123', Validators.compose([

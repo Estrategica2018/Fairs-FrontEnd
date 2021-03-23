@@ -25,35 +25,19 @@ export class MapPage implements OnInit {
     private three: ThreeFairService,
     private router: Router) {
         
-        this.listenForFullScreenEvents();
+        
   }
   
   ngOnInit() {
     this.fairsService.getCurrentFair().then((fair)=>{
-        this.three.initialize(this.canvas.nativeElement, fair, this);
+        this.three.initialize(this.canvas.nativeElement, fair, this, 'map');
     });	  
   }
- 
   
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));    
   }
-  
-  listenForFullScreenEvents() {
-    window.addEventListener('map:fullscreenOff', (e:any) => {
-      setTimeout(() => {
-        this.fullScreen = false;
-        this.three.onWindowResize(this.fullScreen);
-      }, 300);
-    });
-    window.addEventListener('map:fullscreenIn', (e:any) => {
-      setTimeout(() => {
-        this.fullScreen = true;
-        this.three.onWindowResize(this.fullScreen);
-      }, 300);
-    });
-  }
-  
+    
   onRouterLink(tab) {
     this.fullScreen = false;
     window.dispatchEvent(new CustomEvent('map:fullscreenOff'));

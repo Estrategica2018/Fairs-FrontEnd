@@ -40,8 +40,8 @@
 
         <ion-list lines="none">
           <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/app/tabs/map" routerLinkActive="selected" routerDirection="root" 
-			(click)="showPavilionDetail = false">
+            <ion-item routerLink="/map" routerLinkActive="selected" routerDirection="root" 
+			(click)="showPavilionDetail = null">
               <ion-icon slot="start" [name]="'map-outline'"></ion-icon>
               <ion-label>
                 Mapa
@@ -49,7 +49,7 @@
             </ion-item>
             <div *ngFor="let pavilion of fair?.pavilions;let i = index">
               <ion-item 
-			          [routerLink]="'/app/tabs/maps/pavilion'+(i+1)+'/'+pavilion.id" routerLinkActive="selected" routerDirection="root" 
+			          [routerLink]="'/maps/pavilion'+(i+1)+'/'+pavilion.id" routerLinkActive="selected" routerDirection="root" 
 					  (click)="showStandDetail = null;
                                showPavilionDetail =  showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id"
                       class="pavilions-menu"
@@ -63,7 +63,7 @@
             
               <div *ngIf="showPavilionDetail ==='pavilion_id_'+pavilion.id">
                 <ion-item *ngIf="pavilion.hasSceneStands" 
-						  routerLink="/app/tabs/maps/pavilion-stands/{{pavilion.id}}/{{pavilion.hasSceneStands}}" 
+						  routerLink="/maps/pavilion-stands/{{pavilion.id}}/{{pavilion.hasSceneStands}}" 
 						  routerLinkActive="selected" routerDirection="root" 
                           (click)="showStandDetail =  showStandDetail ==='pavilion_id_'+pavilion.id ? null : 'pavilion_id_'+pavilion.id"
                           lines="none" 
@@ -82,8 +82,8 @@
                 </ion-item>
 
                 <div *ngIf="showStandDetail ==='pavilion_id_'+pavilion.id">
-                    <ion-item routerLink="/app/tabs/maps/stand/{{pavilion?.id}}/{{stand.id}}" routerLinkActive="selected" routerDirection="root" 
-                              *ngFor="let stand of pavilion.stands" 
+                    <ion-item [routerLink]="'/maps/stand'+(i_stand+1)+'/'+pavilion.id+'/'+stand.id" routerLinkActive="selected" routerDirection="root" 
+                              *ngFor="let stand of pavilion.stands;let i_stand = index"
                               lines="none" class="sub-menu-stand">
                       <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
                       <ion-label class="menu-label">{{stand.merchant.name}}</ion-label>
@@ -98,7 +98,7 @@
          <ion-list lines="none" class="border-botton">
           <ion-menu-toggle autoHide="false">
             <ion-item 
-			(click)="showPavilionDetail = false"
+			(click)="showPavilionDetail = null"
 			routerLink="/app/tabs/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
               <ion-label>
@@ -108,7 +108,7 @@
           </ion-menu-toggle>
           <ion-menu-toggle autoHide="false">
             <ion-item 
-			(click)="showPavilionDetail = false"
+			(click)="showPavilionDetail = null"
 			routerLink="/app/tabs/speakers" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" [name]="'people-outline'"></ion-icon>
               <ion-label>
@@ -117,7 +117,7 @@
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item (click)="showPavilionDetail = false"
+            <ion-item (click)="showPavilionDetail = null"
 			routerLink="/app/tabs/news" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" name="newspaper-outline"></ion-icon>
               <ion-label class="menu-label">Noticias</ion-label>
@@ -125,7 +125,7 @@
           </ion-menu-toggle>
           <ion-menu-toggle autoHide="false">
             <ion-item 
-			(click)="showPavilionDetail = false"
+			(click)="showPavilionDetail = null"
 			routerLink="/app/tabs/about" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" [name]="'information-circle-outline'"></ion-icon>
               <ion-label>
@@ -216,7 +216,7 @@
                 <ion-label>
                     Dark Mode
                 </ion-label>
-                <ion-toggle [(ngModel)]="dark" (ionChange)="onChangeDarkModel($event)"></ion-toggle>
+                <ion-toggle [(ngModel)]="dark" (ionChange)="onChangeDarkModel()"></ion-toggle>
             </ion-item>
           </ion-menu-toggle>
 

@@ -11,6 +11,8 @@ import { ActivatedRoute } from '@angular/router';
 export class StandPage implements OnInit {
 
   stand: any;
+  editSave: any;
+  pavilion: any;
   errors: string = null;
   
   constructor(

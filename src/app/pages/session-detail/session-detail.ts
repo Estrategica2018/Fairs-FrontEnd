@@ -17,6 +17,8 @@ export class SessionDetailPage {
   session: any;
   defaultHref = '';
   errors: string = null;
+  speaker: any;
+  
 
   constructor(
     private dataProvider: ConferenceData,

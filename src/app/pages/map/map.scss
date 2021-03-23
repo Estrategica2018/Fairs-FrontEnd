@@ -1,7 +1,7 @@
 
 .canvas {
     width: 100% !important;
-    height: calc(100% - 28px);
+    height: 100% !important;
     background-color: #8fbcd4;
     position: absolute;
     padding-left: 0px;
@@ -31,4 +31,8 @@
   bottom: 20px;
   left: calc(34% - 10px);
   z-index: 11;
+}
+
+ion-content {
+  top: 29px;
 }
