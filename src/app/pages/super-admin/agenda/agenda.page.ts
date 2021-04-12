@@ -50,12 +50,12 @@ export class AgendaPage implements OnInit {
     });
 	
     this.speakersService.
-	    list().then((speakers)=>{
-          this.speakers = speakers;
-        })
-        .catch(error => {
-            reject(error)
-        });
+	list().then((speakers)=>{
+	  this.speakers = speakers;
+	})
+	.catch(error => {
+		this.errors = error;
+	});
 	
 	this.categoryService.list('AgendaType').then((response)=>{
 		if(response.success == 201) {
@@ -269,7 +269,7 @@ export class AgendaPage implements OnInit {
 	this.errors = null;
     const { data } = await modal.onWillDismiss();
 	if (data) {
-	  this.agendasService.updateSpeakers(this.fair_id,this.agenda.id, { 'invited_speakers': data })
+	  this.agendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
 	    .then((invited_speakers)=>{
 			this.success = `Conferencias asociados exitosamente`;
         })
