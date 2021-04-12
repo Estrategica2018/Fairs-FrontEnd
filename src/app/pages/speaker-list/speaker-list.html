@@ -13,7 +13,7 @@
           <ion-card-header>
             <ion-item detail="false" lines="none" class="speaker-item" routerLink="/app/tabs/speakers/speaker-details/{{speaker.id}}">
               <ion-avatar slot="start">
-                <img [src]="speaker.resources?.url_imagen" [alt]="speaker.name + ' profile picture'">
+                <img [src]="speaker.resources?.url_image" [alt]="speaker.name + ' profile picture'">
               </ion-avatar>
               <ion-label>
                 <h2 class="white-space">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
@@ -39,7 +39,7 @@
                   </p>
                 </ion-label> 
                 <ion-thumbnail class="m-auto">
-                  <ion-img [src]="agenda.resources.url_imagen" style="width: 73px;" class="ml"></ion-img>
+                  <ion-img [src]="agenda.resources.url_image" style="width: 73px;" class="ml"></ion-img>
                 </ion-thumbnail>
               </ion-item>
     

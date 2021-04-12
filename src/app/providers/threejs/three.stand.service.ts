@@ -184,12 +184,12 @@ export class ThreeStandService {
     this.renderer.physicallyCorrectLights = true;
 
     this.container.appendChild(this.renderer.domElement);
-    window.addEventListener( 'resize', this.onWindowResize);
-    window.addEventListener( 'pointerdown', this.onPointerDown, false );
-    window.addEventListener( 'click', this.onPointerDown, false );
-    window.addEventListener( 'mousemove', this.onPointerDown, false );
-    //window.addEventListener( 'wheel', function(e) {e.preventDefault();}, { capture: false, passive: true } );
-    window.addEventListener( 'keydown', this.onKeydown);
+    this.container.addEventListener( 'resize', this.onWindowResize);
+    this.container.addEventListener( 'pointerdown', this.onPointerDown, false );
+    this.container.addEventListener( 'click', this.onPointerDown, false );
+    this.container.addEventListener( 'mousemove', this.onPointerDown, false );
+    this.container.addEventListener( 'wheel', function(e) {e.preventDefault();}, { capture: false, passive: true } );
+    this.container.addEventListener( 'keydown', this.onKeydown);
     
     let id = setInterval(() => {
       clearInterval(id);

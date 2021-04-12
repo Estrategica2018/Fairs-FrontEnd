@@ -130,7 +130,7 @@ export class AccountPage implements AfterViewInit {
   }
 
   changePassword() {
-    console.log('Clicked to change password');
+    
   }
 
   logout() {
@@ -153,7 +153,7 @@ export class AccountPage implements AfterViewInit {
        this.usersService.updateUser(userDataSession,dt)
        .subscribe(
         data => {
-            console.log('actualizado Exitosamente', data);
+            
             this.loading.dismiss();
             if(data.success == 201 ) {
               this.userData = Object.assign(dt,data.data);

@@ -27,16 +27,17 @@
         <ion-col>
           <div>
             
-              <img [src]="session.resources.url_imagen"/>
+              <img [src]="session.resources.url_image"/>
             
             <br /><br />
-            <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.color,'color': session.category?.color}"> 
-            <span class="ml-1 text-uppercase"> {{session?.category?.name}}</span></ion-label>
+            <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color,'color': session.category?.color}"> 
+            <span class="ml-4 text-uppercase"> {{session?.category?.name}}</span></ion-label>
             <br /><br />
             <ion-text color="medium">
               {{session.strDay}}
               <br />
               {{session.timeStart}} &ndash; {{session.timeEnd}}
+			  <span>{{session.timezone}}</span>
               <br /> {{session.location}}
             </ion-text>
           </div>
@@ -53,7 +54,7 @@
                <ion-card-header>
                   <div class="d-flex">
                     <ion-avatar slot="start">
-                       <img [src]="invited_speaker.speaker?.resources?.url_imagen" [alt]="invited_speaker.speaker?.user?.name + ' profile picture'">
+                       <img [src]="invited_speaker.speaker?.resources?.url_image" [alt]="invited_speaker.speaker?.user?.name + ' profile picture'">
                     </ion-avatar>
                     <ion-label class="speaker-name">
                         <h5>{{ invited_speaker.speaker?.user?.name + '  ' + invited_speaker.speaker?.user?.last_name }} </h5>

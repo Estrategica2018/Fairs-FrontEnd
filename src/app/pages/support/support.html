@@ -1,5 +1,4 @@
-<ion-content fullscreen="true">
- <ion-header class="mt-4">
+ <ion-header class="mt-4 ion-no-border">
   <ion-toolbar>
   <ion-title>Contacto de soporte</ion-title>
     <ion-buttons slot="secondary">
@@ -88,38 +87,61 @@
       </p>
   </ion-toolbar>
 </ion-header>
-  <div class="support-logo">
-    <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
-    <img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
-  </div>
-
-  <form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container">
-    <ion-list lines="none">
-      <ion-item>
-        <ion-label class="fs-1 menu-label" position="stacked">Nombre</ion-label>
-        <ion-input  class="border" [(ngModel)]="name" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked" class="fs-1 menu-label">Email</ion-label>
-        <ion-input  class="border" [(ngModel)]="email" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked" class="menu-label fs-1">Ingresa tu mensaje para el grupo de soporte</ion-label>
-        <ion-textarea  class="border" [(ngModel)]="supportMessage" name="supportQuestion" #supportQuestion="ngModel" rows="6" required></ion-textarea>
-      </ion-item>
-    </ion-list>
-
-    <ion-text color="danger">
-      <p [hidden]="supportQuestion.valid || submitted === false" class="ion-padding-start">
-        Campo mensaje requerido
-      </p>
-    </ion-text>
-
-    <div class="ion-padding">
-      <ion-button expand="block" [disabled]="!supportMessage || supportMessage.length == 0" type="submit">
-      <ion-label > Enviar </ion-label>
-      <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
-      </ion-button>
-    </div>
-  </form>
+ 
+<ion-content fullscreen="true">
+  
+  <div class="">
+	 <div class="support-logo">
+		<img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
+		<img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
+	 </div>
+      
+	 <form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="padding-container">
+		<div class="form-row mt-4">
+			<div class="form-group col-12 col-md-6">
+				<label>Nombre <span class="required"> (*) </span></label>
+				<input type="text" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+				<div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+					<div *ngIf="f.name.errors.required">Campo requerido</div>
+				</div>
+			</div>
+			<div class="form-group col-12 col-md-6">
+				<label>Email <span class="required"> (*) </span></label>
+				<input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+				<div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+					<div *ngIf="f.email.errors.required">Campo requerido</div>
+					<div *ngIf="f.email.errors.email">Email inválido</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-12">
+				<label>Ingresa tu mensaje para el grupo de soporte <span class="required"> (*) </span></label>
+				<textarea rows="6" type="text" formControlName="supportMessage" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.supportMessage.errors }" >
+				</textarea>
+				<div *ngIf="submitted && f.supportMessage.errors" class="invalid-feedback">
+					<div *ngIf="f.supportMessage.errors.required">Campo requerido</div>
+					<div *ngIf="f.supportMessage.errors.minlength">Longitud mínima 6 caracteres</div>
+				</div>
+			</div>
+		</div>
+		
+	    <div [hidden]="!errors" class="not-found alert alert-danger alert-dismissible">
+		 <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+		 <strong>Error!</strong> {{errors}}
+	    </div>
+		
+        <div class="alert alert-success fade show alert-dismissible" [hidden]="!success">
+          <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+          <strong>!</strong> {{success}}
+        </div>
+		
+		<div class="">
+		  <ion-button expand="full" type="submit" expand="block">
+		  <ion-label> Enviar Mensaje</ion-label>
+		  <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
+		  </ion-button>
+		</div>
+    </form>
+ </div>
 </ion-content>

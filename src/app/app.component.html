@@ -72,16 +72,8 @@
                   <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
                   <ion-label class="menu-label">Locales comerciales </ion-label>
                 </ion-item>
-				
-                <ion-item [hidden]="pavilion.hasSceneStands"
-						  (click)="showStandDetail=  showStandDetail ==='pavilion_id_'+pavilion.id ? false : 'pavilion_id_'+pavilion.id"
-						  button="true"
-                          lines="none" class="sub-menu">
-                  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                  <ion-label class="menu-label">Locales comerciales {{pavilion.hasSceneStands}}</ion-label>
-                </ion-item>
 
-                <div *ngIf="showStandDetail ==='pavilion_id_'+pavilion.id">
+                <div *ngIf="showStandDetail ==='pavilion_id_'+pavilion.id || !pavilion.hasSceneStands">
                     <ion-item [routerLink]="'/maps/stand'+(i_stand+1)+'/'+pavilion.id+'/'+stand.id" routerLinkActive="selected" routerDirection="root" 
                               *ngFor="let stand of pavilion.stands;let i_stand = index"
                               lines="none" class="sub-menu-stand">

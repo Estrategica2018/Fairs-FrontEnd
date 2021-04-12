@@ -1,10 +1,6 @@
-.padding-container {
-  padding: 0 10% 0 10%;
-}
-
 .support-logo {
-  padding: 30px 0px 0px 0px;
-  min-height: 96px;
+  padding: 0;
+  min-height: 53px;
   text-align: center;
 }
 
@@ -58,4 +54,8 @@ ion-item.item-has-focus > ion-label{
 
 .toolbar-container {
     width: 76%;
+}
+
+.required {
+  color: var(--ion-color-danger);
 }

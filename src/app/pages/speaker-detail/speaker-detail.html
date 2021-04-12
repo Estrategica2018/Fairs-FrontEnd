@@ -16,7 +16,7 @@
   </ion-header>
 
   <div class="speaker-background">
-    <img *ngIf="speaker" [src]="speaker?.resources.url_imagen" [alt]="speaker?.name + ' Picture'">
+    <img *ngIf="speaker" [src]="speaker?.resources.url_image" [alt]="speaker?.name + ' Picture'">
     <h2 *ngIf="speaker" >{{ speaker?.user.name + ' - ' + speaker?.user.last_name}}</h2>
     <p *ngIf="speaker" >{{ speaker?.user.title}}</p>
   </div>
@@ -47,7 +47,7 @@
               </p>
             </ion-label> 
             <ion-thumbnail class="m-auto p-0">
-              <ion-img [src]="agenda.resources?.url_imagen" style="width: 73px;"></ion-img>
+              <ion-img [src]="agenda.resources?.url_image" style="width: 73px;"></ion-img>
             </ion-thumbnail>
           </ion-item>
 

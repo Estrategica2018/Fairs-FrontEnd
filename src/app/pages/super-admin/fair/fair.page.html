@@ -1,5 +1,6 @@
 
 <ion-content fullscreen="true">
+  
   <ion-header class="mt-4">
     <ion-toolbar>
        <ion-title slot="start">Administración de la feria</ion-title>
@@ -18,7 +19,7 @@
   </ion-list-header>
 
   <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
-    <ion-list lines="" *ngIf="fair">
+    <ion-list lines="" *ngIf="fair" class="padding-container">
       <ion-item button="true">
         <ion-label> Subdominio </ion-label>
         <ion-input class="ml-auto" class="text-right" [(ngModel)]="fair.name" name="name"></ion-input>
@@ -50,8 +51,17 @@
           <ion-label>Fecha final</ion-label>
           <ion-datetime value="1990-02-19" placeholder="Select Date"></ion-datetime>
       </ion-item>
-      <ion-list-header> Pabellones </ion-list-header> 
-      <ion-item>
+      
+       <ion-item lines="none">
+         <ion-label slot="start">Pabellones</ion-label>
+		 <ion-buttons slot="end">
+				<ion-avatar class="mr-3 cursor-pointer" style="padding: 18px;">
+                  <img src="assets/icon/plus.png">
+                </ion-avatar>
+		 </ion-buttons>
+       </ion-item>
+	   
+       <ion-item>
         <ion-grid>
           <ion-row>
             <ion-col class="d-flex">
@@ -66,16 +76,40 @@
                   <h3>{{pavilion.description}}</h3>
                   <p>{{pavilion?.stands?.length }} locales asociados</p>
                 </ion-label>
-              </ion-item>
-            
-              <ion-item class="pavilion-button-add" button="true">
-                <ion-avatar class="mr-3">
-                  <img src="assets/icon/plus.png">
-                </ion-avatar>
-              </ion-item>
+              </ion-item> 
             </ion-col>  
           </ion-row>
         </ion-grid>
+     </ion-item>
+	 
+      <ion-item lines="none">
+        <ion-label slot="start">Agenda</ion-label>
+		<ion-buttons class="" slot="end">
+			<ion-avatar button="true"  routerLink="/super-admin/agenda" routerLinkActive="active" routerDirection="root" detail="false" class="cursor-pointer mr-3" style="padding: 18px;">
+                <img src="assets/icon/plus.png">
+            </ion-avatar>
+		</ion-buttons>
+      </ion-item>
+      <ion-item *ngFor="let agenda of agendas" 
+		  class="d-flex" button="true"
+		  routerLink="/super-admin/agenda/{{agenda.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+		<ion-label class="mr-3">
+		  <h2>{{agenda.title}}</h2>
+		  <h3>{{agenda.description}}</h3>
+		  <p *ngIf="agenda.room">
+		    {{agenda.location }}
+		  </p>
+		  <p>
+              {{agenda.startTime}} &mdash; {{agenda.endTime}}
+			  <span>{{agenda.timezone}}</span>
+           </p>
+		</ion-label>
+		
+		
+		<ion-thumbnail slot="start">
+         <ion-img class="ml-auto" [src]="agenda.resources?.url_image"></ion-img>
+        </ion-thumbnail>
+	
      </ion-item>
       
     </ion-list>

@@ -62,6 +62,7 @@ export class SchedulePage implements OnInit {
     .then((data) => {
         this.loading.dismiss();
         this.dataInitMeetings = data;
+		console.log(this.dataInitMeetings);
         this.transformSchedule();
      })
      .catch(error => {

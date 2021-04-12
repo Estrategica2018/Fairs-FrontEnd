@@ -12,7 +12,7 @@ import { LoadingService } from './../../providers/loading.service';
   providers: [UsersService]
 })
 export class LoginPage {
-  login: any = { username: 'davithc01@gmail.com', password: '121221112' };
+  login: any = { username: '', password: '' };
   submitted = false;
   errors = null;
   dark = false;

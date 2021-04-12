@@ -33,6 +33,33 @@ ion-label {
   height: 50px;
 }
 
-.label-terms {
-    margin-top: 8px;
+
+.white-space {
+    white-space: initial;
+	line-height: 13px;
+}
+
+.terms-modal {
+  position: absolute;
+  bottom: 0px;
+}
+
+.label-modal {
+  padding-top: 17px;
+}
+
+@media (max-width: 541px) {
+  .label-modal {
+    padding-top: 9px;
+  }
+}
+
+
+.required {
+  color: var(--ion-color-danger);
+}
+
+
+.modal-wrapper {
+  max-width: 300px;
 }

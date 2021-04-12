@@ -7,120 +7,72 @@
     <img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
   </div>
 
-  <form #submitForm="ngForm" novalidate (ngSubmit)="onSignup(submitForm)" class="padding-container">
-    <ion-list lines="none">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="padding-container">
+    
       <h6> 
-         Formulario de registro para la creación de usuarios:
+         Formulario de registro para la creación de usuario:
       </h6>
-      <ion-item class="border-item">
-        <ion-label position="stacked" class="font-18px">
-            Nombre
-        </ion-label>
-        <ion-input [(ngModel)]="name" name="name" type="text">
-        </ion-input>
-      </ion-item>
-      <ng-container *ngFor="let validation of validation_messages?.name">
-        <ion-text color="danger" *ngIf="signupForm.get('name').hasError(validation.type) && (signupForm.get('name').dirty || signupForm.get('name').touched)">
-          <p class="ion-padding-start">
-            {{ validation.message }}
-          </p>
-        </ion-text>
-      </ng-container>
       
-      <ion-item class="border-item">
-        <ion-label position="stacked" class="font-18px">
-            Apellido
-        </ion-label>
-        <ion-input [(ngModel)]="last_name" name="last_name" type="text">
-        </ion-input>
-      </ion-item>
-      <ng-container *ngFor="let validation of validation_messages?.last_name">
-        <ion-text color="danger" *ngIf="signupForm.get('last_name').hasError(validation.type) && (signupForm.get('last_name').dirty || signupForm.get('last_name').touched)">
-          <p class="ion-padding-start">
-            {{ validation.message }}
-          </p>
-        </ion-text>
-      </ng-container>
-
-      <ion-item class="border-item">
-        <ion-label position="stacked" class="font-18px">
-            Email
-        </ion-label>
-        <ion-input [(ngModel)]="email" name="email" type="text">
-        </ion-input>
-      </ion-item>
-      <ng-container *ngFor="let validation of validation_messages?.email">
-        <ion-text color="danger" *ngIf="signupForm.get('email').hasError(validation.type) && (signupForm.get('email').dirty || signupForm.get('email').touched)">
-          <p class="ion-padding-start">
-            {{ validation.message }}
-          </p>
-        </ion-text>
-      </ng-container>
-      
-      <ion-item class="border-item">
-        <ion-label position="stacked" class="font-18px">
-            Contraseña
-        </ion-label>
-        <ion-input [(ngModel)]="password" name="password" type="text">
-        </ion-input>
-      </ion-item>
-      <ng-container *ngFor="let validation of validation_messages?.password">
-        <ion-text color="danger" *ngIf="signupForm.get('password').hasError(validation.type) && (signupForm.get('password').dirty || signupForm.get('password').touched)">
-          <p class="ion-padding-start">
-            {{ validation.message }}
-          </p>
-        </ion-text>
-      </ng-container>
-      <ng-container *ngIf="noPasswordEquals">
-        <ion-text color="danger">
-          <p class="ion-padding-start">
-            Contraseñas no coinciden
-          </p>
-        </ion-text>
-      </ng-container>
-      
-      <ion-item class="border-item">
-        <ion-label position="stacked" class="font-18px">
-            Confirmar contraseña
-        </ion-label>
-        <ion-input [(ngModel)]="confirmPassword" name="confirmPassword" type="text">
-        </ion-input>
-      </ion-item>
-      <ng-container *ngFor="let validation of validation_messages?.confirmPassword">
-        <ion-text color="danger" *ngIf="signupForm.get('confirmPassword').hasError(validation.type) && (signupForm.get('confirmPassword').dirty || signupForm.get('confirmPassword').touched)">
-          <p class="ion-padding-start">
-            {{ validation.message }}
-          </p>
-        </ion-text>
-      </ng-container>
-      <ng-container *ngIf="noPasswordEquals">
-        <ion-text color="danger">
-          <p class="ion-padding-start">
-            Contraseñas no coinciden
-          </p>
-        </ion-text>
-      </ng-container>
-
-      <ion-item class="border-item">
-        <ion-label position="stacked" class="font-18px">
-            Términos y condiciones
-        </ion-label>
-        <div class="d-flex">
-        <ion-toggle [(ngModel)]="terms"></ion-toggle>
-        <a class="label-terms"href="javascript:void(0);" (click)="presentTermsModal()">Ver terminos y condiciones</a>
-        </div>
-        
-      </ion-item>
-      
-      <ng-container *ngFor="let validation of validation_messages?.terms">
-        <ion-text color="danger" *ngIf="signupForm.get('terms').hasError(validation.type) && (signupForm.get('terms').dirty || signupForm.get('terms').touched)">
-          <p class="ion-padding-start">
-            {{ validation.message }}
-          </p>
-        </ion-text>
-      </ng-container>
-      
-    </ion-list>
+	  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="form-row mt-4">
+                <div class="form-group col-12 col-md-6">
+                    <label>Nombres <span class="required"> (*) </span></label>
+                    <input type="text" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+                    <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                        <div *ngIf="f.name.errors.required">Campo requerido</div>
+                    </div>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    <label>Apellidos <span class="required"> (*) </span></label>
+                    <input type="text" formControlName="last_name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.last_name.errors }" />
+                    <div *ngIf="submitted && f.last_name.errors" class="invalid-feedback">
+                        <div *ngIf="f.last_name.errors.required">Campo requerido</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email <span class="required"> (*) </span></label>
+                <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                    <div *ngIf="f.email.errors.required">Campo requerido</div>
+                    <div *ngIf="f.email.errors.email">Email inválido</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12 col-md-6">
+                    <label>Contraseña <span class="required"> (*) </span></label>
+                    <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                        <div *ngIf="f.password.errors.required">Campo requerido</div>
+                        <div *ngIf="f.password.errors.minlength">Longitud mínima 6 caracteres</div>
+                    </div>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                    <label>Confirmar Contraseña <span class="required"> (*) </span></label>
+                    <input type="password" formControlName="confirmPassword" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+                    <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                        <div *ngIf="f.confirmPassword.errors.required">Campo requerido</div>
+                        <div *ngIf="f.confirmPassword.errors.mustMatch">Contraseñas no coinciden</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row form-check">
+			  <div class="form-group col-12">
+			    <input type="checkbox" formControlName="acceptTerms" id="acceptTerms" class="form-check-input" [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }" />
+				<div *ngIf="submitted && f.acceptTerms.errors" class="invalid-feedback">
+				Campo requerido</div>
+           	    <label for="acceptTerms" class="form-check-label">Acepto términos y condiciones <span class="required"> (*) </span></label>
+			  </div>
+			  <div class="form-group col-12">
+                <a class="terms-modal" href="javascript:void(0);" (click)="presentTermsModal()">Ver terminos y condiciones</a>
+			  </div>
+			  <div class="form-group col-12">
+                <div *ngIf="submitted && f.acceptTerms.errors" class="invalid-feedback">
+				Campo requerido</div>
+			  </div>
+			</div>
+        </form>
+	  
     
     <ion-row [hidden]="!errors" class="not-found">
        <div class="alert alert-danger alert-dismissible">
@@ -129,8 +81,8 @@
        </div>
     </ion-row>
 
-    <div class="ion-padding">
-      <button ion-button type="submit" [disabled]="!signupForm.valid" expand="block">Crear registro</button>
+    <div class="">
+      <ion-button expand="full" type="submit" expand="block">Crear registro</ion-button>
     </div>
   </form>
  </div>

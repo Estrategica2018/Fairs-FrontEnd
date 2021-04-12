@@ -149,7 +149,7 @@ export class AppComponent implements OnInit {
 	  this.showStandDetail = null;
 	  this.showPavilionDetail =  this.showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id
 	  
-	  this.router.navigateByUrl(`/app/tabs/maps/pavilion${index}/${pavilion.id}`,{
+	  this.router.navigateByUrl(`/maps/pavilion${index}/${pavilion.id}`,{
 			skipLocationChange: true
 		});
   }

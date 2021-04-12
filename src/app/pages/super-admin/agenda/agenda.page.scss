@@ -1,34 +1,26 @@
-.fair-logo {
-  padding: 34px 10% 0 10%;
+.agenda-logo {
+  min-height: 128px;
 }
 
-.fair-logo img {
+.agenda-logo img {
   max-width: 150px;
+  border-radius: 19px;
+  margin: 10px auto;
 }
 
-ion-item {
+ion-item.agenda-logo {
   --background-hover: var(--primary);
 }
 
-.icon {
-  max-width: 100px;
-}
-
-
-.pavilion-button {
+.agenda-button {
     border: 1px solid;
     margin-left: 10px;
     border-radius: 21px;
     border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
     --border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
-	margin-top: 11px;
 }
 
-.pavilion-button-add {
-  max-height: 81%;
+.agenda-button-add {
+  max-height: 88%;
   border-radius: 21px;
-}
-
-.cursor-pointer {
- cursor: pointer;
 }

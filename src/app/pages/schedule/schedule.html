@@ -28,14 +28,15 @@
 
       <ion-item-sliding *ngFor="let session of group.sessions" #slidingItem class="category" [hidden]="session.hide">
         <ion-item routerLink="/app/tabs/schedule/session/{{session.id}}">
-          <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.color}">
+          <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color}">
             <h3>{{session.name}}</h3>
             <p>
-              {{session.timeStart}} &mdash; {{session.timeEnd}}: {{session.location}}
+              {{session.timeStart}} &mdash; {{session.timeEnd}}
+			  <span>{{session.timezone}}</span>
             </p>
           </ion-label>
           <ion-thumbnail class="m-auto p-10px">
-            <ion-img [src]="session.resources.url_imagen" style="width: 73px;" class="ml-1"></ion-img>
+            <ion-img [src]="session.resources.url_image" style="width: 73px;" class="ml-1"></ion-img>
            </ion-thumbnail>
         </ion-item>
       </ion-item-sliding>

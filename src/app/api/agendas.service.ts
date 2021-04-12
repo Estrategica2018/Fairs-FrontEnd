@@ -5,6 +5,7 @@ import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
 import { FairsService } from '../api/fairs.service';
+import { processData } from '../providers/process-data';
 
 @Injectable({
   providedIn: 'root'
@@ -42,21 +43,9 @@ export class AgendasService {
                 )
                 .subscribe((data : any )=> {
                     this.refresTime = moment();
-                    this.agendas = data.data;
+                    this.agendas = processData(data.data);
                     for(let agenda of this.agendas) {
                       agenda.start_at  *= 1000;
-                      agenda.category = {"id":"2","name":"bolsos","color":"#ac282b"};
-                      if(agenda.resources && typeof agenda.resources === 'string') {
-                        agenda.resources = JSON.parse(agenda.resources);
-                      }
-                      if(agenda.invited_speakers)
-                      for (let invited_speaker of agenda.invited_speakers) {
-                        if(invited_speaker.speaker) {
-                            if(invited_speaker.speaker.resources && typeof invited_speaker.speaker.resources === 'string') {
-                              invited_speaker.speaker.resources = JSON.parse(invited_speaker.speaker.resources);
-                            }
-                        }
-                      }
                     }
                     resolve(this.agendas);
                 },error => {
@@ -87,6 +76,34 @@ export class AgendasService {
         .catch(error => {
             reject(error)
          });    
+    });
+  }
+  
+  updateSpeakers(fairId, meeting_id: string, data): any {
+    return new Promise((resolve, reject) => {
+        this.http.post(`/api/speakers/meetings?fair_id=${fairId}&meeting_id=${meeting_id}`, data)
+		.pipe(
+		  timeout(30000),
+		  catchError(e => {
+			console.log(e);
+			if(e.status && e.statusText) {
+			  throw new Error(`Error consultando el servicio para actualizar conferencistas: ${e.status} - ${e.statusText}`);    
+			}
+			else {
+			  throw new Error(`Error consultando el servicio para actualizar conferencistas`);    
+			}
+		  })
+		)
+		.subscribe((data : any )=> {
+			if(data.success) {
+			   resolve(data);
+			}
+			else {
+				reject(JSON.stringify(data));
+			}
+		},error => {
+			reject(error)
+		});   
     });
   }
   

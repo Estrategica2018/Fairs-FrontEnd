@@ -13,12 +13,13 @@ export class ThreeFairService {
   constructor() {
      
   }
-  
 
   // INITIALIZATION
-  initialize = (container: HTMLElement, objScene:any, mainScene: any, objListener: string) => {
+  initialize = (container: HTMLElement, objScene:any, mainScene: any) => {
     
     let aspect: number;
+	let _defaultWidth = objScene.resources._defaultWidth;
+	let _defaultHeight = objScene.resources._defaultHeight;
     let camera: THREE.PerspectiveCamera;
     let controls: OrbitControls;
     let hemisphere: THREE.HemisphereLight;
@@ -36,11 +37,18 @@ export class ThreeFairService {
     let far = 100;
     let fov = 35;
     let gammaFactor = 2.2;
-    let gammaOutput = false;
+    let gammaOutput = true;
     let near = 1;
-    let physicallyCorrectLights = false;
+    let physicallyCorrectLights = true;
   
-    let renderer = new THREE.WebGLRenderer({ antialias: true });
+  
+    //const canvas = document.querySelector('#c');
+    const renderer = new THREE.WebGLRenderer({
+      container,
+      alpha: true,
+    });
+    
+	//let renderer = new THREE.WebGLRenderer({ alpha: false, });
     let modelLoaderList = {};
 
     let clock = new THREE.Clock();
@@ -150,13 +158,13 @@ export class ThreeFairService {
     function onWindowResize() {
 		
 	  const fullScreen : boolean = mainScene.fullScreen;
-  	  const heightFull = fullScreen ? window.innerHeight + 34 : window.innerHeight;
-      let width = heightFull * 1079 / 544;
+  	  const heightFull = fullScreen ? container.clientHeight + 34 : container.clientHeight;
+	  let width = heightFull * _defaultWidth / _defaultHeight;
       let height = heightFull;
-  	
+   
       if(width<container.clientWidth) {
         let widthFull = container.clientWidth;
-        height = widthFull * 544 / 1079;
+        height = widthFull * _defaultHeight / _defaultWidth;
         width = widthFull;
       }
       
@@ -168,25 +176,26 @@ export class ThreeFairService {
       
     function createRenderer (){
       
-      renderer.setPixelRatio(window.devicePixelRatio);  
+      renderer.setPixelRatio(window.devicePixelRatio);
   
       renderer.gammaFactor = gammaFactor;
-      //renderer.gammaOutput = true;
-      renderer.physicallyCorrectLights = true;
+      renderer.gammaOutput = gammaOutput;
+      renderer.physicallyCorrectLights = physicallyCorrectLights;
+	  
   
       container.appendChild(renderer.domElement);
-      window.addEventListener( 'resize', onWindowResize);
-      window.addEventListener( 'pointerdown', onPointerDown, false );
-      window.addEventListener( 'click', onPointerDown, false );
-      window.addEventListener( 'mousemove', onPointerDown, false );
-	  window.addEventListener( 'keydown', onKeydown);
-      
+      container.addEventListener( 'resize', onWindowResize);
+      container.addEventListener( 'pointerdown', onPointerDown, false );
+      container.addEventListener( 'click', onPointerDown, false );
+      container.addEventListener( 'mousemove', onPointerDown, false );
+	  container.addEventListener( 'keydown', onKeydown);
+	  
     }
   
     function update () {
       const delta = clock.getDelta();
       mixers.forEach(x => x.update(delta));
-      
+	  
       //
       var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
       var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
@@ -304,12 +313,12 @@ export class ThreeFairService {
 		
 		const fullScreen : boolean = mainScene.fullScreen;
   	    const heightFull = fullScreen ? window.innerHeight + 34 : window.innerHeight;
-        let width = heightFull * 1079 / 544;
+        let width = heightFull * _defaultWidth / _defaultHeight;
         let height = heightFull;
   	
         if(width<container.clientWidth) {
           let widthFull = container.clientWidth;
-          height = widthFull * 544 / 1079;
+          height = widthFull * _defaultHeight / _defaultWidth;
           width = widthFull;
         }
       
@@ -404,87 +413,119 @@ export class ThreeFairService {
           scene.add(movieScreen); */
       });
     }
-    
+	
     function createBanners (){
         
-      if(objScene && objScene.resources && objScene.resources.banners)
-      objScene.resources.banners.forEach( (banner, indx) => {
-  
-          const geometry = new THREE.PlaneGeometry( 5, 1, 1);
-          let material = null;
-          
-          if(banner.image_url) {
-              let texture: any = null;
-              texture = THREE.TextureLoader;
-              if(textures[banner.image_url]) {
-                  texture = textures[banner.image_url];
-              }
-              else {
-                  texture = new THREE.TextureLoader().load(banner.image_url);
-                  textures[banner.image_url] = texture;
-              }
-              material = new THREE.MeshBasicMaterial({ map: texture });
-          }
-          
-          if(banner.backgroundColor) {
-              const backgroundColor = 0x8fbcd4;
-              material = new THREE.MeshBasicMaterial({ color: new THREE.Color(backgroundColor) });
-          }
-          
-          if(banner.text) {
-              
-              const loader = new THREE.FontLoader();
-  
-              loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
-  
-                  const geometryThree = new THREE.TextGeometry( banner.text, {
-                      font: font,
-                      size: 80,
-                      height: 5,
-                      curveSegments: 12,
-                      bevelEnabled: true,
-                      bevelThickness: 10,
-                      bevelSize: 8,
-                      bevelOffset: 0,
-                      bevelSegments: 5
-                  });
-                  
-                  const _text = new THREE.Mesh( geometryThree, material );
-                  scene.add( _text );
-              });
-          }
-  
-          const plane: any = new THREE.Mesh( geometry, material );
-          plane.name = "BannerPlaneGeometry-" + indx;
-          plane.rotation.x = banner.rotation._x;
-          plane.rotation.y = banner.rotation._y;
-          plane.rotation.z = banner.rotation._z;
-          plane.position.x = banner.position.x;
-          plane.position.y = banner.position.y;
-          plane.position.z = banner.position.z;
-          plane.scale.x = banner.scale.x;
-          plane.scale.y = banner.scale.y;
-          plane.scale.z = banner.scale.z;
-          
-          if(banner.callback) {
-              plane.callback = banner.callback;
-          }
-          
-          plane.container = container;
-          
-          scene.add( plane );
-  
-      });
+      if(objScene && objScene.resources && objScene.resources.banners) {
+		  let sizeBanners = objScene.resources.banners.length;
+		  let bannersLoaded = 0;
+		  function finishLoader() {
+			  bannersLoaded ++;
+			  if(bannersLoaded == sizeBanners) {
+				  mainScene.onLoadingDismiss();
+			  }
+		  }
+		  objScene.resources.banners.forEach( (banner, indx) => {
+	  
+			  const geometry = new THREE.PlaneGeometry( 5, 1, 1);
+			  let material = null;
+			  
+			  if(banner.image_url) {
+				  let texture: any = null;
+				  texture = THREE.TextureLoader;
+				  if(textures[banner.image_url]) {
+					  texture = textures[banner.image_url];
+				  }
+				  else {
+					  texture = new THREE.TextureLoader().load(banner.image_url,
+					  function( texture ) {
+						   // Success callback of TextureLoader
+						   //texture.wrapS = THREE.RepeatWrapping;
+						   //texture.wrapT = THREE.RepeatWrapping;
+						   //texture.repeat.set( jsonMat.scaleu, jsonMat.scalev );
+						   //var material = new THREE.MeshLambertMaterial({
+							//   map: texture,
+							//   side: THREE.DoubleSide,
+							//   name: jsonMat.mname
+						   //});
+						   //THREEMatList.push( material );
+						   
+						   // We're done, so tell the promise it is complete
+						   material = new THREE.MeshBasicMaterial({ map: texture });
+						   finishLoader();
+					   },
+					   function(){
+						   finishLoader();
+					   },
+					   function(){
+						   finishLoader();
+					   }
+					  );
+					  textures[banner.image_url] = texture;
+				  }
+				  material = new THREE.MeshBasicMaterial({ map: texture });
+			  }
+			  
+			  if(banner.backgroundColor) {
+				  const backgroundColor = 0x8fbcd4;
+				  material = new THREE.MeshBasicMaterial({ color: new THREE.Color(backgroundColor) });
+			  }
+			  
+			  if(banner.text) {
+				  
+				  const loader = new THREE.FontLoader();
+	  
+				  loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+	  
+					  const geometryThree = new THREE.TextGeometry( banner.text, {
+						  font: font,
+						  size: 80,
+						  height: 5,
+						  curveSegments: 12,
+						  bevelEnabled: true,
+						  bevelThickness: 10,
+						  bevelSize: 8,
+						  bevelOffset: 0,
+						  bevelSegments: 5
+					  });
+					  
+					  const _text = new THREE.Mesh( geometryThree, material );
+					  scene.add( _text );
+				  });
+			  }
+	  
+			  const plane: any = new THREE.Mesh( geometry, material );
+			  plane.name = "BannerPlaneGeometry-" + indx;
+			  plane.rotation.x = banner.rotation._x;
+			  plane.rotation.y = banner.rotation._y;
+			  plane.rotation.z = banner.rotation._z;
+			  plane.position.x = banner.position.x;
+			  plane.position.y = banner.position.y;
+			  plane.position.z = banner.position.z;
+			  plane.scale.x = banner.scale.x;
+			  plane.scale.y = banner.scale.y;
+			  plane.scale.z = banner.scale.z;
+			  
+			  if(banner.callback) {
+				  plane.callback = banner.callback;
+			  }
+			  
+			  plane.container = container;
+			  
+			  scene.add( plane );
+	  
+		  });
+	   }    
     }
     
 	function listenForFullScreenEvents() {
-      window.addEventListener(objListener+':fullscreenOff', (e:any) => {
+      window.addEventListener('map:fullscreenOff', (e:any) => {
         setTimeout(() => {
           mainScene.fullScreen = false;
           onWindowResize();
         }, 300);
       });
-      window.addEventListener(objListener+':fullscreenIn', (e:any) => {
+      window.addEventListener('map:fullscreenIn', (e:any) => {
         setTimeout(() => {
           mainScene.fullScreen = true;
           onWindowResize();
@@ -493,8 +534,9 @@ export class ThreeFairService {
     }
 	
     scene = new THREE.Scene();
-	objScene = objScene;
-    createCamera();
+	const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    scene.add( light );
+	createCamera();
     createControls();
     createLight();
     createRenderer();

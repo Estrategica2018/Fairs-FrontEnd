@@ -1,38 +1,86 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { AbstractControl, ValidatorFn, FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 
 import { AlertController, ToastController } from '@ionic/angular';
-
+import { LoadingService } from './../../providers/loading.service';
+import { FairsService } from '../../api/fairs.service';
 
 @Component({
   selector: 'page-support',
   templateUrl: 'support.html',
   styleUrls: ['./support.scss'],
 })
-export class SupportPage {
+export class SupportPage implements OnInit {
   submitted = false;
-  supportMessage: string;
+  success = false;
+  
   dark = false;
-  isHover1: boolean	;
-  isHover2: boolean	;
-  isHover3: boolean	;
-  isHover4: boolean	;
-  isHover5: boolean	;
-  fair = null;
-  name: string;
-  email: string;
+  errors = null;
+  
+  messageForm: FormGroup;
 
   constructor(
-    public alertCtrl: AlertController,
-    public toastCtrl: ToastController
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
+	private formBuilder: FormBuilder,
+	private loading: LoadingService,
+	private fairsService: FairsService,
   ) { 
       this.listenForDarkModeEvents();
-      this.retriveFair();
   }
 
-  retriveFair() {
-    this.fair = { };
+ ngOnInit() {
+	 this.messageForm = this.formBuilder.group({
+            name: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            supportMessage: ['', [Validators.required, Validators.minLength(6)]]
+        });
   }
+  
+  get f() { return this.messageForm.controls; }
+  
+  onSubmit() {
+	  
+	this.submitted = true;
+
+	// stop here if form is invalid
+	if (this.messageForm.invalid) {
+		return;
+	}
+
+	this.loading.present({message:'Cargando...'});
+      
+      this.fairsService.getCurrentFair().
+      then( fair => {
+          const data = {
+            'name': this.messageForm.value['name'],
+            'email': this.messageForm.value['email'],
+            'supportMessage': this.messageForm.value['supportMessage'],
+            'fair_id': fair.id
+          }
+          this.fairsService.sendMessage(data)
+          .then(
+            success => {
+                if(success.success === 201) {
+                      this.presentToast(`Tu mensaje para el grupo de soporte ha sido enviado`);
+					  this.submitted = false;
+					  this.loading.dismiss();
+                    
+                }
+                else {
+                    this.loading.dismiss();
+                    this.errors = 'Consumiendo el servicio para envío de mensaje';
+                }
+            },
+            error => {
+                this.loading.dismiss();
+                this.errors = error;
+          });
+      });
+  }
+
+
   listenForDarkModeEvents() {
       window.addEventListener('dark:change', (e:any) => {
       setTimeout(() => {
@@ -41,42 +89,31 @@ export class SupportPage {
       }, 300);
     });
   }
-  /*async ionViewDidEnter() {
-    const toast = await this.toastCtrl.create({
-      message: 'This does not actually send a support request.',
-      duration: 3000
-    });
-    await toast.present();
-  }*/
-
-  async submit(form: NgForm) {
-    this.submitted = true;
-
-    if (form.valid) {
-      this.supportMessage = '';
-      this.submitted = false;
-
-      const toast = await this.toastCtrl.create({
-        message: 'Mensaje enviado.',
-        duration: 3000
-      });
-      await toast.present();
-    }
-  }
   
   openInNewTab(url) {
     var win = window.open(url, '_blank');
     win.focus();
   }
+  
+  async presentToast(message) {
+    let toast =  await this.toastCtrl.create({
+      message: message,
+      duration: 3000,
+      position: 'top'
+    });
+
+    await toast.present();
+  }
+   
 
   // If the user enters text in the support question and then navigates
   // without submitting first, ask if they meant to leave the page
   // async ionViewCanLeave(): Promise<boolean> {
   //   // If the support message is empty we should just navigate
-  //   if (!this.supportMessage || this.supportMessage.trim().length === 0) {
+  //   if (!this.messageForm.value.supportMessage || this.messageForm.value.supportMessage.trim().length === 0) {
   //     return true;
   //   }
-
+  //
   //   return new Promise((resolve: any, reject: any) => {
   //     const alert = await this.alertCtrl.create({
   //       title: 'Leave this page?',
@@ -86,7 +123,7 @@ export class SupportPage {
   //         { text: 'Leave', role: 'cancel', handler: resolve }
   //       ]
   //     });
-
+  //
   //     await alert.present();
   //   });
   // }

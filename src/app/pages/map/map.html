@@ -1,13 +1,29 @@
 
-<ion-content>
+<ion-content id="ionContent">
+
+  <!--iframe width="100%" height="100%" src="http://localhost:8000/map_pavilion/data"></iframe-->
+  <video 
+     [ngStyle]="{'opacity': intro && resources?.video ? 1 : 0, 'position': intro && resources?.video ? 'block' : 'absolute'}"
+	crossOrigin="anonymous"
+	webkit-playsinline
+    autoplay
+	[src]="resources?.video"
+    playsinline preload="metadata" data-aos="fade-up"
+    id="videoFair"
+    class="video"
+  >
+  </video>
   
-  <div #canvas class="canvas" [ngClass]="{'canvas-full-screen': fullScreen}"></div>
+  
+  <div [ngStyle]="{'opacity':  intro? 0: 1}" 
+  #canvasFair class="canvas" [ngClass]="{'canvas-full-screen': fullScreen}"></div>
+  
   <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
     <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
     <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
   </ion-button>
   
-  <div [ngClass]="{'d-none': !fullScreen}" class="tabs-menu">
+  <div class="tabs-menu">
     <ion-button color="light" (click)="onRouterLink('/app/tabs/schedule')">
       <ion-icon slot="start" name="calendar-outline"></ion-icon>
       <ion-label>Agenda</ion-label>
@@ -18,7 +34,7 @@
       <ion-label>Conferencistas</ion-label>
     </ion-button>
 
-    <ion-button color="light" (click)="onRouterLink('/app/tabs/map')">
+    <ion-button color="light" (click)="onRouterLink('/map')">
       <ion-icon slot="start" name="map-outline"></ion-icon>
       <ion-label>Mapa</ion-label>
     </ion-button>
@@ -26,7 +42,7 @@
     <ion-button color="light" (click)="onRouterLink('/app/tabs/about')">
       <ion-icon slot="start" name="information-circle-outline"></ion-icon>
       <ion-label>Acerca de</ion-label>
-    </ion-button>
+    </ion-button> 
     
   </div>
   

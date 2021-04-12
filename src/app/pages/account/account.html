@@ -1,7 +1,7 @@
 
 <ion-content fullscreen="true">
   
-  <div *ngIf="userData" class="padding-container ion-padding-top ion-text-center">
+  <div *ngIf="userData" class="padding-container ion-text-center">
     <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar" *ngIf="!userData.url_image">
     <img [src]="userData.url_image" class="avatar" *ngIf="userData.url_image">
     <h2>{{userData.name}} - {{userData.last_name}}</h2>

@@ -7,7 +7,7 @@
     <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
   </ion-button>
   
-  <div [ngClass]="{'d-none': !fullScreen}" class="tabs-menu">
+  <div class="tabs-menu">
     <ion-button color="light" (click)="onRouterLink('/app/tabs/schedule')">
       <ion-icon slot="start" name="calendar-outline"></ion-icon>
       <ion-label>Agenda</ion-label>
