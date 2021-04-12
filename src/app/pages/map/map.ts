@@ -18,6 +18,7 @@ import { LoadingService } from './../../providers/loading.service';
 export class MapPage implements AfterViewInit {
     
   @ViewChild('canvasPavilion', { static: true }) canvas: ElementRef;
+  pavilion = null;
   showStandsMap = {};
   fullScreen = false;
   resources: any;

@@ -14,7 +14,10 @@ import { FairsService } from '../../api/fairs.service';
 export class SupportPage implements OnInit {
   submitted = false;
   success = false;
-  
+  isHover1: boolean;
+  isHover2: boolean;
+  isHover3: boolean;
+  isHover4: boolean;
   dark = false;
   errors = null;
   

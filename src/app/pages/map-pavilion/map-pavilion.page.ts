@@ -159,4 +159,10 @@ export class MapPavilionPage implements OnInit {
     });
   }
   
+  onRouterLink(tab) {
+    this.fullScreen = false;
+    window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
+    this.router.navigate([tab]);
+  }
+  
 }

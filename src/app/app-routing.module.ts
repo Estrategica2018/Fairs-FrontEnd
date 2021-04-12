@@ -38,10 +38,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/meeting/meeting.module').then( m => m.MeetingPageModule)
   },
   {
-    path: 'terms',
-    loadChildren: () => import('./pages/terms/terms.module').then( m => m.TermsPageModule)
-  },
-  {
     path: 'super-admin',
     loadChildren: () => import('./pages/super-admin/super-admin.module').then( m => m.SuperAdminPageModule)
   },

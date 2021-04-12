@@ -23,10 +23,6 @@ const routes: Routes = [
   {
     path: 'agenda/:agendaId',
     loadChildren: () => import('./agenda/agenda.module').then( m => m.AgendaPageModule)
-  },
-  {
-    path: 'speakers-select',
-    loadChildren: () => import('./speakers-select/speakers-select.module').then( m => m.SpeakersSelectPageModule)
   }
 ];
 

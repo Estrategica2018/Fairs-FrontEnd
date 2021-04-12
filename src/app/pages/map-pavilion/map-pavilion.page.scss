@@ -59,3 +59,17 @@ video {
 ion-content {
   top: 22px;
 }
+
+@media (max-width: 690px) {
+  .tabs-menu {
+      right: calc(34% - 10px);
+	  left: 0;
+      ion-button {
+	     font-size: 10px;
+		 
+	     ion-label {
+           font-size: 10px;
+		 }
+	  }
+	}
+}

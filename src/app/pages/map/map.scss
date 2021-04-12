@@ -36,3 +36,13 @@
 ion-content {
   top: 29px;
 }
+
+@media (max-width: 690px) {
+  .tabs-menu {
+      ion-button {
+	     ion-label {
+           font-size: 10px;
+		 }
+	  }
+	}
+}
