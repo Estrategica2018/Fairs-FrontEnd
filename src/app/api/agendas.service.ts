@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
@@ -34,10 +34,10 @@ export class AgendasService {
                   catchError(e => {
                     console.log(e);
                     if(e.status && e.statusText) {
-                      throw new Error(`Error consultando el servicio de agenda: ${e.status} - ${e.statusText}`);    
+                      throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);    
                     }
                     else {
-                      throw new Error(`Error consultando el servicio de agenda`);    
+                      throw new Error(`Consultando el servicio de agenda`);    
                     }
                   })
                 )
@@ -87,15 +87,78 @@ export class AgendasService {
 		  catchError(e => {
 			console.log(e);
 			if(e.status && e.statusText) {
-			  throw new Error(`Error consultando el servicio para actualizar conferencistas: ${e.status} - ${e.statusText}`);    
+			  throw new Error(`Consultando el servicio para actualizar conferencistas: ${e.status} - ${e.statusText}`);    
 			}
 			else {
-			  throw new Error(`Error consultando el servicio para actualizar conferencistas`);    
+			  throw new Error(`Consultando el servicio para actualizar conferencistas`);    
 			}
 		  })
 		)
 		.subscribe((data : any )=> {
 			if(data.success) {
+			   resolve(data);
+			}
+			else {
+				reject(JSON.stringify(data));
+			}
+		},error => {
+			reject(error)
+		});   
+    });
+  }
+  
+  updateAudience(fairId, meeting_id: string, data): any {
+    return new Promise((resolve, reject) => {
+        this.http.post(`/api/audience/meetings?fair_id=${fairId}&meeting_id=${meeting_id}`, data)
+		.pipe(
+		  timeout(30000),
+		  catchError(e => {
+			console.log(e);
+			if(e.status && e.statusText) {
+			  throw new Error(`Consultando el servicio para actualizar lista de correo: ${e.status} - ${e.statusText}`);    
+			}
+			else {
+			  throw new Error(`Consultando el servicio para actualizar lista de correo`);    
+			}
+		  })
+		)
+		.subscribe((data : any )=> {
+			if(data.success) {
+			   resolve(data);
+			}
+			else {
+				reject(JSON.stringify(data));
+			}
+		},error => {
+			reject(error)
+		});   
+    });
+  }
+  
+  generateVideoToken(fair_id : string, meeting_id: string, userDataSession: any): any {
+    return new Promise((resolve, reject) => {
+        
+	  const httpOptions = {
+        headers: new HttpHeaders({
+         'Authorization':  'Bearer ' + userDataSession.token
+          })
+       };
+  
+       this.http.get(`/api/meeting/generate-video-token/${fair_id}/${meeting_id}`,httpOptions)
+		.pipe(
+		  timeout(30000),
+		  catchError(e => {
+			console.log(e);
+			if(e.status && e.statusText) {
+			  throw new Error(`Consultando el servicio para generar acceso a conferencia : ${e.status} - ${e.statusText}`);    
+			}
+			else {
+			  throw new Error(`Consultando el servicio para generar acceso a conferencia`);
+			}
+		  })
+		)
+		.subscribe((data : any )=> {
+			if(data.success == 201) {
 			   resolve(data);
 			}
 			else {

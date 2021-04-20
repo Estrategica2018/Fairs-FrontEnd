@@ -34,10 +34,6 @@ const routes: Routes = [
     canLoad: [CheckTutorial]
   },
   {
-    path: 'meeting',
-    loadChildren: () => import('./pages/meeting/meeting.module').then( m => m.MeetingPageModule)
-  },
-  {
     path: 'super-admin',
     loadChildren: () => import('./pages/super-admin/super-admin.module').then( m => m.SuperAdminPageModule)
   },
@@ -175,7 +171,16 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
 	  }
 	]
-  }
+  },
+  {
+	path: 'meeting/:meetingId',
+	children: [
+	  {
+		path: '',
+		loadChildren: () => import('./pages/meeting/meeting.module').then( m => m.MeetingPageModule)
+	  }
+	]
+  },
 
     
 ];

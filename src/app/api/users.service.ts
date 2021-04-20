@@ -102,8 +102,8 @@ export class UsersService {
     else return this.storage.remove(this.HAS_LOGGED_IN);
   }
   
-  async getUser(): Promise<boolean> {
-    return await this.storage.get(this.HAS_LOGGED_IN);
+  getUser(): Promise<boolean> {
+    return this.storage.get(this.HAS_LOGGED_IN);
   }
  
   updateUser(userDataSession: any, userData: any): Observable<any> {
@@ -113,8 +113,8 @@ export class UsersService {
         'Authorization':  'Bearer ' + userDataSession.token
       })
     };
-    
-    return this.http.post(`${this.url}/api/user/update`,userData, httpOptions)
+	
+	return this.http.post(`${this.url}/api/user/update`,userData, httpOptions)
    .pipe(
       timeout(2000),
       catchError(e => {

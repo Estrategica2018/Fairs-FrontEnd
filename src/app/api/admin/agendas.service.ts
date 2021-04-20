@@ -27,10 +27,10 @@ export class AdminAgendasService {
                 console.log(e);
                 if(e.status && e.statusText) {
 				  const statusText = e.statusText + (e.error ? e.error.message : '');
-                  throw new Error(`Error consultando el servicio de agenda: ${e.status} - ${statusText}`);    
+                  throw new Error(`Consultando el servicio de agenda: ${e.status} - ${statusText}`);    
                 }
                 else {
-                  throw new Error(`Error consultando el servicio de agenda`);    
+                  throw new Error(`Consultando el servicio de agenda`);    
                 }
               })
             )
@@ -56,10 +56,10 @@ export class AdminAgendasService {
               catchError(e => {
                 console.log(e);
                 if(e.status && e.statusText) {
-                  throw new Error(`Error consultando el servicio para modificar agenda: ${e.status} - ${e.statusText}`);    
+                  throw new Error(`Consultando el servicio para modificar agenda: ${e.status} - ${e.statusText}`);    
                 }
                 else {
-                  throw new Error(`Error consultando el servicio para modificar agenda`);    
+                  throw new Error(`Consultando el servicio para modificar agenda`);    
                 }
               })
             )
@@ -85,10 +85,10 @@ export class AdminAgendasService {
               catchError(e => {
                 console.log(e);
                 if(e.status && e.statusText) {
-                  throw new Error(`Error consultando el servicio para modificar agenda: ${e.status} - ${e.statusText}`);    
+                  throw new Error(`Consultando el servicio para modificar agenda: ${e.status} - ${e.statusText}`);    
                 }
                 else {
-                  throw new Error(`Error consultando el servicio para modificar agenda`);    
+                  throw new Error(`Consultando el servicio para modificar agenda`);    
                 }
               })
             )

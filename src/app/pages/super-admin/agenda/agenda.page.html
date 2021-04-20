@@ -1,16 +1,40 @@
 <ion-content fullscreen="true">
-<ion-header class="mt-4">
-  <ion-toolbar>
-    <ion-buttons slot="end" *ngIf="action==='update'">
-      <ion-button color="danger" (click)="onDeleteAgenda()">
-        <ion-icon slot="start" name="trash-outline"></ion-icon>
-        Borrar
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Administrar Agenda</ion-title>
-  </ion-toolbar>
-</ion-header>
+	<ion-header class="mt-4">
+	  <ion-toolbar>
+		<ion-buttons slot="end" *ngIf="action==='update'">
+		  <ion-button color="danger" (click)="onDeleteAgenda()">
+			<ion-icon slot="start" name="trash-outline"></ion-icon>
+			Borrar
+		  </ion-button>
+		</ion-buttons>
+		<ion-title>Administrar Agenda</ion-title>
+	  </ion-toolbar>
+	</ion-header>
+	
+	<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="schedule">
+      <ion-icon name="calendar"></ion-icon>
+      <ion-label>Schedule</ion-label>
+      <ion-badge>6</ion-badge>
+    </ion-tab-button>
 
+    <ion-tab-button tab="speakers">
+      <ion-icon name="person-circle"></ion-icon>
+      <ion-label>Speakers</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="map">
+      <ion-icon name="map"></ion-icon>
+      <ion-label>Map</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="about">
+      <ion-icon name="information-circle"></ion-icon>
+      <ion-label>About</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
 
   <ion-item class="padding-container agenda-logo mt-4" *ngIf="agenda" button="true" (click)="onChangeImage()">
     <img [src]="agenda?.resources?.url_image" *ngIf="agenda.resources?.url_image">
@@ -67,7 +91,7 @@
             </ion-select-option>
         </ion-select>
       </ion-item>
-      
+	        
       <ion-item>
         <ion-label> Tipo de público </ion-label>
         <ion-select [(ngModel)]="agenda.audience_config" >
@@ -75,13 +99,25 @@
             </ion-select-option>
         </ion-select>
       </ion-item>
+	  
+	  <div class="ion-padding">
+            <ion-button  (click)="onUpdateAgenda()" *ngIf="action==='update'"  expand="block">
+             <ion-label > Guardar Cambios </ion-label>
+                <ion-icon slot="end" name="save-outline"></ion-icon>
+            </ion-button>
+            <ion-button *ngIf="action==='create'" (click)="onCreateAgenda()" expand="block">
+             <ion-label > Crear Agenda </ion-label>
+              <ion-icon slot="end" name="save-outline"></ion-icon>
+            </ion-button>
+      </div>
       
-      <ion-item *ngIf="agenda.audience_config === '3'">
+      <ion-item *ngIf="action==='update' && agenda.audience_config === '3'">
         <ion-label position="stacked">Token</ion-label>
         <ion-input [(ngModel)]="agenda.token" readonly ></ion-input>
       </ion-item>
-      
-      <ion-toolbar *ngIf="agenda.audience_config === '2'">
+	  
+      <ion-item *ngIf="action==='update' && agenda.audience_config === '2'">
+       <ion-toolbar>
         <ion-buttons slot="secondary">
           <ion-button>
             <ion-icon slot="icon-only" name="person-circle"></ion-icon>
@@ -95,19 +131,10 @@
             <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
           </ion-button>
         </ion-buttons>
-        <ion-title>Default Buttons</ion-title>
+		<ion-label slot="start">Lista de correos</ion-label>
       </ion-toolbar>
-      
-      <div class="ion-padding">
-            <ion-button expand="block" (click)="onUpdateAgenda()" *ngIf="action==='update'">
-             <ion-label > Guardar Cambios </ion-label>
-                <ion-icon slot="end" name="save-outline"></ion-icon>
-            </ion-button>
-            <ion-button *ngIf="action==='create'" (click)="onCreateAgenda()" expand="block">
-             <ion-label > Crear Agenda </ion-label>
-              <ion-icon slot="end" name="save-outline"></ion-icon>
-            </ion-button>
-      </div>
+      </ion-item>
+	  
 	  
       <ion-item lines="none" *ngIf="action==='update'">
         <ion-toolbar>

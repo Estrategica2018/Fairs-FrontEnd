@@ -28,10 +28,10 @@ export class FairsService {
           catchError(e => {
             console.log(e);
             if(e.status && e.statusText) {
-              throw new Error(`Error consultando el servicio de feria: ${e.status} - ${e.statusText}`);    
+              throw new Error(`Consultando el servicio de feria: ${e.status} - ${e.statusText}`);    
             }
             else {
-              throw new Error(`Error consultando el servicio de feria`);    
+              throw new Error(`Consultando el servicio de feria`);    
             }
           })
         )
@@ -111,10 +111,10 @@ export class FairsService {
               catchError(e => {
                 console.log(e);
                 if(e.status && e.statusText) {
-                  throw new Error(`Error consultando el servicio para envío de mensajes: ${e.status} - ${e.statusText}`);
+                  throw new Error(`Consultando el servicio para envío de mensajes: ${e.status} - ${e.statusText}`);
                 }
                 else {
-                  throw new Error(`Error consultando el servicio para envío de mensajes`);
+                  throw new Error(`Consultando el servicio para envío de mensajes`);
                 }
               })
             )

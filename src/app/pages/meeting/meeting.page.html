@@ -1,13 +1,54 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>meeting</ion-title>
-  </ion-toolbar>
-</ion-header>
+  <!--iframe [src]="link" *ngIf="link">
+  </iframe-->
+<ion-content class="">
 
-<ion-content>
-  <iframe [src]="link" *ngIf="link">
-  </iframe>
+  <div id="gui"></div>
+  
+  <div [hidden]="!errors" class="error-video not-found">
+       <div class="alert alert-danger alert-dismissible">
+         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+         <strong>Error!</strong> {{errors}}
+       </div>
+  </div>
+
+  <video #videoMeeting 
+    id="{{'videoMeeting_'+agenda?.id}}"
+    [ngStyle]="{'opacity': intro && resources?.video ? 1 : 0, 'position': intro && resources?.video ? 'block' : 'absolute'}"
+    muted 
+    [src]="[resources?.video]"
+    class="video">
+  </video>
+  
+  <div [ngStyle]="{'opacity':  intro? 0: 1}" 
+  #canvasMeeting class="canvas" [ngClass]="{'canvas-full-screen': fullScreen}"></div>
+  
+  <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
+    <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
+    <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
+  </ion-button>
+  
+  <div class="tabs-menu">
+    <ion-button color="light" (click)="onRouterLink('/app/tabs/schedule')">
+      <ion-icon slot="start" name="calendar-outline"></ion-icon>
+      <ion-label>Agenda</ion-label>
+    </ion-button>
+
+    <ion-button color="light" (click)="onRouterLink('/app/tabs/speakers')">
+      <ion-icon slot="start" name="people-outline"></ion-icon>
+      <ion-label>Conferencistas</ion-label>
+    </ion-button>
+
+    <ion-button color="light" (click)="onRouterLink('/map')">
+      <ion-icon slot="start" name="map-outline"></ion-icon>
+      <ion-label>Mapa</ion-label>
+    </ion-button>
+
+    <ion-button color="light" (click)="onRouterLink('/app/tabs/about')">
+      <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+      <ion-label>Acerca de</ion-label>
+    </ion-button> 
+    
+  </div>
+
+  
 </ion-content>

@@ -10,15 +10,6 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'meeting/:meetingId',
-        children: [
-          {
-            path: '',
-            loadChildren: () => import('../meeting/meeting.module').then(m => m.MeetingPageModule)
-          }
-        ]
-      },
-      {
         path: 'schedule',
         children: [
           {

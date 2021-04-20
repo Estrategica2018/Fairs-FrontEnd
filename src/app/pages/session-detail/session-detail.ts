@@ -61,9 +61,6 @@ export class SessionDetailPage {
   ionViewDidEnter() {
     this.defaultHref = `/app/tabs/schedule`;
   }
-
-  goToMeeting(agendaId: string) {
-    this.router.navigate(['/app/tabs/meeting/' + agendaId]);
-  }
+ 
   
 }

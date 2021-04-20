@@ -32,10 +32,10 @@ export class SpeakersService {
                       catchError(e => {
                         console.log(e);
                         if(e.status && e.statusText) {
-                          throw new Error(`Error consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);    
+                          throw new Error(`Consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);    
                         }
                         else {
-                          throw new Error(`Error consultando el servicio de conferencistas`);    
+                          throw new Error(`Consultando el servicio de conferencistas`);    
                         }
                       })
                     )

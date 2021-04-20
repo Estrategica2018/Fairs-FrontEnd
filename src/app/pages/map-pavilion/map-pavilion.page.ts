@@ -58,6 +58,7 @@ export class MapPavilionPage implements OnInit {
             //_self.onLoadingDismiss();
         }
         ,100);
+		
     
         const mbSkipPavilion = this.fairsService.getPavilionIntro('pavilion_'+pavilionId);
         
@@ -71,7 +72,9 @@ export class MapPavilionPage implements OnInit {
             videoEl.autoplay = true;
             videoEl.muted = true;
             //this.onResize();
-            
+            videoEl.onloadstart = function() {
+				_self.onResize();
+			}
             videoEl.onended = function() {
                 _self.intro = false;
                 _self.fairsService.setPavilionIntro('pavilion_'+pavilionId);
@@ -82,6 +85,7 @@ export class MapPavilionPage implements OnInit {
         else {
             this.intro = false;
         }
+		
     });
   }
   
@@ -126,7 +130,7 @@ export class MapPavilionPage implements OnInit {
  
   @HostListener('window:resize', ['$event'])
   onResize() {
-          const videoElem = <HTMLMediaElement>document.getElementById('videoPavilion_'+this.pavilion.id);
+        const videoElem = <HTMLMediaElement>document.getElementById('videoPavilion_'+this.pavilion.id);
         
         if(videoElem) {
             const container = this.canvas.nativeElement;

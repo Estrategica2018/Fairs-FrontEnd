@@ -41,6 +41,7 @@ export class AgendaPage implements OnInit {
 	private modalCtrl: ModalController,
 	private routerOutlet: IonRouterOutlet,
     ) { 
+		this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': '/assets/icon/null-21_1_joxd4u.jpg' } };
 	}
 
   ngOnInit() {
@@ -80,7 +81,6 @@ export class AgendaPage implements OnInit {
 			}
 			else { 
 			  this.action = 'create';
-			  this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': '/assets/icon/null-21_1_joxd4u.jpg' } };
 			}
 		}
 		else {
@@ -116,7 +116,8 @@ export class AgendaPage implements OnInit {
 
   onCreateAgenda() {
     const data = Object.assign({ 'topic': this.agenda.title, 
-		'agenda' : this.agenda.description, 'fair_id': this.fair.id }, this.agenda);
+								 'agenda' : this.agenda.description, 'fair_id': this.fair.id,
+		                         'category_id': this.agenda.category.id		}, this.agenda);
     
     this.errors = null;
     this.success = null;
@@ -125,14 +126,10 @@ export class AgendaPage implements OnInit {
     this.adminAgendasService.create(data)
       .then((response) => {
         this.loading.dismiss();
-        this.success = `Agenda creada exitosamente`;
-        //this.fairsService.refreshCurrentFair().then((fair)=>{
-            //this.fair = fair;
-            //const tab = `/super-admin/fair`;
-            //this.onRouterLink(tab)
+			this.success = `Agenda creada exitosamente`;
             this.action = 'update';
+			response.agenda.category = this.agenda.category;
             this.agenda = response.agenda;
-        //});
       },
       (error) => {
           this.loading.dismiss();
@@ -271,7 +268,7 @@ export class AgendaPage implements OnInit {
 	if (data) {
 	  this.agendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
 	    .then((invited_speakers)=>{
-			this.success = `Conferencias asociados exitosamente`;
+			this.success = `Conferencistas asociados exitosamente`;
         })
         .catch(error => {
 			this.errors = error;

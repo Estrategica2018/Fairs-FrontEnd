@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import {  GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -49,6 +50,7 @@ export class ThreePavilionService {
       container,
       alpha: true,
     });
+	renderer.setClearColor( 0x000000, 0 ); // the default
     
     //let renderer = new THREE.WebGLRenderer({ alpha: false, });
     let modelLoaderList = {};
@@ -199,7 +201,7 @@ export class ThreePavilionService {
       container.addEventListener( 'pointerdown', onPointerDown, false );
       container.addEventListener( 'click', onPointerDown, false );
       container.addEventListener( 'mousemove', onPointerDown, false );
-      container.addEventListener( 'keydown', onKeydown);
+      window.addEventListener( 'keydown', onKeydown);
     }
   
     function update () {
@@ -354,16 +356,15 @@ export class ThreePavilionService {
           
           let obj : any = null;
           obj = intersects[0].object;
-          if(obj.callbacktempasdfasdf) {
+          if(obj.callback) {
               
               document.body.style.cursor = 'pointer';
           
               if(event.type === "click") {
                   //let objSel = null;
-                  //
-                  //
                   //objSel.type = obj.callback.type;
-                  //initialize(container, objSel, mainScene);
+				  //initialize(container, objSel, mainScene);
+				  mainScene.onViewerMeeting();
                   
               }
           }
@@ -423,6 +424,26 @@ export class ThreePavilionService {
       });
     }
     
+    function createPanel() {
+
+		if(!mainScene.user || !mainScene.user.name ) return;
+		
+		const panel = new GUI( { width: 310 , autoPlace: false} );
+		var customContainer = document.getElementById('gui');
+        customContainer.appendChild(panel.domElement);
+
+		const folder3 = panel.addFolder( 'Auditorio' );
+
+		const panelSettings = {
+			'Ingresar como': mainScene.user.aliasName
+		};
+		
+		folder3.add( panelSettings, 'Ingresar como', '', '', '' ).onChange( function ( alias ) {
+			mainScene.user.aliasName = alias;
+		});
+		folder3.open();
+	}
+
     let sizeBanners = 0;
     let bannersLoaded = 0;    
     
@@ -559,12 +580,12 @@ export class ThreePavilionService {
     createBanners();
     createVideos();
     onWindowResize();
+	createPanel();
     listenForFullScreenEvents();
     
     
 
     start();
   }
-  
 }
 

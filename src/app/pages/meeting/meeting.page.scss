@@ -2,3 +2,113 @@ iframe {
     width: 100%;
     height: 100%;
 }
+
+.canvas {
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #8fbcd4;
+    position: absolute;
+    padding-left: 0px;
+    z-index: 10;
+    overflow: auto;
+    canvas {
+       margin-left: -2px;
+       margin-top: -2px;
+    }
+}
+.canvas-full-screen {
+    height: calc(100% - 26px);
+}
+
+
+@media (max-width: 991px) {
+  .container {
+    left: 0;
+  }
+}
+
+
+.full-screen-button {
+  position: absolute;
+  top: 0;
+  z-index: 11;
+}
+
+.tabs-menu {
+  position: absolute;
+  bottom: 20px;
+  left: calc(34% - 10px);
+  z-index: 11;
+}
+
+video {
+  margin-left: -8px;
+  margin-top: -2px;
+  width: 100%;
+  height: 100%;
+}
+
+.video {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+}
+
+.image-background {
+  width: 100%;
+  height: 100%;
+}
+
+
+@media (max-width: 690px) {
+  .tabs-menu {
+      right: calc(34% - 10px);
+	  left: 0;
+      ion-button {
+	     font-size: 10px;
+		 
+	     ion-label {
+           font-size: 10px;
+		 }
+	  }
+	}
+}
+
+
+.viewer-meeting-button {
+  position: absolute;
+  top: 42vh;
+  right: 36vw;
+  z-index: 11;
+  width: 114px;
+  height: 105px;
+}
+
+ion-router-outlet {
+    margin-top: 57px;
+}
+
+.c {
+  input { 
+     height: 19px;
+  }
+}
+
+.error-video {
+   position: absolute;
+   top:100px;
+   left: 100px;
+   z-index: 120;
+}
+
+ion-content {
+    top: 29px;
+}
+
+#gui {
+  position: absolute;
+  top: 4px;
+  left: 58px;
+  z-index: 200;
+}
