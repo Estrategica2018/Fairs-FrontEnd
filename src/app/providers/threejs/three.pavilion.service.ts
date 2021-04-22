@@ -442,6 +442,9 @@ export class ThreePavilionService {
 			mainScene.user.aliasName = alias;
 		});
 		folder3.open();
+		
+		var closeButton = <HTMLElement> document.querySelector('.close-button');
+        closeButton.style.display = 'none';
 	}
 
     let sizeBanners = 0;

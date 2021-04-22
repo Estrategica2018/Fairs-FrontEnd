@@ -57,8 +57,10 @@ export class MeetingPage implements OnInit {
 	
 	this.usersService.getUser()
 	.then((userActive)=>{
-		this.user = userActive;
-		this.user.aliasName = this.user.name + ' ' + this.user.last_name;
+		if(userActive) {
+		  this.user = userActive;
+		  this.user.aliasName = this.user.name + ' ' + this.user.last_name;
+		}
 	
 		this.fairsService.getCurrentFair()
 		.then( fair => {
