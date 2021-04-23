@@ -20,8 +20,8 @@ export class UsersService {
     private storage: Storage) { 
   }
   
-  login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.url}/api/login`, {email: email, password: password})
+  login(email: string, password: string, fair_id: string): Observable<any> {
+    return this.http.post(`${this.url}/api/login`, {email: email, password: password, fair_id: fair_id})
    .pipe(
       timeout(2000),
       catchError(e => {

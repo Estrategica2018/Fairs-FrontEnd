@@ -78,7 +78,7 @@ export class SignupPage implements OnInit {
             data => {
                 if(data.success === 201) {
                     this.loading.dismiss();
-                    this.onLogin(Object.assign({password:this.registerForm.value['password']}, data.data));
+                    this.onLogin(Object.assign({password:this.registerForm.value['password']}, data.data), fair.id);
                 }
                 else {
                     this.loading.dismiss();
@@ -108,8 +108,8 @@ export class SignupPage implements OnInit {
   }
 
   
-  onLogin(userData) {
-      this.usersService.login(userData.email,userData.password)
+  onLogin(userData, fair_id) {
+      this.usersService.login(userData.email,userData.password, fair_id)
       .subscribe(
         data => {
             const token = data.data;
