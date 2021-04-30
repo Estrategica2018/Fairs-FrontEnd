@@ -23,6 +23,7 @@ export class MapPage implements AfterViewInit {
   fullScreen = false;
   resources: any;
   intro = false;
+  errors = null;
 
   constructor(
     @Inject(DOCUMENT) private doc: Document,
@@ -37,17 +38,22 @@ export class MapPage implements AfterViewInit {
   }
   
   ngAfterViewInit() {
-    this.loading.present({message:'Cargando...'});
+    this.errors = null;
+	
+	this.loading.present({message:'Cargando...'});
     this.fairsService.getCurrentFair().then((fair)=>{
-        fair.resources._defaultWidth = 1092;
-        fair.resources._defaultHeight = 607;
         let _self = this;
+		console.log(fair);
         setTimeout(function(){
             _self.three.initialize(_self.canvas.nativeElement, fair, _self);
             _self.onLoadingDismiss();
         }
         ,100);
-    });      
+    }, error => {
+        this.loading.dismiss();
+        console.log(error);
+		this.errors = `Consultando el servicio del mapa general de la feria`;
+    });
   }
 
   onLoadingDismiss(){

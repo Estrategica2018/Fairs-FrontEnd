@@ -20,11 +20,11 @@
     <ion-list lines="" *ngIf="pavilion">
       <ion-item button="true">
         <ion-label> Nombre </ion-label>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="pavilion.name" name="name"></ion-input>
+        <ion-input class="ml-auto" class="text-right" [(ngModel)]="pavilion.name" (ionChange)="editSave=true" name="name"></ion-input>
       </ion-item>
       <ion-item button="true">
         <ion-label> Descripción </ion-label>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="pavilion.description" name="description"></ion-input>
+        <ion-input class="ml-auto" class="text-right" [(ngModel)]="pavilion.description" (ionChange)="editSave=true" name="description"></ion-input>
       </ion-item>
       <ion-list-header> Locales Comerciales </ion-list-header> 
       <ion-item>
@@ -56,7 +56,7 @@
     </ion-list>
 
     <div class="ion-padding">
-      <ion-button expand="block" [disabled]="!editSave">
+      <ion-button expand="block" [disabled]="!editSave" (click)="updatePavilion()">
         <ion-label > Guardar </ion-label>
         <ion-icon slot="end" name="save-outline"></ion-icon>
       </ion-button>

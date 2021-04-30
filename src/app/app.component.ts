@@ -50,10 +50,7 @@ export class AppComponent implements OnInit {
       this.fairsService.getCurrentFair().
       then( fair => {
         this.fair = fair;
-        
-      }, errors => {
-          
-      });
+      },error=> console.log(error));
   }
 
   ngOnInit() {

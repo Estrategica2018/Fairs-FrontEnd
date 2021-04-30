@@ -28,7 +28,7 @@ export class AgendasService {
             
             this.fairsService.getCurrentFair().
               then( fair => {
-                this.http.get(`/api/agenda?fair_id=${fair.id}`)
+                this.http.get(`/api/agenda/list?fair_id=${fair.id}`)
                 .pipe(
                   timeout(30000),
                   catchError(e => {
@@ -170,4 +170,33 @@ export class AgendasService {
     });
   }
   
+  getEmails(fairId, agendaId: string): any {
+    return new Promise((resolve, reject) => {
+        this.http.get(`/api/agenda/getEmails/${fairId}/${agendaId}`)
+		.pipe(
+		  timeout(30000),
+		  catchError(e => {
+			console.log(e);
+			if(e.status && e.statusText) {
+			  throw new Error(`Consultando el servicio para retornar la lista de correos: ${e.status} - ${e.statusText}`);    
+			}
+			else {
+			  throw new Error(`Consultando el servicio para retornar la lista de correos`);    
+			}
+		  })
+		)
+		.subscribe((data : any )=> {
+			if(data.success) {
+			   resolve(data);
+			}
+			else {
+			   reject(JSON.stringify(data));
+			}
+		},error => {
+			reject(error)
+		});   
+    });
+  }
+  
+
 }

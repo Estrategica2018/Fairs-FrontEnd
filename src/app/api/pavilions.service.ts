@@ -37,7 +37,7 @@ export class PavilionsService {
                       throw new Error(`Consultando el servicio de pabellones: ${e.status} - ${e.statusText}`);    
                     }
                     else {
-                      throw new Error(`Consultando el servicio de pabellones`);    
+                      throw new Error(`Consultando el servicio de pabellones`);
                     }
                   })
                 )
@@ -48,7 +48,7 @@ export class PavilionsService {
                 },error => {
                     reject(error)
                 });
-              });
+              },error => reject(error));
         })
     }
     else {
@@ -73,5 +73,36 @@ export class PavilionsService {
          });    
     });
   }
-  
+
+  update(pavilionId: string, data: any): any {
+    return new Promise((resolve, reject) => {
+        this.http.post(`/api/pavilion/update/${pavilionId}`, data)
+		.pipe(
+		  timeout(30000),
+		  catchError(e => {
+			console.log(e);
+			if(e.status && e.statusText) {
+			  throw new Error(`Consultando el servicio para actualizar el pabellón: ${e.status} - ${e.statusText}`);    
+			}
+			else {
+			  throw new Error(`Consultando el servicio para actualizar el pabellón`);    
+			}
+		  })
+		)
+		.subscribe((response : any )=> {
+			this.refresTime = moment();
+			if(response.success == 201) {
+			  resolve(processData(response.data));
+			}
+			else {
+				reject(JSON.stringify(response.data));
+			}
+		},error => {
+			reject(error)
+		});
+		
+		
+    });
+  }
+    
 }

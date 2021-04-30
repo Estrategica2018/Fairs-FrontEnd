@@ -5,6 +5,9 @@ import { AbstractControl, ValidatorFn, FormGroup, FormControl, FormBuilder, Vali
 import { AlertController, ToastController } from '@ionic/angular';
 import { LoadingService } from './../../providers/loading.service';
 import { FairsService } from '../../api/fairs.service';
+import { ActivatedRoute } from '@angular/router';
+import { AgendasService } from './../../api/agendas.service';
+import { DatePipe } from '@angular/common'
 
 @Component({
   selector: 'page-support',
@@ -29,16 +32,64 @@ export class SupportPage implements OnInit {
 	private formBuilder: FormBuilder,
 	private loading: LoadingService,
 	private fairsService: FairsService,
+	private route: ActivatedRoute,
+	private agendasService: AgendasService,
+	private datepipe: DatePipe,
   ) { 
       this.listenForDarkModeEvents();
   }
 
  ngOnInit() {
-	 this.messageForm = this.formBuilder.group({
-            name: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            supportMessage: ['', [Validators.required, Validators.minLength(6)]]
-        });
+	
+	
+    //const orgstructure = this.route.snapshot.paramMap.get('orgstructure');
+	const orgstructure = this.route.snapshot.queryParams.orgstructure;
+	
+	if(orgstructure=='Agenda') {
+		//const sessionId = this.route.snapshot.paramMap.get('sessionId');
+		const sessionId = this.route.snapshot.queryParams.sessionId;
+		this.loading.present({message:'Cargando...'});
+		
+		this.agendasService.get(sessionId)
+		 .then((agenda) => {
+			this.loading.dismiss();
+			this.errors = null;
+			
+			const strDay = this.datepipe.transform(new Date(agenda.start_at), 'EEEE, MMMM d, y');
+			const startHour = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+			const endHour = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
+			const location = agenda.room ? agenda.room.name : '';
+			
+			const session = Object.assign({
+			  "strDay": strDay,
+			  "timeStart": startHour,
+			  "timeEnd": endHour,
+			  "location": location
+			},agenda);
+	        
+			let message = '';
+			message =  `Buen día,`;
+			message +=  `\n Quisiera obtener información sobre el evento "${session.description}" `;
+			message +=  ` realizado el día ${session.strDay} `;
+			if(session.location) {
+			  message +=  ` en ${session.location}`;
+			}
+			
+			this.messageForm.controls['supportMessage'].setValue(message);	
+			
+		})
+		.catch(error => {
+		   this.loading.dismiss();
+		   this.errors = error;
+		});
+	}
+	
+	this.messageForm = this.formBuilder.group({
+		name: ['', Validators.required],
+		email: ['', [Validators.required, Validators.email]],
+		supportMessage: ['', [Validators.required, Validators.minLength(6)]]
+	});
+	    
   }
   
   get f() { return this.messageForm.controls; }

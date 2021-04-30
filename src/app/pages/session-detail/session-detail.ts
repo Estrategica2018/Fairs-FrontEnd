@@ -61,6 +61,11 @@ export class SessionDetailPage {
   ionViewDidEnter() {
     this.defaultHref = `/app/tabs/schedule`;
   }
+  
+  onSupportClick() {
+	 //     this.router.navigateByUrl('/support');
+	 this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
+  }
  
   
 }

@@ -54,7 +54,7 @@ export class FairsService {
                 //this.fairName = window.location.href.split('.')[0].replace('http://','').replace('https://','');
                 this.fairName = 'feriatecnologica2021';
             } catch(error) {
-                this.rejectToExit(`No se encontraron datos para la feria`);
+                reject(`No se encontraron datos para la feria`);
             }
         
             this.list()
@@ -82,23 +82,18 @@ export class FairsService {
                       return;
                     }
                 }
-                this.rejectToExit(`No se encontraron datos para la feria: ${this.fairName}`);
+                reject(`No se encontraron datos para la feria: ${this.fairName}`);
               },error => { 
-                this.rejectToExit(error)
+                reject(error)
              })
             .catch(error => { 
-                this.rejectToExit(error)
+                reject(error)
              });
         });
     }
     else {
         return new Promise((resolve, reject) => resolve(this.fair));
     }
-  }
-  
-  rejectToExit(error) {
-      //window.location="https://educonexiones.com/feriasVirtuales/";
-      alert(error);
   }
   
   sendMessage(messageData): Promise<any> {

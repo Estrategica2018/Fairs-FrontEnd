@@ -26,11 +26,15 @@ export class SpeakerListPage {
      .then((data) => {
         this.loading.dismiss();
         this.speakers = data;
+     },error => {
+        this.loading.dismiss();
+        this.errors = `Consultando el servicio para conferencistas`;
+        console.log(error);
      })
      .catch(error => {
         this.loading.dismiss();
         this.errors = `Consultando el servicio para conferencistas`;
-        console.log(error);
+        alert(error);
      });
   }
 }

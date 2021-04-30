@@ -34,5 +34,18 @@ export class PavilionPage implements OnInit {
        this.errors = error;
     });
   }
+  
+  updatePavilion(){
+	this.loading.present({message:'Cargando...'});
+	this.pavilionsService.update(this.pavilion.id,this.pavilion)
+     .then((response) => {
+	    this.loading.dismiss();
+	    this.errors = null;
+    })
+    .catch(error => {
+       this.loading.dismiss();
+       this.errors = error;
+    });	  
+  }
 
 }

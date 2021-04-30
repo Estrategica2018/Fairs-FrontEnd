@@ -181,17 +181,21 @@ export class MeetingPage implements OnInit {
 	  
 	  if(this.agenda.audience_config === '2') {
 	    this.usersService.getUser().then(userDataSession=>{
-		    this.agendasService.generateVideoToken(fair_id, meeting_id, userDataSession)
-		    .then( response => {
-			  console.log(response);
-			  const token = response.data;
-			  const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}/${name}/${speaker_id}/${token}`;
-			  
-			  this.link = this.dom.bypassSecurityTrustResourceUrl(url);
-			  window.open(url, '_blank').focus();
-		    },error => {
-			   this.errors = error;
-		    });
+			if(userDataSession) {
+				this.agendasService.generateVideoToken(fair_id, meeting_id, userDataSession)
+				.then( response => {
+				  const token = response.data;
+				  const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}/${name}/${speaker_id}/${token}`;
+				  
+				  this.link = this.dom.bypassSecurityTrustResourceUrl(url);
+				  window.open(url, '_blank').focus();
+				},error => {
+				   this.errors = error;
+				});
+			}
+			else { 
+			   this.errors = `Esta conferencia es privada, ingresa con tu usuario para acceder a ella`;
+			}			
 	    });
 	  }
 	  else {

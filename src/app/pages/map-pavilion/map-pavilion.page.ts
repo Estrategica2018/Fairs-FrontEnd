@@ -27,6 +27,7 @@ export class MapPavilionPage implements OnInit {
   startPlay = false;
   pavilion = null;
   flagOnInit = false;
+  errors = null;
   
   constructor(
     @Inject(DOCUMENT) private doc: Document,

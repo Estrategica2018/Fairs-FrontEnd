@@ -1,6 +1,12 @@
 
 <ion-content id="ionContent">
 
+  <ion-header [hidden]="!errors">
+   <div class="alert alert-danger alert-dismissible">
+     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+     <strong>Error!</strong> {{errors}}
+   </div>
+  </ion-header>
   
   <video 
      [ngStyle]="{'opacity': intro && resources?.video ? 1 : 0, 'position': intro && resources?.video ? 'block' : 'absolute'}"
@@ -15,7 +21,7 @@
   </video>
   
   
-  <div [ngStyle]="{'opacity':  intro? 0: 1}" 
+  <div [ngStyle]="{'opacity':  intro || errors? 0: 1}"  
   #canvasFair class="canvas" [ngClass]="{'canvas-full-screen': fullScreen}"></div>
   
   <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">

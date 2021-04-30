@@ -10,6 +10,7 @@ import * as moment from 'moment-timezone';
 import { AlertController, ModalController,IonRouterOutlet } from '@ionic/angular';
 import {  } from '@ionic/angular';
 import { SpeakersSelectPage } from '../speakers-select/speakers-select.page';
+import { AudienceSelectPage } from '../audience-select/audience-select.page';
 
 
 @Component({
@@ -26,6 +27,8 @@ export class AgendaPage implements OnInit {
   action: string;
   categories = [];
   speakers = [];
+  emails: any = [];
+  invited_emails: any = [];
   
   
   constructor(
@@ -48,6 +51,18 @@ export class AgendaPage implements OnInit {
       
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
+		
+		const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
+		this.agendasService.
+		getEmails(this.fair.id, agendaId).then((response)=>{
+		  this.emails = response.data.audience;
+		  this.invited_emails = this.emails.filter((audience)=>{
+			 return audience.check == 1; 
+		  });
+		})
+		.catch(error => {
+			this.errors = error;
+		});
     });
 	
     this.speakersService.
@@ -68,7 +83,7 @@ export class AgendaPage implements OnInit {
 			  this.agendasService.get(agendaId)
 			   .then((agenda) => {
 				  this.loading.dismiss();
-				  this.errors = null;
+				  //this.errors = null;
 				  this.agenda = agenda;
 				  this.agenda.duration_time = this.agenda.duration_time.toString();
 				  if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
@@ -276,5 +291,33 @@ export class AgendaPage implements OnInit {
 		
 	}
   } 
-
+  
+  async presentAudience() {
+    const modal = await this.modalCtrl.create({
+      component: AudienceSelectPage,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+		  'invited_speakers': this.invited_emails,
+		  'audiences': this.emails,
+		  'fair_id': this.fair.id,
+		  'meeting_id': this.agenda.id
+	  }
+    });
+    await modal.present();
+    this.success = null;
+	this.errors = null;
+    const { data } = await modal.onWillDismiss();
+	if (data) {
+	  this.agendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
+	    .then((invited_emails)=>{
+			//this.success = `Conferencistas asociados exitosamente`;
+        })
+        .catch(error => {
+			this.errors = error;
+        });
+		
+	}
+  } 
+  
 }

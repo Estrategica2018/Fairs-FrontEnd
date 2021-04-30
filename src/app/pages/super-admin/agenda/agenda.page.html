@@ -127,14 +127,21 @@
           </ion-button>
         </ion-buttons>
         <ion-buttons slot="primary">
-          <ion-button color="secondary">
+		  <ion-button color="secondary" (click)="presentAudience()">
             <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
           </ion-button>
         </ion-buttons>
 		<ion-label slot="start">Lista de correos</ion-label>
       </ion-toolbar>
       </ion-item>
-	  
+	  <ion-item *ngIf="action==='update' && agenda.audience_config === '2'">
+		<div class="tag-container">
+		  <span class="tag" *ngFor="let audience of invited_emails">
+		  {{ audience.email }}
+		  <ion-icon name="close" (click)="deleteTag(audience)"></ion-icon>
+		  </span>
+		</div>
+	  </ion-item>
 	  
       <ion-item lines="none" *ngIf="action==='update'">
         <ion-toolbar>

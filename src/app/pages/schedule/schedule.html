@@ -30,7 +30,7 @@
         <ion-item routerLink="/app/tabs/schedule/session/{{session.id}}">
           <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color}">
             <h3>{{session.name}}</h3>
-            <p>
+            <p translate="no">
               {{session.timeStart}} &mdash; {{session.timeEnd}}
 			  <span>{{session.timezone}}</span>
             </p>

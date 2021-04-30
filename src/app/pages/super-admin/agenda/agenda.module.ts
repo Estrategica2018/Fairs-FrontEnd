@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { AgendaPageRoutingModule } from './agenda-routing.module';
 import { AgendaPage } from './agenda.page';
 import { SpeakersSelectPage } from '../speakers-select/speakers-select.page';
+import { AudienceSelectPage } from '../audience-select/audience-select.page';
 
 @NgModule({
   imports: [
@@ -14,7 +15,7 @@ import { SpeakersSelectPage } from '../speakers-select/speakers-select.page';
     AgendaPageRoutingModule,
 	
   ],
-  declarations: [AgendaPage, SpeakersSelectPage],
-  entryComponents: [SpeakersSelectPage]
+  declarations: [AgendaPage, SpeakersSelectPage, AudienceSelectPage],
+  entryComponents: [SpeakersSelectPage, AudienceSelectPage]
 })
 export class AgendaPageModule {}

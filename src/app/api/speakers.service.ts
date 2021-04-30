@@ -25,12 +25,12 @@ export class SpeakersService {
         return new Promise((resolve, reject) => {
             this.fairsService.getCurrentFair().
               then( fair => {
-                  
                     this.http.get(`/api/speakers/meetings?fair_id=${fair.id}`)
                    .pipe(
                       timeout(30000),
                       catchError(e => {
                         console.log(e);
+						alert(e);
                         if(e.status && e.statusText) {
                           throw new Error(`Consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);    
                         }
@@ -56,7 +56,7 @@ export class SpeakersService {
                         }
                         resolve(this.speakers);
                     },error => reject(error));
-              });
+              },error => reject(error));
         })
     }
     else {
