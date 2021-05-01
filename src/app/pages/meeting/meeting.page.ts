@@ -52,7 +52,7 @@ export class MeetingPage implements OnInit {
   ngOnInit() {
 	  
 	console.log(environment.production);
-    console.log(environment.message);
+    console.log(environment);
     console.log(SERVER_URL);
       
     const _self = this;    

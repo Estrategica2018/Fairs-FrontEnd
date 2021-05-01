@@ -53,7 +53,8 @@ export class AgendaPage implements OnInit {
         this.fair = fair;
 		
 		const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
-		if(agendaId) {
+		console.log(agendaId);
+		if(agendaId!=null) {
 			this.agendasService.
 			getEmails(this.fair.id, agendaId).then((response)=>{
 			  this.emails = response.data.audience;
