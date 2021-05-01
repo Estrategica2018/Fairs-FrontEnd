@@ -19,6 +19,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+			"baseHref": "http://3.137.162.227/Fair-website/",
             "assets": [
               {
                 "glob": "**/*",

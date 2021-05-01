@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { LoadingService } from './../../providers/loading.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UsersService } from '../../api/users.service';
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 
 @Component({
@@ -19,8 +20,7 @@ import { UsersService } from '../../api/users.service';
 export class MeetingPage implements OnInit {
   
   link = null;
-  url = 'http://localhost:8000';
-  //url = ''
+  url = SERVER_URL;
   errors = null;
   
   @ViewChild('canvasMeeting', { static: true }) canvas: ElementRef;
@@ -50,6 +50,10 @@ export class MeetingPage implements OnInit {
   }
 
   ngOnInit() {
+	  
+	console.log(environment.production);
+    console.log(environment.message);
+    console.log(SERVER_URL);
       
     const _self = this;    
     this.flagOnInit = true;

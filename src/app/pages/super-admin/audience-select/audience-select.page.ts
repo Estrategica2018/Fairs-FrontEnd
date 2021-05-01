@@ -1,12 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Config, ModalController, NavParams } from '@ionic/angular';
 import { AgendasService } from '../../../api/agendas.service';
+import { ReversePipe } from 'ngx-pipes';
 
 
 @Component({
   selector: 'app-audience-select',
   templateUrl: './audience-select.page.html',
   styleUrls: ['./audience-select.page.scss'],
+  providers: [ReversePipe]
 })
 export class AudienceSelectPage implements OnInit {
 
@@ -19,7 +21,8 @@ export class AudienceSelectPage implements OnInit {
   
   constructor(
     private modalCtrl: ModalController,
-    private agendasService: AgendasService
+    private agendasService: AgendasService,
+	private reversePipe: ReversePipe
   ) { }
 
   ngOnInit() {
@@ -61,10 +64,6 @@ export class AudienceSelectPage implements OnInit {
 	  })
     };
     reader.readAsText(file);
-  }
-
-  displayContents(contents) {
-    alert(contents);
   }
   
   onLoadInputClick() {

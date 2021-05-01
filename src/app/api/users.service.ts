@@ -30,7 +30,7 @@ export class UsersService {
         }
         else {
             console.log(e);
-            throw new Error(`Csonsumiendo el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
+            throw new Error(`Consumiendo el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
         }
       })
     )

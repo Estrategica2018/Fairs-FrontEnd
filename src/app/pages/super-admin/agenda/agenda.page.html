@@ -41,20 +41,6 @@
     <!--img src="/assets/icon/null-21_1_joxd4u.jpg" [hidden]="agenda.resources.url_image"-->
   </ion-item>
 
-  <ion-list-header [hidden]="!errors">
-    <div class="alert alert-danger fade show alert-dismissible">
-     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-     <strong>Error!</strong> {{errors}}
-    </div>
-  </ion-list-header>
-  
-  <ion-list-header [hidden]="!success">
-    <div class="alert alert-success fade show alert-dismissible">
-     <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
-     <strong>!</strong> {{success}}
-    </div>
-  </ion-list-header>
-  
 
   <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
     <ion-list lines="" *ngIf="agenda" class="padding-container">
@@ -110,6 +96,20 @@
               <ion-icon slot="end" name="save-outline"></ion-icon>
             </ion-button>
       </div>
+
+      <ion-list-header [hidden]="!errors">
+        <div class="alert alert-danger fade show alert-dismissible">
+         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+           <strong>Error!</strong> {{errors}}
+        </div>
+      </ion-list-header>
+  
+      <ion-list-header [hidden]="!success">
+        <div class="alert alert-success fade show alert-dismissible">
+          <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+          <strong></strong> {{success}}
+        </div>
+      </ion-list-header>
       
       <ion-item *ngIf="action==='update' && agenda.audience_config === '3'">
         <ion-label position="stacked">Token</ion-label>

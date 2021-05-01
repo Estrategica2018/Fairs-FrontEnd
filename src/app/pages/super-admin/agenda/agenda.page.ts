@@ -53,16 +53,18 @@ export class AgendaPage implements OnInit {
         this.fair = fair;
 		
 		const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
-		this.agendasService.
-		getEmails(this.fair.id, agendaId).then((response)=>{
-		  this.emails = response.data.audience;
-		  this.invited_emails = this.emails.filter((audience)=>{
-			 return audience.check == 1; 
-		  });
-		})
-		.catch(error => {
-			this.errors = error;
-		});
+		if(agendaId) {
+			this.agendasService.
+			getEmails(this.fair.id, agendaId).then((response)=>{
+			  this.emails = response.data.audience;
+			  this.invited_emails = this.emails.filter((audience)=>{
+				 return audience.check == 1; 
+			  });
+			})
+			.catch(error => {
+				this.errors = error;
+			});
+		}
     });
 	
     this.speakersService.
@@ -280,6 +282,7 @@ export class AgendaPage implements OnInit {
     this.success = null;
 	this.errors = null;
     const { data } = await modal.onWillDismiss();
+	
 	if (data) {
 	  this.agendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
 	    .then((invited_speakers)=>{
@@ -308,10 +311,19 @@ export class AgendaPage implements OnInit {
     this.success = null;
 	this.errors = null;
     const { data } = await modal.onWillDismiss();
-	if (data) {
-	  this.agendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
+
+	if(data) {
+		
+	  data.forEach((audience)=>{
+		audience.check = audience.checked ? 1 : 0;
+	  });
+	  this.invited_emails = data.filter((audience)=>{
+		 return audience.check == 1; 
+	  });
+	  
+	  this.agendasService.updateAudience(this.fair.id,this.agenda.id, { 'audience': data })
 	    .then((invited_emails)=>{
-			//this.success = `Conferencistas asociados exitosamente`;
+			this.success = `Lista de correos modificada exitósamente`;
         })
         .catch(error => {
 			this.errors = error;

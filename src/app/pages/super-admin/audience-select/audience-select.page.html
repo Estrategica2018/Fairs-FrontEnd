@@ -20,9 +20,17 @@
 	</ion-toolbar>
 	
 	<!-- Checkboxes in a List -->
-	<ion-item *ngFor="let audience of audiences ">
+	<div *ngIf="filterTerm">
+	<ion-item *ngFor="let audience of audiences | filterBy:['email']:filterTerm;">
       <ion-label>{{audience.email }}</ion-label>
       <ion-checkbox slot="end" [(ngModel)]="audience.checked"></ion-checkbox>
     </ion-item>
+	</div>
+	<div [hidden]="filterTerm">
+	<ion-item *ngFor="let audience of audiences">
+      <ion-label>{{audience.email }}</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="audience.checked"></ion-checkbox>
+    </ion-item>
+	</div>
   </ion-list>
 </ion-content>
