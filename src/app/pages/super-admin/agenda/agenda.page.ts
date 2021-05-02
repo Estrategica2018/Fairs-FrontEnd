@@ -145,9 +145,10 @@ export class AgendaPage implements OnInit {
       .then((response) => {
         this.loading.dismiss();
 			this.success = `Agenda creada exitosamente`;
-            this.action = 'update';
-			response.agenda.category = this.agenda.category;
-            this.agenda = response.agenda;
+            const tab = `/super-admin/agenda/${data.id}`;
+            this.onRouterLink(tab);
+			//response.agenda.category = this.agenda.category;
+            //this.agenda = response.agenda;
       },
       (error) => {
           this.loading.dismiss();
