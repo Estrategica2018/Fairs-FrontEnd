@@ -1,10 +1,9 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { AlertController } from '@ionic/angular';
-
 import { UsersService } from '../../api/users.service';
 import { LoadingService } from './../../providers/loading.service';
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 @Component({
   selector: 'page-account',
@@ -18,6 +17,7 @@ export class AccountPage implements AfterViewInit {
   keyUpdate: string = null;
   objectUpdate: string = null;
   errors: string = null;
+  SERVER_PATH = SERVER_URL;
   url_image: string = null;
 
   constructor(
@@ -126,6 +126,7 @@ export class AccountPage implements AfterViewInit {
   getUser() {
     this.usersService.getUser().then((userData) => {
       this.userData = userData;
+      this.url_image =  this.userData.url_image;
     });
   }
 
@@ -158,6 +159,7 @@ export class AccountPage implements AfterViewInit {
             if(data.success == 201 ) {
               this.userData = Object.assign(dt,data.data);
               this.userData = Object.assign({token:userDataSession.token},data.data);
+              this.url_image =  this.userData.url_image;
               this.usersService.setUser(this.userData).then((data) => {
                 console.log('guardado Exitosamente',data);
               });

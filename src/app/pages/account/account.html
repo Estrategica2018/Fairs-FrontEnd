@@ -3,7 +3,7 @@
   
   <div *ngIf="userData" class="padding-container ion-text-center">
     <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar" *ngIf="!userData.url_image">
-    <img [src]="userData.url_image" class="avatar" *ngIf="userData.url_image">
+    <img [src]="SERVER_PATH + userData.url_image" class="avatar" *ngIf="userData.url_image">
     <h2>{{userData.name}} - {{userData.last_name}}</h2>
 
     <ion-row [hidden]="!errors" class="not-found">
@@ -18,8 +18,8 @@
         <ion-row>
         <ion-col class="text-center">
         <ion-thumbnail class="m-auto">
-          <img src="https://www.gravatar.com/avatar?d=mm&s=140" *ngIf="!url_image">
-          <img [src]="url_image" *ngIf="url_image">
+          <img src="https://www.gravatar.com/avatar?d=mm&s=140" *ngIf="! userData.url_image">
+          <img [src]="SERVER_PATH +  userData.url_image" *ngIf=" userData.url_image">
         </ion-thumbnail>
         
         <label class="mt-2 label-uploadInput" for="uploadInput">Cambiar Imagen</label>

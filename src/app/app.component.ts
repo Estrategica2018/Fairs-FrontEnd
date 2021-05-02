@@ -10,6 +10,7 @@ import { MenuController, Platform, ToastController } from '@ionic/angular';
 import { LoadingService } from './providers/loading.service';
 import { FairsService } from './api/fairs.service';
 import { PavilionsService } from './api/pavilions.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
   showSearchbar: any;
 
   constructor(
+    private alertCtrl: AlertController,
     private menu: MenuController,
     private platform: Platform,
     private router: Router,
@@ -107,6 +109,24 @@ export class AppComponent implements OnInit {
         this.fullScreen = true;
       }, 300);
     });
+  } 
+
+  async presentLogout() {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirma para cerrar la sesión',
+      buttons: [
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Aceptar',
+          handler: (data: any) => {
+             this.logout();
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   logout() {
