@@ -170,4 +170,8 @@ export class MapPavilionPage implements OnInit {
     this.router.navigate([tab]);
   }
   
+  
+  ngOnDestroy(): void {
+    this.three.onDestroy();
+  }
 }

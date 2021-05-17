@@ -206,5 +206,8 @@ export class MeetingPage implements OnInit {
 		  window.open(url, '_blank').focus();
 	  }
   } 
-
+  
+  ngOnDestroy(): void {
+    this.three.onDestroy();
+  }
 }

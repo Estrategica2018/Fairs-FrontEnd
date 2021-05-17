@@ -3,7 +3,7 @@ import { ConferenceData } from '../../providers/conference-data';
 import { Platform } from '@ionic/angular';
 import { DOCUMENT} from '@angular/common';
 import { PavilionsService } from './../../api/pavilions.service';
-import { ThreePavilionStandsService } from './../../providers/threejs/three.pavilion-stands.service';
+//import { ThreePavilionStandsService } from './../../providers/threejs/three.pavilion-stands.service';
 import { ThreePavilionService } from './../../providers/threejs/three.pavilion.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
@@ -29,7 +29,7 @@ export class MapPavilionStandsPage implements AfterViewInit {
     private confData: ConferenceData,
     private platform: Platform,
     private pavilionsService: PavilionsService,
-    private threeStand: ThreePavilionStandsService,
+//    private threeStand: ThreePavilionStandsService,
 	private three: ThreePavilionService,
     private route: ActivatedRoute,
     private router: Router,
@@ -104,6 +104,10 @@ export class MapPavilionStandsPage implements AfterViewInit {
     this.fullScreen = false;
     window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
     this.router.navigateByUrl(tab);
-    
+  }
+  
+  
+  ngOnDestroy(): void {
+    this.three.onDestroy();
   }
 }

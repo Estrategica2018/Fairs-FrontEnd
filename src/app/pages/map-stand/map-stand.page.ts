@@ -2,7 +2,7 @@ import { Component, ElementRef, Inject, ViewChild, OnInit } from '@angular/core'
 import { Platform } from '@ionic/angular';
 import { DOCUMENT} from '@angular/common';
 import { StandsService } from './../../api/stands.service';
-import { ThreeStandService } from './../../providers/threejs/three.stand.service';
+//import { ThreeStandService } from './../../providers/threejs/three.stand.service';
 import { ThreePavilionService } from './../../providers/threejs/three.pavilion.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
@@ -23,7 +23,7 @@ export class MapStandPage implements OnInit {
     @Inject(DOCUMENT) private doc: Document,
     private platform: Platform,
     private standsService: StandsService,
-    private threeStand: ThreeStandService,
+ // private threeStand: ThreeStandService,
     private three: ThreePavilionService,
     private route: ActivatedRoute,
 	private loading: LoadingService,
@@ -73,5 +73,9 @@ export class MapStandPage implements OnInit {
         this.fullScreen = true;
       }, 300);
     });
+  }
+    
+  ngOnDestroy(): void {
+    this.three.onDestroy();
   }
 }

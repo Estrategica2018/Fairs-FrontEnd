@@ -11,6 +11,9 @@ import { Router } from '@angular/router';
 
 export class ThreePavilionService {
 
+  renderer = null;
+  scene: THREE.Scene = null;
+  
   constructor() {
      
   }
@@ -18,8 +21,9 @@ export class ThreePavilionService {
   // INITIALIZATION
   initialize = (container: HTMLElement, objScene:any, mainScene: any) => {
       
-    //THREE.Cache.clear();
-    
+    let _self = this;
+	
+//	THREE.Cache.clear();
     let aspect: number;
     let _defaultWidth = objScene.resources._defaultWidth;
     let _defaultHeight = objScene.resources._defaultHeight;
@@ -27,7 +31,7 @@ export class ThreePavilionService {
     let controls: OrbitControls;
     let hemisphere: THREE.HemisphereLight;
     let mainLight: THREE.DirectionalLight;
-    let scene: THREE.Scene;
+    
     let plane: any;
     let model: any;
     let textures = [];
@@ -46,13 +50,13 @@ export class ThreePavilionService {
   
   
     //const canvas = document.querySelector('#c');
-    const renderer = new THREE.WebGLRenderer({
+    this.renderer = new THREE.WebGLRenderer({
       container,
       alpha: true,
     });
-	renderer.setClearColor( 0x000000, 0 ); // the default
+	this.renderer.setClearColor( 0x000000, 0 ); // the default
     
-    //let renderer = new THREE.WebGLRenderer({ alpha: false, });
+    //this.renderer = new THREE.WebGL.renderer({ alpha: false, });
     let modelLoaderList = {};
 
     let clock = new THREE.Clock();
@@ -75,7 +79,7 @@ export class ThreePavilionService {
     let type = 'O';
 
     //BACKGROUND
-    function createBackGround () {
+    function createBackGround (scene) {
        let texture = null;
     
        if(textures[objScene.resources.url_image]) {
@@ -110,7 +114,7 @@ export class ThreePavilionService {
     }
   
     // LIGHTING
-    function createLight() {
+    function createLight(scene) {
       hemisphere = new THREE.HemisphereLight(
         hemisphereOptions.skyColor,
         hemisphereOptions.groundColor,
@@ -127,8 +131,9 @@ export class ThreePavilionService {
     }
   
     // GEOMETRY
-    function createModels() {
-      const loadModel = (gltf: GLTF, position: THREE.Vector3, url: string, name: string) => {
+    function createModels(scene) {
+      
+	  const loadModel = (gltf: GLTF, position: THREE.Vector3, url: string, name: string) => {
       
         if(!modelLoaderList[name]) {
             modelLoaderList[name] = { gltf: gltf, position: position, url: url, name: name}
@@ -173,12 +178,14 @@ export class ThreePavilionService {
       initModel(new THREE.Vector3(0.50, 3.889, -10),'https://rawcdn.githack.com/mrdoob/three.js/7249d12dac2907dac95d36227d62c5415af51845/examples/models/gltf/Flamingo.glb','flamingo')
       
     }
+	
+	
   
-    // RENDERER
+    // renderer
     function onWindowResize() {
         
       const fullScreen : boolean = mainScene.fullScreen;
-        const heightFull = fullScreen ? container.clientHeight + 34 : container.clientHeight;
+      const heightFull = fullScreen ? container.clientHeight + 34 : container.clientHeight;
       let width = heightFull * _defaultWidth / _defaultHeight;
       let height = heightFull;
       if(width<container.clientWidth) {
@@ -190,10 +197,10 @@ export class ThreePavilionService {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       
-      renderer.setSize(width, height);
+      _self.renderer.setSize(width, height);
     }
       
-    function createRenderer (){
+    function createRenderer (renderer){
       
       renderer.setPixelRatio(window.devicePixelRatio);
       container.appendChild(renderer.domElement);
@@ -204,7 +211,7 @@ export class ThreePavilionService {
       window.addEventListener( 'keydown', onKeydown);
     }
   
-    function update () {
+    function update (scene) {
       const delta = clock.getDelta();
       mixers.forEach(x => x.update(delta));
       //
@@ -217,9 +224,9 @@ export class ThreePavilionService {
       }
    }
   
-   function start() {
+   function start(renderer, scene) {
      renderer.setAnimationLoop(() => {
-        update();
+        update(scene);
         if(model && model.position.x  > -11 ) model.position.x -= 0.01;
       
         renderer.autoClear = false;
@@ -228,7 +235,7 @@ export class ThreePavilionService {
       });
    }
   
-   function stop() { 
+   function stop(renderer) { 
      renderer.setAnimationLoop(null);
    }
    
@@ -315,7 +322,7 @@ export class ThreePavilionService {
             obj.rotation.y += 0.01;
             break;
     }
-    renderer.render(scene, camera);
+    _self.renderer.render(_self.scene, camera);
    }
    
    function onPointerDown(event) {
@@ -323,7 +330,7 @@ export class ThreePavilionService {
         event.preventDefault();
         
         const fullScreen : boolean = mainScene.fullScreen;
-          const heightFull = fullScreen ? window.innerHeight + 34 : window.innerHeight;
+        const heightFull = fullScreen ? window.innerHeight + 34 : window.innerHeight;
         let width = heightFull * _defaultWidth / _defaultHeight;
         let height = heightFull;
       
@@ -335,13 +342,13 @@ export class ThreePavilionService {
       
         //let width = container.clientWidth;
         //let heigth = container.clientHeigth;
-        var rect = renderer.domElement.getBoundingClientRect();
+        var rect = _self.renderer.domElement.getBoundingClientRect();
         mouse.x = ( ( event.clientX  - rect.left ) / width ) * 2 - 1;
         mouse.y = - ( ( event.clientY - rect.top ) / height ) * 2 + 1;
         
         raycaster.setFromCamera( mouse, camera,  );
        
-        const intersects = raycaster.intersectObjects( scene.children, true );
+        const intersects = raycaster.intersectObjects( _self.scene.children, true );
         if ( intersects.length > 0 ) {
           if(objSel !== intersects[0].object) {
               if(objSel) {
@@ -387,7 +394,7 @@ export class ThreePavilionService {
       }
     }
    
-    function createVideos () {
+    function createVideos (scene) {
         
       if(objScene && objScene.resources && objScene.resources.videos)
       objScene.resources.videos.forEach( (video, indx) => {
@@ -420,7 +427,7 @@ export class ThreePavilionService {
           const movieGeometry = new THREE.PlaneGeometry( 240, 100, 4, 4 );
           const movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
           movieScreen.position.set(0,50,0);
-          scene.add(movieScreen); */
+          this.scene.add(movieScreen); */
       });
     }
     
@@ -456,8 +463,8 @@ export class ThreePavilionService {
            mainScene.onLoadingDismiss();
         }
     }
-    function createBanners (){
-        
+    
+	function createBanners(scene){
       
       if(objScene && objScene.resources && objScene.resources.banners && objScene.resources.banners.length > 0) {
             sizeBanners = objScene.resources.banners.length;
@@ -528,7 +535,7 @@ export class ThreePavilionService {
                       });
                       
                       const _text = new THREE.Mesh( geometryThree, material );
-                      scene.add( _text );
+                      this.scene.add( _text );
                   });
               }
       
@@ -574,21 +581,27 @@ export class ThreePavilionService {
       });
     }
     
-    scene = new THREE.Scene();
-    createBackGround();
+    this.scene	= new THREE.Scene();
+    createBackGround(this.scene);
     createCamera();
     createControls();
-    createLight();
-    createRenderer();
-    createBanners();
-    createVideos();
+    createLight(this.scene);
+    createRenderer(this.renderer);
+    createBanners(this.scene);
+    createVideos(this.scene);
     onWindowResize();
 	createPanel();
     listenForFullScreenEvents();
     
-    
-
-    start();
+    start(this.renderer, this.scene);
+  }
+  
+  onDestroy() {
+	while(this.scene.children.length > 0){ 
+        this.scene.remove(this.scene.children[0]); 
+    }
+    this.renderer.dispose();
+	THREE.Cache.clear();
   }
 }
 

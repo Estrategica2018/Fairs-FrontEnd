@@ -3,7 +3,7 @@ import { ConferenceData } from '../../providers/conference-data';
 import { Platform } from '@ionic/angular';
 import { DOCUMENT} from '@angular/common';
 import { FairsService } from './../../api/fairs.service';
-import { ThreeFairService } from './../../providers/threejs/three.fair.service';
+//import { ThreeFairService } from './../../providers/threejs/three.fair.service';
 import { ThreePavilionService } from './../../providers/threejs/three.pavilion.service';
 import { Router } from '@angular/router';
 import { LoadingService } from './../../providers/loading.service';
@@ -30,7 +30,7 @@ export class MapPage implements AfterViewInit {
     private confData: ConferenceData,
     private platform: Platform,
     private fairsService: FairsService,
-    private threeFair: ThreeFairService,
+    //private threeFair: ThreeFairService,
     private three: ThreePavilionService,
     private router: Router,
     private loading: LoadingService) {
@@ -68,5 +68,9 @@ export class MapPage implements AfterViewInit {
     this.fullScreen = false;
     window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
     this.router.navigate([tab]);
+  }
+  
+  ngOnDestroy(): void {
+    this.three.onDestroy();
   }
 }
