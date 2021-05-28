@@ -30,5 +30,11 @@ ion-item {
 }
 
 .cursor-pointer {
- cursor: pointer;
+  cursor: pointer;
+}
+
+.full-screen-button {
+  position: absolute;
+  top: 0;
+  z-index: 11;
 }

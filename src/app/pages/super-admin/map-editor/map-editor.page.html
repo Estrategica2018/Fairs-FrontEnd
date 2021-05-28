@@ -1,0 +1,184 @@
+
+<ion-content id="ionContent" >
+<div cdkDropList class="content-boundary">
+  <ion-header [hidden]="!errors">
+   <div class="alert alert-danger alert-dismissible">
+     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+     <strong>Error!</strong> {{errors}}
+   </div>
+  </ion-header>
+  
+ <video 
+    [ngStyle]="{'opacity': resources?.videoUrl ? 1 : 0, 'position': resources?.videoUrl ? 'block' : 'absolute'}"
+    muted 
+    [src]="[resources?.videoUrl]"
+    class="video">
+  </video>
+
+  <div class="scene" *ngFor="let banner of resources?.banners;let i = index" (click)="onSceneSelect(banner)"
+     [ngStyle]="{
+		  'left': banner.position?.x + 'px ', 
+		  'top': + banner.position?.y + 'px',
+		  'width': + banner.rotation?.x + 'px',
+		  'height': + banner.rotation?.y + 'px',
+		  'perspective' : + banner.perspective + 'px'
+	}">
+    <div class="cube">
+	  <div class="cube__face cube__face--right"
+	    (mouseover)="isHover = banner.id" (mouseout)="isHover = false"
+        [ngStyle]="{
+          'background-image': 'url('+banner.image_url+')',
+          'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+          'background-repeat': 'no-repeat',
+		  'background-color': ''+banner.backgroundColor+'',
+		  'width': banner.size.x + 'px ', 
+		  'height': + banner.size.y + 'px',
+		  'font-size': banner.fontSize + 'px ',
+		  'color': banner.fontColor + '',
+		  'transform': 'translateZ(104px) rotateY(' + banner.rotation.z + 'deg)'
+		  }"> {{ banner.text }}	</div>
+    </div>
+	
+    <span class="tooltip-label" *ngIf="banner.tooltipText && isHover === banner.id"
+    [ngStyle]="{ 
+	'width': banner.toolPositionWidth+ 'px',
+	'left': banner.toolPositionLeft + 'px'}" 
+	>{{banner.tooltipText}}</span>
+	
+  </div>
+  
+  <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
+    <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
+    <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
+  </ion-button>
+  
+  <ion-button [color]="editSave ? 'primary' : 'light'" class="panel-scene-save" (click)="onSave()">
+    <ion-icon name="save-outline"></ion-icon>
+  </ion-button>
+  
+  <ion-button color="light" class="panel-scene-settings" (click)="addScene()">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-button>
+  
+  <div class="div-container" scroll-x="0" scroll-y="0">
+     <ion-img [src]="background" id="background"></ion-img>
+  </div>
+  
+  <div *ngIf="sceneSelect" class="pane-scene-select" cdkDragBoundary=".content-boundary" cdkDrag
+  [ngStyle]="{'top': panelPos.y, 'left': panelPos.x }">
+    <div class="close" (click)="sceneSelect = null">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+    </div>
+	<ion-card *ngIf="sceneSelect" mwlDraggable class="scene-panel" (dragEnd)="dragEnd($event)">
+      <ion-card-header>
+        <ion-card-subtitle>Propiedades</ion-card-subtitle>
+		<ion-tabs>
+		  <ion-tab-bar slot="bottom">
+			<ion-tab-button (click)="tabSelect = 'position'">
+			  <ion-label>Position</ion-label>
+			</ion-tab-button>
+			<ion-tab-button (click)="tabSelect = 'rotate'">
+			  <ion-label>Rotate</ion-label>
+			</ion-tab-button>
+			<ion-tab-button (click)="tabSelect = 'background'">
+			  <ion-label>Background</ion-label>
+			</ion-tab-button>
+			<ion-tab-button (click)="tabSelect = 'font'">
+			  <ion-label>Text</ion-label>
+			</ion-tab-button>
+			<ion-tab-button (click)="tabSelect = 'link'">
+			  <ion-label>Link</ion-label>
+			</ion-tab-button>
+			<ion-tab-button (click)="tabSelect = 'tooltip'">
+			  <ion-label>Tooltip</ion-label>
+			</ion-tab-button>
+		  </ion-tab-bar>
+		</ion-tabs>
+      </ion-card-header>
+      <ion-card-content *ngIf="tabSelect == 'position'">
+	    <ion-card-subtitle>Top<input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="sceneSelect.position.y">
+	    </ion-card-subtitle>
+	    <ion-card-subtitle>Left<input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="sceneSelect.position.x">
+	    </ion-card-subtitle>
+	    <ion-card-subtitle>Width<input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="sceneSelect.size.x">
+	    </ion-card-subtitle>
+	    <ion-card-subtitle>Height<input class="mt-2 ml-2 input-form"  type="number" [(ngModel)]="sceneSelect.size.y">
+	    </ion-card-subtitle>
+		<ion-card-subtitle  color="danger"> Delete 
+		   <ion-button size="small" color="danger" (click)="deleteScene(sceneSelect)">
+			<ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+		   </ion-button>
+	    </ion-card-subtitle>
+	</ion-card-content>
+	<ion-card-content *ngIf="tabSelect == 'rotate'">	
+	    <ion-card-subtitle>Rotate X <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.rotation.x"> 
+	    </ion-card-subtitle>
+   	    <ion-card-subtitle>Rotate Y <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.rotation.y"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Rotate Z <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.rotation.z"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Perspective <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.perspective"> 
+	    </ion-card-subtitle>
+	</ion-card-content>
+	<ion-card-content *ngIf="tabSelect == 'background'">
+	    <ion-card-subtitle>Background-imagen <input class="mt-2 ml-2" type="text" [(ngModel)]="sceneSelect.image_url"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Background-color <input class="mt-2 ml-2" type="color" [(ngModel)]="sceneSelect.backgroundColor"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Opacity <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.opacity"> 
+	    </ion-card-subtitle>
+	</ion-card-content>
+	<ion-card-content *ngIf="tabSelect == 'font'">
+	    <ion-card-subtitle>Text <input class="mt-2 ml-2" type="text" [(ngModel)]="sceneSelect.text"> 
+	    </ion-card-subtitle>
+	    <ion-card-subtitle>Font-size <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.fontSize"> 
+	    </ion-card-subtitle>
+	    <ion-card-subtitle>Font-color <input class="mt-2 ml-2" type="color" [(ngModel)]="sceneSelect.fontColor"> 
+	    </ion-card-subtitle>
+    </ion-card-content>
+	<ion-card-content *ngIf="tabSelect == 'tooltip'">
+		<ion-card-subtitle>Tooltip <input class="mt-2 ml-2" type="text" [(ngModel)]="sceneSelect.tooltipText"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Tooltip Left Position <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.toolPositionLeft"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Tooltip Width <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.toolPositionWidth"> 
+	    </ion-card-subtitle>
+    </ion-card-content>
+	<ion-card-content *ngIf="tabSelect == 'link'">
+	    <ion-card-subtitle>External URL <input class="mt-2 ml-2" type="text" [(ngModel)]="sceneSelect.externalUrl"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle class="d-flex"><span class="mt-2">Ir a Pabellón</span>
+		<ion-select value="notifications" (ionChange)="onChangeItem()" [(ngModel)]="sceneSelect.internalUrl">
+            <ion-select-option value="">--Ninguno--</ion-select-option>
+			<ion-select-option value="/maps/pavilion1/1">Pabellón principal</ion-select-option>
+            <ion-select-option value="/maps/pavilion2/2">Pabellón Wom</ion-select-option>
+			<ion-select-option value="/maps/pavilion3/3">Pabellón Móviles</ion-select-option>
+          </ion-select>
+	    </ion-card-subtitle>
+    </ion-card-content>
+     </ion-card>
+  </div>
+
+  <div class="tabs-menu">
+    <ion-button color="light" (click)="onRouterLink('/app/tabs/schedule')">
+      <ion-icon slot="start" name="calendar-outline"></ion-icon>
+      <ion-label>Agenda</ion-label>
+    </ion-button>
+
+    <ion-button color="light" (click)="onRouterLink('/app/tabs/speakers')">
+      <ion-icon slot="start" name="people-outline"></ion-icon>
+      <ion-label>Conferencistas</ion-label>
+    </ion-button>
+
+    <ion-button color="light" (click)="onRouterLink('/map')">
+      <ion-icon slot="start" name="map-outline"></ion-icon>
+      <ion-label>Mapa</ion-label>
+    </ion-button>
+
+    <ion-button color="light" (click)="onRouterLink('/app/tabs/about')">
+      <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+      <ion-label>Acerca de</ion-label>
+    </ion-button>
+  </div>
+</div>  
+</ion-content>

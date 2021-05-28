@@ -93,7 +93,7 @@ export class AudienceSelectPage implements OnInit {
   }
 
   onLoadInputClick() {
-    let element: HTMLElement = document.querySelector('#uploadInput') as HTMLElement;
+    let element: HTMLElement = document.querySelector<HTMLElement>('#uploadInput') as HTMLElement;
     element.click();
   }
 }

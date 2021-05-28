@@ -62,7 +62,7 @@ html {
 
 //*Global Styles*//
 ion-router-outlet {
-   margin-top: 28px;
+   top: 30px;
 }
 
 .menu-main-content {
@@ -106,4 +106,21 @@ ion-router-outlet {
   .padding-container {
     padding: 0px 10% 0 10%;
   }
+}
+
+* {
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }

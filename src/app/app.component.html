@@ -221,8 +221,7 @@
         </ion-list>
       </ion-content>
     </ion-menu>
-
-    <ion-router-outlet [ngStyle]="{'margin-top': fullScreen ? '-26px' : '28px' }" id="main-content"></ion-router-outlet>
+    <ion-router-outlet [ngStyle]="{'top': fullScreen ? _toolbarHeight+'px' : '0px' }" id="main-content"></ion-router-outlet>
 
   </ion-split-pane>
 

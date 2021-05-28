@@ -64,7 +64,7 @@ export class MapPavilionPage implements OnInit {
         const mbSkipPavilion = this.fairsService.getPavilionIntro('pavilion_'+pavilionId);
         
         if(this.resources.video && !mbSkipPavilion) {
-            //const videoEl = <HTMLMediaElement> document.querySelector('#videoPavilion_'+pavilion.id);
+            //const videoEl = <HTMLMediaElement> document.querySelector<HTMLElement>('#videoPavilion_'+pavilion.id);
             //const videoEl = <HTMLMediaElement> document.createElement('video');
             const videoEl = <HTMLMediaElement>  this.videoElement.nativeElement;
             //videoEl.className = 'video';
@@ -103,8 +103,8 @@ export class MapPavilionPage implements OnInit {
 //    // get a reference to a <video> element
 //    
 //    //if(this.resources.video) {
-//    //    //const videoEl = <HTMLMediaElement> document.querySelector('.video');
-//    //    const videoEl = <HTMLMediaElement> document.querySelector('#videoPavilion_'+this.pavilion.id);
+//    //    //const videoEl = <HTMLMediaElement> document.querySelector<HTMLElement>('.video');
+//    //    const videoEl = <HTMLMediaElement> document.querySelector<HTMLElement>('#videoPavilion_'+this.pavilion.id);
 //    //    videoEl.className = 'video';
 //    //    //videoEl.id = 'videoPavilion_'+pavilion.id;
 //    //    //videoEl.src = this.resources.video;

@@ -26,13 +26,27 @@
   z-index: 11;
 }
 
+ion-content {
+  top: 22px;
+}
+
 .tabs-menu {
   position: absolute;
   bottom: 20px;
-  left: calc(34% - 10px);
+  left: calc(22% - 10px);
   z-index: 11;
 }
 
-ion-content {
-  top: 22px;
+@media (max-width: 690px) {
+  .tabs-menu {
+      right: calc(0% - 10px);
+	  left: 0;
+      ion-button {
+	     font-size: 10px;
+		 
+	     ion-label {
+           font-size: 10px;
+		 }
+	  }
+	}
 }

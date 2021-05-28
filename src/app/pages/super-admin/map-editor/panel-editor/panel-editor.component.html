@@ -1,0 +1,10 @@
+<ion-card *ngIf="sceneSelect">
+  <ion-card-header>
+    <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+    <ion-card-title>Card Title</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <input class="perspective-range" [(ngModel)]="sceneSelect.width" type="range" min="1" max="1000" value="400" data-units="px" />
+  </ion-card-content>
+</ion-card>

@@ -28,7 +28,8 @@ export class AppComponent implements OnInit {
   showPavilionDetail: string = null;
   showStandDetail: string = null;
   showSearchbar: any;
-
+  _toolbarHeight = 56;
+  
   constructor(
     private alertCtrl: AlertController,
     private menu: MenuController,
@@ -59,7 +60,7 @@ export class AppComponent implements OnInit {
     this.checkLoginStatus();
     this.listenForLoginEvents();
     this.listenForFullScreenEvents();
-    
+    this._toolbarHeight = document.querySelector('ion-toolbar').offsetHeight;
     
   }
 
@@ -173,4 +174,5 @@ export class AppComponent implements OnInit {
 
   
 }
+
 

@@ -4,4 +4,5 @@ export const environment = {
   message: 'hello prod'
 };
 
-export const SERVER_URL = 'http://3.137.162.227/';
+//export const SERVER_URL = 'http://3.137.162.227/';
+export const SERVER_URL = 'http://e-logic.com.co/';

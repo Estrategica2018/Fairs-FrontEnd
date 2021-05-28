@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path: 'agenda/:agendaId',
     loadChildren: () => import('./agenda/agenda.module').then( m => m.AgendaPageModule)
+  },
+  {
+    path: 'map-editor/:template/:sceneId',
+    loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
   }
 ];
 

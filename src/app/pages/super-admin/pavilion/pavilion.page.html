@@ -1,11 +1,11 @@
 <ion-content fullscreen="true">
-<ion-header class="mt-4">
-  <ion-toolbar>
-    <ion-title>Administrar Pabellón</ion-title>
-  </ion-toolbar>
-</ion-header>
+  <ion-header class="mt-4">
+    <ion-toolbar>
+      <ion-title>Administrar Pabellón</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-  <ion-item class="padding-container pavilion-logo mt-4" *ngIf="pavilion" button="true">
+  <ion-item class="padding-container pavilion-logo mt-4" *ngIf="pavilion" button="true" >
     <img [src]="pavilion.resources.url_image">
   </ion-item>
 
@@ -17,7 +17,7 @@
   </ion-list-header>
 
   <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
-    <ion-list lines="" *ngIf="pavilion">
+    <ion-list lines="" *ngIf="pavilion" class="padding-container">
       <ion-item button="true">
         <ion-label> Nombre </ion-label>
         <ion-input class="ml-auto" class="text-right" [(ngModel)]="pavilion.name" (ionChange)="editSave=true" name="name"></ion-input>
@@ -55,7 +55,7 @@
       
     </ion-list>
 
-    <div class="ion-padding">
+    <div class="ion-padding padding-container">
       <ion-button expand="block" [disabled]="!editSave" (click)="updatePavilion()">
         <ion-label > Guardar </ion-label>
         <ion-icon slot="end" name="save-outline"></ion-icon>

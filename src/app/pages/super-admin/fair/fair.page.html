@@ -7,7 +7,8 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-item class="fair-logo" *ngIf="fair" button="true">
+  
+  <ion-item class="fair-logo" *ngIf="fair" button="true" routerLink="/super-admin/map-editor/fair/{{fair.id}}" routerLinkActive="active" routerDirection="root" detail="false">
     <img [src]="fair.resources.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="Feria">
   </ion-item>
   

@@ -9,25 +9,95 @@
   </ion-header>
   
   <video 
-     [ngStyle]="{'opacity': intro && resources?.video ? 1 : 0, 'position': intro && resources?.video ? 'block' : 'absolute'}"
+     [ngStyle]="{'opacity': intro && resources?.videoUrl ? 1 : 0, 'position': intro && resources?.videoUrl ? 'block' : 'absolute'}"
 	crossOrigin="anonymous"
 	webkit-playsinline
     autoplay
-	[src]="resources?.video"
+	[src]="resources?.videoUrl"
     playsinline preload="metadata" data-aos="fade-up"
     id="videoFair"
     class="video"
   >
   </video>
   
-  
-  <div [ngStyle]="{'opacity':  intro || errors? 0: 1}"  
-  #canvasFair class="canvas" [ngClass]="{'canvas-full-screen': fullScreen}"></div>
+  <div class="scene" *ngFor="let banner of resources?.banners;let i = index"
+     [ngStyle]="{
+	      'left': banner.position?.x + 'px ', 
+		  'top': + banner.position?.y + 'px',
+		  'width': + banner.rotation?.x + 'px',
+		  'height': + banner.rotation?.y + 'px',
+		  'perspective' : + banner.perspective + 'px'
+	}">
+    <div class="cube" *ngIf="banner.internalUrl">
+	  <a [routerLink]="banner.internalUrl" routerLinkActive="selected" routerDirection="root" >
+      <div class="cube__face cube__face--right social-network"
+	    (mouseover)="isHover = banner.id" (mouseout)="isHover = false"
+	    [ngClass]="{'link': banner.internalUrl ||  banner.externalUrl }"
+        [ngStyle]="{
+		  'opacity': banner.opacity,
+		  'background-image': 'url('+banner.image_url+')',
+          'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+          'background-repeat': 'no-repeat',
+		  'background-color': ''+banner.backgroundColor+'',
+		  'width': banner.size.x + 'px ', 
+		  'height': + banner.size.y + 'px',
+		  'font-size': banner.fontSize + 'px ',
+		  'color': banner.fontColor + '',
+		  'transform': 'translateZ(104px) rotateY(' + banner.rotation.z + 'deg)'
+		  }"> {{ banner.text }}	</div>
+	  </a>
+	</div>
+	<div class="cube" *ngIf="banner.externalUrl">
+	  <a [href]="banner.externalUrl" target="_blank">
+      <div class="cube__face cube__face--right"
+	    (mouseover)="isHover = banner.id" (mouseout)="isHover = false"
+	    [ngClass]="{'link': banner.internalUrl ||  banner.externalUrl }"
+        [ngStyle]="{
+		  'background-image': 'url('+banner.image_url+')',
+          'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+          'background-repeat': 'no-repeat',
+		  'background-color': ''+banner.backgroundColor+'',
+		  'width': banner.size.x + 'px ', 
+		  'height': + banner.size.y + 'px',
+		  'font-size': banner.fontSize + 'px ',
+		  'color': banner.fontColor + '',
+		  'transform': 'translateZ(104px) rotateY(' + banner.rotation.z + 'deg)'
+		  }"> {{ banner.text }}	</div>
+	  </a>
+	</div>
+	
+	<div class="cube" [hidden]="banner.internalUrl ||  banner.externalUrl">
+	  <div class="cube__face cube__face--right"
+	    (mouseover)="isHover = banner.id" (mouseout)="isHover = false"
+		[ngStyle]="{
+		  'background-image': 'url('+banner.image_url+')',
+          'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+          'background-repeat': 'no-repeat',
+		  'background-color': ''+banner.backgroundColor+'',
+		  'width': banner.size.x + 'px ', 
+		  'height': + banner.size.y + 'px',
+		  'font-size': banner.fontSize + 'px ',
+		  'color': banner.fontColor + '',
+		  'transform': 'translateZ(104px) rotateY(' + banner.rotation.z + 'deg)'
+		  }"> {{ banner.text }}	</div>
+    </div>
+	
+	<span class="tooltip-label" *ngIf="banner.tooltipText && isHover === banner.id"
+	[ngStyle]="{ 
+	'width': banner.toolPositionWidth+ 'px',
+	'left': banner.toolPositionLeft + 'px'}" 
+	>{{banner.tooltipText}}</span>
+	
+  </div>
   
   <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
     <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
     <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
   </ion-button>
+  
+   <div class="div-container" scroll-x="0" scroll-y="0">
+     <ion-img [src]="background" id="background"></ion-img>
+   </div>
   
   <div class="tabs-menu">
     <ion-button color="light" (click)="onRouterLink('/app/tabs/schedule')">
