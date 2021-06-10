@@ -310,7 +310,7 @@ export class MapEditorPage implements OnInit {
 			  .addElement(document.querySelector('#obj-' + obj.id))
 			  
 			  .duration(1000)
-			  keyframes([
+			  .keyframes([
 				{ offset: 0, transform: 'scale(1) rotate(0)' },
 				{ offset: 0.5, transform: 'scale(1.2) rotate(45deg)' },
 				{ offset: 1, transform: 'scale(1) rotate(0) '}
