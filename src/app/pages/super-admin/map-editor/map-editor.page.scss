@@ -1,6 +1,4 @@
 .scene {
-  width: 200px;
-  height: 200px;
   border: 1px solid #CCC;
   top: 40px;
   left: 180px;
@@ -18,8 +16,6 @@
 
 .cube__face {
   position: absolute;
-  width: 200px;
-  height: 200px;
   border: 2px solid black;
   font-size: 40px;
   font-weight: bold;
@@ -35,13 +31,6 @@
 .cube__face--bottom { background: hsla(300, 100%, 50%, 0.7); }
 
 .cube__face--front  { transform: rotateY(  0deg) translateZ(100px); }
-.cube__face--right  { 
-
-
-transform: translateZ(104px) rotateY( -56deg);
-/*transform: rotateY( 90deg) translateZ(100px);*/
-
- }
 .cube__face--back   { transform: rotateY(180deg) translateZ(100px); }
 .cube__face--left   { transform: rotateY(-90deg) translateZ(100px); }
 .cube__face--top    { transform: rotateX( 90deg) translateZ(100px); }
@@ -60,6 +49,13 @@ transform: translateZ(104px) rotateY( -56deg);
 .panel-scene-settings {
   position: absolute;
   top: 40px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-scene-plus {
+  position: absolute;
+  top: 140px;
   right: 0px;
   z-index: 11;
 }
@@ -97,23 +93,27 @@ transform: translateZ(104px) rotateY( -56deg);
   overflow: auto;
 }
 
+.pane-scene-tools {
+  position: absolute;
+  top: 0px;
+  right: 51px;
+  width: 391px;
+}
+  
 .pane-scene-select {
   position: absolute;
   top: 0px;
   left: 27px;
   width: 391px;
-  
-  .close {
-     position: absolute;
-     z-index: 2;
-     right: 19px;
-     top: 14px;
-  }
 }
 
-.cube__face--right:hover {
-  cursor: pointer;
+.close {
+   position: absolute;
+   z-index: 2;
+   right: 19px;
+   top: 14px;
 }
+
 
 
 
@@ -178,4 +178,15 @@ ion-tab-button {
 		 }
 	  }
 	}
+}
+
+.cube__face--right:hover {
+  cursor: pointer;
+  background: black;
+  opacity: 0.5;
+}
+
+
+ion-toolbar {
+  height: 46px;
 }

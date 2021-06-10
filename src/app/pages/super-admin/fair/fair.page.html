@@ -7,10 +7,11 @@
     </ion-toolbar>
   </ion-header>
 
-  
-  <ion-item class="fair-logo" *ngIf="fair" button="true" routerLink="/super-admin/map-editor/fair/{{fair.id}}" routerLinkActive="active" routerDirection="root" detail="false">
-    <img [src]="fair.resources.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="Feria">
+  <div *ngFor="let resource of fair?.resources;let i = index">
+  <ion-item class="fair-logo" *ngIf="fair" button="true" routerLink="/super-admin/map-editor/fair/{{fair.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+    <img [src]="resource.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="Feria">
   </ion-item>
+  </div>
   
   <ion-list-header [hidden]="!errors">
     <div class="alert alert-danger fade show alert-dismissible">
@@ -24,7 +25,7 @@
       <ion-item button="true">
         <ion-label> Subdominio </ion-label>
         <ion-input class="ml-auto" class="text-right" [(ngModel)]="fair.name" name="name"></ion-input>
-        .feriasVirtuales.com
+        .e-logic.com.co
       </ion-item>
       <ion-item button="true">
         <ion-grid>

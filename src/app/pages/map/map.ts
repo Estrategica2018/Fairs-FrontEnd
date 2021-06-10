@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit} from '@angular/core';
+import { HostListener } from "@angular/core";
 import { FairsService } from './../../api/fairs.service';
 import { Router } from '@angular/router';
 import { LoadingService } from './../../providers/loading.service';
@@ -22,8 +23,7 @@ export class MapPage implements AfterViewInit {
     private fairsService: FairsService,
     private router: Router,
     private loading: LoadingService) {
-        
-		
+      this.listenForFullScreenEvents();
   }
   
   ngAfterViewInit() {
@@ -31,12 +31,12 @@ export class MapPage implements AfterViewInit {
 	
 	this.loading.present({message:'Cargando...'});
     this.fairsService.getCurrentFair().then((fair)=>{
+
 		this.background = fair.resources.url_image;
 		this.fair = fair;
 	    this.resources = fair.resources;
 		this.loading.dismiss();
-		this.resize();
-
+		this.onResize();
         
     }, error => {
         this.loading.dismiss();
@@ -63,7 +63,8 @@ export class MapPage implements AfterViewInit {
     
   }
   
-  resize() {
+  @HostListener('window:resize', ['$event'])
+  onResize() {
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
 	 const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
 	 main.style.top = top + 'px';
@@ -111,6 +112,20 @@ export class MapPage implements AfterViewInit {
 		  console.log('logScrolling - btnScrollTop');
 		break;
 	  } 
+  }
+  
+  
+  listenForFullScreenEvents() {
+    window.addEventListener('map:fullscreenOff', (e:any) => {
+        setTimeout(() => {
+          this.onResize();
+      }, 300);
+    });
+    window.addEventListener('map:fullscreenIn', (e:any) => {
+        setTimeout(() => {
+          this.onResize();
+      }, 300);
+    });
   }
   
 }

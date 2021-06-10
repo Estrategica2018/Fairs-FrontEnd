@@ -9,13 +9,13 @@
   </ion-header>
   
  <video 
-    [ngStyle]="{'opacity': resources?.videoUrl ? 1 : 0, 'position': resources?.videoUrl ? 'block' : 'absolute'}"
+    [ngStyle]="{'opacity': scene?.videoUrl ? 1 : 0, 'position': scene?.videoUrl ? 'block' : 'absolute'}"
     muted 
-    [src]="[resources?.videoUrl]"
+    [src]="[scene?.videoUrl]"
     class="video">
   </video>
 
-  <div class="scene" *ngFor="let banner of resources?.banners;let i = index" (click)="onSceneSelect(banner)"
+  <div *ngFor="let banner of scene?.banners;let i = index" class="scene" 
      [ngStyle]="{
 		  'left': banner.position?.x + 'px ', 
 		  'top': + banner.position?.y + 'px',
@@ -24,11 +24,18 @@
 		  'perspective' : + banner.perspective + 'px'
 	}">
     <div class="cube">
-	  <div class="cube__face cube__face--right"
-	    (mouseover)="isHover = banner.id" (mouseout)="isHover = false"
+	  <div class="cube__face cube__face--right square {{banner.class}}" 
+	   id="obj-{{banner.id}}"
+	   (click)="isHover = banner.id; onbannerSelect(banner);"
+	   (mouseover)="startAnimation(banner)"
+	    (mouseout)="isHover = false"
         [ngStyle]="{
-          'background-image': 'url('+banner.image_url+')',
+		  'opacity': banner.opacity,
           'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+		  'border-color': banner.border?.color,
+		  'border-style': banner.border?.style,
+		  'border-radius': banner.border.radius + 'px',
+          'background-image': 'url('+banner.image_url+')',
           'background-repeat': 'no-repeat',
 		  'background-color': ''+banner.backgroundColor+'',
 		  'width': banner.size.x + 'px ', 
@@ -37,9 +44,10 @@
 		  'color': banner.fontColor + '',
 		  'transform': 'translateZ(104px) rotateY(' + banner.rotation.z + 'deg)'
 		  }"> {{ banner.text }}	</div>
+	    
     </div>
 	
-    <span class="tooltip-label" *ngIf="banner.tooltipText && isHover === banner.id"
+    <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
     [ngStyle]="{ 
 	'width': banner.toolPositionWidth+ 'px',
 	'left': banner.toolPositionLeft + 'px'}" 
@@ -56,99 +64,264 @@
     <ion-icon name="save-outline"></ion-icon>
   </ion-button>
   
-  <ion-button color="light" class="panel-scene-settings" (click)="addScene()">
+  <ion-button color="light" class="panel-scene-settings" (click)="showTool=true">
+    <ion-icon name="construct-outline"></ion-icon>
+  </ion-button>
+  
+  <ion-button color="light" class="panel-scene-plus" (click)="addBanner()">
     <ion-icon name="add-outline"></ion-icon>
   </ion-button>
   
   <div class="div-container" scroll-x="0" scroll-y="0">
-     <ion-img [src]="background" id="background"></ion-img>
+     <ion-img [src]="scene?.url_image" [ngStyle]="{'width':scene?.container.w + 'px', 'height': scene?.container.h + 'px'}"></ion-img>
   </div>
   
-  <div *ngIf="sceneSelect" class="pane-scene-select" cdkDragBoundary=".content-boundary" cdkDrag
-  [ngStyle]="{'top': panelPos.y, 'left': panelPos.x }">
-    <div class="close" (click)="sceneSelect = null">
+  <div *ngIf="showTool" class="pane-scene-tools">
+    <div class="close" (click)="showTool = false">
       <ion-icon slot="icon-only" name="close-outline"></ion-icon>
     </div>
-	<ion-card *ngIf="sceneSelect" mwlDraggable class="scene-panel" (dragEnd)="dragEnd($event)">
-      <ion-card-header>
-        <ion-card-subtitle>Propiedades</ion-card-subtitle>
-		<ion-tabs>
-		  <ion-tab-bar slot="bottom">
-			<ion-tab-button (click)="tabSelect = 'position'">
-			  <ion-label>Position</ion-label>
-			</ion-tab-button>
-			<ion-tab-button (click)="tabSelect = 'rotate'">
-			  <ion-label>Rotate</ion-label>
-			</ion-tab-button>
-			<ion-tab-button (click)="tabSelect = 'background'">
-			  <ion-label>Background</ion-label>
-			</ion-tab-button>
-			<ion-tab-button (click)="tabSelect = 'font'">
-			  <ion-label>Text</ion-label>
-			</ion-tab-button>
-			<ion-tab-button (click)="tabSelect = 'link'">
-			  <ion-label>Link</ion-label>
-			</ion-tab-button>
-			<ion-tab-button (click)="tabSelect = 'tooltip'">
-			  <ion-label>Tooltip</ion-label>
-			</ion-tab-button>
-		  </ion-tab-bar>
-		</ion-tabs>
+	<ion-card class="scene-panel">
+	  <ion-card-header>
+		<ion-card-title>Scene Settings</ion-card-title>
+	  </ion-card-header>
+
+	  <ion-card-content>
+	    <ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> Title </ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+		     <input class="mt-2 ml-2" type="text" [(ngModel)]="scene.title"> 
+	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+		<ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> Background-image </ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+		     <input class="mt-2 ml-2" type="text" [(ngModel)]="scene.url_image"> 
+	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+		<ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> Container Width </ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+		     <ion-input type="number" (change)="onResize()" [(ngModel)]="scene.container.w" readonly> </ion-input> 
+	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+		<ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> Container Height </ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+		     <ion-input type="number" (change)="onResize()" [(ngModel)]="scene.container.h"> </ion-input> 
+	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+		
+		
+		<ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> Show Menu </ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+		     <ion-chip [color]="scene.show ? 'primary' : ''" (click)="scene.show = !scene.show">
+               <ion-icon name="checkmark-circle"></ion-icon>
+               <ion-label>{{ scene.show ? 'show': 'hidden' }}</ion-label>
+             </ion-chip>
+	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+	  </ion-card-content>
+	</ion-card>
+  </div>
+  
+  <div *ngIf="bannerSelect" class="pane-scene-select" cdkDragBoundary=".content-boundary" cdkDrag
+  [ngStyle]="{'top': panelPos.y, 'left': panelPos.x }">
+    <div class="close" (click)="bannerSelect = null">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+    </div>
+	<ion-card *ngIf="bannerSelect" mwlDraggable class="scene-panel" (dragEnd)="dragEnd($event)">
+      <ion-card-header style="border-bottom-color: gray;border-bottom-width: 1px;border-bottom-style: solid;">
+        <ion-card-subtitle style="height: 18px;"> </ion-card-subtitle>
+		<ion-card-content>
+			<ion-tabs>
+			  <ion-tab-bar slot="bottom">
+				<ion-tab-button (click)="tabSelect = 'position'">
+				  <ion-label>Position</ion-label>
+				</ion-tab-button>
+				<ion-tab-button (click)="tabSelect = 'rotate'">
+				  <ion-label>Rotate</ion-label>
+				</ion-tab-button>
+				<ion-tab-button (click)="tabSelect = 'background'">
+				  <ion-label>Background</ion-label>
+				</ion-tab-button>
+				<ion-tab-button (click)="tabSelect = 'font'">
+				  <ion-label>Text</ion-label>
+				</ion-tab-button>
+			  </ion-tab-bar>
+			</ion-tabs>
+			<ion-tabs style="top:-31px">
+			  <ion-tab-bar slot="bottom">
+				<ion-tab-button (click)="tabSelect = 'link'">
+				  <ion-label>Link</ion-label>
+				</ion-tab-button>
+				<ion-tab-button (click)="tabSelect = 'border'">
+				  <ion-label>Border</ion-label>
+				</ion-tab-button>
+				<ion-tab-button (click)="tabSelect = 'css'">
+				  <ion-label>CSS</ion-label>
+				</ion-tab-button>
+				<ion-tab-button (click)="tabSelect = 'tooltip'">
+				  <ion-label>Tooltip</ion-label>
+				</ion-tab-button>
+			  </ion-tab-bar>
+			</ion-tabs>
+		</ion-card-content>
       </ion-card-header>
       <ion-card-content *ngIf="tabSelect == 'position'">
-	    <ion-card-subtitle>Top<input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="sceneSelect.position.y">
-	    </ion-card-subtitle>
-	    <ion-card-subtitle>Left<input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="sceneSelect.position.x">
-	    </ion-card-subtitle>
-	    <ion-card-subtitle>Width<input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="sceneSelect.size.x">
-	    </ion-card-subtitle>
-	    <ion-card-subtitle>Height<input class="mt-2 ml-2 input-form"  type="number" [(ngModel)]="sceneSelect.size.y">
-	    </ion-card-subtitle>
-		<ion-card-subtitle  color="danger"> Delete 
-		   <ion-button size="small" color="danger" (click)="deleteScene(sceneSelect)">
-			<ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-		   </ion-button>
-	    </ion-card-subtitle>
+	  <ion-toolbar>
+		  <ion-buttons slot="start"><ion-card-subtitle> Top 
+		  </ion-card-subtitle></ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.y">
+			    <ion-icon name="arrow-up-outline"></ion-icon>   
+	       </ion-card-subtitle></ion-buttons>
+	  </ion-toolbar>
+	  <ion-toolbar>
+		  <ion-buttons slot="start"><ion-card-subtitle> Left </ion-card-subtitle></ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.x">
+			   <ion-icon name="arrow-forward-outline"></ion-icon>
+	       </ion-card-subtitle></ion-buttons>
+	  </ion-toolbar>
+	  <ion-toolbar>
+		  <ion-buttons slot="start"><ion-card-subtitle> Width </ion-card-subtitle></ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.size.x">
+			   <ion-icon name="swap-horizontal-outline"></ion-icon>
+	       </ion-card-subtitle></ion-buttons>
+	  </ion-toolbar>	  
+	  <ion-toolbar>
+		  <ion-buttons slot="start"><ion-card-subtitle> Height </ion-card-subtitle></ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form"  type="number" [(ngModel)]="bannerSelect.size.y">
+			   <ion-icon name="swap-vertical-outline"></ion-icon>
+	       </ion-card-subtitle></ion-buttons>
+	  </ion-toolbar>
+	  <ion-toolbar>
+		  <ion-buttons slot="start"><ion-card-subtitle> Opacity </ion-card-subtitle></ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+               <input class="origin-y-range" type="range" min="0" max="100" value="100" data-units="%" (change)="onChangeOpacity()"/>
+			   <ion-icon name="sunny-outline"></ion-icon>
+	       </ion-card-subtitle></ion-buttons>
+	  </ion-toolbar>
+	  <ion-toolbar>
+		  <ion-buttons slot="start"><ion-card-subtitle>  </ion-card-subtitle></ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+               <ion-text color="danger"> Delete </ion-text>
+			   <ion-button size="small" color="danger" (click)="deleteScene(bannerSelect)">
+			        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+		       </ion-button>
+	       </ion-card-subtitle></ion-buttons>
+	  </ion-toolbar>
 	</ion-card-content>
 	<ion-card-content *ngIf="tabSelect == 'rotate'">	
-	    <ion-card-subtitle>Rotate X <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.rotation.x"> 
+	    <ion-card-subtitle>Rotate X <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.rotation.x"> 
 	    </ion-card-subtitle>
-   	    <ion-card-subtitle>Rotate Y <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.rotation.y"> 
+   	    <ion-card-subtitle>Rotate Y <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.rotation.y"> 
 	    </ion-card-subtitle>
-		<ion-card-subtitle>Rotate Z <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.rotation.z"> 
+		<ion-card-subtitle>Rotate Z <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.rotation.z"> 
 	    </ion-card-subtitle>
-		<ion-card-subtitle>Perspective <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.perspective"> 
+		<ion-card-subtitle>Perspective <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.perspective"> 
 	    </ion-card-subtitle>
 	</ion-card-content>
 	<ion-card-content *ngIf="tabSelect == 'background'">
-	    <ion-card-subtitle>Background-imagen <input class="mt-2 ml-2" type="text" [(ngModel)]="sceneSelect.image_url"> 
+	    <ion-card-subtitle>Background-image <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.image_url"> 
 	    </ion-card-subtitle>
-		<ion-card-subtitle>Background-color <input class="mt-2 ml-2" type="color" [(ngModel)]="sceneSelect.backgroundColor"> 
-	    </ion-card-subtitle>
-		<ion-card-subtitle>Opacity <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.opacity"> 
+		<ion-card-subtitle>Background-color <input class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.backgroundColor"> 
 	    </ion-card-subtitle>
 	</ion-card-content>
 	<ion-card-content *ngIf="tabSelect == 'font'">
-	    <ion-card-subtitle>Text <input class="mt-2 ml-2" type="text" [(ngModel)]="sceneSelect.text"> 
+	    <ion-card-subtitle>Text <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.text"> 
 	    </ion-card-subtitle>
-	    <ion-card-subtitle>Font-size <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.fontSize"> 
+	    <ion-card-subtitle>Font-size <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.fontSize"> 
 	    </ion-card-subtitle>
-	    <ion-card-subtitle>Font-color <input class="mt-2 ml-2" type="color" [(ngModel)]="sceneSelect.fontColor"> 
+	    <ion-card-subtitle>Font-color <input class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.fontColor"> 
 	    </ion-card-subtitle>
     </ion-card-content>
 	<ion-card-content *ngIf="tabSelect == 'tooltip'">
-		<ion-card-subtitle>Tooltip <input class="mt-2 ml-2" type="text" [(ngModel)]="sceneSelect.tooltipText"> 
+		<ion-card-subtitle>Tooltip <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.tooltipText"> 
 	    </ion-card-subtitle>
-		<ion-card-subtitle>Tooltip Left Position <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.toolPositionLeft"> 
+		<ion-card-subtitle>Tooltip Left Position <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.toolPositionLeft"> 
 	    </ion-card-subtitle>
-		<ion-card-subtitle>Tooltip Width <input class="mt-2 ml-2" type="number" [(ngModel)]="sceneSelect.toolPositionWidth"> 
+		<ion-card-subtitle>Tooltip Width <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.toolPositionWidth"> 
 	    </ion-card-subtitle>
     </ion-card-content>
-	<ion-card-content *ngIf="tabSelect == 'link'">
-	    <ion-card-subtitle>External URL <input class="mt-2 ml-2" type="text" [(ngModel)]="sceneSelect.externalUrl"> 
+	<ion-card-content *ngIf="tabSelect == 'border'">
+		<ion-card-subtitle>Border color <input class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.border.color"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Border style <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.border.style"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Border radius <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.border.radius"> 
+	    </ion-card-subtitle>
+		<ion-card-subtitle>Border height <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.border.height"> 
+	    </ion-card-subtitle>
+    </ion-card-content>
+	<ion-card-content *ngIf="tabSelect == 'css'">
+		
+		<ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> Class </ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+		     <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.class"> 
+	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+		<ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> Style </ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+		     <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.style"> 
+	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+		<div style="height: 100%; display: flex;">
+		  <ion-card-subtitle style="padding-top: 14px;"> Hover Effects </ion-card-subtitle>
+		  <ion-buttons slot="end" style="margin-left: auto;">
+             <ion-list>
+			  <ion-item *ngFor="let effect of hoverEffects" style="height: 45px;margin-top: -9px;">
+				<ion-card-subtitle>{{effect.name}}</ion-card-subtitle>
+				<ion-checkbox slot="end" [(ngModel)]="effect.isChecked" (click)="onChangeEffect(effect)"></ion-checkbox>
+			  </ion-item>
+			</ion-list>
+          </ion-buttons>
+		</div>
+    </ion-card-content>
+	<ion-card-content *ngIf="tabSelect == 'link'">	
+	    <ion-card-subtitle>External URL <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.externalUrl"> 
 	    </ion-card-subtitle>
 		<ion-card-subtitle class="d-flex"><span class="mt-2">Ir a Pabellón</span>
-		<ion-select value="notifications" (ionChange)="onChangeItem()" [(ngModel)]="sceneSelect.internalUrl">
+		<ion-select value="" (ionChange)="onChangeItem()" [(ngModel)]="bannerSelect.internalUrl">
             <ion-select-option value="">--Ninguno--</ion-select-option>
 			<ion-select-option value="/maps/pavilion1/1">Pabellón principal</ion-select-option>
             <ion-select-option value="/maps/pavilion2/2">Pabellón Wom</ion-select-option>
@@ -182,3 +355,5 @@
   </div>
 </div>  
 </ion-content>
+
+
