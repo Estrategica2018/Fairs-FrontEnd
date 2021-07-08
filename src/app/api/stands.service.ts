@@ -22,8 +22,8 @@ export class StandsService {
   get(pavilionId: string, standId: string): any {
     return new Promise((resolve, reject) => {
         this.pavilionsService.get(pavilionId)
-         .then((pavilion) => {
-            for(let stand of pavilion.stands) {
+         .then((response) => {
+            for(let stand of response.pavilion.stands) {
               if(Number(stand.id)  === Number(standId)) { 
                 resolve(stand);
                 return;

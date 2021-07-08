@@ -1,13 +1,15 @@
 <ion-content fullscreen="true">
-  <ion-header class="mt-4">
-    <ion-toolbar>
-      <ion-title>Administrar Pabellón</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-item class="padding-container pavilion-logo mt-4" *ngIf="pavilion" button="true" >
-    <img [src]="pavilion.resources.url_image">
-  </ion-item>
+   <ion-header class="mt-5">
+	  <ion-toolbar>
+		<ion-buttons slot="end" *ngIf="pavilion?.id">
+		  <ion-button color="danger" (click)="deletePavilion()">
+			<ion-icon slot="start" name="trash-outline"></ion-icon>
+			Borrar
+		  </ion-button>
+		</ion-buttons>
+		<ion-title>Administrar Pabellón</ion-title>
+	  </ion-toolbar>
+	</ion-header>
 
   <ion-list-header [hidden]="!errors">
     <div class="alert alert-danger fade show alert-dismissible">
@@ -18,7 +20,26 @@
 
   <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
     <ion-list lines="" *ngIf="pavilion" class="padding-container">
-      <ion-item button="true">
+	
+	   <ion-item lines="none" *ngIf="pavilion.id" [ngClass]="{'mt-4': pavilion.id}">
+          <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
+		   <div class="d-flex ml-auto" style="overflow-x: scroll;">
+		      <ion-item  *ngFor="let resource of pavilion?.resources;let i = index" class="scene-icon-mini"
+			  button="true" routerLink="/super-admin/map-editor/pavilion/{{pavilion.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+               <img [src]="resource.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena">
+			   <h2>{{resource.name || 'Escena ' + (i + 1)}}</h2>
+			  </ion-item>	
+ 		   </div>
+
+		 <ion-buttons slot="end">
+			<ion-button (click)="onAddEscene()">
+			  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+			</ion-button>
+		 </ion-buttons>
+       </ion-item>
+	
+	
+      <ion-item button="true" [ngClass]="{'mt-4': !pavilion.id}">
         <ion-label> Nombre </ion-label>
         <ion-input class="ml-auto" class="text-right" [(ngModel)]="pavilion.name" (ionChange)="editSave=true" name="name"></ion-input>
       </ion-item>
@@ -26,41 +47,38 @@
         <ion-label> Descripción </ion-label>
         <ion-input class="ml-auto" class="text-right" [(ngModel)]="pavilion.description" (ionChange)="editSave=true" name="description"></ion-input>
       </ion-item>
-      <ion-list-header> Locales Comerciales </ion-list-header> 
-      <ion-item>
-        <ion-grid>
-          <ion-row>
-            <ion-col class="d-flex">
-              <ion-item 
-              *ngFor="let stand of pavilion?.stands" 
-              class="pavilion-button" button="true" routerLink="/super-admin/stand/{{pavilion.id}}/{{stand.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+	  
+      <ion-item lines="" *ngIf="pavilion.id">
+          <ion-label style="max-width: 153px;" slot="start">Locales Comerciales </ion-label>
+		  <div class="d-flex ml-auto" style="overflow-x: scroll;">
+		      <ion-item  *ngFor="let stand of pavilion?.stands;let i = index" class="scene-icon-mini"  style="min-width: 148px"
+			  button="true" routerLink="/super-admin/stand/{{pavilion.id}}/{{stand.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                 <ion-avatar class="mr-3">
-                  <img [src]="stand.merchant.resources?.url_image">
+                  <img [src]="stand.merchant?.resources?.url_image">
                 </ion-avatar>
                 <ion-label>
-                  <h2>{{stand.merchant.nick}}</h2>
-                  <h3>{{stand.merchant.name}}</h3>
+                  <h2>{{stand.merchant?.nick}}</h2>
+                  <h3>{{stand.merchant?.name}}</h3>
                 </ion-label>
-              </ion-item>
-            
-              <ion-item class="pavilion-button-add" button="true">
-                <ion-avatar class="">
-                  <img src="assets/icon/plus.png">
-                </ion-avatar>
-              </ion-item>
-            </ion-col>  
-          </ion-row>
-        </ion-grid>
-     </ion-item>
+			  </ion-item>
+ 		   </div>
+		 <ion-buttons slot="end">
+			<ion-button routerLink="/super-admin/stand/{{pavilion.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+			  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+			</ion-button>
+		 </ion-buttons>
+       </ion-item>
       
+	  
+	  <ion-item lines="none">
+        <ion-button size="small" [disabled]="!editSave" (click)="updatePavilion()">
+          <ion-label > Guardar </ion-label>
+          <ion-icon slot="end" name="save-outline"></ion-icon>
+        </ion-button>
+	  </ion-item> 
+	
     </ion-list>
 
-    <div class="ion-padding padding-container">
-      <ion-button expand="block" [disabled]="!editSave" (click)="updatePavilion()">
-        <ion-label > Guardar </ion-label>
-        <ion-icon slot="end" name="save-outline"></ion-icon>
-      </ion-button>
-    </div>
   <!--/form-->
 
 </ion-content>

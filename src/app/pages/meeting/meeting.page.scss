@@ -30,7 +30,7 @@ iframe {
 
 .full-screen-button {
   position: absolute;
-  top: 0;
+  top: 58px;
   z-index: 11;
 }
 
@@ -99,13 +99,38 @@ video {
    z-index: 120;
 }
 
-ion-content {
-    top: 29px;
-}
+
 
 #gui {
   position: absolute;
   top: 4px;
   left: 58px;
   z-index: 200;
+}
+
+.login-name {
+    position: absolute;
+    top: 111px;
+    z-index: 100;
+
+    ion-card-content {
+	   ion-input {
+          border: 1px solid gray;
+          border-radius: 13px;
+	   }
+    }
+}
+
+.meetingFill {
+  position: absolute;
+  top: 296px;
+  left: 552px;
+  width: 131px;
+  height: auto;
+  cursor: pointer;
+}
+
+.meetingFill:hover {
+  background-color: orange;
+    border-radius: 62px;
 }

@@ -29,8 +29,6 @@ export class SpeakersService {
                    .pipe(
                       timeout(30000),
                       catchError(e => {
-                        console.log(e);
-						alert(e);
                         if(e.status && e.statusText) {
                           throw new Error(`Consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);    
                         }

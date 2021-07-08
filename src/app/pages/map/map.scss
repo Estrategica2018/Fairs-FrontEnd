@@ -61,16 +61,15 @@
 
 .tabs-menu {
   position: absolute;
-  bottom: 20px;
-  left: calc(22% - 10px);
+  
   z-index: 11;
 }
 
 @media (max-width: 690px) {
   .tabs-menu {
-      right: calc(0% - 10px);
+    
 	  left: 0;
-      ion-button {
+	    ion-button {
 	     font-size: 10px;
 		 
 	     ion-label {

@@ -5,7 +5,7 @@ import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
 import { FairsService } from '../api/fairs.service';
-import { processData } from '../providers/process-data';
+import { processData, processDataToString } from '../providers/process-data';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,7 @@ export class PavilionsService {
   url = '';
   refresTime = null;
   pavilions = null;
+  fair = null;
 
   constructor(
     private http: HttpClient,
@@ -28,23 +29,24 @@ export class PavilionsService {
             
             this.fairsService.getCurrentFair().
               then( fair => {
+				this.fair = fair;
                 this.http.get(`/api/pavilion/find_by_fair/?fair_id=${fair.id}`)
                 .pipe(
                   timeout(30000),
                   catchError(e => {
                     console.log(e);
                     if(e.status && e.statusText) {
-                      throw new Error(`Consultando el servicio de pabellones: ${e.status} - ${e.statusText}`);    
+                      throw new Error(`Ejecutando el servicio para consulta de pabellones: ${e.status} - ${e.statusText}`);    
                     }
                     else {
-                      throw new Error(`Consultando el servicio de pabellones`);
+                      throw new Error(`Ejecutando el servicio de consulta de pabellones`);
                     }
                   })
                 )
                 .subscribe((data : any )=> {
                     this.refresTime = moment();
                     this.pavilions = processData(data.data);
-                    resolve(this.pavilions);
+					resolve({pavilions: this.pavilions, fair:this.fair});
                 },error => {
                     reject(error)
                 });
@@ -52,7 +54,7 @@ export class PavilionsService {
         })
     }
     else {
-        return new Promise((resolve, reject) => resolve(this.pavilions));
+        return new Promise((resolve, reject) => resolve({pavilions: this.pavilions, fair:this.fair}));
     }
   }
   
@@ -60,9 +62,9 @@ export class PavilionsService {
     return new Promise((resolve, reject) => {
         this.list()
          .then((data) => {
-            for(let pavilion of data ) {
+            for(let pavilion of data.pavilions ) {
                 if(Number(pavilion.id)  === Number(pavilionId)) {
-                  resolve(pavilion);
+                  resolve({pavilion: pavilion, fair:data.fair});
                   return;
                 }
             }
@@ -73,36 +75,5 @@ export class PavilionsService {
          });    
     });
   }
-
-  update(pavilionId: string, data: any): any {
-    return new Promise((resolve, reject) => {
-        this.http.post(`/api/pavilion/update/${pavilionId}`, data)
-		.pipe(
-		  timeout(30000),
-		  catchError(e => {
-			console.log(e);
-			if(e.status && e.statusText) {
-			  throw new Error(`Consultando el servicio para actualizar el pabellón: ${e.status} - ${e.statusText}`);    
-			}
-			else {
-			  throw new Error(`Consultando el servicio para actualizar el pabellón`);    
-			}
-		  })
-		)
-		.subscribe((response : any )=> {
-			this.refresTime = moment();
-			if(response.success == 201) {
-			  resolve(processData(response.data));
-			}
-			else {
-				reject(JSON.stringify(response.data));
-			}
-		},error => {
-			reject(error)
-		});
-		
-		
-    });
-  }
-    
+   
 }

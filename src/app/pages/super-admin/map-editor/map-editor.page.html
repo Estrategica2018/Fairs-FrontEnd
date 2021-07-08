@@ -34,7 +34,7 @@
           'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
 		  'border-color': banner.border?.color,
 		  'border-style': banner.border?.style,
-		  'border-radius': banner.border.radius + 'px',
+		  'border-radius': banner.border?.radius + 'px',
           'background-image': 'url('+banner.image_url+')',
           'background-repeat': 'no-repeat',
 		  'background-color': ''+banner.backgroundColor+'',
@@ -42,7 +42,7 @@
 		  'height': + banner.size.y + 'px',
 		  'font-size': banner.fontSize + 'px ',
 		  'color': banner.fontColor + '',
-		  'transform': 'translateZ(104px) rotateY(' + banner.rotation.z + 'deg)'
+		  'transform': 'translateZ(104px) rotateY(' + banner.rotation?.z + 'deg)'
 		  }"> {{ banner.text }}	</div>
 	    
     </div>
@@ -73,7 +73,7 @@
   </ion-button>
   
   <div class="div-container" scroll-x="0" scroll-y="0">
-     <ion-img [src]="scene?.url_image" [ngStyle]="{'width':scene?.container.w + 'px', 'height': scene?.container.h + 'px'}"></ion-img>
+     <ion-img [src]="scene?.url_image" [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}"></ion-img>
   </div>
   
   <div *ngIf="showTool" class="pane-scene-tools">
@@ -112,7 +112,7 @@
 		  </ion-buttons>
 		  <ion-buttons slot="end">
            <ion-card-subtitle>
-		     <ion-input type="number" (change)="onResize()" [(ngModel)]="scene.container.w" readonly> </ion-input> 
+		     <ion-input type="number" [(ngModel)]="scene.container.w" readonly> </ion-input> 
 	       </ion-card-subtitle>
            </ion-buttons>
 		</ion-toolbar>
@@ -122,7 +122,7 @@
 		  </ion-buttons>
 		  <ion-buttons slot="end">
            <ion-card-subtitle>
-		     <ion-input type="number" (change)="onResize()" [(ngModel)]="scene.container.h"> </ion-input> 
+		     <ion-input type="number" [(ngModel)]="scene.container.h"> </ion-input> 
 	       </ion-card-subtitle>
            </ion-buttons>
 		</ion-toolbar>
@@ -139,6 +139,31 @@
                <ion-label>{{ scene.show ? 'show': 'hidden' }}</ion-label>
              </ion-chip>
 	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+		
+		<ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> Menu Icon</ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+           <ion-card-subtitle>
+		     <ion-icon [name]="scene.menuIcon"></ion-icon>
+		     <input class="mt-2 ml-2" type="text" [(ngModel)]="scene.menuIcon"> 
+	       </ion-card-subtitle>
+           </ion-buttons>
+		</ion-toolbar>
+		
+		<ion-toolbar>
+		  <ion-buttons slot="start">
+			<ion-card-subtitle> 
+			<ion-label color="danger">Eliminar Escena</ion-label>
+			 </ion-card-subtitle>
+		  </ion-buttons>
+		  <ion-buttons slot="end">
+            <ion-button (click)="onDeleteScene(sceneId)" color="danger">
+			  <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+			</ion-button>
            </ion-buttons>
 		</ion-toolbar>
 	  </ion-card-content>
@@ -194,7 +219,7 @@
 		  </ion-card-subtitle></ion-buttons>
 		  <ion-buttons slot="end">
            <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.y">
+                <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.y">
 			    <ion-icon name="arrow-up-outline"></ion-icon>   
 	       </ion-card-subtitle></ion-buttons>
 	  </ion-toolbar>
@@ -356,4 +381,4 @@
 </div>  
 </ion-content>
 
-
+ 

@@ -38,13 +38,32 @@ const routes: Routes = [
     loadChildren: () => import('./pages/super-admin/super-admin.module').then( m => m.SuperAdminPageModule)
   },
   {
-	path: 'map',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-	  }
-	]
+	path: 'map/fair/:sceneId',
+	loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
+  },
+  {	 path: 'map/pavilion1/:pavilionId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {	 path: 'map/pavilion2/:pavilionId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {	 path: 'map/pavilion3/:pavilionId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {	 path: 'map/pavilion4/:pavilionId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {	 path: 'map/pavilion5/:pavilionId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {	 path: 'map/pavilion6/:pavilionId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {	 path: 'map/pavilion7/:pavilionId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {	 path: 'map/pavilion8/:pavilionId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
   {
 	path: 'maps/pavilion-stands/:pavilionId/:sceneId',
@@ -52,42 +71,6 @@ const routes: Routes = [
 	  {
 		path: '',
 		loadChildren: () => import('./pages/map-pavilion-stands/map-pavilion-stands.module').then(m => m.MapPavilionStandsPageModule)
-	  }
-	]
-  },
-  {
-	path: 'maps/pavilion1/:pavilionId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-	  }
-	]
-  },
-  {
-	path: 'maps/pavilion2/:pavilionId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-	  }
-	]
-  },
-  { 
-	path: 'maps/pavilion3/:pavilionId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-	  }
-	]
-  },
-  {
-	path: 'maps/pavilion4/:pavilionId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
 	  }
 	]
   },

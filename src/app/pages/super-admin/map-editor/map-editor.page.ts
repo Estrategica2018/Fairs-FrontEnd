@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, OnInit} from '@angular/core';
 import { HostListener } from "@angular/core";
 import { FairsService } from './../../../api/fairs.service';
 import { AdminFairsService } from './../../../api/admin/fairs.service';
+import { AdminPavilionsService } from './../../../api/admin/pavilions.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from './../../../providers/loading.service';
 import { PanelEditorComponent } from './panel-editor/panel-editor.component';
@@ -20,6 +21,7 @@ export class MapEditorPage implements OnInit {
   
   fullScreen = false;
   fair = null;
+  pavilion = null;
   bannerSelect = null;
   showTools = null;
   editSave = false;
@@ -37,6 +39,7 @@ export class MapEditorPage implements OnInit {
   @ViewChild('inputWidth', { static: true }) inputWidth: ElementRef;
   
   constructor(
+    private alertCtrl: AlertController,
     private fairsService: FairsService,
     private route: ActivatedRoute,
 	private router: Router,
@@ -44,7 +47,8 @@ export class MapEditorPage implements OnInit {
 	private routerOutlet: IonRouterOutlet,
     private loading: LoadingService,
 	private animationCtrl: AnimationController,
-	private adminFairsService: AdminFairsService) { 
+	private adminFairsService: AdminFairsService,
+	private adminPavilionsService: AdminPavilionsService) { 
       
 	  this.listenForFullScreenEvents();
   }
@@ -55,29 +59,44 @@ export class MapEditorPage implements OnInit {
 	 this.template = this.route.snapshot.paramMap.get('template');
 	 this.objId = this.route.snapshot.paramMap.get('objId');
 	 this.sceneId = this.route.snapshot.paramMap.get('sceneId');
+	 
+	 const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
+	 const main = document.querySelector<HTMLElement>('ion-router-outlet');
+
+	 main.style.top = top + 'px';
 
 	 this.fairsService.getCurrentFair().then((fair)=>{
 		const div = document.querySelector<HTMLElement>('.div-container');
         div.addEventListener('scroll', this.logScrolling);
 		
-		this.fair = fair;
 		
+		this.fair = fair;
 		
 		
 	    if(this.template === 'fair') {
 		  this.resources = fair.resources;
 		  this.scene = fair.resources[this.sceneId];
+		  this.scene.show = this.scene.show  || true;
+		  
+		  
 	    }
 		if(this.template === 'pavilion') {
 		  this.fair.pavilions.forEach((pavilion)=>{
-			  if(pavilion.id === this.objId) {
+			  if(pavilion.id == this.objId) {
 				this.scene = pavilion.resources[this.sceneId];
-				this.resources = fair.resources;
-				this.scene = fair.resources[this.sceneId];	  
+				this.pavilion = pavilion;
+				this.resources = pavilion.resources;
 			  }
 		  });
 		}
 		
+		this.scene.container = this.scene && this.scene.container ? this.scene.container : {'w': 1290,'h': 767};
+		this.scene.ori_container = this.scene.container;
+		this.scene.banners = this.scene.banners || [];
+		
+		this.scene.banners.forEach((banner)=> {
+			
+		});
 		this.loading.dismiss();
 		this.onResize();
      }, error => {
@@ -88,7 +107,6 @@ export class MapEditorPage implements OnInit {
   
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));
-	this.onResize();
   }
   
   onChangeOpacity() {
@@ -106,39 +124,23 @@ export class MapEditorPage implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
         
-		const videoElem = <HTMLMediaElement>document.getElementById('videoMeeting_');
-        
-        if(videoElem) {
-            /*
-			const container = this.canvas.nativeElement;
-            const heightFull = container.clientHeight;
-            let width = heightFull * this.resources._defaultWidth / this.resources._defaultHeight;
-            let height = heightFull;
-            if(width<container.clientWidth) {
-              let widthFull = container.clientWidth;
-              height = widthFull * this.resources._defaultHeight / this.resources._defaultWidth;
-              width = widthFull;
-            }
-            this.width = width;
-            this.height = height;
-        
-            videoElem.style.width = width + 'px';
-              videoElem.style.height = height + 'px';
-		   */
-        }
-  
-     const main = document.querySelector<HTMLElement>('ion-router-outlet');
 	 
+	 const main = document.querySelector<HTMLElement>('ion-router-outlet');
+	 const divContainer = document.querySelector<HTMLElement>('.div-container');
 	 const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
-	 
 	 main.style.top = top + 'px';
 	 
+	 const deltaW = 1 - (divContainer.offsetWidth / this.scene.container.w);
+	 const deltaH = ( deltaW * divContainer.offsetHeight / this.scene.container.h );
+	 
 	 let newHeight = main.offsetHeight - top;
-	 this.scene.container = this.scene.container || { 'w': main.offsetWidth };
 	 let _height = this.scene.container.h;
      let _width = this.scene.container.w;
 	 let newWidth = newHeight * _width / _height;
-	
+	 
+	 //this.scene.container.w = newWidth;
+	 //this.scene.container.h = newHeight;
+	 
 	 if(this.fullScreen && newWidth < window.innerWidth ) {
 //		newWidth = window.innerWidth;
 	  //  newHeight = newWidth * _height / _width;
@@ -146,19 +148,19 @@ export class MapEditorPage implements OnInit {
 	//
 	//const deltaWidth = (newWidth - oriWidth) * 100 / newWidth;
 	//console.log('deltaWidth['+deltaWidth+']');
-	 let deltaH = _height / newHeight;
-	 //this.scene.container.h = newHeight;
+	 let deltaHeight = _height / newHeight;
+	// this.scene.container.h = newHeight;
 	 
 	 //main.style.height = newHeight + 'px';
 	 
 	 
 	 this.scene.banners.forEach((banner)=>{
 		 
-		//banner.size.y = this.fullScreen ? ( banner.size.y + banner.size.y * deltaH ) : banner.size.y;
-		//banner.size.x += deltaHeight;
+		banner.position.x = banner.position.x - banner.position.x * deltaW,100;
+		banner.position.y = banner.position.y - banner.position.y * deltaH,100;
+		banner.size.w *= deltaW;
+		banner.size.h *= deltaH;
 	 });
-	 
-	 
 	 
   }
   
@@ -186,8 +188,7 @@ export class MapEditorPage implements OnInit {
 	  });
 	  
 	  document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
-	  document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',oldScrollY.toString());
-	  
+	  document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',oldScrollY.toString());	  
 	  
 	  switch (target.id) {
 		case 'btnScrollLeft':
@@ -233,7 +234,7 @@ export class MapEditorPage implements OnInit {
   }*/
   
   initializePanel() {
-	  const inputs = Array.from(document.querySelectorAll('input-form'));
+	  const inputs = Array.from(document.querySelectorAll('.input-form'));
 	  inputs.forEach((input) => {
 		  input.addEventListener('ionInput', this.onChangeItem);
 	  });
@@ -241,17 +242,26 @@ export class MapEditorPage implements OnInit {
   
   onSave() {
 	  if(this.template === 'fair') {
-		  this.onSaveFair();
+		  this.fair.resources[this.sceneId] = this.scene;
+	      this.adminFairsService.update(this.fair)
+		  .then((fair) => {
+			  this.errors = null;
+		   })
+		   .catch(error => {
+  			  this.errors = `Consultando el servicio para actualizar agenda`;
+		   });
+	  }
+	  else if(this.template === 'pavilion') {
+		  this.adminPavilionsService.update(this.pavilion.id, this.pavilion)
+		  .then((pavilion) => {
+			  this.errors = null;
+		   })
+		   .catch(error => {
+  			  this.errors = `Consultando el servicio para actualizar pabellón`;
+		   });
 	  }
   }
   
-  onSaveFair() {
-	  this.fair.resources[this.sceneId] = this.scene;
-	  this.adminFairsService.update(this.fair);
-  }
-  onSavePavilion() {
-	  this.adminFairsService.update(this.fair);
-  }
   onSaveStand() {
 	  this.adminFairsService.update(this.fair);
   }
@@ -281,23 +291,23 @@ export class MapEditorPage implements OnInit {
     window.addEventListener('map:fullscreenOff', (e:any) => {
         setTimeout(() => {
 		  this.fullScreen = false;
+          this.onResize();
 		  const main = document.querySelector<HTMLElement>('ion-router-outlet');
 		  let newWidth = main.offsetWidth;
 		  let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
 		  this.scene.container.w = newWidth;
 		  this.scene.container.h = newHeight;
-          this.onResize();
       }, 300);
     });
     window.addEventListener('map:fullscreenIn', (e:any) => {
         setTimeout(() => {
 		  this.fullScreen = true;
+          this.onResize();
 		  const main = document.querySelector<HTMLElement>('ion-router-outlet');
 		  let newWidth = main.offsetWidth;
 		  let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
 		  this.scene.container.w = newWidth;
 		  this.scene.container.h = newHeight;
-          this.onResize();
       }, 300);
     });
   }
@@ -311,9 +321,9 @@ export class MapEditorPage implements OnInit {
 			  
 			  .duration(1000)
 			  .keyframes([
-				{ offset: 0, transform: 'scale(1) rotate(0)' },
-				{ offset: 0.5, transform: 'scale(1.2) rotate(45deg)' },
-				{ offset: 1, transform: 'scale(1) rotate(0) '}
+				{ offset: 0, transform: 'rotate(0)' },
+				{ offset: 0.5, transform: 'rotate(45deg)' },
+				{ offset: 1, transform: 'rotate(0) '}
 			  ]);
 		   
 		await squareA.play();
@@ -324,9 +334,9 @@ export class MapEditorPage implements OnInit {
 			  
 			  .duration(1000)
 			  .keyframes([
-				{ offset: 0, transform: 'scale(1) rotate(0)' },
-				{ offset: 0.5, transform: 'scale(1.2) rotate(-45deg)' },
-				{ offset: 1, transform: 'scale(1) rotate(0) '}
+				{ offset: 0, transform: 'rotate(0)' },
+				{ offset: 0.5, transform: 'rotate(-45deg)' },
+				{ offset: 1, transform: 'rotate(0) '}
 			  ]);
 		   
 		await squareA.play();
@@ -341,6 +351,34 @@ export class MapEditorPage implements OnInit {
 		     this.bannerSelect.hoverEffects += effect.name + ";";
 		  }
 	  });
+  }
+  
+  async onDeleteScene(sceneId) {
+    const alert = await this.alertCtrl.create({
+      message: 'Confirma para eliminar la escena',
+      buttons: [
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Aceptar',
+          handler: (data: any) => {
+             
+			 this.fair.resources = this.fair.resources.filter((scene,key)=>{
+				  return key != sceneId;
+			 });
+			 
+			 if(this.fair.resources.length == 0) {
+				const main = document.querySelector<HTMLElement>('ion-router-outlet');
+				const scene = { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': main.offsetWidth, 'h': main.offsetHeight } };
+				this.fair.resources.push(scene);
+			 }
+			 
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
   
 }

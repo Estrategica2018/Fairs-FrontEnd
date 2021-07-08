@@ -13,7 +13,15 @@ const routes: Routes = [
     loadChildren: () => import('./pavilion/pavilion.module').then( m => m.PavilionPageModule)
   },
   {
+    path: 'pavilion',
+    loadChildren: () => import('./pavilion/pavilion.module').then( m => m.PavilionPageModule)
+  },
+  {
     path: 'stand/:pavilionId/:standId',
+    loadChildren: () => import('./stand/stand.module').then( m => m.StandPageModule)
+  },
+  {
+    path: 'stand/:pavilionId',
     loadChildren: () => import('./stand/stand.module').then( m => m.StandPageModule)
   },
   {

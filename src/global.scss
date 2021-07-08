@@ -61,13 +61,10 @@ html {
 }
 
 //*Global Styles*//
-ion-router-outlet {
-   top: 30px;
+.menu-main-content {
+  margin-top: 59px;
 }
 
-.menu-main-content {
-  margin-top: 57px;
-}
 
 .white-space {
     white-space: initial;
@@ -124,3 +121,30 @@ ion-router-outlet {
   -ms-user-select: none;
   user-select: none;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+

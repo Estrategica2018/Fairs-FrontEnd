@@ -5,8 +5,8 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <div class="d-flex">
-      <ion-img *ngIf="!dark" class="icon-logo" src="assets/icon/icon.png"></ion-img>
-      <ion-img *ngIf="dark" class="icon-logo" src="assets/icon/icon-black.png"></ion-img>
+      <ion-img *ngIf="!dark" class="icon-logo" [src]="fair?.social_media?.icon"></ion-img>
+      <ion-img *ngIf="dark" class="icon-logo" [src]="fair?.social_media?.iconNight"></ion-img>
       <ion-label *ngIf="!showSearchbar" class="title-fair"> {{fair?.description}} </ion-label>
     </div>
     <ion-buttons slot="end" class="d-none d-md-block">
@@ -40,16 +40,20 @@
 
         <ion-list lines="none">
           <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/map" routerLinkActive="selected" routerDirection="root" 
-			(click)="showPavilionDetail = null">
-              <ion-icon slot="start" [name]="'map-outline'"></ion-icon>
-              <ion-label>
-                Mapa
-              </ion-label>
-            </ion-item>
+		    <div *ngFor="let scene of fair?.resources;let i = index">
+			  <div *ngIf="scene.show">
+                <ion-item [routerLink]="'/map/fair/'+i" routerLinkActive="selected" routerDirection="root" 
+			              (click)="showPavilionDetail = null">
+                  <ion-icon slot="start" [name]="scene.menuIcon"></ion-icon>
+                  <ion-label>
+                    {{scene.title}}
+                  </ion-label>
+                </ion-item>
+			  </div>
+			</div>
             <div *ngFor="let pavilion of fair?.pavilions;let i = index">
               <ion-item 
-			          [routerLink]="'/maps/pavilion'+(i+1)+'/'+pavilion.id" routerLinkActive="selected" routerDirection="root" 
+			          [routerLink]="'/map/pavilion'+(i+1)+'/'+pavilion.id+'/0'" routerLinkActive="selected" routerDirection="root" 
 					  (click)="showStandDetail = null;
                                showPavilionDetail =  showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id"
                       class="pavilions-menu"
@@ -221,7 +225,7 @@
         </ion-list>
       </ion-content>
     </ion-menu>
-    <ion-router-outlet [ngStyle]="{'top': fullScreen ? _toolbarHeight+'px' : '0px' }" id="main-content"></ion-router-outlet>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
 
   </ion-split-pane>
 

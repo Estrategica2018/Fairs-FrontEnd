@@ -17,7 +17,7 @@ export class FairPage implements OnInit {
   ) { 
   
   }
-
+  
   fair: any;
   agendas: any;
   errors: string;
@@ -27,6 +27,7 @@ export class FairPage implements OnInit {
       this.fairsService.getCurrentFair().
       then( fair => {
         this.fair = fair;
+		
 		this.agendasService.list()
 		.then((agendas) => {
 			this.agendas = agendas;
@@ -35,7 +36,6 @@ export class FairPage implements OnInit {
                 agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
                 agenda.location = agenda.room ? agenda.room.name : '';
 			})
-			console.log(agendas);
 		 })
 		 .catch(error => {
 			console.log(error);
@@ -46,5 +46,16 @@ export class FairPage implements OnInit {
           
       });
   }
+  
+  onAddEscene() {
+	  const main = document.querySelector<HTMLElement>('ion-router-outlet');
+	  const scene = { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': main.offsetWidth, 'h': main.offsetHeight },
+					  'show': true,'menuIcon':'map-outline', 'title': 'Escena' };
+	  this.fair.resources.push(scene);
+  }
+  
+  onAddAgenda() {
+	  
+  }  
 
 }

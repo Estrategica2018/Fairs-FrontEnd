@@ -36,6 +36,9 @@ export class FairsService {
           })
         )
         .subscribe((data : any )=> {
+			console.log(data.social_media);
+			if(data.social_media) data.social_media = JSON.parse(data.social_media);
+			console.log(data.social_media);
             resolve(data);
         },error => reject(error));
     });
