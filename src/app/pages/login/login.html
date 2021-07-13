@@ -1,6 +1,6 @@
 
 <ion-content fullscreen="true">
-  
+
   <div class="padding-container">
   <div class="login-logo">
     <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
@@ -51,6 +51,11 @@
       </ion-col>
       <ion-col>
         <ion-button (click)="onSignup()" color="light" expand="block">Crear cuenta</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="onRecoverPassword()"  expand="block">Recuperar contraseña</ion-button>
       </ion-col>
     </ion-row>
   </form>

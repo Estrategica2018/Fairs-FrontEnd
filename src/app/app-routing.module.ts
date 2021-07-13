@@ -25,6 +25,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignUpModule)
   },
   {
+    path: 'recoverPassword',
+    loadChildren: () => import('./pages/recover/password.module').then(m => m.PasswordModule)
+  },
+  {
     path: 'app',
     loadChildren: () => import('./pages/tabs-page/tabs-page.module').then(m => m.TabsModule)
   },
@@ -165,7 +169,7 @@ const routes: Routes = [
 	]
   },
 
-    
+
 ];
 
 @NgModule({

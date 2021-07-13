@@ -22,8 +22,8 @@ export class LoginPage {
     private router: Router,
     private loading: LoadingService,
     private usersService: UsersService,
-	private fairsService: FairsService
-  ) { 
+	  private fairsService: FairsService
+  ) {
     this.listenForDarkModeEvents();
   }
 
@@ -60,11 +60,16 @@ export class LoginPage {
 				this.errors = error;
 		  });
 		});
-      
+
     }
   }
 
   onSignup() {
     this.router.navigateByUrl('/signup');
   }
+
+  onRecoverPassword() {
+    this.router.navigateByUrl('/recoverPassword');
+  }
+
 }
