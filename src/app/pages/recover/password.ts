@@ -27,7 +27,7 @@ export class PasswordPage {
   }
 
   listenForDarkModeEvents() {
-    window.addEventListener('dark:change', (e:any) => {
+    window.addEventListener('dark:change', (e: any) => {
       setTimeout(() => {
         console.log(e);
         this.dark = e.detail;
@@ -39,19 +39,17 @@ export class PasswordPage {
     this.submitted = true;
 
     if (form.valid) {
+      console.log('ingresa acción recuperación de contraseña');
       this.loading.present({ message: 'Cargando...'});
       const username = this.login.username;
-       this.fairsService.getCurrentFair().
+      this.fairsService.getCurrentFair().
         then( fair => {
-          this.usersService.recoverPassword(username, fair.id)
+          this.usersService.recoverPassword(username)
           .subscribe(
             data => {
               this.loading.dismiss();
               const token = data.data;
-              this.usersService.setUser(Object.assign({password:password},{token:token},data.user)).then(() => {
-                this.router.navigateByUrl('/app/tabs/schedule');
-                window.dispatchEvent(new CustomEvent('user:login'));
-              });
+              console.log(data, ' acción recuperación de contraseña '  );
             },
             error => {
               this.loading.dismiss();

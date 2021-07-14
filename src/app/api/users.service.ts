@@ -13,13 +13,13 @@ import { Storage } from '@ionic/storage';
 export class UsersService {
 
   url= '';
-  HAS_LOGGED_IN = 'hasLoggedIn'; 
-  
+  HAS_LOGGED_IN = 'hasLoggedIn';
+
   constructor(
     private http: HttpClient,
-    private storage: Storage) { 
+    private storage: Storage) {
   }
-  
+
   login(email: string, password: string, fair_id: string): Observable<any> {
     return this.http.post(`${this.url}/api/login`, {email: email, password: password, fair_id: fair_id})
    .pipe(
@@ -35,15 +35,15 @@ export class UsersService {
       })
     )
   }
-  
+
   logout(userDataSession): Observable<any> {
- 
+
     const httpOptions = {
     headers: new HttpHeaders({
       'Authorization':  'Bearer ' + userDataSession.token
       })
     };
-  
+
     return this.http.post(`${this.url}/api/logout`,{},httpOptions)
    .pipe(
       timeout(2000),
@@ -56,7 +56,7 @@ export class UsersService {
       })
     )
   }
-  
+
   signup(userData: any): Promise<any> {
     return new Promise((resolve, reject) => {
         this.http.post(`${this.url}/api/user/create`,userData)
@@ -87,7 +87,7 @@ export class UsersService {
                 reject(`Consumiendo el servicio para creación del usuario`);
             }
         },error => reject(error));
-        
+
     });
   }
 
@@ -96,24 +96,24 @@ export class UsersService {
       return user;
     });
   }
-  
+
   setUser(userDataSession: any): Promise<boolean> {
     if(userDataSession) return this.storage.set(this.HAS_LOGGED_IN,userDataSession);
     else return this.storage.remove(this.HAS_LOGGED_IN);
   }
-  
+
   getUser(): Promise<boolean> {
     return this.storage.get(this.HAS_LOGGED_IN);
   }
- 
+
   updateUser(userDataSession: any, userData: any): Observable<any> {
-    
+
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization':  'Bearer ' + userDataSession.token
       })
     };
-	
+
 	return this.http.post(`${this.url}/api/user/update`,userData, httpOptions)
    .pipe(
       timeout(2000),
@@ -133,5 +133,40 @@ export class UsersService {
     )
   }
 
-  
+  recoverPassword(email: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      //this.http.post(`${this.url}/api/password/create`,email)
+      this.http.post(`http://localhost:8000/api/password/create`,email)
+
+        .pipe(
+          timeout(2000),
+          catchError(e => {
+            if(e.status == 401) {
+              throw new Error(`Usuario ya existe`);
+            }
+            else {
+              if(e.status && e.statusText) {
+                throw new Error(`Consumiendo el servicio para creación del usuario: ${e.status} - ${e.statusText}`);
+              }
+              else {
+                throw new Error(`Consumiendo el servicio para creación del usuario`);
+              }
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+          if(data.success === 201) {
+            resolve(data);
+          }
+          else if(data.data && data.data.email) {
+            reject(`Correo electrónico ya registrado`);
+          }
+          else {
+            reject(`Consumiendo el servicio para creación del usuario`);
+          }
+        },error => reject(error));
+
+    });
+  }
+
 }
