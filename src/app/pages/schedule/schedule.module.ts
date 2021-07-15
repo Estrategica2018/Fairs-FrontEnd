@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { SchedulePage } from './schedule';
 import { ScheduleFilterPage } from '../schedule-filter/schedule-filter';
 import { SchedulePageRoutingModule } from './schedule-routing.module';
+import { WompiPaymentButtonComponent } from '../wompi-payment-button/wompi-payment-button.component';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { SchedulePageRoutingModule } from './schedule-routing.module';
   ],
   declarations: [
     SchedulePage,
-    ScheduleFilterPage
+    ScheduleFilterPage,
+	WompiPaymentButtonComponent
   ],
   entryComponents: [
     ScheduleFilterPage

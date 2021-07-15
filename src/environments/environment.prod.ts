@@ -5,4 +5,4 @@ export const environment = {
 };
 
 //export const SERVER_URL = 'http://3.137.162.227/';
-export const SERVER_URL = 'http://e-logic.com.co/';
+export const SERVER_URL = 'https://e-logic.com.co/';

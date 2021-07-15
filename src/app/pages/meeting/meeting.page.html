@@ -1,5 +1,8 @@
-  <!--iframe [src]="link" *ngIf="link">
-  </iframe-->
+<ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
+    <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
+    <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
+</ion-button>
+
 <ion-content class="">
 
   <div id="gui"></div>
@@ -11,13 +14,13 @@
        </div>
   </div>
 
-  <video #videoMeeting 
+  <!--video #videoMeeting 
     id="{{'videoMeeting_'+agenda?.id}}"
     [ngStyle]="{'opacity': intro && resources?.video ? 1 : 0, 'position': intro && resources?.video ? 'block' : 'absolute'}"
     muted 
     [src]="[resources?.video]"
     class="video">
-  </video>
+  </video-->
   
   <!--div [ngStyle]="{'opacity':  intro? 0: 1}" 
   #canvasMeeting class="canvas" [ngClass]="{'canvas-full-screen': fullScreen}"></div-->
@@ -124,13 +127,6 @@
 
   
 </ion-content>
-
-  <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
-    <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
-    <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
-  </ion-button>
-  
-
 
   <div class="tabs-menu">
 

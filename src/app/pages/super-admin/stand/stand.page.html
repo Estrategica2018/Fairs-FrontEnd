@@ -27,8 +27,8 @@
 	  <ion-item lines="none"  *ngIf="stand.id" [ngClass]="{'mt-4': stand.id}">
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
 		  <div class="d-flex ml-auto" style="overflow-x: scroll;">
-		      <ion-item style="    min-width: 163px; " *ngFor="let resource of stand?.resources;let i = index" class="scene-icon-mini" 
-			  button="true" routerLink="/super-admin/map-editor/stand/{pavilion?.id}/{{stand?.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+		      <ion-item style=" min-width: 163px; " *ngFor="let resource of stand?.resources;let i = index" class="scene-icon-mini" 
+			  button="true" routerLink="/super-admin/map-editor/stand/{{pavilion?.id}}_{{stand?.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
                <img [src]="resource.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena">
 			   <h2>{{resource.name || 'Escena ' + (i + 1)}}</h2>
 			  </ion-item>	
@@ -41,7 +41,7 @@
 		 </ion-buttons>
        </ion-item>
 	   
-	  <ion-item button="true" class="mt-3">
+	  <ion-item button="true" class="mt-3" (click)="presentActionMerchant()">
         <ion-label> Comercio asociado </ion-label>
 		<div class="d-flex" *ngIf="merchant">
 			<ion-avatar class="mr-3 p-2">
@@ -52,10 +52,6 @@
 			  <h3>{{merchant?.name}}</h3>
 			</ion-label>
 		</div>
-		<ion-select [(ngModel)]="stand.merchant_id" (ionChange)="onChangeMerchant()">
-            <ion-select-option *ngFor="let merchant of merchants" value="{{merchant.id}}">{{merchant.nick}}
-            </ion-select-option>
-        </ion-select>
       </ion-item>
      
 	 <div class="ion-padding mt-2">
@@ -63,7 +59,11 @@
         <ion-label > Guardar </ion-label>
         <ion-icon slot="end" name="save-outline"></ion-icon>
       </ion-button>
-	  
+	  <ion-button size="small" color="success" 
+	              routerLink="/super-admin/merchant" routerLinkActive="active" routerDirection="root" detail="false">
+        <ion-label > Nuevo Comercio </ion-label>
+        <ion-icon slot="end" name="add-outline"></ion-icon>
+      </ion-button>
     </div>
 	
     </ion-list>

@@ -56,15 +56,27 @@
       </ion-item>
       <ion-item button="true">
         <ion-label> Descripción </ion-label>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="fair.description" name="description"></ion-input>
+        <ion-input class="ml-auto" class="text-right" [(ngModel)]="fair.description" name="description" (ionChange)="ionChange()" (ionInput)="ionChange()"></ion-input>
       </ion-item>
       <ion-item>
           <ion-label>Fecha de inicio</ion-label>
-          <ion-datetime value="1990-02-19"  placeholder="Select Date"></ion-datetime>
+          <ion-datetime value="1990-02-19"  placeholder="Select Date" (ionChange)="ionChange()"></ion-datetime>
       </ion-item>
       <ion-item>
           <ion-label>Fecha final</ion-label>
-          <ion-datetime value="1990-02-19" placeholder="Select Date"></ion-datetime>
+          <ion-datetime value="1990-02-19" placeholder="Select Date" (ionChange)="ionChange()"></ion-datetime>
+      </ion-item>
+	  
+	  <ion-item button="true">
+        <ion-label> Precio por suscripción </ion-label>
+		<ion-buttons slot="end">
+                <ion-input class="ml-auto" *ngIf="showPrice" class="text-right" [(ngModel)]="fair.price" name="name"></ion-input>
+				<ion-chip 
+					(click)="toogleShowPrice()"
+					[color]="showPrice ? 'primary' : ''">
+					   <ion-icon name="checkmark-circle"></ion-icon>
+				 </ion-chip>
+		 </ion-buttons>
       </ion-item>
       
        <ion-item lines="">
@@ -117,7 +129,7 @@
 	
      </ion-item>
 	 <ion-item  lines="none">
-	    <ion-button size="small" [disabled]="!editSave">
+	    <ion-button size="small" [disabled]="!editSave" (click)="updateFair()">
           <ion-label > Guardar </ion-label>
           <ion-icon slot="end" name="save-outline"></ion-icon>
         </ion-button>

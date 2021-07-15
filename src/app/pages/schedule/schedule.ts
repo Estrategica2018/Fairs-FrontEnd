@@ -50,7 +50,8 @@ export class SchedulePage implements OnInit {
   }
 
   ionViewWillEnter () {
-    this.ios = this.config.get('mode') === 'ios';
+    
+	this.ios = this.config.get('mode') === 'ios';
     
     // Close any open sliding items when the schedule updates
     if (this.scheduleList) {

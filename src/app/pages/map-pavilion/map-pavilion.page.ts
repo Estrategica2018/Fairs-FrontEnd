@@ -59,6 +59,20 @@ export class MapPavilionPage implements AfterViewInit, OnInit {
 				}
 			});
 		}
+		else if(this.router.url.indexOf('/stand') >= 0) {
+			const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
+			const standId = this.route.snapshot.paramMap.get('standId');
+			const sceneId = this.route.snapshot.paramMap.get('sceneId');
+			fair.pavilions.forEach((pavilion)=>{
+				if(pavilion.id == pavilionId) {
+   				   pavilion.stands.forEach((stand)=>{
+					   if(stand.id == standId) {
+					      this.scene = stand.resources[sceneId];
+					   }
+				   });
+				}
+			});
+		}
 		this.scene.container = {'w': 1144,'h': 569};
 		this.scene.banners = this.scene.banners || [];
 		

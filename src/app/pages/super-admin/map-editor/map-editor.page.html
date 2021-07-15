@@ -15,7 +15,9 @@
     class="video">
   </video>
 
-  <div *ngFor="let banner of scene?.banners;let i = index" class="scene" 
+  <div *ngFor="let banner of scene?.banners;let i = index" class="scene"
+     mwlDraggable (dragEnd)="dragBannerEnd($event,banner)"
+	 id="banner-drag-{{banner.id}}"
      [ngStyle]="{
 		  'left': banner.position?.x + 'px ', 
 		  'top': + banner.position?.y + 'px',
@@ -170,12 +172,14 @@
 	</ion-card>
   </div>
   
-  <div *ngIf="bannerSelect" class="pane-scene-select" cdkDragBoundary=".content-boundary" cdkDrag
-  [ngStyle]="{'top': panelPos.y, 'left': panelPos.x }">
+  <div *ngIf="bannerSelect" class="pane-scene-select"
+  [ngStyle]="{'top': panelPos.y, 'left': panelPos.x }"
+  mwlDraggable (dragEnd)="dragEnd($event)"
+  >
     <div class="close" (click)="bannerSelect = null">
       <ion-icon slot="icon-only" name="close-outline"></ion-icon>
     </div>
-	<ion-card *ngIf="bannerSelect" mwlDraggable class="scene-panel" (dragEnd)="dragEnd($event)">
+	<ion-card *ngIf="bannerSelect" class="scene-panel">
       <ion-card-header style="border-bottom-color: gray;border-bottom-width: 1px;border-bottom-style: solid;">
         <ion-card-subtitle style="height: 18px;"> </ion-card-subtitle>
 		<ion-card-content>
@@ -357,27 +361,6 @@
      </ion-card>
   </div>
 
-  <div class="tabs-menu">
-    <ion-button color="light" (click)="onRouterLink('/app/tabs/schedule')">
-      <ion-icon slot="start" name="calendar-outline"></ion-icon>
-      <ion-label>Agenda</ion-label>
-    </ion-button>
-
-    <ion-button color="light" (click)="onRouterLink('/app/tabs/speakers')">
-      <ion-icon slot="start" name="people-outline"></ion-icon>
-      <ion-label>Conferencistas</ion-label>
-    </ion-button>
-
-    <ion-button color="light" (click)="onRouterLink('/map')">
-      <ion-icon slot="start" name="map-outline"></ion-icon>
-      <ion-label>Mapa</ion-label>
-    </ion-button>
-
-    <ion-button color="light" (click)="onRouterLink('/app/tabs/about')">
-      <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-      <ion-label>Acerca de</ion-label>
-    </ion-button>
-  </div>
 </div>  
 </ion-content>
 

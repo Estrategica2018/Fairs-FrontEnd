@@ -1,71 +1,75 @@
-iframe {
-    width: 100%;
-    height: 100%;
+.scene {
+  width: 200px;
+  height: 200px;
+  top: 40px;
+  left: 180px;
+  perspective: 400px;
+  position: absolute;
 }
 
-.canvas {
-    width: 100% !important;
-    height: 100% !important;
-    background-color: #8fbcd4;
-    position: absolute;
-    padding-left: 0px;
-    z-index: 10;
-    overflow: auto;
-    canvas {
-       margin-left: -2px;
-       margin-top: -2px;
-    }
-}
-.canvas-full-screen {
-    height: calc(100% - 26px);
+.cube {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateZ(-100px);
 }
 
-
-@media (max-width: 991px) {
-  .container {
-    left: 0;
-  }
+.cube__face {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border: 2px solid black;
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
 }
 
+.link.cube__face--right:hover {
+  cursor: pointer;
+}
+
+.cube__face--right  { 
+  background: hsla( 60, 100%, 50%, 0.7); 
+  transform: translateZ(104px) rotateY( -56deg);
+}
 
 .full-screen-button {
   position: absolute;
-  top: 58px;
+  top: 0;
   z-index: 11;
 }
+
+
+.div-container {
+  width: 100%;
+  overflow: auto;
+}
+
+
+.tooltip-label {
+  position: absolute;
+  left: -150px;
+  top: 7px;
+  background-color: black;
+  padding: 8px;
+  border-radius: 11px;
+  color: #fff;
+}
+
 
 .tabs-menu {
   position: absolute;
-  bottom: 20px;
-  left: calc(34% - 10px);
+  
   z-index: 11;
 }
 
-video {
-  margin-left: -8px;
-  margin-top: -2px;
-  width: 100%;
-  height: 100%;
-}
-
-.video {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0px;
-}
-
-.image-background {
-  width: 100%;
-  height: 100%;
-}
-
-
 @media (max-width: 690px) {
   .tabs-menu {
-      right: calc(34% - 10px);
+    
 	  left: 0;
-      ion-button {
+	    ion-button {
 	     font-size: 10px;
 		 
 	     ion-label {
@@ -73,39 +77,6 @@ video {
 		 }
 	  }
 	}
-}
-
-
-.viewer-meeting-button {
-  position: absolute;
-  top: 42vh;
-  right: 36vw;
-  z-index: 11;
-  width: 114px;
-  height: 105px;
-}
-
-
-.c {
-  input { 
-     height: 19px;
-  }
-}
-
-.error-video {
-   position: absolute;
-   top:100px;
-   left: 100px;
-   z-index: 120;
-}
-
-
-
-#gui {
-  position: absolute;
-  top: 4px;
-  left: 58px;
-  z-index: 200;
 }
 
 .login-name {

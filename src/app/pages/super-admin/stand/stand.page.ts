@@ -5,6 +5,8 @@ import { StandsService } from './../../../api/stands.service';
 import { MerchantsService } from './../../../api/merchants.service';
 import { AdminStandsService } from './../../../api/admin/stands.service';
 import { ActivatedRoute } from '@angular/router';
+import { ActionSheetController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-stand',
@@ -27,7 +29,8 @@ export class StandPage implements OnInit {
     private route: ActivatedRoute,
     private loading: LoadingService,
 	private fairsService: FairsService,
-	private merchantsService: MerchantsService
+	private merchantsService: MerchantsService,
+	private actionSheetController: ActionSheetController
     ) { }
 
   ngOnInit() {
@@ -87,8 +90,9 @@ export class StandPage implements OnInit {
   
   updateStand() {
 	  this.loading.present({message:'Cargando...'});
+	  this.stand.pavilion_id = this.pavilion.id;
+	  this.stand.merchant_id = this.merchant.id;
 	  if(this.stand.id) {
-		  this.stand.pavilion_id = this.pavilion.id;
 		  this.adminStandsService.update(this.stand)
           .then((stand) => {
              this.loading.dismiss();
@@ -101,7 +105,6 @@ export class StandPage implements OnInit {
           });
 	  }
 	  else {
-		  this.stand.pavilion_id = this.pavilion.id;
 		  this.stand.stand_type_id = 1;
 		  this.adminStandsService.create(this.stand)
           .then((stand) => {
@@ -141,6 +144,45 @@ export class StandPage implements OnInit {
 	 });
 	 
 	 this.editSave = true;
+  }
+  
+  async presentActionMerchant() {
+	let merchant = null; 
+	let buttons = [];
+
+    for (let i = 0; i < this.merchants.length; i++) {
+	  merchant = this.merchants[i];
+	  let style = document.createElement('style');
+	  style.type = 'text/css';
+	  style.innerHTML = '.customCSSClass' + i + '{background: url(' + "'" + merchant.resources.url_image + "'" + ') no-repeat !important;background-size: 50px 50px !important;margin-left: 31px;padding-left: 63px !important;}';
+	  document.getElementsByTagName('head')[0].appendChild(style);
+	  buttons.push({
+		text: merchant.nick, 
+		role: 'destructive', 
+		cssClass: 'customCSSClass' + i,
+		handler: () => {
+          this.merchant = this.merchants[i];
+          this.editSave = true;
+        }
+	  });
+	}	 
+	
+	buttons.push({
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel'
+      });
+	  
+	  
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Albums',
+      cssClass: 'my-custom-class',
+      buttons: buttons
+    });
+    await actionSheet.present();
+
+    const { role } = await actionSheet.onDidDismiss();
+    console.log('onDidDismiss resolved with role', role);
   }
   
 }

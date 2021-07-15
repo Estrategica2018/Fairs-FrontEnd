@@ -78,8 +78,8 @@
                 </ion-item>
 
                 <div *ngIf="showStandDetail ==='pavilion_id_'+pavilion.id || !pavilion.hasSceneStands">
-                    <ion-item [routerLink]="'/maps/stand'+(i_stand+1)+'/'+pavilion.id+'/'+stand.id" routerLinkActive="selected" routerDirection="root" 
-                              *ngFor="let stand of pavilion.stands;let i_stand = index"
+                    <ion-item *ngFor="let stand of pavilion.stands;let i_stand = index"
+                              [routerLink]="'/map/stand'+(i_stand+1)+'/'+pavilion.id+'/'+stand.id+'/0'" routerLinkActive="selected" routerDirection="root" 
                               lines="none" class="sub-menu-stand">
                       <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
                       <ion-label class="menu-label">{{stand.merchant.name}}</ion-label>

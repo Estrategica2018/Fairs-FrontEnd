@@ -3,6 +3,7 @@ import { HostListener } from "@angular/core";
 import { FairsService } from './../../../api/fairs.service';
 import { AdminFairsService } from './../../../api/admin/fairs.service';
 import { AdminPavilionsService } from './../../../api/admin/pavilions.service';
+import { AdminStandsService } from './../../../api/admin/stands.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from './../../../providers/loading.service';
 import { PanelEditorComponent } from './panel-editor/panel-editor.component';
@@ -22,6 +23,7 @@ export class MapEditorPage implements OnInit {
   fullScreen = false;
   fair = null;
   pavilion = null;
+  stand = null;
   bannerSelect = null;
   showTools = null;
   editSave = false;
@@ -48,7 +50,8 @@ export class MapEditorPage implements OnInit {
     private loading: LoadingService,
 	private animationCtrl: AnimationController,
 	private adminFairsService: AdminFairsService,
-	private adminPavilionsService: AdminPavilionsService) { 
+	private adminPavilionsService: AdminPavilionsService,
+	private adminStandsService: AdminStandsService) { 
       
 	  this.listenForFullScreenEvents();
   }
@@ -68,24 +71,35 @@ export class MapEditorPage implements OnInit {
 	 this.fairsService.getCurrentFair().then((fair)=>{
 		const div = document.querySelector<HTMLElement>('.div-container');
         div.addEventListener('scroll', this.logScrolling);
-		
-		
 		this.fair = fair;
-		
-		
 	    if(this.template === 'fair') {
 		  this.resources = fair.resources;
 		  this.scene = fair.resources[this.sceneId];
 		  this.scene.show = this.scene.show  || true;
-		  
-		  
 	    }
-		if(this.template === 'pavilion') {
+		else if(this.template === 'pavilion') {
 		  this.fair.pavilions.forEach((pavilion)=>{
 			  if(pavilion.id == this.objId) {
 				this.scene = pavilion.resources[this.sceneId];
 				this.pavilion = pavilion;
 				this.resources = pavilion.resources;
+			  }
+		  });
+		}
+		else if(this.template === 'stand') {
+		  const pavilionId = this.objId.split('_')[0];
+		  const standId = this.objId.split('_')[1];
+		  this.fair.pavilions.forEach((pavilion)=>{
+			  if(pavilion.id == pavilionId) {
+				this.pavilion = pavilion;
+				pavilion.stands.forEach((standEl)=>{
+					if(standEl.id == standId) {
+					   this.stand = standEl;
+					}
+				})
+				this.scene = this.stand.resources[this.sceneId];
+				this.pavilion = pavilion;
+				this.resources = this.stand.resources;
 			  }
 		  });
 		}
@@ -124,6 +138,7 @@ export class MapEditorPage implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
         
+	 alert(JSON.stringify({x:document.querySelector<HTMLElement>("#ionContent").offsetWidth,y:document.querySelector<HTMLElement>("#ionContent").offsetHeight}));
 	 
 	 const main = document.querySelector<HTMLElement>('ion-router-outlet');
 	 const divContainer = document.querySelector<HTMLElement>('.div-container');
@@ -260,6 +275,15 @@ export class MapEditorPage implements OnInit {
   			  this.errors = `Consultando el servicio para actualizar pabellón`;
 		   });
 	  }
+	  else if(this.template === 'stand') {
+		  this.adminStandsService.update(this.stand)
+		  .then((stand) => {
+			  this.errors = null;
+		   })
+		   .catch(error => {
+  			  this.errors = `Consultando el servicio para actualizar local comercial`;
+		   });
+	  }
   }
   
   onSaveStand() {
@@ -276,6 +300,11 @@ export class MapEditorPage implements OnInit {
     const panel = document.querySelector<HTMLElement>('.pane-scene-select');
 	this.panelPos.y = ( panel.offsetTop  + event.y ) + 'px';
 	this.panelPos.x = ( panel.offsetLeft  + event.x ) + 'px';
+  }
+  
+  dragBannerEnd($event,banner) {
+	banner.position.y += $event.y;
+	banner.position.x += $event.x;
   }
    
   deleteScene(bannerSelect) {
@@ -314,7 +343,8 @@ export class MapEditorPage implements OnInit {
   
   async startAnimation(obj) {
 
-	  
+	if(!obj.hoverEffects) return;
+	
 	if(obj.hoverEffects.includes('GirarDerecha')) {
 		const squareA = this.animationCtrl.create()
 			  .addElement(document.querySelector('#obj-' + obj.id))

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FairsService } from '../../../api/fairs.service';
 import { AgendasService } from './../../../api/agendas.service';
+import { AdminFairsService } from './../../../api/admin/fairs.service';
 import { DatePipe } from '@angular/common'
 
 @Component({
@@ -13,6 +14,7 @@ export class FairPage implements OnInit {
   constructor(
     private fairsService: FairsService,
     private agendasService: AgendasService,
+	private adminFairsService: AdminFairsService,
 	private datepipe: DatePipe
   ) { 
   
@@ -22,11 +24,13 @@ export class FairPage implements OnInit {
   agendas: any;
   errors: string;
   editSave: any;
+  showPrice = false;
 
   ngOnInit() {
       this.fairsService.getCurrentFair().
       then( fair => {
         this.fair = fair;
+		this.showPrice = fair.price > 0;
 		
 		this.agendasService.list()
 		.then((agendas) => {
@@ -54,8 +58,26 @@ export class FairPage implements OnInit {
 	  this.fair.resources.push(scene);
   }
   
-  onAddAgenda() {
-	  
+  ionChange() {
+	this.editSave = true;
   }  
+  
+  updateFair() {
+  if(!this.showPrice) {	
+    this.fair.price = 0;
+  }
+  
+   this.adminFairsService.update(this.fair).
+      then( fair => {
+        
+      }, errors => {
+          this.errors = `Consultando el servicio para modificar feria`;
+      });	  
+  }
+  
+  toogleShowPrice() { 
+    this.showPrice = !this.showPrice;
+    this.editSave = true;
+  }
 
 }

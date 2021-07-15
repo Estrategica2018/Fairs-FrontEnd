@@ -8,7 +8,7 @@ import { LoadingService } from './../../../providers/loading.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment-timezone';
 import { AlertController, ModalController,IonRouterOutlet } from '@ionic/angular';
-import {  } from '@ionic/angular';
+import { ActionSheetController } from '@ionic/angular';
 import { SpeakersSelectPage } from '../speakers-select/speakers-select.page';
 import { AudienceSelectPage } from '../audience-select/audience-select.page';
 
@@ -28,6 +28,7 @@ export class AgendaPage implements OnInit {
   categories = [];
   speakers = [];
   emails: any = [];
+  editSave = null;
   invited_emails: any = [];
   
   
@@ -43,6 +44,7 @@ export class AgendaPage implements OnInit {
     private alertCtrl: AlertController,
 	private modalCtrl: ModalController,
 	private routerOutlet: IonRouterOutlet,
+	private actionSheetController: ActionSheetController
     ) { 
 		this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': '/assets/icon/null-21_1_joxd4u.jpg' } };
 	}
@@ -129,7 +131,8 @@ export class AgendaPage implements OnInit {
   audiences: any[] = [
     { id: 1, name: 'Publico general'},
     { id: 2, name: 'Lista de correo'},
-    { id: 3, name: 'Acceso por token'}
+    { id: 3, name: 'Pago dentro de la feria'},
+    { id: 4, name: 'Pago por evento'}
   ];
 
   onCreateAgenda() {
@@ -333,5 +336,52 @@ export class AgendaPage implements OnInit {
 		
 	}
   } 
+
+  async presentActionPrice() {
+	let merchant = null; 
+	let buttons = [];
+    buttons.push({
+	  text: this.agenda.price, 
+	  role: 'destructive', 
+ 	  handler: (value) => {
+	    alert(value);
+	    this.editSave = true;
+	  }
+    });
+	
+	buttons.push({
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel'
+      });
+	  
+	  
+    const actionSheet = await this.alertCtrl.create({
+      header: 'Precio por evento',
+      message: "Ingresa el precio del evento",
+      inputs: [
+        {
+          name: 'price',
+          placeholder: '$ Precio'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Save',
+          handler: data => {
+			this.agenda.price = data.price;
+          }
+        }
+      ]
+    });
+    await actionSheet.present();
+
+  }
   
 }
