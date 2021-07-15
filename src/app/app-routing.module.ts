@@ -29,6 +29,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/recover/password.module').then(m => m.PasswordModule)
   },
   {
+    path: 'recoverPassword/:token',
+    loadChildren: () => import('./pages/recover/password.module').then(m => m.PasswordModule)
+  },
+  {
     path: 'app',
     loadChildren: () => import('./pages/tabs-page/tabs-page.module').then(m => m.TabsModule)
   },
@@ -69,95 +73,29 @@ const routes: Routes = [
   {	 path: 'map/pavilion8/:pavilionId/:sceneId',
 		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
-  {
-	path: 'maps/pavilion-stands/:pavilionId/:sceneId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-pavilion-stands/map-pavilion-stands.module').then(m => m.MapPavilionStandsPageModule)
-	  }
-	]
+  {	 path: 'map/stand1/:pavilionId/:standId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
-  {
-	path: 'maps/stand1/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
+  {	 path: 'map/stand2/:pavilionId/:standId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
-  {
-	path: 'maps/stand2/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
+  {	 path: 'map/stand3/:pavilionId/:standId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
-  {
-	path: 'maps/stand3/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
+  {	 path: 'map/stand4/:pavilionId/:standId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
-  {
-	path: 'maps/stand4/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
+  {	 path: 'map/stand5/:pavilionId/:standId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
-  {
-	path: 'maps/stand5/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
+  {	 path: 'map/stand6/:pavilionId/:standId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
-  {
-	path: 'maps/stand6/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
+  {	 path: 'map/stand7/:pavilionId/:standId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
-  {
-	path: 'maps/stand7/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
-  },
-  {
-	path: 'maps/stand8/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
-  },
-  {
-	path: 'maps/stand9/:pavilionId/:standId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/map-stand/map-stand.module').then( m => m.MapStandPageModule)
-	  }
-	]
+  {	 path: 'map/stand8/:pavilionId/:standId/:sceneId',
+		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
   },
   {
 	path: 'meeting/:meetingId',
@@ -167,9 +105,7 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/meeting/meeting.module').then( m => m.MeetingPageModule)
 	  }
 	]
-  },
-
-
+  }
 ];
 
 @NgModule({

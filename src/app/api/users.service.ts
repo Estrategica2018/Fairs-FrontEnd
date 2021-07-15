@@ -133,23 +133,25 @@ export class UsersService {
     )
   }
 
-  recoverPassword(email: string): Promise<any> {
+  recoverPassword(data): Promise<any> {
     return new Promise((resolve, reject) => {
-      //this.http.post(`${this.url}/api/password/create`,email)
-      this.http.post(`http://localhost:8000/api/password/create`,email)
-
-        .pipe(
-          timeout(2000),
+      this.http.post(`${this.url}/api/password/create`,data)
+	   .pipe(
+          timeout(30000),
           catchError(e => {
-            if(e.status == 401) {
-              throw new Error(`Usuario ya existe`);
+            if(e.status == 422) {
+			  const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
+              throw new Error(`Consumiendo el servicio para recuperación de clave: ${message}`);
+            }
+			else if(e.status == 404) {
+			  throw new Error(`Usuario o Email no encontrado`);
             }
             else {
-              if(e.status && e.statusText) {
-                throw new Error(`Consumiendo el servicio para creación del usuario: ${e.status} - ${e.statusText}`);
+			  if(e.status && e.statusText) {
+                throw new Error(`Consumiendo el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
               }
               else {
-                throw new Error(`Consumiendo el servicio para creación del usuario`);
+                throw new Error(`Consumiendo el servicio para recuperación de clave`);
               }
             }
           })
@@ -158,11 +160,43 @@ export class UsersService {
           if(data.success === 201) {
             resolve(data);
           }
-          else if(data.data && data.data.email) {
-            reject(`Correo electrónico ya registrado`);
+          else {
+            reject(`Consumiendo el servicio para recuperación de clave`);
+          }
+        },error => reject(error));
+
+    });
+  }
+  
+  findPassword(token): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.get(`${this.url}/api/password/find/${token}`)
+	   .pipe(
+          timeout(30000),
+          catchError(e => {
+            if(e.status == 422) {
+			  const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
+              throw new Error(`Consumiendo el servicio para recuperación de clave: ${message}`);
+            }
+			else if(e.status == 404 && e.error && e.error.message) {
+			  throw new Error(`${e.error.message}`);
+            }
+            else {
+			  if(e.status && e.statusText) {
+                throw new Error(`Consumiendo el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
+              }
+              else {
+                throw new Error(`Consumiendo el servicio para recuperación de clave`);
+              }
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+          if(data.status === 'successfull') {
+            resolve(data);
           }
           else {
-            reject(`Consumiendo el servicio para creación del usuario`);
+            reject(`Consumiendo el servicio para recuperación de clave`);
           }
         },error => reject(error));
 

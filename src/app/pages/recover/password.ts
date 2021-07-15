@@ -1,29 +1,55 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingService } from './../../providers/loading.service';
 import { FairsService } from './../../api/fairs.service';
 import { UsersService } from './../../api/users.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'page-recover-password',
   templateUrl: 'password.html',
   styleUrls: ['./password.scss'],
 })
-export class PasswordPage {
+export class PasswordPage  implements OnInit {
   login: any = { username: '', password: '' };
+  changePassword: any = { username: '', newPassrword: '', confirNewPassrword: '' };
   submitted = false;
+  success = null;
   errors = null;
   dark = false;
+  token = null;
+  showPassword = 'password';
+  showConfirmPassword = 'password';
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private loading: LoadingService,
     private fairsService: FairsService,
     private usersService: UsersService
 
   ) {
     this.listenForDarkModeEvents();
+  }
+  
+  ngOnInit() {
+      this.token = this.route.snapshot.paramMap.get('token');
+      if(this.token) {
+       this.usersService.findPassword(this.token)
+      .then( data => {
+          this.loading.dismiss();
+          this.errors = null;
+          this.changePassword.username = data.data.email;
+		  
+        },
+        error => {
+          this.loading.dismiss();
+          this.errors = error;
+          this.success = null;
+		  this.token = null;
+        });
+      }
   }
 
   listenForDarkModeEvents() {
@@ -39,21 +65,20 @@ export class PasswordPage {
     this.submitted = true;
 
     if (form.valid) {
-      console.log('ingresa acción recuperación de contraseña');
       this.loading.present({ message: 'Cargando...'});
       const username = this.login.username;
       this.fairsService.getCurrentFair().
         then( fair => {
-          this.usersService.recoverPassword(username)
-          .subscribe(
-            data => {
+          this.usersService.recoverPassword({"email": username,"origin":window.location.origin})
+          .then( data => {
               this.loading.dismiss();
-              const token = data.data;
-              console.log(data, ' acción recuperación de contraseña '  );
+              this.errors = null;
+              this.success = data.message;
             },
             error => {
               this.loading.dismiss();
               this.errors = error;
+              this.success = null;
             });
 
 
@@ -61,4 +86,33 @@ export class PasswordPage {
 
     }
   }
+  
+  onSendChangePassword(changePasswordForm: NgForm) {
+    this.submitted = true;
+
+    if (changePasswordForm.valid && (this.changePassword.newPassrword === this.changePassword.confirNewPassrword)) {
+      this.loading.present({ message: 'Cargando...'});
+      const username = this.login.username;
+      this.usersService.findPassword({"email": username,"origin":window.location.origin})
+      .then( data => {
+          this.loading.dismiss();
+          this.errors = null;
+          this.success = data.message;
+        },
+        error => {
+          this.loading.dismiss();
+          this.errors = error;
+          this.success = null;
+        });
+    }
+  }
+  
+  toggleShowPassword() {
+    this.showPassword = this.showPassword === 'password' ? 'text' : 'password';
+  }
+  
+  toggleShowConfirmPassword() {
+    this.showConfirmPassword = this.showConfirmPassword === 'password' ? 'text' : 'password';
+  }
+
 }
