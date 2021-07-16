@@ -70,7 +70,7 @@
 	  <ion-item button="true">
         <ion-label> Precio por suscripción </ion-label>
 		<ion-buttons slot="end">
-                <ion-input class="ml-auto" *ngIf="showPrice" class="text-right" [(ngModel)]="fair.price" name="name"></ion-input>
+                <ion-input class="ml-auto" *ngIf="showPrice" class="text-right" [(ngModel)]="fair.price" name="name" placeholder="$ Precio COP"></ion-input>
 				<ion-chip 
 					(click)="toogleShowPrice()"
 					[color]="showPrice ? 'primary' : ''">

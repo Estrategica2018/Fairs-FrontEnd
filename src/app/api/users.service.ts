@@ -5,14 +5,14 @@ import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import { Storage } from '@ionic/storage';
-
+import { environment, SERVER_URL } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
 
-  url= '';
+  url= SERVER_URL;
   HAS_LOGGED_IN = 'hasLoggedIn';
 
   constructor(

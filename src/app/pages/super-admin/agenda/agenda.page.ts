@@ -344,7 +344,6 @@ export class AgendaPage implements OnInit {
 	  text: this.agenda.price, 
 	  role: 'destructive', 
  	  handler: (value) => {
-	    alert(value);
 	    this.editSave = true;
 	  }
     });
@@ -355,13 +354,13 @@ export class AgendaPage implements OnInit {
         role: 'cancel'
       });
 	  
-	  
     const actionSheet = await this.alertCtrl.create({
       header: 'Precio por evento',
       message: "Ingresa el precio del evento",
       inputs: [
         {
           name: 'price',
+		  value: this.agenda.price,
           placeholder: '$ Precio'
         },
       ],
