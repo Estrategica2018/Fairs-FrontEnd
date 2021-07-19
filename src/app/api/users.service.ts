@@ -167,7 +167,7 @@ export class UsersService {
 
     });
   }
-  
+
   findPassword(token): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http.get(`${this.url}/api/password/find/${token}`)
@@ -203,4 +203,38 @@ export class UsersService {
     });
   }
 
+  restPassword(data): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.post(`${this.url}/api/password/reset`,data)
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            if(e.status == 422) {
+              const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
+              throw new Error(`Consumiendo el servicio para recuperación de clave: ${message}`);
+            }
+            else if(e.status == 404 && e.error && e.error.message) {
+              throw new Error(`${e.error.message}`);
+            }
+            else {
+              if(e.status && e.statusText) {
+                throw new Error(`Consumiendo el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
+              }
+              else {
+                throw new Error(`Consumiendo el servicio para recuperación de clave`);
+              }
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+          if(data.status === 'successfull') {
+            resolve(data);
+          }
+          else {
+            reject(`Consumiendo el servicio para recuperación de clave`);
+          }
+        },error => reject(error));
+
+    });
+  }
 }

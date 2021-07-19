@@ -32,7 +32,7 @@ export class PasswordPage  implements OnInit {
   ) {
     this.listenForDarkModeEvents();
   }
-  
+
   ngOnInit() {
       this.token = this.route.snapshot.paramMap.get('token');
       if(this.token) {
@@ -41,7 +41,7 @@ export class PasswordPage  implements OnInit {
           this.loading.dismiss();
           this.errors = null;
           this.changePassword.username = data.data.email;
-		  
+
         },
         error => {
           this.loading.dismiss();
@@ -86,31 +86,35 @@ export class PasswordPage  implements OnInit {
 
     }
   }
-  
-  onSendChangePassword(changePasswordForm: NgForm) {
-    this.submitted = true;
 
+  onSendChangePassword(changePasswordForm: NgForm) {
+    
+    this.submitted = true;
     if (changePasswordForm.valid && (this.changePassword.newPassrword === this.changePassword.confirNewPassrword)) {
-      this.loading.present({ message: 'Cargando...'});
-      const username = this.login.username;
-      this.usersService.findPassword({"email": username,"origin":window.location.origin})
-      .then( data => {
-          this.loading.dismiss();
-          this.errors = null;
-          this.success = data.message;
-        },
-        error => {
-          this.loading.dismiss();
-          this.errors = error;
-          this.success = null;
-        });
-    }
+        this.loading.present({ message: 'Cargando...'});
+        const username = this.login.username;
+        this.usersService.restPassword(
+          {"email": this.changePassword.username,"password": this.changePassword.newPassrword,"password_confirmation": this.changePassword.confirNewPassrword,"token": this.route.snapshot.paramMap.get('token')}
+        )
+          .then( data => {
+              this.loading.dismiss();
+              this.errors = null;
+              this.success = "La contresaña se ha restablecido correctamente";
+            },
+            error => {
+              this.loading.dismiss();
+              this.errors = error;
+              this.success = null;
+            });
+      }
+
+
   }
-  
+
   toggleShowPassword() {
     this.showPassword = this.showPassword === 'password' ? 'text' : 'password';
   }
-  
+
   toggleShowConfirmPassword() {
     this.showConfirmPassword = this.showConfirmPassword === 'password' ? 'text' : 'password';
   }
