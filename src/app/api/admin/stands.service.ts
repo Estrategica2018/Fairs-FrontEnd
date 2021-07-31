@@ -28,7 +28,7 @@ export class AdminStandsService {
               timeout(30000),
               catchError(e => {
                 if(e.status && e.statusText) {
-				  const statusText = e.statusText + (e.error ? e.error.message : '');
+                  const statusText = e.statusText + (e.error ? e.error.message : '');
                   throw new Error(`Consultando el servicio para crear local comercial: ${e.status} - ${statusText}`);    
                 }
                 else {

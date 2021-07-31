@@ -28,7 +28,7 @@ export class SpeakerListPage {
         this.speakers = data;
      },error => {
         this.loading.dismiss();
-        this.errors `Consultando el servicio para conferencistas [${error}]`;
+        this.errors = `Consultando el servicio para conferencistas [${error}]`;
         console.log(error);
      })
      .catch(error => {

@@ -3,7 +3,6 @@
   height: 200px;
   top: 40px;
   left: 180px;
-  perspective: 400px;
   position: absolute;
 }
 
@@ -32,7 +31,6 @@
 
 .cube__face--right  { 
   background: hsla( 60, 100%, 50%, 0.7); 
-  transform: translateZ(104px) rotateY( -56deg);
 }
 
 .full-screen-button {
@@ -68,13 +66,13 @@
 @media (max-width: 690px) {
   .tabs-menu {
     
-	  left: 0;
-	    ion-button {
-	     font-size: 10px;
-		 
-	     ion-label {
+      left: 0;
+        ion-button {
+         font-size: 10px;
+         
+         .ion-menu-label {
            font-size: 10px;
-		 }
-	  }
-	}
+         }
+      }
+    }
 }

@@ -21,88 +21,88 @@ export class CategoryService {
 
   list(type): any {
     return new Promise((resolve, reject) => {
-		this.http.get(`/api/category/to_list/${type}`)
-		.pipe(
-		  timeout(30000),
-		  catchError(e => {
-			console.log(e);
-			if(e.status && e.statusText) {
-			  throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
-			}
-			else {
-			  throw new Error(`Consultando el servicio de categorías`);
-			}
-		  })
-		)
-		.subscribe((data : any )=> {
-			if(data.success) {
-			  resolve(processData(data));
-			  
-			}
-			else {
-			  reject(JSON.stringify(data));
-			}
-		},error => {
-			reject(error)
-		});
-	});
+        this.http.get(`/api/category/to_list/${type}`)
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
+            }
+            else {
+              throw new Error(`Consultando el servicio de categorías`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+            if(data.success) {
+              resolve(processData(data));
+              
+            }
+            else {
+              reject(JSON.stringify(data));
+            }
+        },error => {
+            reject(error)
+        });
+    });
   }
   
   createCategory(category){
     return new Promise((resolve, reject) => {
-		this.http.post(`/api/category/create/`,category)
-		.pipe(
-		  timeout(30000),
-		  catchError(e => {
-			console.log(e);
-			if(e.status && e.statusText) {
-			  throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
-			}
-			else {
-			  throw new Error(`Consultando el servicio de categorías`);
-			}
-		  })
-		)
-		.subscribe((data : any )=> {
-			if(data.success) {
-			  resolve(data);
-			  
-			}
-			else {
-			  reject(JSON.stringify(data));
-			}
-		},error => {
-			reject(error)
-		});
-	});
+        this.http.post(`/api/category/create/`,category)
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
+            }
+            else {
+              throw new Error(`Consultando el servicio de categorías`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+            if(data.success) {
+              resolve(data);
+              
+            }
+            else {
+              reject(JSON.stringify(data));
+            }
+        },error => {
+            reject(error)
+        });
+    });
   }
-	
+    
    updateCategory(category){
-	  return new Promise((resolve, reject) => {
-		this.http.post(`/api/category/create/`,category)
-		.pipe(
-		  timeout(30000),
-		  catchError(e => {
-			console.log(e);
-			if(e.status && e.statusText) {
-			  throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
-			}
-			else {
-			  throw new Error(`Consultando el servicio de categorías`);
-			}
-		  })
-		)
-		.subscribe((data : any )=> {
-			if(data.success) {
-			  resolve(data);
-			  
-			}
-			else {
-			  reject(JSON.stringify(data));
-			}
-		},error => {
-			reject(error)
-		});
-	  });
-	}
+      return new Promise((resolve, reject) => {
+        this.http.post(`/api/category/create/`,category)
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
+            }
+            else {
+              throw new Error(`Consultando el servicio de categorías`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+            if(data.success) {
+              resolve(data);
+              
+            }
+            else {
+              reject(JSON.stringify(data));
+            }
+        },error => {
+            reject(error)
+        });
+      });
+    }
 }

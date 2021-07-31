@@ -63,8 +63,8 @@ export class SessionDetailPage {
   }
   
   onSupportClick() {
-	 //     this.router.navigateByUrl('/support');
-	 this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
+     //     this.router.navigateByUrl('/support');
+     this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
   }
  
   

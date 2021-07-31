@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'tabs-page.html'
@@ -7,7 +8,7 @@ export class TabsPage {
 
   fullScreen = false;
  
-  constructor() {
+  constructor(private router: Router) {
      this.listenForFullScreenEvents();
   }
     
@@ -22,6 +23,12 @@ export class TabsPage {
         this.fullScreen = true;
       }, 300);
     });
+  }
+
+  onRouterLink(tab) {
+    this.fullScreen = false;
+    window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
+    this.router.navigate([tab]);
   }
 
 }

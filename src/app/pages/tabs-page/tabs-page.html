@@ -6,12 +6,12 @@
       <ion-label>Agenda</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="speakers">
+    <ion-tab-button (click)="onRouterLink('/speakers')">
       <ion-icon name="people-outline"></ion-icon>
       <ion-label>Conferencistas</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="map">
+    <ion-tab-button (click)="onRouterLink('/map/fair/0')">
       <ion-icon name="map-outline"></ion-icon>
       <ion-label>Mapa</ion-label>
     </ion-tab-button>

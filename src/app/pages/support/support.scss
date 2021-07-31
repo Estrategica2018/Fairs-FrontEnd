@@ -4,7 +4,12 @@
   text-align: center;
 }
 
+
 .support-logo img {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 28px;
+  margin-bottom: 20px;
   max-width: 150px;
 }
 
@@ -58,4 +63,8 @@ ion-item.item-has-focus > ion-label{
 
 .required {
   color: var(--ion-color-danger);
+}
+
+ion-textarea {
+   border: solid 1px #f1f1f1;
 }

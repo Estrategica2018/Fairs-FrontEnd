@@ -1,13 +1,10 @@
-
 <ion-content fullscreen="true">
-
   <div class="padding-container">
   <div class="login-logo">
     <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
     <img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
   </div>
-
-  <form #loginForm="ngForm" novalidate>
+  <form #loginForm="ngForm" novalidate class="padding-container">
     <ion-list>
       <ion-item>
         <ion-label position="stacked" class="font-18px">
@@ -34,17 +31,17 @@
 
       <ion-text color="danger">
         <p [hidden]="password.valid || submitted == false" class="ion-padding-start">
-          Contraseña requerida
+          Campo requerido
         </p>
       </ion-text>
     </ion-list>
 
-    <ion-row [hidden]="!errors" class="not-found">
+    <ion-item [hidden]="!errors" class="not-found">
        <div class="alert alert-danger alert-dismissible">
          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
          <strong>Error!</strong> {{errors}}
        </div>
-    </ion-row>
+    </ion-item>
     <ion-row>
       <ion-col>
         <ion-button (click)="onLogin(loginForm)" type="submit" expand="block">Ingresar</ion-button>
@@ -54,10 +51,9 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
-        <a href="javascript:void(0)" (click)="onRecoverPassword()"  expand="block">Recuperar contraseña</a>
-      </ion-col>
+        <ion-button style="--border-color: none; --border-width: 0px !important;" (click)="onRecoverPassword()" shape="round" size="small" fill="outline">Recuperar contraseña</ion-button>
     </ion-row>
+    
   </form>
 </div>
 </ion-content>

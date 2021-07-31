@@ -46,66 +46,109 @@ const routes: Routes = [
     loadChildren: () => import('./pages/super-admin/super-admin.module').then( m => m.SuperAdminPageModule)
   },
   {
-	path: 'map/fair/:sceneId',
-	loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {	 path: 'map/pavilion1/:pavilionId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/pavilion2/:pavilionId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/pavilion3/:pavilionId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/pavilion4/:pavilionId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/pavilion5/:pavilionId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/pavilion6/:pavilionId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/pavilion7/:pavilionId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/pavilion8/:pavilionId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/stand1/:pavilionId/:standId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/stand2/:pavilionId/:standId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/stand3/:pavilionId/:standId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/stand4/:pavilionId/:standId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/stand5/:pavilionId/:standId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/stand6/:pavilionId/:standId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/stand7/:pavilionId/:standId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
-  },
-  {	 path: 'map/stand8/:pavilionId/:standId/:sceneId',
-		loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+    path: 'map/fair/:sceneId',
+    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
   {
-	path: 'meeting/:meetingId',
-	children: [
-	  {
-		path: '',
-		loadChildren: () => import('./pages/meeting/meeting.module').then( m => m.MeetingPageModule)
-	  }
-	]
+    path: 'map/fair1/:sceneId',
+    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
+  },
+  {
+    path: 'map/fair2/:sceneId',
+    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
+  },
+  {
+    path: 'map/fair3/:sceneId',
+    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
+  },
+  {
+    path: 'map/fair4/:sceneId',
+    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
+  },
+  {
+    path: 'map/fair5/:sceneId',
+    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
+  },
+  {     path: 'map/pavilion1/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/pavilion2/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/pavilion3/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/pavilion4/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/pavilion5/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/pavilion6/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/pavilion7/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/pavilion8/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/stand1/:pavilionId/:standId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/stand2/:pavilionId/:standId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/stand3/:pavilionId/:standId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/stand4/:pavilionId/:standId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/stand5/:pavilionId/:standId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/stand6/:pavilionId/:standId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/stand7/:pavilionId/:standId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {     path: 'map/stand8/:pavilionId/:standId/:sceneId',
+        loadChildren: () => import('./pages/map-pavilion/map-pavilion.module').then(m => m.MapPavilionModule)
+  },
+  {
+    path: 'meeting/:meetingId',
+    loadChildren: () => import('./pages/meeting/meeting.module').then( m => m.MeetingPageModule)
+  },  {
+    path: 'payment',
+    loadChildren: () => import('./pages/payment/payment.module').then( m => m.PaymentPageModule)
+  },
+  {
+    path: 'speakers',
+    loadChildren: () => import('./pages/speaker-list/speaker-list.module').then(m => m.SpeakerListModule)
+  },
+  {
+    path: 'speakers/session/:sessionId',
+    loadChildren: () => import('./pages/session-detail/session-detail.module').then(m => m.SessionDetailModule)
+  },
+  {
+    path: 'speakers/speaker-details/:speakerId',
+    loadChildren: () => import('./pages/speaker-detail/speaker-detail.module').then(m => m.SpeakerDetailModule)
+  },
+  {
+    path: 'schedule/session/:sessionId',
+    loadChildren: () => import('./pages/session-detail/session-detail.module').then(m => m.SessionDetailModule)
+  },
+  {
+    path: 'news',
+    loadChildren: () => import('./pages/news/news.module').then( m => m.NewsPageModule)
+  },  {
+    path: 'wompi-payment-layout',
+    loadChildren: () => import('./pages/wompi-payment-layout/wompi-payment-layout.module').then( m => m.WompiPaymentLayoutPageModule)
   }
+
+
 ];
 
 @NgModule({

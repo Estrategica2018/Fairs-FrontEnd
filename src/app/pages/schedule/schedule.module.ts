@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { SchedulePage } from './schedule';
 import { ScheduleFilterPage } from '../schedule-filter/schedule-filter';
 import { SchedulePageRoutingModule } from './schedule-routing.module';
-import { WompiPaymentButtonComponent } from '../wompi-payment-button/wompi-payment-button.component';
+import { WompiPaymentLayoutPage } from './../wompi-payment-layout/wompi-payment-layout.page';
 
 @NgModule({
   imports: [
@@ -18,10 +18,11 @@ import { WompiPaymentButtonComponent } from '../wompi-payment-button/wompi-payme
   declarations: [
     SchedulePage,
     ScheduleFilterPage,
-	WompiPaymentButtonComponent
+    WompiPaymentLayoutPage
   ],
   entryComponents: [
-    ScheduleFilterPage
+    ScheduleFilterPage,
+    WompiPaymentLayoutPage
   ]
 })
 export class ScheduleModule { }

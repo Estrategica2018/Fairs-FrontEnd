@@ -6,19 +6,19 @@
   
 <ion-content id="ionContent">
 
-  <ion-header [hidden]="!errors">
+  <ion-item [hidden]="!errors">
    <div class="alert alert-danger alert-dismissible">
      <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
      <strong>Error!</strong> {{errors}}
    </div>
-  </ion-header>
+  </ion-item>
   
   <video 
     [ngStyle]="{'opacity': scene?.videoUrl ? 1 : 0, 'position': scene?.videoUrl ? 'block' : 'absolute'}"
-	crossOrigin="anonymous"
-	webkit-playsinline
+    crossOrigin="anonymous"
+    webkit-playsinline
     autoplay
-	[src]="scene?.videoUrl"
+    [src]="scene?.videoUrl"
     playsinline preload="metadata" data-aos="fade-up"
     id="videoFair"
     class="video"
@@ -27,87 +27,86 @@
   
   <div class="scene" *ngFor="let banner of scene?.banners;let i = index"
      [ngStyle]="{
-	      'left': banner.position?.x + 'px ', 
-		  'top': + banner.position?.y + 'px',
-		  'width': + banner.rotation?.x + 'px',
-		  'height': + banner.rotation?.y + 'px',
-		  'perspective' : + banner.perspective + 'px'
-	}">
+          'left': banner.position?.x + 'px ', 
+          'top': + banner.position?.y + 'px',
+          'width': + banner.rotation?.x + 'px',
+          'height': + banner.rotation?.y + 'px'
+    }">
     <div class="cube" *ngIf="banner.internalUrl">
-	  <a [routerLink]="banner.internalUrl" routerLinkActive="selected" routerDirection="root" >
+      <a [routerLink]="banner.internalUrl" routerLinkActive="selected" routerDirection="root" >
       <div class="cube__face cube__face--right square {{banner.class}} cursor-pointer" 
-	    id="obj-{{banner.id}}"
-	    (mouseover)="isHover = banner.id; startAnimation(banner)" 
-		(mouseout)="isHover = false"
-	    [ngClass]="{'link': banner.internalUrl ||  banner.externalUrl }"
+        id="obj-{{banner.id}}"
+        (mouseover)="isHover = banner.id; startAnimation(banner)" 
+        (mouseout)="isHover = false"
+        [ngClass]="{'link': banner.internalUrl ||  banner.externalUrl }"
         [ngStyle]="{
-		  'opacity': banner.opacity,
-		  'background-image': 'url('+banner.image_url+')',
+          'opacity': banner.opacity,
+          'background-image': 'url('+banner.image_url+')',
           'background-size': banner.size?.x + 'px ' + banner.size?.y + 'px',
           'background-repeat': 'no-repeat',
-		  'background-color': ''+banner.backgroundColor+'',
-		  'width': banner.size?.x + 'px ', 
-		  'height': + banner.size?.y + 'px',
-		  'border-color': banner.border?.color,
-		  'border-style': banner.border?.style,
-		  'border-radius': banner.border?.radius + 'px',
-		  'font-size': banner.fontSize + 'px ',
-		  'color': banner.fontColor + '',
-		  'transform': 'translateZ(104px) rotateY(' + banner.rotation?.z + 'deg)'
-		  }"> {{ banner.text }}	</div>
-	  </a>
-	</div>
-	<div class="cube" *ngIf="banner.externalUrl">
-	  <a [href]="banner.externalUrl" target="_blank">
-      <div class="cube__face cube__face--right square {{banner.class}} cursor-pointer" 
-	    id="obj-{{banner.id}}"
-	    (mouseover)="isHover = banner.id; startAnimation(banner)" 
-		(mouseout)="isHover = false"
-	    [ngClass]="{'link': banner.internalUrl ||  banner.externalUrl }"
-        [ngStyle]="{
-		  'background-image': 'url('+banner.image_url+')',
-          'background-size': banner.size?.x + 'px ' + banner.size?.y + 'px',
-          'background-repeat': 'no-repeat',
-		  'background-color': ''+banner.backgroundColor+'',
-		  'width': banner.size?.x + 'px ', 
-		  'height': + banner.size?.y + 'px',
-		  'font-size': banner.fontSize + 'px ',
-		  'color': banner.fontColor + '',
-		  'border-color': banner.border?.color,
-		  'border-style': banner.border?.style,
-		  'border-radius': banner.border?.radius + 'px',
-		  'transform': 'translateZ(104px) rotateY(' + banner.rotation?.z + 'deg)'
-		  }"> {{ banner.text }}	</div>
-	  </a>
-	</div>
-	
-	<div class="cube" [hidden]="banner.internalUrl ||  banner.externalUrl">
-	  <div class="cube__face cube__face--right square {{banner.class}}" 
-	    id="obj-{{banner.id}}"
-	    (mouseover)="isHover = banner.id; startAnimation(banner)" 
-		(mouseout)="isHover = false"
-		[ngStyle]="{
-		  'background-image': 'url('+banner.image_url+')',
-          'background-size': banner.size?.x + 'px ' + banner.size?.y + 'px',
-          'background-repeat': 'no-repeat',
-		  'background-color': ''+banner.backgroundColor+'',
-		  'width': banner.size?.x + 'px ', 
-		  'height': + banner.size?.y + 'px',
-		  'border-color': banner.border?.color,
-		  'border-style': banner.border?.style,
-		  'border-radius': banner.border?.radius + 'px',
-		  'font-size': banner.fontSize + 'px ',
-		  'color': banner.fontColor + '',
-		  'transform': 'translateZ(104px) rotateY(' + banner.rotation?.z + 'deg)'
-		  }"> {{ banner.text }}	</div>
+          'background-color': ''+banner.backgroundColor+'',
+          'width': banner.size?.x + 'px ', 
+          'height': + banner.size?.y + 'px',
+          'border-color': banner.border?.color,
+          'border-style': banner.border?.style,
+          'border-radius': banner.border?.radius + 'px',
+          'font-size': banner.fontSize + 'px ',
+          'color': banner.fontColor + '',
+          'transform': 'translateZ(104px) rotateY(' + banner.rotation?.z + 'deg)'
+          }"> {{ banner.text }}    </div>
+      </a>
     </div>
-	
-	<span class="tooltip-label" *ngIf="banner.tooltipText && isHover === banner.id"
-	[ngStyle]="{ 
-	'width': banner.toolPositionWidth+ 'px',
-	'left': banner.toolPositionLeft + 'px'}" 
-	>{{banner.tooltipText}}</span>
-	
+    <div class="cube" *ngIf="banner.externalUrl">
+      <a [href]="banner.externalUrl" target="_blank">
+      <div class="cube__face cube__face--right square {{banner.class}} cursor-pointer" 
+        id="obj-{{banner.id}}"
+        (mouseover)="isHover = banner.id; startAnimation(banner)" 
+        (mouseout)="isHover = false"
+        [ngClass]="{'link': banner.internalUrl ||  banner.externalUrl }"
+        [ngStyle]="{
+          'background-image': 'url('+banner.image_url+')',
+          'background-size': banner.size?.x + 'px ' + banner.size?.y + 'px',
+          'background-repeat': 'no-repeat',
+          'background-color': ''+banner.backgroundColor+'',
+          'width': banner.size?.x + 'px ', 
+          'height': + banner.size?.y + 'px',
+          'font-size': banner.fontSize + 'px ',
+          'color': banner.fontColor + '',
+          'border-color': banner.border?.color,
+          'border-style': banner.border?.style,
+          'border-radius': banner.border?.radius + 'px',
+          'transform': 'translateZ(104px) rotateY(' + banner.rotation?.z + 'deg)'
+          }"> {{ banner.text }}    </div>
+      </a>
+    </div>
+    
+    <div class="cube" [hidden]="banner.internalUrl ||  banner.externalUrl">
+      <div class="cube__face cube__face--right square {{banner.class}}" 
+        id="obj-{{banner.id}}"
+        (mouseover)="isHover = banner.id; startAnimation(banner)" 
+        (mouseout)="isHover = false"
+        [ngStyle]="{
+          'background-image': 'url('+banner.image_url+')',
+          'background-size': banner.size?.x + 'px ' + banner.size?.y + 'px',
+          'background-repeat': 'no-repeat',
+          'background-color': ''+banner.backgroundColor+'',
+          'width': banner.size?.x + 'px ', 
+          'height': + banner.size?.y + 'px',
+          'border-color': banner.border?.color,
+          'border-style': banner.border?.style,
+          'border-radius': banner.border?.radius + 'px',
+          'font-size': banner.fontSize + 'px ',
+          'color': banner.fontColor + '',
+          'transform': 'translateZ(104px) rotateY(' + banner.rotation?.z + 'deg)'
+          }"> {{ banner.text }}    </div>
+    </div>
+    
+    <span class="tooltip-label" *ngIf="banner.tooltipText && isHover === banner.id"
+    [ngStyle]="{ 
+    'width': banner.toolPositionWidth+ 'px',
+    'left': banner.toolPositionLeft + 'px'}" 
+    >{{banner.tooltipText}}</span>
+    
   </div>
   
   <div class="div-container" scroll-x="0" scroll-y="0">
@@ -123,12 +122,12 @@
       <ion-label>Agenda</ion-label>
     </ion-button>
 
-    <ion-button color="light" (click)="onRouterLink('/app/tabs/speakers')">
+    <ion-button color="light" (click)="onRouterLink('/speakers')">
       <ion-icon slot="start" name="people-outline"></ion-icon>
       <ion-label>Conferencistas</ion-label>
     </ion-button>
 
-    <ion-button color="light" (click)="onRouterLink('/map')">
+    <ion-button color="light" (click)="onRouterLink('/map/fair/0')">
       <ion-icon slot="start" name="map-outline"></ion-icon>
       <ion-label>Mapa</ion-label>
     </ion-button>

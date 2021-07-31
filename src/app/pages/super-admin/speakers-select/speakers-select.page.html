@@ -1,20 +1,20 @@
 <ion-content>
   
   <ion-list class="padding-content">  
-	<ion-toolbar>
-	  <ion-label slot="start">Conferencistas</ion-label>
-	  <ion-buttons slot="primary">
-	  <ion-button color="primary" (click)="onSave()">
-		<ion-icon slot="icon-only" name="save-outline"></ion-icon>
-	  </ion-button>
-	  </ion-buttons>
-	</ion-toolbar>
-	<ion-toolbar>
-	    <ion-searchbar placeholder="Buscar..." [(ngModel)]="filterTerm" animated="true"></ion-searchbar>
-	</ion-toolbar>
+    <ion-list-header lines="inset">
+      <ion-label>Conferencistas asociados</ion-label>
+      <ion-button (click)="onClose()">Cerrar</ion-button>
+      <ion-button color="primary" (click)="onSave()">
+          <ion-icon slot="icon-only" name="save-outline"></ion-icon>
+      </ion-button>
+    </ion-list-header>
 	
-	<!-- Checkboxes in a List -->
-	<ion-item *ngFor="let speaker of speakers ">
+    <ion-toolbar>
+        <ion-searchbar placeholder="Buscar..." [(ngModel)]="filterTerm" animated="true"></ion-searchbar>
+    </ion-toolbar>
+    
+    <!-- Checkboxes in a List -->
+    <ion-item *ngFor="let speaker of speakers ">
       <ion-label>{{speaker.user.name + ' ' + speaker.user.last_name}}</ion-label>
       <ion-checkbox slot="end" [(ngModel)]="speaker.isChecked"></ion-checkbox>
     </ion-item>

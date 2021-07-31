@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>WompiPaymentLayout</ion-title>
+    <div slot="end" class="button-close" ion-button (click)="onClose()">
+	  <ion-icon name="close" (click)="onClose()"></ion-icon>
+	</div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+<ion-card *ngIf="objPrice && user" class="ion-card">
+  <ion-grid>
+	<ion-row>
+      <ion-col><ion-card-title>Precio general de la feria ${{objPrice?.price}} COP</ion-card-title>
+      </ion-col>
+	</ion-row>
+  </ion-grid>
+  
+  <ion-item class="background-transparent">
+    <ion-icon name="pin" slot="start"></ion-icon>
+    <ion-label>Todos los eventos de {{objPrice?.description || objPrice?.name || objPrice?.title}}</ion-label>
+  </ion-item>
+
+  <ion-card-content>
+    Pagando este valor podrás acceder a todos los eventos exclusivos de la feria
+  </ion-card-content>
+
+  <ion-item  href="#" class="ion-item-card ion-activated" *ngFor="let item of objPrice.resources">
+    <ion-icon [name]="item.icon" slot="start"></ion-icon>
+    <ion-label>{{item.name}}</ion-label>
+  </ion-item>
+
+</ion-card>
+
+<ion-item *ngIf="objPrice && user">
+   <div class="payment-button" slot="end"></div>
+</ion-item>
+
+<ion-card *ngIf="objPrice && !user" class="card">
+  
+  <ion-grid>
+	<ion-row>
+	<ion-col><ion-card-title>Precio general de la feria</ion-card-title>
+	</ion-col>
+	<ion-col><ion-card-subtitle>${{objPrice?.price}}</ion-card-subtitle>
+	</ion-col>
+	</ion-row>
+  </ion-grid>
+  
+  <ion-item class="background-transparent">	
+    <ion-icon name="pin" slot="start"></ion-icon>
+    <ion-label>Todos los eventos de {{objPrice?.description}}</ion-label>
+  </ion-item>
+
+  <ion-card-content>
+    Pagando este valor podrás acceder a todos los eventos exclusivos de la feria
+  </ion-card-content>
+
+  <ion-item  href="#" class="ion-item-card ion-activated">
+    <ion-icon name="wifi" slot="start"></ion-icon>
+    <ion-label>Conferencias publicas</ion-label>
+  </ion-item>
+
+  <ion-item class="ion-item-card ion-activated">
+    <ion-icon href="#"  name="wine" slot="start"></ion-icon>
+    <ion-label>Conferencias exclusivas</ion-label>
+  </ion-item>
+  
+  <ion-item class="ion-item-card ion-activated">
+    <ion-icon name="warning" slot="start"></ion-icon>
+    <ion-label>Para acceder a estos eventos realiza primero el registro</ion-label>
+	<ion-button fill="outline" slot="end" (click)="onSignup()">Crear cuenta</ion-button>
+  </ion-item>
+  <ion-item class="ion-item-card ion-activated">
+    <ion-icon ios="ios-person" md="person" slot="start"></ion-icon>
+    <ion-label>Si ya tienes una cuenta, ingresa con tus datos</ion-label>
+	<ion-button fill="outline" slot="end" (click)="onSignin()">Acceder</ion-button>
+  </ion-item>
+  
+</ion-card>
+
+
+</ion-content>

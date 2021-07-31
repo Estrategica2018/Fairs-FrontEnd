@@ -196,14 +196,6 @@ ion-split-pane {
   margin-top: 55px;
 }
 
-.title-fair {
-  font-size: 24px;
-  font-weight: 700;
-  margin-left: auto;
-  margin-right: 171px;
-  line-height: 10px;
-  align-self: center;
-}
 
 .end-menu-button {
   margin-right: 15px;
@@ -219,7 +211,7 @@ ion-split-pane {
 ion-app {
   overflow: auto;
   ion-header {
-     min-width: 658px;
+     min-width: 387px;
   }
 }
 
@@ -282,4 +274,20 @@ body.backdrop-no-scroll {
 .full-screen {
    height: 0px;
    display: none;
+}
+
+
+.fair-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 10px;
+    margin-left: auto;
+    margin-right: 18px;
+}
+
+@media (max-width: 700px) {
+  .fair-title {
+    margin-right: 18px;
+  }
+
 }

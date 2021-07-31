@@ -19,10 +19,10 @@ import { SpeakerListModule } from '../speaker-list/speaker-list.module';
   ],
   declarations: [
     SignupPage,
-	TermsPage
+    TermsPage
   ],
   entryComponents: [
-  TermsPage
+    TermsPage
   ]
 })
 export class SignUpModule { }

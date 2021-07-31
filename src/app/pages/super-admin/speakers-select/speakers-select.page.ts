@@ -23,25 +23,28 @@ export class SpeakersSelectPage implements OnInit {
   ) { }
 
   ngOnInit() {
-	  this.speakers.forEach((speaker, index, array)=>{
-		  if(this.invited_speakers) {
-		    this.invited_speakers.forEach((invited, index, array)=>{
-			   if(invited.speaker_id === speaker.id) {
-				 speaker.isChecked = true;
-			   }
-		    });
-		  }
-	  });
+      this.speakers.forEach((speaker, index, array)=>{
+          if(this.invited_speakers) {
+            this.invited_speakers.forEach((invited, index, array)=>{
+               if(invited.speaker_id === speaker.id) {
+                 speaker.isChecked = true;
+               }
+            });
+          }
+      });
   }
 
    
   onSave() {
-	const list = this.speakers.filter((speaker)=>{
-		return speaker.isChecked;
-	});
-	
-	this.modalCtrl.dismiss(list);
+    const list = this.speakers.filter((speaker)=>{
+        return speaker.isChecked;
+    });
+    
+    this.modalCtrl.dismiss(list);
+  }
+  
+  onClose() {
+    this.modalCtrl.dismiss(null);
   }
 }
  
-

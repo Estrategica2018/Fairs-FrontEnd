@@ -9,7 +9,7 @@ import { SupportPageRoutingModule } from './support-routing.module';
   imports: [
     CommonModule,
     FormsModule,
-	ReactiveFormsModule,
+    ReactiveFormsModule,
     IonicModule,
     SupportPageRoutingModule
   ],

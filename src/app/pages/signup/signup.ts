@@ -30,14 +30,14 @@ export class SignupPage implements OnInit {
     private modalCtrl: ModalController,
     private routerOutlet: IonRouterOutlet,
     private fairsService: FairsService,
-	private formBuilder: FormBuilder
+    private formBuilder: FormBuilder
   ) {
-	
+    
     this.listenForDarkModeEvents();
  }
   
  ngOnInit() {
-	 this.registerForm = this.formBuilder.group({
+     this.registerForm = this.formBuilder.group({
             name: ['', Validators.required],
             last_name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
@@ -52,14 +52,14 @@ export class SignupPage implements OnInit {
   get f() { return this.registerForm.controls; }
   
   onSubmit() {
-	this.submitted = true;
+    this.submitted = true;
 
-	// stop here if form is invalid
-	if (this.registerForm.invalid) {
-		return;
-	}
+    // stop here if form is invalid
+    if (this.registerForm.invalid) {
+        return;
+    }
 
-	this.loading.present({message:'Cargando...'});
+    this.loading.present({message:'Cargando...'});
       
       this.fairsService.getCurrentFair().
       then( fair => {
@@ -86,7 +86,7 @@ export class SignupPage implements OnInit {
                       this.errors = 'Correo electrónico ya registrado';
                     }
                     else {
-                        this.errors = 'Consumiendo el servicio para creación del usuario';
+                        this.errors = 'Consultando el servicio para creación del usuario';
                     }
                 }
             },
@@ -94,9 +94,11 @@ export class SignupPage implements OnInit {
                 this.loading.dismiss();
                 this.errors = error;
           });
+      },
+      error => {
+         this.loading.dismiss();
+         this.errors = error;
       });
-	
-	
   }
   
   listenForDarkModeEvents() {

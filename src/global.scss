@@ -148,3 +148,19 @@ html {
   background: #555; 
 }
 
+
+ion-router-outlet {
+  ion-header:first-of-type {
+     margin-top: 56px !important;
+  }
+}
+
+ion-content {
+  
+  main {
+    overflow: hidden;
+  }
+}
+
+
+$content-ios-outer-background: #fff;

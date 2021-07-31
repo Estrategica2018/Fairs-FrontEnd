@@ -1,50 +1,56 @@
-
+<ion-header>
+  <ion-toolbar>
+     <ion-title slot="start">Administrar Feria</ion-title>
+  </ion-toolbar>
+</ion-header>
+  
 <ion-content fullscreen="true">
   
-  <ion-header class="mt-5">
-    <ion-toolbar>
-       <ion-title slot="start">Administrar Feria</ion-title>
-    </ion-toolbar>
-  </ion-header>
+   <ion-item [hidden]="!errors" class="not-found mt-3">
+     <div class="alert alert-danger alert-dismissible">
+       <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+       {{errors}}
+      </div>
+   </ion-item>
 
-  <ion-list-header [hidden]="!errors">
-    <div class="alert alert-danger fade show alert-dismissible">
-     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-     <strong>Error!</strong> {{errors}}
-    </div>
-  </ion-list-header>
-
-  <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
+   <ion-item [hidden]="!success" class="mt-3">
+     <div class="alert alert-success alert-dismissible">
+      <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+      <strong></strong> {{success}}
+     </div>
+   </ion-item>
+      
+  <form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container">
     <ion-list lines="" *ngIf="fair" class="padding-container">
-	
-	  <ion-item lines="none">
+    
+      <ion-item lines="none">
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
-		  <div class="d-flex ml-auto" style="overflow-x: scroll;">
-		      <ion-item  *ngFor="let resource of fair?.resources;let i = index" class="scene-icon-mini" 
-			  button="true" routerLink="/super-admin/map-editor/fair/{{fair.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
-               <img [src]="resource.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena">
-			   <h2>{{resource.name || 'Escena ' + (i + 1)}}</h2>
-			  </ion-item>	
- 		   </div>
-
-		 <ion-buttons slot="end">
-			<ion-button (click)="onAddEscene()">
-			  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-			</ion-button>
-		 </ion-buttons>
-		 
+          <div class="d-flex ml-auto" style="overflow-x: scroll;" >
+              <ion-item  *ngFor="let scene of fair?.resources?.scenes;let i = index" class="scene-icon-mini customSceneCSSClass{{i}}" 
+              button="true" routerLink="/super-admin/map-editor/fair/{{fair.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+               <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
+               <h2 [hidden]="scene && scene.url_image" style="width: 82px; height: 41px;"><small>{{scene.title}}</small></h2>
+              </ion-item>    
+            </div>
+			
+         <ion-buttons slot="end">
+            <ion-button routerLink="/super-admin/map-editor/fair/{{fair.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+         
        </ion-item>
-	
-      <ion-item button="true">
+    
+      <ion-item button="true" (click)="copy('fair-name')">
         <ion-label> Subdominio </ion-label>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="fair.name" name="name"></ion-input>
-        .e-logic.com.co
+        <ion-label id="fair-name" slot="end" class="text-right"> {{fair.name}}.e-logic.com.co</ion-label>
       </ion-item>
-      <ion-item button="true">
+      
+      <ion-item button="true" (click)="presentActionIcons()">
         <ion-grid>
            <ion-row>
              <ion-col class="d-flex">
-               <ion-label> Íconos </ion-label>
+               <ion-label class="label-icon"> Íconos </ion-label>
             </ion-col>
             <ion-col class="d-flex">
                <img [src]="fair?.social_media?.icon" class=" ml-auto icon">
@@ -56,34 +62,45 @@
       </ion-item>
       <ion-item button="true">
         <ion-label> Descripción </ion-label>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="fair.description" name="description" (ionChange)="ionChange()" (ionInput)="ionChange()"></ion-input>
+        <ion-input class="ml-auto" class="text-right" required [(ngModel)]="fair.description" name="description" (ionChange)="ionChange()" (ionInput)="ionChange()"></ion-input>
       </ion-item>
       <ion-item>
           <ion-label>Fecha de inicio</ion-label>
-          <ion-datetime value="1990-02-19"  placeholder="Select Date" (ionChange)="ionChange()"></ion-datetime>
+          <ion-datetime 
+          monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
+          min="2021" [max]="maxYear"
+          [value]="fair.init_date"
+          [pickerOptions]="initPickerOptions"
+          placeholder="Select Date" (ionChange)="ionChange()"></ion-datetime>
       </ion-item>
       <ion-item>
           <ion-label>Fecha final</ion-label>
-          <ion-datetime value="1990-02-19" placeholder="Select Date" (ionChange)="ionChange()"></ion-datetime>
+          <ion-datetime 
+          monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
+          min="2021" [max]="maxYear"
+          [value]="fair.end_date"
+          [pickerOptions]="endPickerOptions"
+          placeholder="Select Date" (ionChange)="ionChange()"></ion-datetime>
       </ion-item>
-	  
-	  <ion-item button="true">
-        <ion-label> Precio por suscripción </ion-label>
-		<ion-buttons slot="end">
-                <ion-input class="ml-auto" *ngIf="showPrice" class="text-right" [(ngModel)]="fair.price" name="name" placeholder="$ Precio COP"></ion-input>
-				<ion-chip 
-					(click)="toogleShowPrice()"
-					[color]="showPrice ? 'primary' : ''">
-					   <ion-icon name="checkmark-circle"></ion-icon>
-				 </ion-chip>
-		 </ion-buttons>
+      
+      <ion-item button="true" (click)="presentActionPrice()">
+        <ion-label> Precio General </ion-label>
+        <ion-buttons slot="end">
+            <ion-label *ngIf="showPrice">{{fair.price  | currency: 'COP $ ':'symbol':'1.2-2'}}</ion-label>
+			<ion-label [hidden]="showPrice"> Sin costo </ion-label>
+            <ion-chip slot="end"
+                (click)="showPrice = !showPrice; editSave=true;"
+                [color]="showPrice ? 'primary' : ''">
+                   <ion-icon name="checkmark-circle"></ion-icon>
+             </ion-chip>
+         </ion-buttons>
       </ion-item>
       
        <ion-item lines="">
           <ion-label style="max-width: 75px;" slot="start">Pabellones</ion-label>
-		  <div class="d-flex ml-auto" style="overflow-x: scroll;">
-		      <ion-item  *ngFor="let pavilion of fair?.pavilions;let i = index" class="scene-icon-pavilion" 
-			  button="true" routerLink="/super-admin/pavilion/{{pavilion.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+          <div class="d-flex ml-auto" style="overflow-x: scroll;">
+              <ion-item  *ngFor="let pavilion of pavilions;let i = index" class="scene-icon-pavilion" 
+              button="true" routerLink="/super-admin/pavilion/{{pavilion.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                 <ion-avatar class="mr-3">
                   <img [src]="pavilion?.resources[0]?.url_image">
                 </ion-avatar>
@@ -92,51 +109,50 @@
                   <h3>{{pavilion.description}}</h3>
                   <p>{{pavilion?.stands?.length }} locales asociados</p>
                 </ion-label>
-			  </ion-item>	
- 		   </div>
-		 <ion-buttons slot="end">
-			<ion-button routerLink="/super-admin/pavilion/" routerLinkActive="active" routerDirection="root" detail="false">
-			  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-			</ion-button>
-		 </ion-buttons>
+              </ion-item>    
+            </div>
+         <ion-buttons slot="end">
+            <ion-button routerLink="/super-admin/pavilion/" routerLinkActive="active" routerDirection="root" detail="false">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
        </ion-item>
-	 
+     
       <ion-item lines="">
         <ion-label slot="start">Agenda</ion-label>
-		<ion-buttons class="" slot="end">
-			<ion-button routerLink="/super-admin/agenda" routerLinkActive="active" routerDirection="root" detail="false">
-			  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-			</ion-button>
-		</ion-buttons>
+        <ion-buttons class="" slot="end">
+            <ion-button routerLink="/super-admin/agenda" routerLinkActive="active" routerDirection="root" detail="false">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
       </ion-item>
-	  
+      
       <ion-item *ngFor="let agenda of agendas" 
-		  class="d-flex" button="true"
-		  routerLink="/super-admin/agenda/{{agenda.id}}" routerLinkActive="active" routerDirection="root" detail="false">
-		<ion-label class="mr-3">
-		  <h2>{{agenda.title}}</h2>
-		  <h3>{{agenda.description}}</h3>
-		  <p *ngIf="agenda.room">
-		    {{agenda.location }}
-		  </p>
-		  <p> {{agenda.startTime}} &mdash; {{agenda.endTime}}
-			  <span>{{agenda.timezone}}</span>
+          class="d-flex" button="true"
+          routerLink="/super-admin/agenda/{{agenda.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+        <ion-label class="mr-3">
+          <h2>{{agenda.title}}</h2>
+          <h3>{{agenda.description}}</h3>
+          <p *ngIf="agenda.room">
+            {{agenda.location }}
           </p>
-		</ion-label>
-		<ion-thumbnail slot="start">
+          <p> {{agenda.startTime}} &mdash; {{agenda.endTime}}
+              <span>{{agenda.timezone}}</span>
+          </p>
+        </ion-label>
+        <ion-thumbnail slot="start">
          <ion-img class="ml-auto" [src]="agenda.resources?.url_image"></ion-img>
         </ion-thumbnail>
-	
      </ion-item>
-	 <ion-item  lines="none">
-	    <ion-button size="small" [disabled]="!editSave" (click)="updateFair()">
-          <ion-label > Guardar </ion-label>
+       
+     <ion-item lines="none">
+        <ion-button expand="full" [disabled]="!editSave || !submitForm.valid " (click)="updateFair()">
+          <ion-label> Guardar cambios </ion-label>
           <ion-icon slot="end" name="save-outline"></ion-icon>
         </ion-button>
-	 </ion-item>
+     </ion-item>
     </ion-list>
-
-    
-  <!--/form-->
+  
+  </form>
 </ion-content>
 

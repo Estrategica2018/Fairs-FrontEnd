@@ -27,7 +27,10 @@ export class FairsService {
           timeout(30000),
           catchError(e => {
             console.log(e);
-            if(e.status && e.statusText) {
+            if(e.status && e.statusText && e.statusText.indexOf('Gateway Timeout') >= 0) {
+				throw new Error(`No está conectado a internet`);
+			}  
+            else if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de feria: ${e.status} - ${e.statusText}`);    
             }
             else {
@@ -36,9 +39,11 @@ export class FairsService {
           })
         )
         .subscribe((data : any )=> {
-			console.log(data.social_media);
-			if(data.social_media) data.social_media = JSON.parse(data.social_media);
-			console.log(data.social_media);
+            if(data.data)
+            data.data.forEach((fair)=>{
+              fair.social_media = fair.social_media ? JSON.parse(fair.social_media) : null;    
+            });
+            
             resolve(data);
         },error => reject(error));
     });
@@ -57,11 +62,11 @@ export class FairsService {
                 //this.fairName = window.location.href.split('.')[0].replace('http://','').replace('https://','');
                 this.fairName = 'feriatecnologica2021';
             } catch(error) {
-                reject(`No se encontraron datos para la feria`);
+                reject(`No se encontró nombre de la feria`);
             }
         
             this.list()
-             .then((data) => {
+             .then((data) => {	
                 if(data && data.success == 201 && data.data )
                 for(let fair of data.data ) {
                     if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
@@ -103,12 +108,17 @@ export class FairsService {
 
         return new Promise((resolve, reject) => {
 
-            this.http.post(`/api/meetings`,messageData)
+            this.http.post(`/api/fair/support/contact-notification`,messageData)
             .pipe(
               timeout(30000),
               catchError(e => {
                 console.log(e);
-                if(e.status && e.statusText) {
+				
+				if(e.status == 422) {
+				   const error = JSON.stringify(e.error);
+				   throw new Error(`Consultando el servicio para envío de mensajes: ${error}`);
+				}
+                else if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para envío de mensajes: ${e.status} - ${e.statusText}`);
                 }
                 else {
@@ -142,90 +152,90 @@ export class FairsService {
   
   getCategories(type){
     return new Promise((resolve, reject) => {
-		this.http.get(`/api/category/to_list/${type}`)
-		.pipe(
-		  timeout(30000),
-		  catchError(e => {
-			console.log(e);
-			if(e.status && e.statusText) {
-			  throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
-			}
-			else {
-			  throw new Error(`Consultando el servicio de categorías`);
-			}
-		  })
-		)
-		.subscribe((data : any )=> {
-			if(data.success) {
-			  resolve(data);
-			  
-			}
-			else {
-			  reject(JSON.stringify(data));
-			}
-		},error => {
-			reject(error)
-		});
-	});
+        this.http.get(`/api/category/to_list/${type}`)
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
+            }
+            else {
+              throw new Error(`Consultando el servicio de categorías`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+            if(data.success) {
+              resolve(data);
+              
+            }
+            else {
+              reject(JSON.stringify(data));
+            }
+        },error => {
+            reject(error)
+        });
+    });
   }
   
   createCategory(category){
     return new Promise((resolve, reject) => {
-		this.http.post(`/api/category/create/`,category)
-		.pipe(
-		  timeout(30000),
-		  catchError(e => {
-			console.log(e);
-			if(e.status && e.statusText) {
-			  throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
-			}
-			else {
-			  throw new Error(`Consultando el servicio de categorías`);
-			}
-		  })
-		)
-		.subscribe((data : any )=> {
-			if(data.success) {
-			  resolve(data);
-			  
-			}
-			else {
-			  reject(JSON.stringify(data));
-			}
-		},error => {
-			reject(error)
-		});
-	});
+        this.http.post(`/api/category/create/`,category)
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
+            }
+            else {
+              throw new Error(`Consultando el servicio de categorías`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+            if(data.success) {
+              resolve(data);
+              
+            }
+            else {
+              reject(JSON.stringify(data));
+            }
+        },error => {
+            reject(error)
+        });
+    });
   }
-	
-	updateCategory(category){
-		return new Promise((resolve, reject) => {
-			this.http.post(`/api/category/create/`,category)
-			.pipe(
-			  timeout(30000),
-			  catchError(e => {
-				console.log(e);
-				if(e.status && e.statusText) {
-				  throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
-				}
-				else {
-				  throw new Error(`Consultando el servicio de categorías`);
-				}
-			  })
-			)
-			.subscribe((data : any )=> {
-				if(data.success) {
-				  resolve(data);
-				  
-				}
-				else {
-				  reject(JSON.stringify(data));
-				}
-			},error => {
-				reject(error)
-			});
-		});
-	}
+    
+    updateCategory(category){
+        return new Promise((resolve, reject) => {
+            this.http.post(`/api/category/create/`,category)
+            .pipe(
+              timeout(30000),
+              catchError(e => {
+                console.log(e);
+                if(e.status && e.statusText) {
+                  throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
+                }
+                else {
+                  throw new Error(`Consultando el servicio de categorías`);
+                }
+              })
+            )
+            .subscribe((data : any )=> {
+                if(data.success) {
+                  resolve(data);
+                  
+                }
+                else {
+                  reject(JSON.stringify(data));
+                }
+            },error => {
+                reject(error)
+            });
+        });
+    }
   
   
 }

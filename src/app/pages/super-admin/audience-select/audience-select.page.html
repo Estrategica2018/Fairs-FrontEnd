@@ -1,41 +1,41 @@
 <ion-content>
   
   <ion-list class="padding-content">  
-	<ion-toolbar>
-	  <ion-label slot="start">Lista de invitados</ion-label>
-	  <ion-buttons slot="primary">
-	  <ion-button color="primary" (click)="onSave()">
-		<ion-icon slot="icon-only" name="save-outline"></ion-icon>
-	  </ion-button>
-	  </ion-buttons>
-	  <ion-buttons slot="secondary">
-	    <ion-button color="secondary" (click)="onLoadInputClick()">
-		   <ion-icon slot="icon-only" name="cloud-upload-outline"></ion-icon>
-	    </ion-button>
-	    <input id="uploadInput" type="file" class="d-none" (change)="readSingleFile($event)" />
-	  </ion-buttons>
-	  <ion-buttons slot="secondary">
-	    <ion-button color="secondary" (click)="presentAddEmail()">
-		   <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-	    </ion-button> 
-	  </ion-buttons>	  
-	</ion-toolbar>
-	<ion-toolbar>
-	    <ion-searchbar placeholder="Buscar..." [(ngModel)]="filterTerm" animated="true"></ion-searchbar>
-	</ion-toolbar>
-	
-	<!-- Checkboxes in a List -->
-	<div *ngIf="filterTerm">
-	<ion-item *ngFor="let audience of audiences | filterBy:['email']:filterTerm;">
+    <ion-toolbar>
+      <ion-label slot="start">Lista de invitados</ion-label>
+      <ion-buttons slot="primary">
+      <ion-button color="primary" (click)="onSave()">
+        <ion-icon slot="icon-only" name="save-outline"></ion-icon>
+      </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="secondary">
+        <ion-button color="secondary" (click)="onLoadInputClick()">
+           <ion-icon slot="icon-only" name="cloud-upload-outline"></ion-icon>
+        </ion-button>
+        <input id="uploadInput" type="file" class="d-none" (change)="readSingleFile($event)" />
+      </ion-buttons>
+      <ion-buttons slot="secondary">
+        <ion-button color="secondary" (click)="presentAddEmail()">
+           <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+        </ion-button> 
+      </ion-buttons>      
+    </ion-toolbar>
+    <ion-toolbar>
+        <ion-searchbar placeholder="Buscar..." [(ngModel)]="filterTerm" animated="true"></ion-searchbar>
+    </ion-toolbar>
+    
+    <!-- Checkboxes in a List -->
+    <div *ngIf="filterTerm">
+    <ion-item *ngFor="let audience of audiences | filterBy:['email']:filterTerm;">
       <ion-label>{{audience.email }}</ion-label>
       <ion-checkbox slot="end" [(ngModel)]="audience.checked"></ion-checkbox>
     </ion-item>
-	</div>
-	<div [hidden]="filterTerm">
-	<ion-item *ngFor="let audience of audiences">
+    </div>
+    <div [hidden]="filterTerm">
+    <ion-item *ngFor="let audience of audiences">
       <ion-label>{{audience.email }}</ion-label>
       <ion-checkbox slot="end" [(ngModel)]="audience.checked"></ion-checkbox>
     </ion-item>
-	</div>
+    </div>
   </ion-list>
 </ion-content>

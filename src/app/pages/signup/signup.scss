@@ -1,5 +1,5 @@
 .signup-logo {
-  padding: 61px 0px 0px 0px;
+  padding: 71px 0px 22px 0px;
   min-height: 128px;
   text-align: center;
 }
@@ -36,7 +36,7 @@ ion-label {
 
 .white-space {
     white-space: initial;
-	line-height: 13px;
+    line-height: 13px;
 }
 
 .terms-modal {
@@ -62,4 +62,20 @@ ion-label {
 
 .modal-wrapper {
   max-width: 300px;
+}
+
+.acceptTerms {
+  position: absolute;
+  top: -21px;
+  left: 23px;
+}
+
+.acceptTerms-btn {
+  --border-color: none; 
+  --border-width: 0px !important;
+  margin-top: -29px;
+}
+
+.acceptMsg {
+  margin-top: 27px;
 }

@@ -22,8 +22,8 @@ export class ThreePavilionService {
   initialize = (container: HTMLElement, objScene:any, mainScene: any) => {
       
     let _self = this;
-	
-//	THREE.Cache.clear();
+    
+//    THREE.Cache.clear();
     let aspect: number;
     let _defaultWidth = objScene.resources._defaultWidth;
     let _defaultHeight = objScene.resources._defaultHeight;
@@ -54,7 +54,7 @@ export class ThreePavilionService {
       container,
       alpha: true,
     });
-	this.renderer.setClearColor( 0x000000, 0 ); // the default
+    this.renderer.setClearColor( 0x000000, 0 ); // the default
     
     //this.renderer = new THREE.WebGL.renderer({ alpha: false, });
     let modelLoaderList = {};
@@ -133,7 +133,7 @@ export class ThreePavilionService {
     // GEOMETRY
     function createModels(scene) {
       
-	  const loadModel = (gltf: GLTF, position: THREE.Vector3, url: string, name: string) => {
+      const loadModel = (gltf: GLTF, position: THREE.Vector3, url: string, name: string) => {
       
         if(!modelLoaderList[name]) {
             modelLoaderList[name] = { gltf: gltf, position: position, url: url, name: name}
@@ -178,8 +178,8 @@ export class ThreePavilionService {
       initModel(new THREE.Vector3(0.50, 3.889, -10),'https://rawcdn.githack.com/mrdoob/three.js/7249d12dac2907dac95d36227d62c5415af51845/examples/models/gltf/Flamingo.glb','flamingo')
       
     }
-	
-	
+    
+    
   
     // renderer
     function onWindowResize() {
@@ -370,8 +370,8 @@ export class ThreePavilionService {
               if(event.type === "click") {
                   //let objSel = null;
                   //objSel.type = obj.callback.type;
-				  //initialize(container, objSel, mainScene);
-				  mainScene.onViewerMeeting();
+                  //initialize(container, objSel, mainScene);
+                  mainScene.onViewerMeeting();
                   
               }
           }
@@ -433,26 +433,26 @@ export class ThreePavilionService {
     
     function createPanel() {
 
-		if(!mainScene.user || !mainScene.user.name ) return;
-		
-		const panel = new GUI( { width: 310 , autoPlace: false} );
-		var customContainer = document.getElementById('gui');
+        if(!mainScene.user || !mainScene.user.name ) return;
+        
+        const panel = new GUI( { width: 310 , autoPlace: false} );
+        var customContainer = document.getElementById('gui');
         customContainer.appendChild(panel.domElement);
 
-		const folder3 = panel.addFolder( 'Auditorio' );
+        const folder3 = panel.addFolder( 'Auditorio' );
 
-		const panelSettings = {
-			'Ingresar como': mainScene.user.aliasName
-		};
-		
-		folder3.add( panelSettings, 'Ingresar como', '', '', '' ).onChange( function ( alias ) {
-			mainScene.user.aliasName = alias;
-		});
-		folder3.open();
-		
-		var closeButton = <HTMLElement> document.querySelector('.close-button');
+        const panelSettings = {
+            'Ingresar como': mainScene.user.aliasName
+        };
+        
+        folder3.add( panelSettings, 'Ingresar como', '', '', '' ).onChange( function ( alias ) {
+            mainScene.user.aliasName = alias;
+        });
+        folder3.open();
+        
+        var closeButton = <HTMLElement> document.querySelector('.close-button');
         closeButton.style.display = 'none';
-	}
+    }
 
     let sizeBanners = 0;
     let bannersLoaded = 0;    
@@ -464,7 +464,7 @@ export class ThreePavilionService {
         }
     }
     
-	function createBanners(scene){
+    function createBanners(scene){
       
       if(objScene && objScene.resources && objScene.resources.banners && objScene.resources.banners.length > 0) {
             sizeBanners = objScene.resources.banners.length;
@@ -581,7 +581,7 @@ export class ThreePavilionService {
       });
     }
     
-    this.scene	= new THREE.Scene();
+    this.scene    = new THREE.Scene();
     createBackGround(this.scene);
     createCamera();
     createControls();
@@ -590,18 +590,18 @@ export class ThreePavilionService {
     createBanners(this.scene);
     createVideos(this.scene);
     onWindowResize();
-	createPanel();
+    createPanel();
     listenForFullScreenEvents();
     
     start(this.renderer, this.scene);
   }
   
   onDestroy() {
-	while(this.scene.children.length > 0){ 
+    while(this.scene.children.length > 0){ 
         this.scene.remove(this.scene.children[0]); 
     }
     this.renderer.dispose();
-	THREE.Cache.clear();
+    THREE.Cache.clear();
   }
 }
 

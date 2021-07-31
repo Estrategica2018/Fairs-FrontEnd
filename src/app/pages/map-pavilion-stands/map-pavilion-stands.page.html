@@ -2,13 +2,13 @@
 
   <video 
      [ngStyle]="{'opacity': intro && resources?.video ? 1 : 0, 'position': intro && resources?.video ? 'block' : 'absolute'}"
-	webkit-playsinline
+    webkit-playsinline
     autoplay
     muted playsinline preload="metadata" data-aos="fade-up"
     ondblclick="toggleFullScreen()"
     id="video"
     class="video"
-	[src]="resources?.video"
+    [src]="resources?.video"
   ></video>
   <!--img src="https://res.cloudinary.com/dfxkgtknu/image/upload/v1616035909/feria1_ldzbzq.jpg"
     src="https://cdn.kapwing.com/final_6052b424027e13005b09bf06_901908.mp4"
@@ -31,12 +31,12 @@
       <ion-label>Agenda</ion-label>
     </ion-button>
 
-    <ion-button color="light" (click)="onRouterLink('/app/tabs/speakers')">
+    <ion-button color="light" (click)="onRouterLink('/speakers')">
       <ion-icon slot="start" name="people-outline"></ion-icon>
       <ion-label>Conferencistas</ion-label>
     </ion-button>
 
-    <ion-button color="light" (click)="onRouterLink('/map')">
+    <ion-button color="light" (click)="onRouterLink('/map/fair/0')">
       <ion-icon slot="start" name="map-outline"></ion-icon>
       <ion-label>Mapa</ion-label>
     </ion-button>

@@ -11,7 +11,7 @@ ion-item {
 }
 
 .icon {
-  max-width: 100px;
+  max-width: 78px;
 }
 
 
@@ -21,7 +21,7 @@ ion-item {
     border-radius: 21px;
     border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
     --border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
-	margin-top: 11px;
+    margin-top: 11px;
 }
 
 .pavilion-button-add {
@@ -40,11 +40,15 @@ ion-item {
 }
 
 .scene-icon-mini {
-  min-width: 100px;
-  width: 100px;
+  min-width: 100px; 
 }
 
 .scene-icon-pavilion {
   min-width: 219px;
   width: 100px;
+}
+
+.label-icon {
+    margin-top: 7px;
+    margin-left: -8px;
 }

@@ -29,7 +29,7 @@ export class PavilionsService {
             
             this.fairsService.getCurrentFair().
               then( fair => {
-				this.fair = fair;
+                this.fair = fair;
                 this.http.get(`/api/pavilion/find_by_fair/?fair_id=${fair.id}`)
                 .pipe(
                   timeout(30000),
@@ -46,7 +46,7 @@ export class PavilionsService {
                 .subscribe((data : any )=> {
                     this.refresTime = moment();
                     this.pavilions = processData(data.data);
-					resolve({pavilions: this.pavilions, fair:this.fair});
+                    resolve({pavilions: this.pavilions, fair:this.fair});
                 },error => {
                     reject(error)
                 });

@@ -39,74 +39,74 @@ export class AgendaPage implements OnInit {
     private loading: LoadingService,
     private adminAgendasService: AdminAgendasService,
     private fairsService: FairsService,
-	private speakersService: SpeakersService,
-	private categoryService: CategoryService,
+    private speakersService: SpeakersService,
+    private categoryService: CategoryService,
     private alertCtrl: AlertController,
-	private modalCtrl: ModalController,
-	private routerOutlet: IonRouterOutlet,
-	private actionSheetController: ActionSheetController
+    private modalCtrl: ModalController,
+    private routerOutlet: IonRouterOutlet,
+    private actionSheetController: ActionSheetController
     ) { 
-		this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': '/assets/icon/null-21_1_joxd4u.jpg' } };
-	}
+        this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': '/assets/icon/null-21_1_joxd4u.jpg' } };
+    }
 
   ngOnInit() {
       
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
-		
-		const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
-		console.log(agendaId);
-		if(agendaId!=null) {
-			this.agendasService.
-			getEmails(this.fair.id, agendaId).then((response)=>{
-			  this.emails = response.data.audience;
-			  this.invited_emails = this.emails.filter((audience)=>{
-				 return audience.check == 1; 
-			  });
-			})
-			.catch(error => {
-				this.errors = error;
-			});
-		}
+        
+        const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
+        console.log(agendaId);
+        if(agendaId!=null) {
+            this.agendasService.
+            getEmails(this.fair.id, agendaId).then((response)=>{
+              this.emails = response.data.audience;
+              this.invited_emails = this.emails.filter((audience)=>{
+                 return audience.check == 1; 
+              });
+            })
+            .catch(error => {
+                this.errors = error;
+            });
+        }
     });
-	
+    
     this.speakersService.
-	list().then((speakers)=>{
-	  this.speakers = speakers;
-	})
-	.catch(error => {
-		this.errors = error;
-	});
-	
-	this.categoryService.list('AgendaType').then((response)=>{
-		if(response.success == 201) {
-			this.categories = response.data;
-			const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
-			if(agendaId ) {
-			  this.action = 'update';
-			  this.loading.present({message:'Cargando...'});
-			  this.agendasService.get(agendaId)
-			   .then((agenda) => {
-				  this.loading.dismiss();
-				  //this.errors = null;
-				  this.agenda = agenda;
-				  this.agenda.duration_time = this.agenda.duration_time.toString();
-				  if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
-				  this.agenda.start_at_str = moment(this.agenda.start_at).format('DD/MM/YYYY HH:mm');
-			  })
-			  .catch(error => {
-				 this.loading.dismiss();
-				 this.errors = error;
-			  });
-			}
-			else { 
-			  this.action = 'create';
-			}
-		}
-		else {
-			this.errors = `Consultando las categorias de agenda`;
-		}
-	});
+    list().then((speakers)=>{
+      this.speakers = speakers;
+    })
+    .catch(error => {
+        this.errors = error;
+    });
+    
+    this.categoryService.list('AgendaType').then((response)=>{
+        if(response.success == 201) {
+            this.categories = response.data;
+            const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
+            if(agendaId ) {
+              this.action = 'update';
+              this.loading.present({message:'Cargando...'});
+              this.agendasService.get(agendaId)
+               .then((agenda) => {
+                  this.loading.dismiss();
+                  //this.errors = null;
+                  this.agenda = agenda;
+                  this.agenda.duration_time = this.agenda.duration_time.toString();
+                  if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
+                  this.agenda.start_at_str = moment(this.agenda.start_at).format('DD/MM/YYYY HH:mm');
+              })
+              .catch(error => {
+                 this.loading.dismiss();
+                 this.errors = error;
+              });
+            }
+            else { 
+              this.action = 'create';
+            }
+        }
+        else {
+            this.errors = `Consultando las categorias de agenda`;
+        }
+    });
   }
   
   durations: any[] = [
@@ -129,7 +129,7 @@ export class AgendaPage implements OnInit {
   ];
   
   audiences: any[] = [
-    { id: 1, name: 'Publico general'},
+    { id: 1, name: 'Público general'},
     { id: 2, name: 'Lista de correo'},
     { id: 3, name: 'Pago dentro de la feria'},
     { id: 4, name: 'Pago por evento'}
@@ -137,8 +137,8 @@ export class AgendaPage implements OnInit {
 
   onCreateAgenda() {
     const data = Object.assign({ 'topic': this.agenda.title, 
-								 'agenda' : this.agenda.description, 'fair_id': this.fair.id,
-		                         'category_id': this.agenda.category.id		}, this.agenda);
+                                 'agenda' : this.agenda.description, 'fair_id': this.fair.id,
+                                 'category_id': this.agenda.category.id        }, this.agenda);
     
     this.errors = null;
     this.success = null;
@@ -147,10 +147,10 @@ export class AgendaPage implements OnInit {
     this.adminAgendasService.create(data)
       .then((response) => {
         this.loading.dismiss();
-			this.success = `Agenda creada exitosamente`;
+            this.success = `Agenda creada exitosamente`;
             const tab = `/super-admin/agenda/${data.id}`;
             this.onRouterLink(tab);
-			//response.agenda.category = this.agenda.category;
+            //response.agenda.category = this.agenda.category;
             //this.agenda = response.agenda;
       },
       (error) => {
@@ -164,9 +164,7 @@ export class AgendaPage implements OnInit {
   }
 
   onUpdateAgenda() {
-   //this.agenda.topic = this.agenda.title;
-   //this.agenda.agenda = this.agenda.description;
-   //this.agenda.fair_id = this.fair.id;
+    this.loading.present({message:'Cargando...'});
     const data = Object.assign(this.agenda,{ 'topic': this.agenda.title, 'agenda' : this.agenda.description, 'fair_id': this.fair.id, 'category_id': this.agenda.category.id});
     this.errors = null;
     this.success = null;
@@ -174,17 +172,15 @@ export class AgendaPage implements OnInit {
     this.adminAgendasService.update(data)
       .then((response) => {
         this.success = `Agenda modificada exitosamente`;
-       //this.fairsService.refreshCurrentFair().then((fair)=>{
-       //    //this.fair = fair;
-       //    //const tab = `/super-admin/fair`;
-       //    //this.onRouterLink(tab);
-       //});
+        this.loading.dismiss();
       },
       (error) => {
-          this.errors = error;
+         this.errors = error;
+         this.loading.dismiss();
       })
     .catch(error => {
         this.errors = error; 
+        this.loading.dismiss();
      });    
   }
 
@@ -277,27 +273,28 @@ export class AgendaPage implements OnInit {
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
-		  'invited_speakers': this.agenda.invited_speakers,
-		  'speakers': this.speakers,
-		  'fair_id': this.fair.id,
-		  'meeting_id': this.agenda.id,
-	  }
+          'invited_speakers': this.agenda.invited_speakers,
+          'speakers': this.speakers,
+          'fair_id': this.fair.id,
+          'meeting_id': this.agenda.id,
+      },
+      cssClass: 'speakers-modal'
     });
     await modal.present();
     this.success = null;
-	this.errors = null;
+    this.errors = null;
     const { data } = await modal.onWillDismiss();
-	
-	if (data) {
-	  this.agendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
-	    .then((invited_speakers)=>{
-			this.success = `Conferencistas asociados exitosamente`;
+    
+    if (data) {
+      this.agendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
+        .then((invited_speakers)=>{
+            this.success = `Conferencistas asociados exitosamente`;
         })
         .catch(error => {
-			this.errors = error;
+            this.errors = error;
         });
-		
-	}
+        
+    }
   } 
   
   async presentAudience() {
@@ -306,61 +303,61 @@ export class AgendaPage implements OnInit {
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
-		  'invited_speakers': this.invited_emails,
-		  'audiences': this.emails,
-		  'fair_id': this.fair.id,
-		  'meeting_id': this.agenda.id
-	  }
+          'invited_speakers': this.invited_emails,
+          'audiences': this.emails,
+          'fair_id': this.fair.id,
+          'meeting_id': this.agenda.id
+      }
     });
     await modal.present();
     this.success = null;
-	this.errors = null;
+    this.errors = null;
     const { data } = await modal.onWillDismiss();
 
-	if(data) {
-		
-	  data.forEach((audience)=>{
-		audience.check = audience.checked ? 1 : 0;
-	  });
-	  this.invited_emails = data.filter((audience)=>{
-		 return audience.check == 1; 
-	  });
-	  
-	  this.agendasService.updateAudience(this.fair.id,this.agenda.id, { 'audience': data })
-	    .then((invited_emails)=>{
-			this.success = `Lista de correos modificada exitósamente`;
+    if(data) {
+        
+      data.forEach((audience)=>{
+        audience.check = audience.checked ? 1 : 0;
+      });
+      this.invited_emails = data.filter((audience)=>{
+         return audience.check == 1; 
+      });
+      
+      this.agendasService.updateAudience(this.fair.id,this.agenda.id, { 'audience': data })
+        .then((invited_emails)=>{
+            this.success = `Lista de correos modificada exitósamente`;
         })
         .catch(error => {
-			this.errors = error;
+            this.errors = error;
         });
-		
-	}
+        
+    }
   } 
 
   async presentActionPrice() {
-	let merchant = null; 
-	let buttons = [];
+      
+    let buttons = [];
     buttons.push({
-	  text: this.agenda.price, 
-	  role: 'destructive', 
- 	  handler: (value) => {
-	    this.editSave = true;
-	  }
+      text: this.agenda.price, 
+      role: 'destructive', 
+       handler: (value) => {
+        this.editSave = true;
+      }
     });
-	
-	buttons.push({
+    
+    buttons.push({
         text: 'Cancel',
         icon: 'close',
         role: 'cancel'
       });
-	  
+      
     const actionSheet = await this.alertCtrl.create({
       header: 'Precio por evento',
       message: "Ingresa el precio del evento",
       inputs: [
         {
           name: 'price',
-		  value: this.agenda.price,
+          value: this.agenda.price,
           placeholder: '$ Precio'
         },
       ],
@@ -374,7 +371,7 @@ export class AgendaPage implements OnInit {
         {
           text: 'Save',
           handler: data => {
-			this.agenda.price = data.price;
+            this.agenda.price = data.price;
           }
         }
       ]

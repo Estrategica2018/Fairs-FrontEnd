@@ -5,6 +5,7 @@ import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
 import { FairsService } from '../api/fairs.service';
+import { processData } from '../providers/process-data';
 
 @Injectable({
   providedIn: 'root'
@@ -40,10 +41,8 @@ export class MerchantsService {
                     .subscribe( (data: any) => { 
                         this.refresTime = moment();
                         this.merchants = data.data;
-                        for(let merchant of this.merchants ) {
-                            if(merchant.resources && typeof merchant.resources === 'string') {
-                              merchant.resources = JSON.parse(merchant.resources);
-                            }
+                        for(let i=0; i < this.merchants.length; i++ ) {
+                            this.merchants[i] = processData(this.merchants[i]);
                         }
                         resolve(this.merchants);
                     },error => reject(error));

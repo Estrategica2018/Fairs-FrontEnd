@@ -26,7 +26,7 @@ export class AdminAgendasService {
               catchError(e => {
                 console.log(e);
                 if(e.status && e.statusText) {
-				  const statusText = e.statusText + (e.error ? e.error.message : '');
+                  const statusText = e.statusText + (e.error ? e.error.message : '');
                   throw new Error(`Consultando el servicio de agenda: ${e.status} - ${statusText}`);    
                 }
                 else {

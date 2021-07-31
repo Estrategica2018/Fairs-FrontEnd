@@ -22,7 +22,7 @@ export class LoginPage {
     private router: Router,
     private loading: LoadingService,
     private usersService: UsersService,
-	  private fairsService: FairsService
+      private fairsService: FairsService
   ) {
     this.listenForDarkModeEvents();
   }
@@ -43,23 +43,26 @@ export class LoginPage {
       this.loading.present({message:'Cargando...'});
       const username = this.login.username;
       const password = this.login.password;
-	  this.fairsService.getCurrentFair().
+      this.fairsService.getCurrentFair().
          then( fair => {
-		  this.usersService.login(username,password, fair.id)
-		  .subscribe(
-			data => {
-				this.loading.dismiss();
-				const token = data.data;
-				this.usersService.setUser(Object.assign({password:password},{token:token},data.user)).then(() => {
-				  this.router.navigateByUrl('/app/tabs/schedule');
-				  window.dispatchEvent(new CustomEvent('user:login'));
-				});
-			},
-			error => {
-				this.loading.dismiss();
-				this.errors = error;
-		  });
-		});
+          this.usersService.login(username,password, fair.id)
+          .subscribe(
+            data => {
+                this.loading.dismiss();
+                const token = data.data;
+                this.usersService.setUser(Object.assign({password:password},{token:token},data.user)).then(() => {
+                  this.router.navigateByUrl('/app/tabs/schedule');
+                  window.dispatchEvent(new CustomEvent('user:login'));
+                });
+            },
+            error => {
+                this.loading.dismiss();
+                this.errors = error;
+          });
+        },error => {
+                this.loading.dismiss();
+                this.errors = error;
+          });
 
     }
   }

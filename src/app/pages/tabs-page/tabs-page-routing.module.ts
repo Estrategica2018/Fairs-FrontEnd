@@ -15,27 +15,6 @@ const routes: Routes = [
           {
             path: '',
             component: SchedulePage,
-          },
-          {
-            path: 'session/:sessionId',
-            loadChildren: () => import('../session-detail/session-detail.module').then(m => m.SessionDetailModule)
-          }
-        ]
-      },
-      {
-        path: 'speakers',
-        children: [
-          {
-            path: '',
-            loadChildren: () => import('../speaker-list/speaker-list.module').then(m => m.SpeakerListModule)
-          },
-          {
-            path: 'session/:sessionId',
-            loadChildren: () => import('../session-detail/session-detail.module').then(m => m.SessionDetailModule)
-          },
-          {
-            path: 'speaker-details/:speakerId',
-            loadChildren: () => import('../speaker-detail/speaker-detail.module').then(m => m.SpeakerDetailModule)
           }
         ]
       },
@@ -47,10 +26,6 @@ const routes: Routes = [
             loadChildren: () => import('../about/about.module').then(m => m.AboutModule)
           }
         ]
-      },
-      {
-        path: 'news',
-        loadChildren: () => import('../news/news.module').then( m => m.NewsPageModule)
       },
       {
         path: 'library',

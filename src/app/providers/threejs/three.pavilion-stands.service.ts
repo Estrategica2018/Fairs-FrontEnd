@@ -162,7 +162,7 @@ export class ThreePavilionStandsService {
   }
   
   private setSizeRender() {
-	  
+      
     let heightFull = this.mainScene.fullScreen ? window.innerHeight + 34 : window.innerHeight;
     let width = heightFull * 1079 / 544;
     let height = heightFull;

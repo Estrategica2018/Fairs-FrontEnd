@@ -1,26 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Agenda</ion-title>
+    <ion-buttons slot="end">
+      <ion-searchbar *ngIf="showSearchbar" showCancelButton="always" [(ngModel)]="queryText" (ionChange)="transformSchedule()" (ionCancel)="showSearchbar = false" placeholder="Buscar"></ion-searchbar>
+      <ion-button *ngIf="!showSearchbar" (click)="showSearchbar = true">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="!showSearchbar" (click)="presentFilter()">
+        <span>
+          <ion-icon slot="icon-only" name="options"></ion-icon>
+        </span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content fullscreen="true">
-  <ion-header translucent="true" class="ion-no-border">
-    <ion-toolbar class="search">
-      
-      <ion-searchbar *ngIf="showSearchbar" showCancelButton="always" [(ngModel)]="queryText" (ionChange)="transformSchedule()" (ionCancel)="showSearchbar = false" placeholder="Buscar"></ion-searchbar>
-      <ion-buttons slot="end">
-        <ion-button *ngIf="!showSearchbar" (click)="showSearchbar = true">
-          <ion-icon slot="icon-only" name="search"></ion-icon>
-        </ion-button>
-        <ion-button *ngIf="!showSearchbar" (click)="presentFilter()">
-          <span>
-            <ion-icon slot="icon-only" name="options"></ion-icon>
-          </span>
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
+
+  <ion-item [hidden]="!errors">
+   <div class="alert alert-danger alert-dismissible">
+     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+     <strong>Error!</strong> {{errors}}
+   </div>
+  </ion-item> 
+
+  <div *ngIf="showPaymentFair">
+     <button class="button-price" ion-button icon-start (click)="openTemplateFair()">
+     <ion-icon name="bookmark"></ion-icon>
+     Paga el valor de la Feria <strong> ${{fair?.price}} </strong>
+     </button>
+  </div>
   
-  <wompi-payment-button>
-  </wompi-payment-button>
-
-
   <ion-text class="padding-container"> {{textFilters}} </ion-text>
   <ion-list #scheduleList [hidden]="groups?.length === 0" class="padding-container">
     <ion-item-group *ngFor="let group of groups" [hidden]="group.hide">
@@ -31,17 +44,28 @@
       </ion-item-divider>
 
       <ion-item-sliding *ngFor="let session of group.sessions" #slidingItem class="category" [hidden]="session.hide">
-        <ion-item routerLink="/app/tabs/schedule/session/{{session.id}}">
-          <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color}">
-            <h3>{{session.name}}</h3>
-            <p translate="no">
-              {{session.timeStart}} &mdash; {{session.timeEnd}}
-			  <span>{{session.timezone}}</span>
-            </p>
-          </ion-label>
-          <ion-thumbnail class="m-auto p-10px">
-            <ion-img [src]="session.resources.url_image" style="width: 73px;" class="ml-1"></ion-img>
-           </ion-thumbnail>
+        <ion-item routerLink="/schedule/session/{{session.id}}">
+		    <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color}">
+			   <h3>{{session.name}}</h3>
+               <p translate="no">
+                  {{session.timeStart}} &mdash; {{session.timeEnd}}
+                  <span>{{session.timezone}}</span>
+               </p>
+             </ion-label>
+		     <ion-thumbnail class="m-auto p-10px">
+              <ion-img [src]="session.resources.url_image" style="width: 73px;" class="ml-1"></ion-img>
+             </ion-thumbnail>
+			 <ion-buttons slot="end">
+			   <div *ngIf="session.audience_config == 4 && !session.userPaidEvent" class="button-price" ion-button icon-start (click)="openTemplateAgenda(session)">
+                 <ion-icon name="bookmark"></ion-icon>
+                    <!--Paga el valor del evento <strong> ${{session?.price}} </strong-->
+               </div>
+			   <div *ngIf="session.audience_config==3 && !userPaidAllfair" class="button-price" ion-button icon-start (click)="openTemplateFair()">
+			      <ion-icon name="pricetags"></ion-icon>
+ 				  <!--Evento con pago por suscripción-->
+  			    </div>
+			</ion-buttons>
+		  
         </ion-item>
       </ion-item-sliding>
     </ion-item-group>
@@ -50,14 +74,5 @@
   <ion-list-header *ngIf="groups && groups.length === 0" class="not-found">
     No se encontraron eventos
   </ion-list-header>
-  <ion-list-header [hidden]="!errors">
-   <div class="alert alert-danger alert-dismissible">
-     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-     <strong>Error!</strong> {{errors}}
-   </div>
-  </ion-list-header>
-  
-  
-  
 
 </ion-content>

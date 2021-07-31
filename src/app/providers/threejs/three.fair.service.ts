@@ -18,8 +18,8 @@ export class ThreeFairService {
   initialize = (container: HTMLElement, objScene:any, mainScene: any) => {
     
     let aspect: number;
-	let _defaultWidth = objScene.resources._defaultWidth;
-	let _defaultHeight = objScene.resources._defaultHeight;
+    let _defaultWidth = objScene.resources._defaultWidth;
+    let _defaultHeight = objScene.resources._defaultHeight;
     let camera: THREE.PerspectiveCamera;
     let controls: OrbitControls;
     let hemisphere: THREE.HemisphereLight;
@@ -48,7 +48,7 @@ export class ThreeFairService {
       alpha: true,
     });
     
-	//let renderer = new THREE.WebGLRenderer({ alpha: false, });
+    //let renderer = new THREE.WebGLRenderer({ alpha: false, });
     let modelLoaderList = {};
 
     let clock = new THREE.Clock();
@@ -67,8 +67,8 @@ export class ThreeFairService {
       groundColor: 0x0f0e0d,
       intensity: 5
     };
-	
-	let type = 'O';
+    
+    let type = 'O';
 
     
     // CAMERA
@@ -107,7 +107,7 @@ export class ThreeFairService {
     }
   
     // GEOMETRY
-	function createModels() {
+    function createModels() {
       const loadModel = (gltf: GLTF, position: THREE.Vector3, url: string, name: string) => {
       
         if(!modelLoaderList[name]) {
@@ -156,10 +156,10 @@ export class ThreeFairService {
   
     // RENDERER
     function onWindowResize() {
-		
-	  const fullScreen : boolean = mainScene.fullScreen;
-  	  const heightFull = fullScreen ? container.clientHeight + 34 : container.clientHeight;
-	  let width = heightFull * _defaultWidth / _defaultHeight;
+        
+      const fullScreen : boolean = mainScene.fullScreen;
+        const heightFull = fullScreen ? container.clientHeight + 34 : container.clientHeight;
+      let width = heightFull * _defaultWidth / _defaultHeight;
       let height = heightFull;
    
       if(width<container.clientWidth) {
@@ -181,21 +181,21 @@ export class ThreeFairService {
       renderer.gammaFactor = gammaFactor;
       renderer.gammaOutput = gammaOutput;
       renderer.physicallyCorrectLights = physicallyCorrectLights;
-	  
+      
   
       container.appendChild(renderer.domElement);
       container.addEventListener( 'resize', onWindowResize);
       container.addEventListener( 'pointerdown', onPointerDown, false );
       container.addEventListener( 'click', onPointerDown, false );
       container.addEventListener( 'mousemove', onPointerDown, false );
-	  container.addEventListener( 'keydown', onKeydown);
-	  
+      container.addEventListener( 'keydown', onKeydown);
+      
     }
   
     function update () {
       const delta = clock.getDelta();
       mixers.forEach(x => x.update(delta));
-	  
+      
       //
       var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
       var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
@@ -207,7 +207,7 @@ export class ThreeFairService {
    }
   
    function start() {
-	 renderer.setAnimationLoop(() => {
+     renderer.setAnimationLoop(() => {
         update();
         if(model && model.position.x  > -11 ) model.position.x -= 0.01;
       
@@ -225,7 +225,7 @@ export class ThreeFairService {
       
     const obj = plane; 
     //const obj = this.model; 
-	
+    
     switch ( event.keyCode ) {
         case 79: // O
             type  = 'O';
@@ -310,20 +310,20 @@ export class ThreeFairService {
    function onPointerDown(event) {
           
         event.preventDefault();
-		
-		const fullScreen : boolean = mainScene.fullScreen;
-  	    const heightFull = fullScreen ? window.innerHeight + 34 : window.innerHeight;
+        
+        const fullScreen : boolean = mainScene.fullScreen;
+          const heightFull = fullScreen ? window.innerHeight + 34 : window.innerHeight;
         let width = heightFull * _defaultWidth / _defaultHeight;
         let height = heightFull;
-  	
+      
         if(width<container.clientWidth) {
           let widthFull = container.clientWidth;
           height = widthFull * _defaultHeight / _defaultWidth;
           width = widthFull;
         }
       
-	    //let width = container.clientWidth;
-		//let heigth = container.clientHeigth;
+        //let width = container.clientWidth;
+        //let heigth = container.clientHeigth;
         var rect = renderer.domElement.getBoundingClientRect();
         mouse.x = ( ( event.clientX  - rect.left ) / width ) * 2 - 1;
         mouse.y = - ( ( event.clientY - rect.top ) / height ) * 2 + 1;
@@ -413,112 +413,112 @@ export class ThreeFairService {
           scene.add(movieScreen); */
       });
     }
-	
+    
     function createBanners (){
         
       if(objScene && objScene.resources && objScene.resources.banners) {
-		  let sizeBanners = objScene.resources.banners.length;
-		  let bannersLoaded = 0;
-		  function finishLoader() {
-			  bannersLoaded ++;
-			  if(bannersLoaded == sizeBanners) {
-				  mainScene.onLoadingDismiss();
-			  }
-		  }
-		  objScene.resources.banners.forEach( (banner, indx) => {
-	  
-			  const geometry = new THREE.PlaneGeometry( 5, 1, 1);
-			  let material = null;
-			  
-			  if(banner.image_url) {
-				  let texture: any = null;
-				  texture = THREE.TextureLoader;
-				  if(textures[banner.image_url]) {
-					  texture = textures[banner.image_url];
-				  }
-				  else {
-					  texture = new THREE.TextureLoader().load(banner.image_url,
-					  function( texture ) {
-						   // Success callback of TextureLoader
-						   //texture.wrapS = THREE.RepeatWrapping;
-						   //texture.wrapT = THREE.RepeatWrapping;
-						   //texture.repeat.set( jsonMat.scaleu, jsonMat.scalev );
-						   //var material = new THREE.MeshLambertMaterial({
-							//   map: texture,
-							//   side: THREE.DoubleSide,
-							//   name: jsonMat.mname
-						   //});
-						   //THREEMatList.push( material );
-						   
-						   // We're done, so tell the promise it is complete
-						   material = new THREE.MeshBasicMaterial({ map: texture });
-						   finishLoader();
-					   },
-					   function(){
-						   finishLoader();
-					   },
-					   function(){
-						   finishLoader();
-					   }
-					  );
-					  textures[banner.image_url] = texture;
-				  }
-				  material = new THREE.MeshBasicMaterial({ map: texture });
-			  }
-			  
-			  if(banner.backgroundColor) {
-				  const backgroundColor = 0x8fbcd4;
-				  material = new THREE.MeshBasicMaterial({ color: new THREE.Color(backgroundColor) });
-			  }
-			  
-			  if(banner.text) {
-				  
-				  const loader = new THREE.FontLoader();
-	  
-				  loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
-	  
-					  const geometryThree = new THREE.TextGeometry( banner.text, {
-						  font: font,
-						  size: 80,
-						  height: 5,
-						  curveSegments: 12,
-						  bevelEnabled: true,
-						  bevelThickness: 10,
-						  bevelSize: 8,
-						  bevelOffset: 0,
-						  bevelSegments: 5
-					  });
-					  
-					  const _text = new THREE.Mesh( geometryThree, material );
-					  scene.add( _text );
-				  });
-			  }
-	  
-			  const plane: any = new THREE.Mesh( geometry, material );
-			  plane.name = "BannerPlaneGeometry-" + indx;
-			  plane.rotation.x = banner.rotation._x;
-			  plane.rotation.y = banner.rotation._y;
-			  plane.rotation.z = banner.rotation._z;
-			  plane.position.x = banner.position.x;
-			  plane.position.y = banner.position.y;
-			  plane.position.z = banner.position.z;
-			  plane.scale.x = banner.scale.x;
-			  plane.scale.y = banner.scale.y;
-			  plane.scale.z = banner.scale.z;
-			  
-			  if(banner.callback) {
-				  plane.callback = banner.callback;
-			  }
-			  
-			  plane.container = container;
-			  
-			  scene.add( plane );
-	  
-		  });
-	   }    
+          let sizeBanners = objScene.resources.banners.length;
+          let bannersLoaded = 0;
+          function finishLoader() {
+              bannersLoaded ++;
+              if(bannersLoaded == sizeBanners) {
+                  mainScene.onLoadingDismiss();
+              }
+          }
+          objScene.resources.banners.forEach( (banner, indx) => {
+      
+              const geometry = new THREE.PlaneGeometry( 5, 1, 1);
+              let material = null;
+              
+              if(banner.image_url) {
+                  let texture: any = null;
+                  texture = THREE.TextureLoader;
+                  if(textures[banner.image_url]) {
+                      texture = textures[banner.image_url];
+                  }
+                  else {
+                      texture = new THREE.TextureLoader().load(banner.image_url,
+                      function( texture ) {
+                           // Success callback of TextureLoader
+                           //texture.wrapS = THREE.RepeatWrapping;
+                           //texture.wrapT = THREE.RepeatWrapping;
+                           //texture.repeat.set( jsonMat.scaleu, jsonMat.scalev );
+                           //var material = new THREE.MeshLambertMaterial({
+                            //   map: texture,
+                            //   side: THREE.DoubleSide,
+                            //   name: jsonMat.mname
+                           //});
+                           //THREEMatList.push( material );
+                           
+                           // We're done, so tell the promise it is complete
+                           material = new THREE.MeshBasicMaterial({ map: texture });
+                           finishLoader();
+                       },
+                       function(){
+                           finishLoader();
+                       },
+                       function(){
+                           finishLoader();
+                       }
+                      );
+                      textures[banner.image_url] = texture;
+                  }
+                  material = new THREE.MeshBasicMaterial({ map: texture });
+              }
+              
+              if(banner.backgroundColor) {
+                  const backgroundColor = 0x8fbcd4;
+                  material = new THREE.MeshBasicMaterial({ color: new THREE.Color(backgroundColor) });
+              }
+              
+              if(banner.text) {
+                  
+                  const loader = new THREE.FontLoader();
+      
+                  loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+      
+                      const geometryThree = new THREE.TextGeometry( banner.text, {
+                          font: font,
+                          size: 80,
+                          height: 5,
+                          curveSegments: 12,
+                          bevelEnabled: true,
+                          bevelThickness: 10,
+                          bevelSize: 8,
+                          bevelOffset: 0,
+                          bevelSegments: 5
+                      });
+                      
+                      const _text = new THREE.Mesh( geometryThree, material );
+                      scene.add( _text );
+                  });
+              }
+      
+              const plane: any = new THREE.Mesh( geometry, material );
+              plane.name = "BannerPlaneGeometry-" + indx;
+              plane.rotation.x = banner.rotation._x;
+              plane.rotation.y = banner.rotation._y;
+              plane.rotation.z = banner.rotation._z;
+              plane.position.x = banner.position.x;
+              plane.position.y = banner.position.y;
+              plane.position.z = banner.position.z;
+              plane.scale.x = banner.scale.x;
+              plane.scale.y = banner.scale.y;
+              plane.scale.z = banner.scale.z;
+              
+              if(banner.callback) {
+                  plane.callback = banner.callback;
+              }
+              
+              plane.container = container;
+              
+              scene.add( plane );
+      
+          });
+       }    
     }
     
-	function listenForFullScreenEvents() {
+    function listenForFullScreenEvents() {
       window.addEventListener('map:fullscreenOff', (e:any) => {
         setTimeout(() => {
           mainScene.fullScreen = false;
@@ -532,19 +532,19 @@ export class ThreeFairService {
         }, 300);
       });
     }
-	
+    
     scene = new THREE.Scene();
-	const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    const light = new THREE.AmbientLight( 0x404040 ); // soft white light
     scene.add( light );
-	createCamera();
+    createCamera();
     createControls();
     createLight();
     createRenderer();
     createBanners();
     createVideos();
-	onWindowResize();
-	listenForFullScreenEvents();
-	
+    onWindowResize();
+    listenForFullScreenEvents();
+    
     let texture = null;
     if(textures[objScene.resources.url_image]) {
         texture = textures[objScene.resources.url_image];

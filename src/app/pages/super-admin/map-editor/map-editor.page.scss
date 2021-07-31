@@ -1,8 +1,6 @@
 .scene {
-  border: 1px solid #CCC;
   top: 40px;
   left: 180px;
-  perspective: 400px;
   position: absolute;
 }
 
@@ -10,8 +8,6 @@
   width: 20px;
   height: 20px;
   position: relative;
-  transform-style: preserve-3d;
-  transform: translateZ(-100px);
 }
 
 .cube__face {
@@ -23,22 +19,8 @@
   text-align: center;
 }
 
-.cube__face--front  { background: hsla(  0, 100%, 50%, 0.7); }
 .cube__face--right  { background: hsla( 60, 100%, 50%, 0.7); }
-.cube__face--back   { background: hsla(120, 100%, 50%, 0.7); }
-.cube__face--left   { background: hsla(180, 100%, 50%, 0.7); }
-.cube__face--top    { background: hsla(240, 100%, 50%, 0.7); }
-.cube__face--bottom { background: hsla(300, 100%, 50%, 0.7); }
 
-.cube__face--front  { transform: rotateY(  0deg) translateZ(100px); }
-.cube__face--back   { transform: rotateY(180deg) translateZ(100px); }
-.cube__face--left   { transform: rotateY(-90deg) translateZ(100px); }
-.cube__face--top    { transform: rotateX( 90deg) translateZ(100px); }
-.cube__face--bottom { transform: rotateX(-90deg) translateZ(100px); }
-
-.cube.is-backface-hidden .cube__face {
-  backface-visibility: hidden;
-}
 
 .full-screen-button {
   position: absolute;
@@ -55,7 +37,7 @@
 
 .panel-scene-plus {
   position: absolute;
-  top: 140px;
+  top: 85px;
   right: 0px;
   z-index: 11;
 }
@@ -77,15 +59,15 @@
 @media (max-width: 690px) {
   .tabs-menu {
       right: calc(0% - 10px);
-	  left: 0;
+      left: 0;
       ion-button {
-	     font-size: 10px;
-		 
-	     ion-label {
+         font-size: 10px;
+         
+         ion-label {
            font-size: 10px;
-		 }
-	  }
-	}
+         }
+      }
+    }
 }
 
 .div-container {
@@ -99,6 +81,15 @@
   right: 51px;
   width: 391px;
 }
+
+.panel-tools {
+  position: absolute;
+  top: 84px;
+  right: -11px;
+  width: 385px;
+}
+
+
   
 .pane-scene-select {
   position: absolute;
@@ -144,11 +135,6 @@ ion-tab-button {
 
 
 
-.div-container {
-  width: 100%;
-  overflow: auto;
-}
-
 .tooltip-label {
   position: absolute;
   left: -150px;
@@ -161,23 +147,20 @@ ion-tab-button {
 
 .tabs-menu {
   position: absolute;
-  bottom: 20px;
-  left: calc(22% - 10px);
   z-index: 11;
 }
 
 @media (max-width: 690px) {
   .tabs-menu {
-      right: calc(0% - 10px);
-	  left: 0;
+      left: 0;
       ion-button {
-	     font-size: 10px;
-		 
-	     ion-label {
+         font-size: 10px;
+         
+         ion-label {
            font-size: 10px;
-		 }
-	  }
-	}
+         }
+      }
+    }
 }
 
 .cube__face--right:hover {
@@ -189,4 +172,19 @@ ion-tab-button {
 
 ion-toolbar {
   height: 46px;
+}
+
+.icon-panel-scene {
+  border: 1px solid red;
+  height: 72px;
+  width: 77px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.icon-panel-scene-label {
+  position: absolute;
+  top: 23px;
+  left: 33px;
+  cursor: pointer;
 }

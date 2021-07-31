@@ -30,7 +30,7 @@ export class UsersService {
         }
         else {
             console.log(e);
-            throw new Error(`Consumiendo el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
+            throw new Error(`Consultando el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
         }
       })
     )
@@ -50,7 +50,7 @@ export class UsersService {
       catchError(e => {
         if(e.status !== 401) {
            console.log(e);
-           throw new Error(`Consumiendo el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
+           throw new Error(`Consultando el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
         }
         return of(null);
       })
@@ -68,10 +68,10 @@ export class UsersService {
             }
             else {
                if(e.status && e.statusText) {
-                  throw new Error(`Consumiendo el servicio para creación del usuario: ${e.status} - ${e.statusText}`);
+                  throw new Error(`Consultando el servicio para creación del usuario: ${e.status} - ${e.statusText}`);
                }
                else {
-                   throw new Error(`Consumiendo el servicio para creación del usuario`);
+                   throw new Error(`Consultando el servicio para creación del usuario`);
                }
             }
           })
@@ -84,7 +84,7 @@ export class UsersService {
                 reject(`Correo electrónico ya registrado`);
             }
             else {
-                reject(`Consumiendo el servicio para creación del usuario`);
+                reject(`Consultando el servicio para creación del usuario`);
             }
         },error => reject(error));
 
@@ -114,7 +114,7 @@ export class UsersService {
       })
     };
 
-	return this.http.post(`${this.url}/api/user/update`,userData, httpOptions)
+    return this.http.post(`${this.url}/api/user/update`,userData, httpOptions)
    .pipe(
       timeout(2000),
       catchError(e => {
@@ -123,10 +123,10 @@ export class UsersService {
         }
         else {
            if(e.status && e.statusText) {
-              throw new Error(`Consumiendo el servicio para modificación del usuario: ${e.status} - ${e.statusText}`);
+              throw new Error(`Consultando el servicio para modificación del usuario: ${e.status} - ${e.statusText}`);
            }
            else {
-               throw new Error(`Consumiendo el servicio para modificación del usuario`);
+               throw new Error(`Consultando el servicio para modificación del usuario`);
            }
         }
       })
@@ -136,22 +136,25 @@ export class UsersService {
   recoverPassword(data): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http.post(`${this.url}/api/password/create`,data)
-	   .pipe(
+       .pipe(
           timeout(30000),
           catchError(e => {
             if(e.status == 422) {
-			  const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
-              throw new Error(`Consumiendo el servicio para recuperación de clave: ${message}`);
+              const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
+              throw new Error(`Consultando el servicio para recuperación de clave: ${message}`);
             }
-			else if(e.status == 404) {
-			  throw new Error(`Usuario o Email no encontrado`);
+            else if(e.status == 404) {
+              throw new Error(`Usuario o Email no encontrado`);
             }
             else {
-			  if(e.status && e.statusText) {
-                throw new Error(`Consumiendo el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
+              if(e.status && e.statusText && e.statusText.indexOf('Gateway Timeout') >= 0) {
+                throw new Error(`No está conectado a internet`);
+              }  
+              else if(e.status && e.statusText) {
+                throw new Error(`Consultando el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
               }
               else {
-                throw new Error(`Consumiendo el servicio para recuperación de clave`);
+                throw new Error(`Consultando el servicio para recuperación de clave`);
               }
             }
           })
@@ -161,7 +164,7 @@ export class UsersService {
             resolve(data);
           }
           else {
-            reject(`Consumiendo el servicio para recuperación de clave`);
+            reject(`Consultando el servicio para recuperación de clave`);
           }
         },error => reject(error));
 
@@ -171,22 +174,22 @@ export class UsersService {
   findPassword(token): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http.get(`${this.url}/api/password/find/${token}`)
-	   .pipe(
+       .pipe(
           timeout(30000),
           catchError(e => {
             if(e.status == 422) {
-			  const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
-              throw new Error(`Consumiendo el servicio para recuperación de clave: ${message}`);
+              const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
+              throw new Error(`Consultando el servicio para recuperación de clave: ${message}`);
             }
-			else if(e.status == 404 && e.error && e.error.message) {
-			  throw new Error(`${e.error.message}`);
+            else if(e.status == 404 && e.error && e.error.message) {
+              throw new Error(`${e.error.message}`);
             }
             else {
-			  if(e.status && e.statusText) {
-                throw new Error(`Consumiendo el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
+              if(e.status && e.statusText) {
+                throw new Error(`Consultando el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
               }
               else {
-                throw new Error(`Consumiendo el servicio para recuperación de clave`);
+                throw new Error(`Consultando el servicio para recuperación de clave`);
               }
             }
           })
@@ -196,7 +199,7 @@ export class UsersService {
             resolve(data);
           }
           else {
-            reject(`Consumiendo el servicio para recuperación de clave`);
+            reject(`Consultando el servicio para recuperación de clave`);
           }
         },error => reject(error));
 
@@ -211,17 +214,17 @@ export class UsersService {
           catchError(e => {
             if(e.status == 422) {
               const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
-              throw new Error(`Consumiendo el servicio para recuperación de clave: ${message}`);
+              throw new Error(`Consultando el servicio para recuperación de clave: ${message}`);
             }
             else if(e.status == 404 && e.error && e.error.message) {
               throw new Error(`${e.error.message}`);
             }
             else {
               if(e.status && e.statusText) {
-                throw new Error(`Consumiendo el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
+                throw new Error(`Consultando el servicio para recuperación de clave: ${e.status} - ${e.statusText}`);
               }
               else {
-                throw new Error(`Consumiendo el servicio para recuperación de clave`);
+                throw new Error(`Consultando el servicio para recuperación de clave`);
               }
             }
           })
@@ -231,10 +234,68 @@ export class UsersService {
             resolve(data);
           }
           else {
-            reject(`Consumiendo el servicio para recuperación de clave`);
+            reject(`Consultando el servicio para recuperación de clave`);
           }
         },error => reject(error));
 
     });
   }
+  
+  getPaymentUser(data,userDataSession) {
+	const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization':  'Bearer ' + userDataSession.token
+      })
+    };
+    return new Promise((resolve, reject) => {
+        this.http.post(`/api/payment/user/fair`,data,httpOptions)
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de pagos realizados: ${e.status} - ${e.statusText}`);    
+            }
+            else {
+              throw new Error(`Consultando el servicio de pagos realizados`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+			resolve(data);
+        },error => {
+            reject(error)
+        });   
+    });
+  }
+
+  createNewReference( data ,userDataSession) {
+	const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization':  'Bearer ' + userDataSession.token
+      })
+    };
+    return new Promise((resolve, reject) => {
+        this.http.post(`/api/payment/generate`,data,httpOptions)
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de pagos realizados: ${e.status} - ${e.statusText}`);    
+            }
+            else {
+              throw new Error(`Consultando el servicio de pagos realizados`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+			resolve(data);
+        },error => {
+            reject(error)
+        });   
+    });
+  }
+
+
 }

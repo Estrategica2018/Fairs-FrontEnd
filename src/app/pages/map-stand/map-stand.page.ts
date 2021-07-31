@@ -26,7 +26,7 @@ export class MapStandPage implements OnInit {
  // private threeStand: ThreeStandService,
     private three: ThreePavilionService,
     private route: ActivatedRoute,
-	private loading: LoadingService,
+    private loading: LoadingService,
     private router: Router) {
         this.listenForFullScreenEvents();
     }
@@ -37,14 +37,14 @@ export class MapStandPage implements OnInit {
     const standId = this.route.snapshot.paramMap.get('standId');
     this.loading.present({message:'Cargando...'});
     this.standsService.get(pavilionId, standId).then((stand)=>{
-		stand.resources._defaultWidth = 1002;
-		stand.resources._defaultHeight = 607;
-		let _self = this;
+        stand.resources._defaultWidth = 1002;
+        stand.resources._defaultHeight = 607;
+        let _self = this;
         setTimeout(function(){
             _self.three.initialize(_self.canvas.nativeElement, stand, _self);
             _self.onLoadingDismiss();
-		}
-		,100);
+        }
+        ,100);
     });
   }
   

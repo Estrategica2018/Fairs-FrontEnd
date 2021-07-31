@@ -47,7 +47,7 @@ export class PasswordPage  implements OnInit {
           this.loading.dismiss();
           this.errors = error;
           this.success = null;
-		  this.token = null;
+          this.token = null;
         });
       }
   }
@@ -80,8 +80,10 @@ export class PasswordPage  implements OnInit {
               this.errors = error;
               this.success = null;
             });
-
-
+      }, error => {
+        this.loading.dismiss();
+        this.success = null;
+        this.errors = `Consultando el servicio para recuperación de clave [${error}]`;
       });
 
     }
@@ -99,7 +101,7 @@ export class PasswordPage  implements OnInit {
           .then( data => {
               this.loading.dismiss();
               this.errors = null;
-              this.success = "La contresaña se ha restablecido correctamente";
+              this.success = "Has cambiado tu contraseña con éxito.";
             },
             error => {
               this.loading.dismiss();

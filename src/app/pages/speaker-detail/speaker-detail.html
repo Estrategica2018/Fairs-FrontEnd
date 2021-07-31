@@ -1,32 +1,33 @@
+ <ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/speakers"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="speaker" slot="end">
+      <ion-button (click)="openContact(speaker)">
+        <ion-icon slot="icon-only" ios="call-outline" md="call-sharp"></ion-icon>
+      </ion-button>
+      <ion-button (click)="openSpeakerShare(speaker)">
+        <ion-icon slot="icon-only" ios="share-outline" md="share-sharp"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content class="speaker-detail">
-  <ion-header class="ion-no-border">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="/app/tabs/speakers"></ion-back-button>
-      </ion-buttons>
-      <ion-buttons *ngIf="speaker" slot="end">
-        <ion-button (click)="openContact(speaker)">
-          <ion-icon slot="icon-only" ios="call-outline" md="call-sharp"></ion-icon>
-        </ion-button>
-        <ion-button (click)="openSpeakerShare(speaker)">
-          <ion-icon slot="icon-only" ios="share-outline" md="share-sharp"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
 
   <div class="speaker-background">
-    <img *ngIf="speaker" [src]="speaker?.resources.url_image" [alt]="speaker?.name + ' Picture'">
+    <img *ngIf="speaker" [src]="speaker?.resources?.url_image" [alt]="speaker?.name + ' Picture'">
     <h2 *ngIf="speaker" >{{ speaker?.user.name + ' - ' + speaker?.user.last_name}}</h2>
     <p *ngIf="speaker" >{{ speaker?.user.title}}</p>
   </div>
 
-  <ion-list-header [hidden]="!errors" class="not-found ion-padding">
+  <ion-item [hidden]="!errors" class="not-found ion-padding">
    <div class="alert alert-danger alert-dismissible">
      <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
      <strong>Error!</strong> {{errors}}
    </div>
-  </ion-list-header>
+  </ion-item>
 
   <div *ngIf="speaker"  class="ion-padding speaker-detail">
     <p>{{speaker?.description}}</p>
@@ -38,7 +39,7 @@
               <h4>Conferencias</h4>
             </ion-label>
           </ion-item>
-          <ion-item *ngFor="let agenda of speaker.agenda" detail="false" routerLink="/app/tabs/schedule/session/{{agenda.id}}">
+          <ion-item *ngFor="let agenda of speaker.agenda" detail="false" routerLink="/schedule/session/{{agenda.id}}">
             <ion-label slot="start">
               <h4 class="white-space">{{agenda.title}}</h4>
               <h4 class="white-space">{{ (agenda.start_at * 1000) | date:'EEEE, MMMM d, y' }}</h4>
@@ -47,7 +48,7 @@
               </p>
             </ion-label> 
             <ion-thumbnail class="m-auto p-0">
-              <ion-img [src]="agenda.resources?.url_image" style="width: 73px;"></ion-img>
+              <ion-img [src]="agenda?.resources?.url_image" style="width: 73px;"></ion-img>
             </ion-thumbnail>
           </ion-item>
 

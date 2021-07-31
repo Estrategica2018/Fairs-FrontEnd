@@ -21,84 +21,84 @@ export class PavilionPage implements OnInit {
   
   constructor(
     private pavilionsService: PavilionsService,
-	private adminPavilionsService: AdminPavilionsService,
+    private adminPavilionsService: AdminPavilionsService,
     private route: ActivatedRoute,
     private loading: LoadingService,
-	private alertCtrl: AlertController,
-	private fairsService: FairsService,
-	private router: Router
+    private alertCtrl: AlertController,
+    private fairsService: FairsService,
+    private router: Router
     ) { }
 
   ngOnInit() {
     this.loading.present({message:'Cargando...'});
-	this.errors = null;
-	const listPav = this.pavilionsService.list()
-	.then((response) => {
-		
-		const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
-		if(pavilionId){
-		  this.pavilionsService.get(pavilionId)
-		   .then((response) => {
-			  this.pavilion = response.pavilion;
-			  this.fair = response.fair;
-			  this.loading.dismiss();
-		  })
-		  .catch(error => {
-			 this.loading.dismiss();
-			 this.errors = error;
-		  });
-		} else {
-			this.fair = response.fair;
-			if(this.fair && this.fair.pavilions){
-				const main = document.querySelector<HTMLElement>('ion-router-outlet');
-			
-				this.pavilion = { 'name':'Pabellón #' + (this.fair.pavilions.length + 1),
-							 'description': '',
-							 'resources':  [{
-								 'url_image':'https://dummyimage.com/1092x768/EFEFEF/000.png'
-							 }] };
-				this.fair.pavilions.push(this.pavilion);
-				this.loading.dismiss();
-			}
-		}
-          
+    this.errors = null;
+    const listPav = this.pavilionsService.list()
+    .then((response) => {
+        
+        const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
+        if(pavilionId){
+          this.pavilionsService.get(pavilionId)
+           .then((response) => {
+              this.pavilion = response.pavilion;
+              this.fair = response.fair;
+              this.loading.dismiss();
+          })
+          .catch(error => {
+             this.loading.dismiss();
+             this.errors = error;
+          });
+        } else {
+            this.fair = response.fair;
+            if(this.fair && this.fair.pavilions){
+                const main = document.querySelector<HTMLElement>('ion-router-outlet');
+            
+                this.pavilion = { 'name':'Pabellón #' + (this.fair.pavilions.length + 1),
+                             'description': 'Descripción Pabellón #' + (this.fair.pavilions.length + 1),
+                             'resources':  [{
+                                 'url_image':'https://dummyimage.com/1092x768/EFEFEF/000.png'
+                             }] };
+                this.editSave = true;
+                this.fair.pavilions.push(this.pavilion);
+                this.loading.dismiss();
+            }
+        } 
       })
       .catch(error => {
          this.loading.dismiss();
          this.errors = error;
-  	  });
-	
-	
+        });
+    
+    
     
   }
   
   updatePavilion(){
-	this.loading.present({message:'Cargando...'});
-	if(this.pavilion.id) {
-		this.adminPavilionsService.update(this.pavilion.id,this.pavilion)
+    this.loading.present({message:'Cargando...'});
+    if(this.pavilion.id) {
+        this.adminPavilionsService.update(this.pavilion.id,this.pavilion)
        .then((response) => {
-	      this.loading.dismiss();
-	      this.errors = null;
-		  this.pavilion = response.pavilion;
+          this.loading.dismiss();
+          this.errors = null;
+          this.pavilion = response.pavilion;
       })
       .catch(error => {
         this.loading.dismiss();
         this.errors = error;
       });
     }
-	else {
-	  this.pavilion.fair_id = this.fair.id;
-	  this.adminPavilionsService.create(this.pavilion)
+    else {
+      this.pavilion.fair_id = this.fair.id;
+      this.adminPavilionsService.create(this.pavilion)
        .then((pavilion) => {
-	      this.loading.dismiss();
-	      this.errors = null;
-		  this.pavilion = pavilion;
+          this.loading.dismiss();
+          this.errors = null;
+          this.pavilion = pavilion;
       })
       .catch(error => {
          this.loading.dismiss();
          this.errors = error;
       });
-	}
+    }
   }
   
     async deletePavilion() {
@@ -123,8 +123,8 @@ export class PavilionPage implements OnInit {
                 this.success = `Pabellón borrado exitosamente`;
                 this.fairsService.refreshCurrentFair().then((fair)=>{
                     this.fair.pavilions = this.fair.pavilions.filter((pavilion)=>{
-					     return pavilion.id != this.pavilion.id;
-					});
+                         return pavilion.id != this.pavilion.id;
+                    });
                     const tab = `/super-admin/fair`;
                     this.onRouterLink(tab);
                 });

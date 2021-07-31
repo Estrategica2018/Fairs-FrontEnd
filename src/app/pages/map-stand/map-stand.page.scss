@@ -40,13 +40,13 @@ ion-content {
 @media (max-width: 690px) {
   .tabs-menu {
       right: calc(0% - 10px);
-	  left: 0;
+      left: 0;
       ion-button {
-	     font-size: 10px;
-		 
-	     ion-label {
+         font-size: 10px;
+         
+         .ion-menu-label {
            font-size: 10px;
-		 }
-	  }
-	}
+         }
+      }
+    }
 }

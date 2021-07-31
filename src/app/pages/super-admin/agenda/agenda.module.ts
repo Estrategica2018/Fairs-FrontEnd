@@ -14,7 +14,7 @@ import { NgPipesModule } from 'ngx-pipes';
     FormsModule,
     IonicModule,
     AgendaPageRoutingModule,
-	NgPipesModule,	
+    NgPipesModule,    
   ],
   declarations: [AgendaPage, SpeakersSelectPage, AudienceSelectPage],
   entryComponents: [SpeakersSelectPage, AudienceSelectPage]

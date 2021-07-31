@@ -1,24 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end" *ngIf="action==='update'">
+      <ion-button color="danger" (click)="onDeleteAgenda()">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Borrar
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Administrar Agenda</ion-title>
+  </ion-toolbar>
+</ion-header>
+    
 <ion-content fullscreen="true">
-	<ion-header class="mt-5">
-	  <ion-toolbar>
-		<ion-buttons slot="end" *ngIf="action==='update'">
-		  <ion-button color="danger" (click)="onDeleteAgenda()">
-			<ion-icon slot="start" name="trash-outline"></ion-icon>
-			Borrar
-		  </ion-button>
-		</ion-buttons>
-		<ion-title>Administrar Agenda</ion-title>
-	  </ion-toolbar>
-	</ion-header>
-	
-	 
+
+    
+    <ion-item [hidden]="!errors" class="not-found">
+       <div class="alert alert-danger alert-dismissible">
+         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+         {{errors}}
+       </div>
+    </ion-item>
+
+    <ion-item [hidden]="!success">
+        <div class="alert alert-success alert-dismissible">
+          <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+          <strong></strong> {{success}}
+        </div>
+    </ion-item>
+     
   <ion-item class="padding-container agenda-logo mt-4" *ngIf="agenda" button="true" (click)="onChangeImage()">
     <img [src]="agenda?.resources?.url_image" *ngIf="agenda.resources?.url_image">
-    <!--img src="/assets/icon/null-21_1_joxd4u.jpg" [hidden]="agenda.resources.url_image"-->
   </ion-item>
 
-
-  <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
     <ion-list lines="" *ngIf="agenda" class="padding-container">
       <ion-item button="true">
         <ion-label> Título </ion-label>
@@ -53,7 +65,7 @@
             </ion-select-option>
         </ion-select>
       </ion-item>
-	        
+            
       <ion-item>
         <ion-label> Tipo de público </ion-label>
         <ion-select [(ngModel)]="agenda.audience_config" >
@@ -61,23 +73,50 @@
             </ion-select-option>
         </ion-select>
       </ion-item>
-	  
+      
      <ion-item *ngIf="agenda.audience_config == 4" button="true" (click)="presentActionPrice()">
-        <ion-label> Precio por evento </ion-label>
-        <ion-buttons slot="end">
-		  <ion-label> {{agenda.price}} </ion-label>
+       <ion-label> Precio por evento </ion-label>
+       <ion-buttons>
+          <ion-label slot="end"> {{agenda.price  | currency: 'COP $ ':'symbol':'1.2-2'}}</ion-label>
         </ion-buttons>
       </ion-item>
-	  
-	  <div class="ion-padding">
-            <ion-button  (click)="onUpdateAgenda()" *ngIf="action==='update'"  expand="block">
-             <ion-label > Guardar Cambios </ion-label>
-                <ion-icon slot="end" name="save-outline"></ion-icon>
-            </ion-button>
-            <ion-button *ngIf="action==='create'" (click)="onCreateAgenda()" expand="block">
-             <ion-label > Crear Agenda </ion-label>
-              <ion-icon slot="end" name="save-outline"></ion-icon>
-            </ion-button>
+      
+      <ion-item *ngIf="action==='update' && agenda.audience_config === '2'">
+       <ion-toolbar>
+        <ion-buttons slot="secondary">
+          <ion-button>
+            <ion-icon slot="icon-only" name="person-circle"></ion-icon>
+          </ion-button>
+          <ion-button>
+            <ion-icon slot="icon-only" name="search"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="primary">
+          <ion-button color="secondary" (click)="presentAudience()">
+            <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-label slot="start">Lista de invitados</ion-label>
+      </ion-toolbar>
+      </ion-item>
+      <ion-item *ngIf="action==='update' && agenda.audience_config === '2'">
+        <div class="tag-container">
+          <span class="tag" *ngFor="let audience of invited_emails">
+          {{ audience.email }}
+          <ion-icon name="close" (click)="deleteTag(audience)"></ion-icon>
+          </span>
+        </div>
+      </ion-item>
+      
+      <div class="ion-padding">
+        <ion-button  (click)="onUpdateAgenda()" *ngIf="action==='update'"  expand="block">
+         <ion-label > Guardar Cambios </ion-label>
+            <ion-icon slot="end" name="save-outline"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="action==='create'" (click)="onCreateAgenda()" expand="block">
+         <ion-label > Crear Agenda </ion-label>
+          <ion-icon slot="end" name="save-outline"></ion-icon>
+        </ion-button>
       </div>
 
       <ion-list-header [hidden]="!errors">
@@ -94,38 +133,6 @@
         </div>
       </ion-list-header>
       
-      <ion-item *ngIf="action==='update' && agenda.audience_config === '3'">
-        <ion-label position="stacked">Token</ion-label>
-        <ion-input [(ngModel)]="agenda.token" readonly ></ion-input>
-      </ion-item>
-	  
-      <ion-item *ngIf="action==='update' && agenda.audience_config === '2'">
-       <ion-toolbar>
-        <ion-buttons slot="secondary">
-          <ion-button>
-            <ion-icon slot="icon-only" name="person-circle"></ion-icon>
-          </ion-button>
-          <ion-button>
-            <ion-icon slot="icon-only" name="search"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-        <ion-buttons slot="primary">
-		  <ion-button color="secondary" (click)="presentAudience()">
-            <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-		<ion-label slot="start">Lista de correos</ion-label>
-      </ion-toolbar>
-      </ion-item>
-	  <ion-item *ngIf="action==='update' && agenda.audience_config === '2'">
-		<div class="tag-container">
-		  <span class="tag" *ngFor="let audience of invited_emails">
-		  {{ audience.email }}
-		  <ion-icon name="close" (click)="deleteTag(audience)"></ion-icon>
-		  </span>
-		</div>
-	  </ion-item>
-	  
       <ion-item lines="none" *ngIf="action==='update'">
         <ion-toolbar>
           <ion-buttons slot="primary">
@@ -133,10 +140,10 @@
               <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
             </ion-button>
           </ion-buttons>
-		  <ion-label slot="start">Conferencistas</ion-label>
+          <ion-label slot="start">Conferencistas</ion-label>
         </ion-toolbar>
       </ion-item>
-	  
+      
       <ion-item *ngIf="action==='update'">
         <ion-grid>
           <ion-row>
@@ -157,7 +164,4 @@
      </ion-item>
 
     </ion-list>
-
-  <!--/form-->
-
 </ion-content>

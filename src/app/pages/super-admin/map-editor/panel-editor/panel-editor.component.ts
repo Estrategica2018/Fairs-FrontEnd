@@ -12,8 +12,8 @@ export class PanelEditorComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-	  this.sceneSelect = this.scene;
-	  console.log(this.sceneSelect);
+      this.sceneSelect = this.scene;
+      console.log(this.sceneSelect);
   }
 
 }

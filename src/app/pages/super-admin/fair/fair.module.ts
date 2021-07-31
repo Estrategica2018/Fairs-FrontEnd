@@ -8,6 +8,7 @@ import { FairPageRoutingModule } from './fair-routing.module';
 
 import { FairPage } from './fair.page';
 
+
 @NgModule({
   imports: [
     CommonModule,

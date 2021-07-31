@@ -15,8 +15,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
-
-
 @NgModule({
   imports: [
     BrowserModule,
@@ -36,7 +34,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     SplashScreen, 
     StatusBar, 
     DatePipe,
-	{provide: LocationStrategy, useClass: HashLocationStrategy}
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })

@@ -1,9 +1,6 @@
 .scene {
-  width: 200px;
-  height: 200px;
   top: 40px;
   left: 180px;
-  perspective: 400px;
   position: absolute;
 }
 
@@ -11,14 +8,10 @@
   width: 20px;
   height: 20px;
   position: relative;
-  transform-style: preserve-3d;
-  transform: translateZ(-100px);
 }
 
 .cube__face {
   position: absolute;
-  width: 200px;
-  height: 200px;
   border: 2px solid black;
   font-size: 40px;
   font-weight: bold;
@@ -31,13 +24,12 @@
 }
 
 .cube__face--right  { 
-  background: hsla( 60, 100%, 50%, 0.7); 
-  transform: translateZ(104px) rotateY( -56deg);
+  background: hsla( 60, 100%, 50%, 0.7);
 }
 
 .full-screen-button {
   position: absolute;
-  top: 0;
+  top: 0px;
   z-index: 11;
 }
 
@@ -61,20 +53,20 @@
 
 .tabs-menu {
   position: absolute;
-  
   z-index: 11;
 }
 
 @media (max-width: 690px) {
   .tabs-menu {
-    
-	  left: 0;
-	    ion-button {
-	     font-size: 10px;
-		 
-	     ion-label {
+      left: 0;
+        ion-button {
+         font-size: 10px;
+         
+         .ion-menu-label {
            font-size: 10px;
-		 }
-	  }
-	}
+         }
+      }
+    }
 }
+
+

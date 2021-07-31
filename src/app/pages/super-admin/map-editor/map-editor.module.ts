@@ -15,7 +15,7 @@ import { DragAndDropModule } from 'angular-draggable-droppable';
     CommonModule,
     FormsModule,
     IonicModule,
-	DragAndDropModule,
+    DragAndDropModule,
     MapEditorPageRoutingModule
   ],
   declarations: [MapEditorPage, PanelEditorComponent], 

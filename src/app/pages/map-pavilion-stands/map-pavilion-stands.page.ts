@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild, AfterViewInit} from '@angular/core';
 import { ConferenceData } from '../../providers/conference-data';
 import { Platform } from '@ionic/angular';
 import { DOCUMENT} from '@angular/common';
@@ -30,63 +30,63 @@ export class MapPavilionStandsPage implements AfterViewInit {
     private platform: Platform,
     private pavilionsService: PavilionsService,
 //    private threeStand: ThreePavilionStandsService,
-	private three: ThreePavilionService,
+    private three: ThreePavilionService,
     private route: ActivatedRoute,
     private router: Router,
-	private loading: LoadingService) {
+    private loading: LoadingService) {
         
   }
 
   ngAfterViewInit() {
     const videoElem = document.getElementById('video');
     const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
-	const sceneId = this.route.snapshot.paramMap.get('sceneId');
-	const _self = this;
-	
-	this.loading.present({message:'Cargando...'});
-	
+    const sceneId = this.route.snapshot.paramMap.get('sceneId');
+    const _self = this;
+    
+    this.loading.present({message:'Cargando...'});
+    
     this.pavilionsService.get(pavilionId).then((pavilion)=>{
         if(pavilion && pavilion.resources && pavilion.resources.scenes && pavilion.resources.scenes.length > 0) {
-		   let scene = pavilion.resources.scenes[Number(sceneId)-1];
-		   this.resources = scene.resources;
-		   const container = _self.canvas.nativeElement;
-			this.resources._defaultWidth = 1092;
-			this.resources._defaultHeight = 607;
-			
-			//pavilion.resources.banners=[];
-			let _defaultWidth = this.resources._defaultWidth;
-			let _defaultHeight = this.resources._defaultHeight;
-			
-			_self.intro = pavilion.resources.video !== null;
-			
-			const heightFull = container.clientHeight;
-			let width = heightFull * _defaultWidth / _defaultHeight;
-			let height = heightFull;
-			if(width<container.clientWidth) {
-			
-			  let widthFull = container.clientWidth;
-			  height = widthFull * _defaultHeight / _defaultWidth;
-			  width = widthFull;
-			}
-			this.width = width;
-			this.height = height;	
-			if(videoElem) {
-			  videoElem.style.width = width + 'px';
-			  videoElem.style.height = height + 'px';
-			}
-		
-		  	_self.three.initialize(container, scene, _self);
-			
-			if(this.resources.video) {
-			  document.getElementById('video').addEventListener('ended',function myHandler(e) {
-				_self.intro = false;
-				videoElem.style.height = '0px';
-			  },false);
-			}
-			else {
-				_self.intro = false;
-			}
-			 
+           let scene = pavilion.resources.scenes[Number(sceneId)-1];
+           this.resources = scene.resources;
+           const container = _self.canvas.nativeElement;
+            this.resources._defaultWidth = 1092;
+            this.resources._defaultHeight = 607;
+            
+            //pavilion.resources.banners=[];
+            let _defaultWidth = this.resources._defaultWidth;
+            let _defaultHeight = this.resources._defaultHeight;
+            
+            _self.intro = pavilion.resources.video !== null;
+            
+            const heightFull = container.clientHeight;
+            let width = heightFull * _defaultWidth / _defaultHeight;
+            let height = heightFull;
+            if(width<container.clientWidth) {
+            
+              let widthFull = container.clientWidth;
+              height = widthFull * _defaultHeight / _defaultWidth;
+              width = widthFull;
+            }
+            this.width = width;
+            this.height = height;    
+            if(videoElem) {
+              videoElem.style.width = width + 'px';
+              videoElem.style.height = height + 'px';
+            }
+        
+              _self.three.initialize(container, scene, _self);
+            
+            if(this.resources.video) {
+              document.getElementById('video').addEventListener('ended',function myHandler(e) {
+                _self.intro = false;
+                videoElem.style.height = '0px';
+              },false);
+            }
+            else {
+                _self.intro = false;
+            }
+             
            
         }
     });

@@ -3,10 +3,13 @@ import { Router } from '@angular/router';
 import { AlertController, IonList, IonRouterOutlet, ModalController, ToastController, Config } from '@ionic/angular';
 import { ScheduleFilterPage } from '../schedule-filter/schedule-filter';
 import { AgendasService } from './../../api/agendas.service';
+import { FairsService } from './../../api/fairs.service';
 import { LoadingService } from './../../providers/loading.service';
 import { Observable } from 'rxjs';
 import { DatePipe } from '@angular/common'
 import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { UsersService } from './../../api/users.service';
+import { WompiPaymentLayoutPage } from '../wompi-payment-layout/wompi-payment-layout.page';
 
 
 @Component({
@@ -18,7 +21,7 @@ export class SchedulePage implements OnInit {
   
   // Gets a reference to the list element
   @ViewChild('scheduleList', { static: true }) scheduleList: IonList;
-  
+  modal: any;
   categories: any = [];
   dataInitMeetings = null;
   categoriesFilter: any = null;
@@ -34,6 +37,10 @@ export class SchedulePage implements OnInit {
   showSearchbar: boolean;
   locale: string;
   errors: string = null;
+  fair: any;
+  showPaymentFair: boolean = false;
+  userPaidAllfair: boolean = false;
+  loaded = 0;
 
   constructor(
     private alertCtrl: AlertController,
@@ -44,14 +51,16 @@ export class SchedulePage implements OnInit {
     private toastCtrl: ToastController,
     private config: Config,
     private agendasService: AgendasService,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private fairsService: FairsService,
+    private usersService: UsersService
   ) { 
     
   }
 
   ionViewWillEnter () {
-    
-	this.ios = this.config.get('mode') === 'ios';
+
+    this.ios = this.config.get('mode') === 'ios';
     
     // Close any open sliding items when the schedule updates
     if (this.scheduleList) {
@@ -59,16 +68,60 @@ export class SchedulePage implements OnInit {
     }
 
     this.loading.present({message:'Cargando...'});
-    this.agendasService.list()
-    .then((data) => {
-        this.loading.dismiss();
-        this.dataInitMeetings = data;
-        this.transformSchedule();
-     }, error => {
-        this.loading.dismiss();
-        console.log(error);
-        this.errors = `Consultando el servicio para agenda`;
-     });
+    this.fairsService.getCurrentFair().
+      then( fair => {
+        this.fair = fair;
+        if(this.fair.price > 0) {
+              this.usersService.getUser().then(userDataSession=> {
+                if(userDataSession){
+                      this.usersService.getPaymentUser({type:"Fair",id:this.fair.id},userDataSession).
+                      then( (payment:any) => {
+						 if(payment.success) {
+                            this.userPaidAllfair = true;
+							this.showPaymentFair = false;
+                         }
+						 else {
+							 this.showPaymentFair = true;
+						 }
+						 this.onFinishLoad();
+                      },error => {
+                         this.errors = `${error}`;
+						 this.onFinishLoad();
+                      });
+                }
+                else {
+                    this.showPaymentFair = true;
+					this.onFinishLoad();
+                }
+                
+              });
+        }
+		else {
+			this.onFinishLoad();
+		}
+
+        this.agendasService.list()
+        .then((data) => {
+            this.dataInitMeetings = data;
+            this.transformSchedule();
+			this.onFinishLoad();
+         }, error => {
+            console.log(error);
+            this.errors = `Consultando el servicio para agenda [${error}]`;
+			this.onFinishLoad();
+         });
+      },error => {
+         this.errors = `Consultando el servicio para agenda [${error}]`;
+	     this.onFinishLoad();
+      }); 
+    
+  }
+  
+  onFinishLoad(){
+	  this.loaded ++;
+	  if(this.loaded >=2){
+		  this.loading.dismiss();
+	  }
   }
   
   ngOnInit() {
@@ -185,6 +238,46 @@ export class SchedulePage implements OnInit {
         });
       }
       this.transformSchedule();
+    }
+  } 
+  
+
+  async openTemplateFair() {
+
+    this.modal = await this.modalCtrl.create({
+      component: WompiPaymentLayoutPage,
+      componentProps: {
+          'objPrice': this.fair,
+		  'type': 'Fair',
+		  'container': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+  
+  ngOnDestroy(): void {
+     if(this.modal) {
+       this.modal.dismiss();
+	 }
+  }
+  
+  async openTemplateAgenda(session) {
+
+    this.modal = await this.modalCtrl.create({
+      component: WompiPaymentLayoutPage,
+      componentProps: {
+          'objPrice': session,
+		  'type': 'Agenda'
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
     }
   } 
   

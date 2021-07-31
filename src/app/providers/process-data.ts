@@ -10,7 +10,7 @@ export function processData(obj){
         if(obj.resources && typeof obj.resources == 'string') {
           obj.resources = JSON.parse(obj.resources );
         }
-		if(obj.social_media && typeof obj.social_media == 'string') {
+        if(obj.social_media && typeof obj.social_media == 'string') {
           obj.social_media = JSON.parse(obj.social_media );
         }
         let objItem = null;
@@ -36,7 +36,7 @@ export function processDataToString(obj){
         if(obj.resources && typeof obj.resources == 'object') {
           obj.resources = JSON.stringify(obj.resources);
         }
-		if(obj.social_media && typeof obj.social_media == 'object') {
+        if(obj.social_media && typeof obj.social_media == 'object') {
           obj.social_media = JSON.stringify(obj.social_media);
         }
         

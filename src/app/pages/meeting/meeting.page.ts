@@ -43,72 +43,69 @@ export class MeetingPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private loading: LoadingService,
-	private dom:DomSanitizer,
-	private usersService: UsersService) {
+    private dom:DomSanitizer,
+    private usersService: UsersService) {
         this.listenForFullScreenEvents();
   }
 
   ngOnInit() {
-	  
-	 
-      
     const _self = this;    
     this.flagOnInit = true;
     const agendaId = this.route.snapshot.paramMap.get('meetingId');
-	
-	this.usersService.getUser()
-	.then((userActive)=>{
-		if(userActive) {
-		  this.user = userActive;
-		  this.aliasName = this.user.name + ' ' + this.user.last_name;
-		}
-	
-		this.fairsService.getCurrentFair()
-		.then( fair => {
-		  this.fair = fair;
+    
+    this.usersService.getUser()
+    .then((userActive)=>{
+        if(userActive) {
+          this.user = userActive;
+          this.aliasName = this.user.name + ' ' + this.user.last_name;
+        }
+    
+        this.fairsService.getCurrentFair()
+        .then( fair => {
+          this.fair = fair;
 
-			this.agendasService.get(agendaId)
-			.then( (agenda)=>{
-			   this.agenda = agenda;
-			   this.intro = agenda.resources.video !== null;
-			   this.scene = agenda.resources;
-			   
-			   this.scene = {
-				 "url_image":"https://res.cloudinary.com/dfxkgtknu/image/upload/v1611542378/feria1/auditorio1-background_Easy-Resize.com_m1sazv.jpg",
-				 "container": {"w":1238, "h": 628},
-				 "banners":[{
-				 
-				 }]};
-				
-				_self.onLoadingDismiss();
-				const mbSkip = this.fairsService.getPavilionIntro('meeting_'+agendaId);
-				
-				//if(this.resources.video && !mbSkip) {
-				//	const videoEl = <HTMLMediaElement>  this.videoElement.nativeElement;
-				//	videoEl.autoplay = true;
-				//	videoEl.muted = true;
-				//	
-				//	videoEl.onended = function() {
-				//		_self.intro = false;
-				//		_self.fairsService.setPavilionIntro('meeting_'+agendaId);
-				//		videoEl.style.height = '0px';
-				//	};
-				//}
-				//else {
-					this.intro = false;
-				//}
-				
-				this.onResize();
-			});	  
-		  
+            this.agendasService.get(agendaId)
+            .then( (agenda)=>{
+               this.agenda = agenda;
+               this.intro = agenda.resources.video !== null;
+               this.scene = agenda.resources;
+               
+               this.scene = {
+                 "url_image":"https://res.cloudinary.com/dfxkgtknu/image/upload/v1611542378/feria1/auditorio1-background_Easy-Resize.com_m1sazv.jpg",
+                 "container": {"w":1238, "h": 628},
+                 "banners":[{
+                 
+                 }]};
+                
+                _self.onLoadingDismiss();
+                const mbSkip = this.fairsService.getPavilionIntro('meeting_'+agendaId);
+                
+                //if(this.resources.video && !mbSkip) {
+                //    const videoEl = <HTMLMediaElement>  this.videoElement.nativeElement;
+                //    videoEl.autoplay = true;
+                //    videoEl.muted = true;
+                //    
+                //    videoEl.onended = function() {
+                //        _self.intro = false;
+                //        _self.fairsService.setPavilionIntro('meeting_'+agendaId);
+                //        videoEl.style.height = '0px';
+                //    };
+                //}
+                //else {
+                    this.intro = false;
+                //}
+                
+                this.onResize();
+            });      
+          
 
-		},error => {
-		  this.errors = error;	
-		});
-	});
-	
-	const div = document.querySelector<HTMLElement>('.div-container');
-	div.addEventListener('scroll', this.logScrolling);
+        },error => {
+          this.errors = error;    
+        });
+    });
+    
+    const div = document.querySelector<HTMLElement>('.div-container');
+    div.addEventListener('scroll', this.logScrolling);
   }
 
   onLoadingDismiss() {
@@ -123,7 +120,7 @@ export class MeetingPage implements OnInit {
   onResize() {
         const videoElem = <HTMLMediaElement>document.getElementById('videoMeeting_'+this.agenda.id);
         
-       // if(videoElem==1	) {
+       // if(videoElem==1    ) {
        //     const container = this.canvas.nativeElement;
        //     const heightFull = container.clientHeight;
        //     let width = heightFull * this.resources._defaultWidth / this.resources._defaultHeight;
@@ -139,16 +136,16 @@ export class MeetingPage implements OnInit {
        //     videoElem.style.width = width + 'px';
        //       videoElem.style.height = height + 'px';
        // }
-	   
-	 const main = document.querySelector<HTMLElement>('ion-router-outlet');
-	 const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
-	 main.style.top = top + 'px';
-	 
-	 const tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
-	 tabsmenu.style.bottom = top + 'px';
-	 
-	 const left = (main.offsetWidth - 406) / 2;
-	 tabsmenu.style.left = left + 'px';
+       
+     const main = document.querySelector<HTMLElement>('ion-router-outlet');
+     const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
+     main.style.top = top + 'px';
+     
+     const tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
+     tabsmenu.style.bottom = top + 'px';
+     
+     const left = (main.offsetWidth - 406) / 2;
+     tabsmenu.style.left = left + 'px';
   }
   
   listenForFullScreenEvents() {
@@ -172,85 +169,91 @@ export class MeetingPage implements OnInit {
   
   onViewerMeeting() {
       const fair_id = this.fair.id;
-	  const meeting_id = this.agenda.id;
-	  const speaker_id = this.route.snapshot.paramMap.get('speaker_id') ? '/' + this.route.snapshot.paramMap.get('speaker_id') : 'false';
-	  const aliasName = this.aliasName;
-	  
-	  if(this.agenda.audience_config === '2') {
-	    this.usersService.getUser().then((userDataSession:any)=>{
-			if(userDataSession!=null) {
-				const email = userDataSession.email;
-				this.agendasService.generateVideoToken(fair_id, meeting_id, userDataSession)
-				.then( response => {
-				  const token = response.data;
-				  
-				  const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}/${aliasName}/${email}/${token}`;
-				  
-				  this.link = this.dom.bypassSecurityTrustResourceUrl(url);
-				  window.open(url, '_blank').focus();
-				},error => {
-				   this.errors = error;
-				});
-			}
-			else { 
-			   this.errors = `Esta conferencia es privada, ingresa con tu usuario para acceder a ella`;
-			}			
-	    });
-	  }
-	  else {
-		  this.usersService.getUser().then((userDataSession:any)=>{
-			if(userDataSession!=null) {
-			   const email = userDataSession.email;
-		       const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}/${aliasName}/${email}`;
-		       this.link = this.dom.bypassSecurityTrustResourceUrl(url);
-		       window.open(url, '_blank').focus();
-			}
-			else {
-			   const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}`;
-		       this.link = this.dom.bypassSecurityTrustResourceUrl(url);
-		       window.open(url, '_blank').focus();
-			}
-		  });
-	  }
+      const meeting_id = this.agenda.id;
+      const speaker_id = this.route.snapshot.paramMap.get('speaker_id') ? '/' + this.route.snapshot.paramMap.get('speaker_id') : 'false';
+      const aliasName = this.aliasName;
+      
+      if(this.agenda.audience_config === '2') {
+        this.usersService.getUser().then((userDataSession:any)=>{
+            if(userDataSession!=null) {
+                const email = userDataSession.email;
+                this.agendasService.generateVideoToken(fair_id, meeting_id, userDataSession)
+                .then( response => {
+                  const token = response.data;                  
+                  const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}/${aliasName}/${email}/${token}`;                  
+                  this.link = this.dom.bypassSecurityTrustResourceUrl(url);
+                  //window.open(url, '_blank').focus();
+				  const windowReference = window.open();
+				  windowReference.location.href = url;
+                },error => {
+                   this.errors = error;
+                });
+            }
+            else { 
+               this.errors = `Esta conferencia es privada, ingresa con tu usuario para acceder a ella`;
+            }            
+        });
+      }
+      else {
+          this.usersService.getUser().then((userDataSession:any)=>{
+            if(userDataSession!=null) {
+               const email = userDataSession.email;
+               const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}/${aliasName}/${email}`;
+               this.link = this.dom.bypassSecurityTrustResourceUrl(url);
+			   const windowReference = window.open();
+			   //windowReference.location = url;
+			   windowReference.location.href = url;
+
+               //window.open(url, '_blank').focus();
+            }
+            else {
+               const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}`;
+               this.link = this.dom.bypassSecurityTrustResourceUrl(url);
+               //window.open(url, '_blank').focus();
+			   const windowReference = window.open();
+			   windowReference.location.href = url;
+            }
+          });
+      }
   } 
   
   logScrolling(e) {
-	  
-	  let target = e.target;
-	  
-	  const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
-	  const sceneEl = document.querySelector<HTMLElement>('.scene');
-	  //sceneEl.style.top += top;
-	  
-	  const scrollLeft = document.querySelector<HTMLElement>('.div-container').scrollLeft;
-	  const scrollTop = document.querySelector<HTMLElement>('.div-container').scrollTop;
-	  const oldScrollX = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-x'));
-	  const oldScrollY = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-y'));
+      
+      let target = e.target;
+      
+      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
+      const sceneEl = document.querySelector<HTMLElement>('.scene');
+      //sceneEl.style.top += top;
+      
+      const scrollLeft = document.querySelector<HTMLElement>('.div-container').scrollLeft;
+      const scrollTop = document.querySelector<HTMLElement>('.div-container').scrollTop;
+      const oldScrollX = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-x'));
+      const oldScrollY = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-y'));
       const deltaX: number = scrollLeft - oldScrollX;
-	  const deltaY: number = scrollTop - oldScrollY;
-	  
-	  document.querySelectorAll<HTMLElement>('.scene').forEach((scene:HTMLElement)=>{
-		  scene.style.left = ( scene.offsetLeft - deltaX ) + 'px';  
-		  scene.style.top  = ( scene.offsetTop - deltaY ) + 'px';
-	  });
-	  
-	  document.querySelectorAll<HTMLElement>('.meetingFill').forEach((obj:HTMLElement)=>{
-		  obj.style.left = ( obj.offsetLeft - deltaX ) + 'px';  
-		  obj.style.top  = ( obj.offsetTop - deltaY ) + 'px';
-	  });
-	  
-	  document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
-	  document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',oldScrollY.toString());
-	  
-	  
-	  switch (target.id) {
-		case 'btnScrollLeft':
-		    console.log('logScrolling  - btnScrollLeft');  
-		  break;
-		case 'btnScrollTop':
-		  console.log('logScrolling - btnScrollTop');
-		break;
-	  } 
+      const deltaY: number = scrollTop - oldScrollY;
+      
+      document.querySelectorAll<HTMLElement>('.scene').forEach((scene:HTMLElement)=>{
+          scene.style.left = ( scene.offsetLeft - deltaX ) + 'px';  
+          scene.style.top  = ( scene.offsetTop - deltaY ) + 'px';
+      });
+      
+      document.querySelectorAll<HTMLElement>('.meetingFill').forEach((obj:HTMLElement)=>{
+          obj.style.left = ( obj.offsetLeft - deltaX ) + 'px';  
+          obj.style.top  = ( obj.offsetTop - deltaY ) + 'px';
+      });
+      
+      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
+      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',oldScrollY.toString());
+      
+      
+      switch (target.id) {
+        case 'btnScrollLeft':
+            console.log('logScrolling  - btnScrollLeft');  
+          break;
+        case 'btnScrollTop':
+          console.log('logScrolling - btnScrollTop');
+        break;
+      } 
   }
   
   ngOnDestroy(): void {
