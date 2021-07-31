@@ -90,7 +90,7 @@ export class PasswordPage  implements OnInit {
   }
 
   onSendChangePassword(changePasswordForm: NgForm) {
-    
+
     this.submitted = true;
     if (changePasswordForm.valid && (this.changePassword.newPassrword === this.changePassword.confirNewPassrword)) {
         this.loading.present({ message: 'Cargando...'});

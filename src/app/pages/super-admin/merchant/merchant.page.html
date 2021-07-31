@@ -1,8 +1,50 @@
-
-<ion-content>
-  <ion-header>
+<ion-content fullscreen="true">
+  <ion-header class="mt-5">
     <ion-toolbar>
-      <ion-title>merchant</ion-title>
+      <ion-buttons slot="end" >
+        <ion-button color="danger">
+          <ion-icon slot="start" name="trash-outline"></ion-icon>
+          Borrar
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Nuevo Comercio</ion-title>
     </ion-toolbar>
   </ion-header>
+
+
+  <ion-list-header >
+    <div class="alert alert-danger fade show alert-dismissible">
+      <a href="javascript:void(0)" class="close" aria-label="close"  title="close">×</a>
+      <strong>Error!</strong>
+    </div>
+  </ion-list-header>
+
+
+  <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
+  <ion-list lines=""  class="padding-container">
+    <ion-item button="true" [ngClass]="{'mt-4': 1}">
+      <ion-label> Nick </ion-label>
+      <ion-input class="ml-auto" class="text-right" name="name"></ion-input>
+    </ion-item>
+    <ion-item button="true">
+      <ion-label> Nombre </ion-label>
+      <ion-input class="ml-auto" class="text-right" name="description"></ion-input>
+    </ion-item>
+    <ion-item button="true">
+      <ion-label> Recursos </ion-label>
+      <ion-input class="ml-auto" class="text-right" name="description"></ion-input>
+    </ion-item>
+    <ion-item button="true">
+      <ion-label> Medios de comunicación </ion-label>
+      <ion-input class="ml-auto" class="text-right" name="description"></ion-input>
+    </ion-item>
+    <ion-item button="true">
+      <ion-label> Localización </ion-label>
+      <ion-input class="ml-auto" class="text-right" name="description"></ion-input>
+    </ion-item>
+  </ion-list>
+
+
+  <!--/form-->
+
 </ion-content>
