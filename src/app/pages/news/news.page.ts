@@ -10,9 +10,14 @@ export class NewsPage implements OnInit {
 
   constructor(private loading: LoadingService) { 
     this.loading.present({message:'Cargando...'});
-    function twit(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}
-    twit(document,"script","twitter-wjs");
   }
+
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+     function twit(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}
+     twit(document,"script","twitter-wjs");
+  }
+
 
   ionViewWillEnter () {
     this.loading.dismiss();

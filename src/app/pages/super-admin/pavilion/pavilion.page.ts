@@ -16,7 +16,7 @@ export class PavilionPage implements OnInit {
   pavilion: any;
   errors: string = null;
   success: string = null;
-  editSave: any;
+  editSave = false;
   fair = null;
   
   constructor(
@@ -54,10 +54,10 @@ export class PavilionPage implements OnInit {
             
                 this.pavilion = { 'name':'Pabellón #' + (this.fair.pavilions.length + 1),
                              'description': 'Descripción Pabellón #' + (this.fair.pavilions.length + 1),
-                             'resources':  [{
+                             'resources':  {'scenes':[{
                                  'url_image':'https://dummyimage.com/1092x768/EFEFEF/000.png'
-                             }] };
-                this.editSave = true;
+                             }]} };
+                
                 this.fair.pavilions.push(this.pavilion);
                 this.loading.dismiss();
             }
@@ -67,15 +67,12 @@ export class PavilionPage implements OnInit {
          this.loading.dismiss();
          this.errors = error;
         });
-    
-    
-    
   }
   
   updatePavilion(){
     this.loading.present({message:'Cargando...'});
     if(this.pavilion.id) {
-        this.adminPavilionsService.update(this.pavilion.id,this.pavilion)
+        this.adminPavilionsService.update(this.pavilion)
        .then((response) => {
           this.loading.dismiss();
           this.errors = null;
@@ -92,7 +89,11 @@ export class PavilionPage implements OnInit {
        .then((pavilion) => {
           this.loading.dismiss();
           this.errors = null;
-          this.pavilion = pavilion;
+          this.success = `Pabellón creado exitosamente`;
+          this.fairsService.refreshCurrentFair();
+          this.pavilionsService.refreshCurrentPavilion();
+          this.pavilionsService.refreshCurrentPavilion();
+          this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
       })
       .catch(error => {
          this.loading.dismiss();
@@ -101,7 +102,7 @@ export class PavilionPage implements OnInit {
     }
   }
   
-    async deletePavilion() {
+  async deletePavilion() {
     
       const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
@@ -120,22 +121,25 @@ export class PavilionPage implements OnInit {
           handler: (data) => {
             this.adminPavilionsService.delete(this.pavilion)
               .then((response) => {
-                this.success = `Pabellón borrado exitosamente`;
-                this.fairsService.refreshCurrentFair().then((fair)=>{
-                    this.fair.pavilions = this.fair.pavilions.filter((pavilion)=>{
-                         return pavilion.id != this.pavilion.id;
-                    });
-                    const tab = `/super-admin/fair`;
-                    this.onRouterLink(tab);
-                });
+                
+                   this.success = `Pabellón borrado exitosamente`;
+                   this.fairsService.refreshCurrentFair();
+                   this.pavilionsService.refreshCurrentPavilion();
+                   this.fair.pavilions = this.fair.pavilions.filter((pavilion)=>{
+                        return pavilion.id != this.pavilion.id;
+                   });
+                    
+                   const tab = `/super-admin/fair`;
+                   this.onRouterLink(tab);
+                
               },
               (error) => {
                   this.errors = error;
-              })
+             })
             .catch(error => {
                 this.errors = error; 
              });        
-    
+
           }
         }
       ]

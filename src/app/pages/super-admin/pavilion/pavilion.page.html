@@ -1,25 +1,21 @@
+<ion-header class="mt-5">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/super-admin/fair"></ion-back-button>
+    </ion-buttons>
+	<ion-buttons slot="end" *ngIf="pavilion?.id">
+	  <ion-button color="danger" (click)="deletePavilion()">
+		<ion-icon slot="start" name="trash-outline"></ion-icon>
+		Borrar
+	  </ion-button>
+	</ion-buttons>
+	<ion-title>Administrar Pabellón</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content fullscreen="true">
-   <ion-header class="mt-5">
-      <ion-toolbar>
-        <ion-buttons slot="end" *ngIf="pavilion?.id">
-          <ion-button color="danger" (click)="deletePavilion()">
-            <ion-icon slot="start" name="trash-outline"></ion-icon>
-            Borrar
-          </ion-button>
-        </ion-buttons>
-        <ion-title>Administrar Pabellón</ion-title>
-      </ion-toolbar>
-    </ion-header>
 
-  <ion-list-header [hidden]="!errors">
-    <div class="alert alert-danger fade show alert-dismissible">
-     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-     <strong>Error!</strong> {{errors}}
-    </div>
-  </ion-list-header>
-
-  <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
-    <ion-list lines="" *ngIf="pavilion" class="padding-container">
+    <ion-list *ngIf="pavilion" class="padding-container">
     
        <ion-item lines="none" *ngIf="pavilion.id" [ngClass]="{'mt-4': pavilion.id}">
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
@@ -32,12 +28,11 @@
             </div>
 
          <ion-buttons slot="end">
-            <ion-button (click)="onAddEscene()">
+            <ion-button routerLink="/super-admin/map-editor/pavilion/{{pavilion.id}}">
               <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
             </ion-button>
          </ion-buttons>
        </ion-item>
-    
     
       <ion-item button="true" [ngClass]="{'mt-4': !pavilion.id}">
         <ion-label> Nombre </ion-label>
@@ -69,13 +64,24 @@
          </ion-buttons>
        </ion-item>
       
+      <ion-item [hidden]="!errors">
+        <div class="alert alert-danger m-auto">
+         <a href="javascript:void(0)" class="close" (click)="errors=null" title="close">×</a>
+         <strong>Error!</strong> {{errors}}
+        </div>
+      </ion-item>
+
+      <ion-item [hidden]="!success">
+        <div class="alert alert-success m-auto">
+         <a href="javascript:void(0)" class="close" (click)="success=null" title="close">×</a>
+         <strong></strong> {{success}}
+        </div>
+      </ion-item>
       
-      <ion-item lines="none">
-        <ion-button size="small" [disabled]="!editSave" (click)="updatePavilion()">
-          <ion-label> {{this.pavilion.id? 'Guardar':'Crear'}} </ion-label>
-          <ion-icon slot="end" name="save-outline"></ion-icon>
-        </ion-button>
-      </ion-item> 
+      <ion-button class="mt-4" expand="block" [disabled]="!editSave" (click)="updatePavilion()">
+        {{this.pavilion.id? 'Guardar cambios':'Crear Pabellón'}}
+        <ion-icon slot="start" name="save"></ion-icon>
+      </ion-button>
     
     </ion-list>
 

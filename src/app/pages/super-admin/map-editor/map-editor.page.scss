@@ -17,9 +17,8 @@
   font-weight: bold;
   color: white;
   text-align: center;
+  cursor: pointer;
 }
-
-.cube__face--right  { background: hsla( 60, 100%, 50%, 0.7); }
 
 
 .full-screen-button {
@@ -75,14 +74,14 @@
   overflow: auto;
 }
 
-.pane-scene-tools {
+.scene-setting-panel {
   position: absolute;
   top: 0px;
   right: 51px;
   width: 391px;
 }
 
-.panel-tools {
+.tool-panel {
   position: absolute;
   top: 84px;
   right: -11px;
@@ -94,8 +93,8 @@
 .pane-scene-select {
   position: absolute;
   top: 0px;
-  left: 27px;
-  width: 391px;
+  right: 52px;
+  width: 425px;
 }
 
 .close {
@@ -161,12 +160,6 @@ ion-tab-button {
          }
       }
     }
-}
-
-.cube__face--right:hover {
-  cursor: pointer;
-  background: black;
-  opacity: 0.5;
 }
 
 

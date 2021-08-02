@@ -1,8 +1,5 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
     <ion-title>Agenda</ion-title>
     <ion-buttons slot="end">
       <ion-searchbar *ngIf="showSearchbar" showCancelButton="always" [(ngModel)]="queryText" (ionChange)="transformSchedule()" (ionCancel)="showSearchbar = false" placeholder="Buscar"></ion-searchbar>
@@ -45,27 +42,25 @@
 
       <ion-item-sliding *ngFor="let session of group.sessions" #slidingItem class="category" [hidden]="session.hide">
         <ion-item routerLink="/schedule/session/{{session.id}}">
-		    <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color}">
-			   <h3>{{session.name}}</h3>
+            <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color}">
+               <h3>{{session.name}}</h3>
                <p translate="no">
-                  {{session.timeStart}} &mdash; {{session.timeEnd}}
-                  <span>{{session.timezone}}</span>
+                {{session.timeStart}} &mdash; {{session.timeEnd}} <span>{{session.timezone}}</span>
                </p>
              </ion-label>
-		     <ion-thumbnail class="m-auto p-10px">
-              <ion-img [src]="session.resources.url_image" style="width: 73px;" class="ml-1"></ion-img>
+             <ion-thumbnail class="m-auto p-10px">
+                <ion-img [src]="session.resources.url_image" style="width: 73px;" class="ml-1"></ion-img>
              </ion-thumbnail>
-			 <ion-buttons slot="end">
-			   <div *ngIf="session.audience_config == 4 && !session.userPaidEvent" class="button-price" ion-button icon-start (click)="openTemplateAgenda(session)">
+             <ion-buttons slot="end">
+                <div *ngIf="session.audience_config == 4 && !session.userPaidEvent" class="button-price" ion-button icon-start (click)="openTemplateAgenda(session)">
                  <ion-icon name="bookmark"></ion-icon>
-                    <!--Paga el valor del evento <strong> ${{session?.price}} </strong-->
-               </div>
-			   <div *ngIf="session.audience_config==3 && !userPaidAllfair" class="button-price" ion-button icon-start (click)="openTemplateFair()">
-			      <ion-icon name="pricetags"></ion-icon>
- 				  <!--Evento con pago por suscripción-->
-  			    </div>
-			</ion-buttons>
-		  
+                  <!--Paga el valor del evento <strong> ${{session?.price}} </strong-->
+                </div>
+                <div *ngIf="session.audience_config==3 && !userPaidAllfair" class="button-price" ion-button icon-start (click)="openTemplateFair()">
+                  <ion-icon name="pricetags"></ion-icon>
+                <!--Evento con pago por suscripción-->
+                </div>
+            </ion-buttons>
         </ion-item>
       </ion-item-sliding>
     </ion-item-group>

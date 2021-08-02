@@ -21,6 +21,10 @@ export class TutorialPage {
     public storage: Storage
   ) {}
 
+ ngDoCheck(){
+   document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+ }
+ 
   startApp() {
     this.router
       .navigateByUrl('/app/tabs/schedule', { replaceUrl: true })

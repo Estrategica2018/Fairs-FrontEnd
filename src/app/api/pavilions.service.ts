@@ -75,5 +75,9 @@ export class PavilionsService {
          });    
     });
   }
+  
+  refreshCurrentPavilion() {
+	  this.pavilions = null;
+  }
    
 }

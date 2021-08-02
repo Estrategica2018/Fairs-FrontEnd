@@ -18,6 +18,10 @@ export class AboutPage {
   };
 
   constructor(public popoverCtrl: PopoverController) { }
+  
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   async presentPopover(event: Event) {
     const popover = await this.popoverCtrl.create({

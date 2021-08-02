@@ -28,8 +28,8 @@ export class FairsService {
           catchError(e => {
             console.log(e);
             if(e.status && e.statusText && e.statusText.indexOf('Gateway Timeout') >= 0) {
-				throw new Error(`No está conectado a internet`);
-			}  
+                throw new Error(`No está conectado a internet`);
+            }  
             else if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de feria: ${e.status} - ${e.statusText}`);    
             }
@@ -51,7 +51,6 @@ export class FairsService {
   
   refreshCurrentFair(): any {
     this.fair = null;
-    return this.getCurrentFair();
   }
   
   getCurrentFair(): any {
@@ -66,7 +65,7 @@ export class FairsService {
             }
         
             this.list()
-             .then((data) => {	
+             .then((data) => {    
                 if(data && data.success == 201 && data.data )
                 for(let fair of data.data ) {
                     if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
@@ -108,16 +107,15 @@ export class FairsService {
 
         return new Promise((resolve, reject) => {
 
-            this.http.post(`/api/fair/support/contact-notification`,messageData)
+            this.http.post(`/api/contactsupport/notification`,messageData)
             .pipe(
               timeout(30000),
               catchError(e => {
                 console.log(e);
-				
-				if(e.status == 422) {
-				   const error = JSON.stringify(e.error);
-				   throw new Error(`Consultando el servicio para envío de mensajes: ${error}`);
-				}
+                if(e.status == 422) {
+                   const error = JSON.stringify(e.error);
+                   throw new Error(`Consultando el servicio para envío de mensajes: ${error}`);
+                }
                 else if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para envío de mensajes: ${e.status} - ${e.statusText}`);
                 }
@@ -129,7 +127,6 @@ export class FairsService {
             .subscribe((data : any )=> {
                 if(data.success) {
                   resolve(data);
-                  
                 }
                 else {
                   reject(JSON.stringify(data));
@@ -168,7 +165,6 @@ export class FairsService {
         .subscribe((data : any )=> {
             if(data.success) {
               resolve(data);
-              
             }
             else {
               reject(JSON.stringify(data));
@@ -197,7 +193,6 @@ export class FairsService {
         .subscribe((data : any )=> {
             if(data.success) {
               resolve(data);
-              
             }
             else {
               reject(JSON.stringify(data));
@@ -226,7 +221,6 @@ export class FairsService {
             .subscribe((data : any )=> {
                 if(data.success) {
                   resolve(data);
-                  
                 }
                 else {
                   reject(JSON.stringify(data));

@@ -35,6 +35,10 @@ export class SignupPage implements OnInit {
     
     this.listenForDarkModeEvents();
  }
+ 
+ ngDoCheck(){
+   document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+ }
   
  ngOnInit() {
      this.registerForm = this.formBuilder.group({

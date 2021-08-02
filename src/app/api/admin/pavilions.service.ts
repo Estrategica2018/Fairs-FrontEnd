@@ -53,9 +53,9 @@ export class AdminPavilionsService {
     });
   }
   
-  update(pavilionId: string, data: any): any {
+  update(pavilion: any): any {
     return new Promise((resolve, reject) => {
-        this.http.post(`/api/pavilion/update/${pavilionId}`, processDataToString(data))
+        this.http.post(`/api/pavilion/update/${pavilion.id}`, processDataToString(pavilion))
         .pipe(
           timeout(30000),
           catchError(e => {

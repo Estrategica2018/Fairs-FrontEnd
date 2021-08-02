@@ -68,3 +68,14 @@ ion-item.item-has-focus > ion-label{
 ion-textarea {
    border: solid 1px #f1f1f1;
 }
+
+.send-button-style {
+  height: 95px;
+  padding-top: 21px;
+  margin-top: 38px;
+}
+
+ion-input,
+ion-textarea {
+  font-size: 14px;
+}

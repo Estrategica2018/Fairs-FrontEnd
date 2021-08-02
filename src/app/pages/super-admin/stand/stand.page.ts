@@ -68,11 +68,9 @@ export class StandPage implements OnInit {
                 }
                 else {
                     this.stand = { 
-                                 'nick':' #Nuevo Local Comercial',
-                                 'name': 'Descripción local comercial',
-                                 'resources':  [{
-                                     'url_image':'https://dummyimage.com/1092x768/EFEFEF/000.png'
-                                 }] };
+                         'nick':' #Nuevo Local Comercial',
+                         'name': 'Descripción local comercial',
+                         'resources': {"scenes":[{'url_image':'https://dummyimage.com/1092x768/EFEFEF/000.png'}] }};
                     this.loading.dismiss();
                 }
               

@@ -205,11 +205,8 @@ export class AgendaPage implements OnInit {
             this.adminAgendasService.delete(this.agenda)
               .then((response) => {
                 this.success = `Agenda borrada exitosamente`;
-                this.fairsService.refreshCurrentFair().then((fair)=>{
-                    //this.fair = fair;
-                    const tab = `/super-admin/fair`;
-                    this.onRouterLink(tab);
-                });
+                this.fairsService.refreshCurrentFair();
+                this.onRouterLink(`/super-admin/fair`);
               },
               (error) => {
                   this.errors = error;

@@ -39,21 +39,21 @@
   font-family: 'YoutubeSansBold';
   src: url('./assets/fonts/youtube-sans/youtube-sans-bold.otf')  format('embedded-opentype'),
        url('./assets/fonts/youtube-sans/youtube-sans-bold.ttf')  format('truetype'),
-	   url('./assets/fonts/youtube-sans/youtube-sans-bold.svg#YoutubeSansLight')  format('svg');
+       url('./assets/fonts/youtube-sans/youtube-sans-bold.svg#YoutubeSansLight')  format('svg');
 }
 
 @font-face {   
   font-family: 'YoutubeSansMedium';
   src: url('./assets/fonts/youtube-sans/youtube-sans-medium.otf')  format('embedded-opentype'),
        url('./assets/fonts/youtube-sans/youtube-sans-medium.ttf')  format('truetype'),
-	   url('./assets/fonts/youtube-sans/youtube-sans-medium.svg#YoutubeSansLight')  format('svg');
+       url('./assets/fonts/youtube-sans/youtube-sans-medium.svg#YoutubeSansLight')  format('svg');
 }
 
 @font-face {   
   font-family: 'YoutubeSansLight';
   src: url('./assets/fonts/youtube-sans/youtube-sans-light.otf')  format('embedded-opentype'),
        url('./assets/fonts/youtube-sans/youtube-sans-light.ttf')  format('truetype'),
-	   url('./assets/fonts/youtube-sans/youtube-sans-light.svg#YoutubeSansLight')  format('svg');
+       url('./assets/fonts/youtube-sans/youtube-sans-light.svg#YoutubeSansLight')  format('svg');
 }
 
 html {
@@ -73,22 +73,22 @@ html {
 .alert.alert-dismissible {
     margin: auto;
     text-align: center;
-	padding-right: 2rem;
-	a.close {
-		text-decoration: none !important;
-		font-size: 18px !important;
-		position: relative;
-		top: -2px;
-		right: -4px;
-		color: inherit;
-		float: right;
-		font-weight: 700;
-		line-height: 1;
-		color: #000;
-		text-shadow: 0 1px 0 #fff;
-		opacity: .2;
-		padding: 0;
-	}
+    padding-right: 2rem;
+    a.close {
+        text-decoration: none !important;
+        font-size: 18px !important;
+        position: relative;
+        top: -2px;
+        right: -4px;
+        color: inherit;
+        float: right;
+        font-weight: 700;
+        line-height: 1;
+        color: #000;
+        text-shadow: 0 1px 0 #fff;
+        opacity: .2;
+        padding: 0;
+    }
 }
 
 .d-flex {

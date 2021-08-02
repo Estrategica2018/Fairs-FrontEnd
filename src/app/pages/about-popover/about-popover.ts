@@ -25,6 +25,10 @@ import { PopoverController } from '@ionic/angular';
 })
 export class PopoverPage {
   constructor(public popoverCtrl: PopoverController) {}
+  
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   support() {
     // this.app.getRootNavs()[0].push('/support');

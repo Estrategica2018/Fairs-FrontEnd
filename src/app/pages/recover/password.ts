@@ -32,6 +32,10 @@ export class PasswordPage  implements OnInit {
   ) {
     this.listenForDarkModeEvents();
   }
+  
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   ngOnInit() {
       this.token = this.route.snapshot.paramMap.get('token');

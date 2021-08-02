@@ -9,7 +9,7 @@
    <ion-item [hidden]="!errors" class="not-found mt-3">
      <div class="alert alert-danger alert-dismissible">
        <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-       {{errors}}
+       <strong>Error!</strong> {{errors}}
       </div>
    </ion-item>
 
@@ -32,7 +32,7 @@
                <h2 [hidden]="scene && scene.url_image" style="width: 82px; height: 41px;"><small>{{scene.title}}</small></h2>
               </ion-item>    
             </div>
-			
+
          <ion-buttons slot="end">
             <ion-button routerLink="/super-admin/map-editor/fair/{{fair.id}}" routerLinkActive="active" routerDirection="root" detail="false">
               <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
@@ -87,7 +87,7 @@
         <ion-label> Precio General </ion-label>
         <ion-buttons slot="end">
             <ion-label *ngIf="showPrice">{{fair.price  | currency: 'COP $ ':'symbol':'1.2-2'}}</ion-label>
-			<ion-label [hidden]="showPrice"> Sin costo </ion-label>
+            <ion-label [hidden]="showPrice"> Sin costo </ion-label>
             <ion-chip slot="end"
                 (click)="showPrice = !showPrice; editSave=true;"
                 [color]="showPrice ? 'primary' : ''">
@@ -102,7 +102,7 @@
               <ion-item  *ngFor="let pavilion of pavilions;let i = index" class="scene-icon-pavilion" 
               button="true" routerLink="/super-admin/pavilion/{{pavilion.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                 <ion-avatar class="mr-3">
-                  <img [src]="pavilion?.resources[0]?.url_image">
+                  <img [src]="pavilion?.resources.scenes[0]?.url_image">
                 </ion-avatar>
                 <ion-label>
                   <h2>{{pavilion.name}}</h2>
@@ -144,13 +144,17 @@
          <ion-img class="ml-auto" [src]="agenda.resources?.url_image"></ion-img>
         </ion-thumbnail>
      </ion-item>
-       
-     <ion-item lines="none">
-        <ion-button expand="full" [disabled]="!editSave || !submitForm.valid " (click)="updateFair()">
-          <ion-label> Guardar cambios </ion-label>
-          <ion-icon slot="end" name="save-outline"></ion-icon>
-        </ion-button>
+	 
+     <ion-item button="true">
+        <ion-label> Contacto de soporte </ion-label>
+        <input class="ml-auto" class="text-right" required [(ngModel)]="fair.resources.supportContact" name="description" (ionChange)="ionChange()" (ionInput)="ionChange()">
      </ion-item>
+     
+     <ion-button class="mt-4" expand="full" [disabled]="!editSave || !submitForm.valid " (click)="updateFair()">
+        <ion-label> Guardar cambios </ion-label>
+        <ion-icon slot="end" name="save-outline"></ion-icon>
+     </ion-button>
+
     </ion-list>
   
   </form>

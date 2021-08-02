@@ -26,6 +26,10 @@ export class LoginPage {
   ) {
     this.listenForDarkModeEvents();
   }
+  
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   listenForDarkModeEvents() {
       window.addEventListener('dark:change', (e:any) => {

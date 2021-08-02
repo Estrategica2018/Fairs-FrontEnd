@@ -39,7 +39,11 @@ export class SupportPage implements OnInit {
   ) { 
       this.listenForDarkModeEvents();
   }
-
+ 
+ ngDoCheck(){
+   document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+ }
+ 
  ngOnInit() {
     
     

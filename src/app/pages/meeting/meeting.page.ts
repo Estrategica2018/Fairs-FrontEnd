@@ -47,6 +47,12 @@ export class MeetingPage implements OnInit {
     private usersService: UsersService) {
         this.listenForFullScreenEvents();
   }
+  
+  ngDoCheck(){
+     const main = document.querySelector<HTMLElement>('ion-router-outlet');
+     const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
+     main.style.top = top + 'px';
+  }
 
   ngOnInit() {
     const _self = this;    
@@ -183,8 +189,8 @@ export class MeetingPage implements OnInit {
                   const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}/${aliasName}/${email}/${token}`;                  
                   this.link = this.dom.bypassSecurityTrustResourceUrl(url);
                   //window.open(url, '_blank').focus();
-				  const windowReference = window.open();
-				  windowReference.location.href = url;
+                  const windowReference = window.open();
+                  windowReference.location.href = url;
                 },error => {
                    this.errors = error;
                 });
@@ -200,9 +206,9 @@ export class MeetingPage implements OnInit {
                const email = userDataSession.email;
                const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}/${aliasName}/${email}`;
                this.link = this.dom.bypassSecurityTrustResourceUrl(url);
-			   const windowReference = window.open();
-			   //windowReference.location = url;
-			   windowReference.location.href = url;
+               const windowReference = window.open();
+               //windowReference.location = url;
+               windowReference.location.href = url;
 
                //window.open(url, '_blank').focus();
             }
@@ -210,8 +216,8 @@ export class MeetingPage implements OnInit {
                const url = `${this.url}/viewerZoom/meetings/${fair_id}/${meeting_id}`;
                this.link = this.dom.bypassSecurityTrustResourceUrl(url);
                //window.open(url, '_blank').focus();
-			   const windowReference = window.open();
-			   windowReference.location.href = url;
+               const windowReference = window.open();
+               windowReference.location.href = url;
             }
           });
       }
@@ -257,6 +263,6 @@ export class MeetingPage implements OnInit {
   }
   
   ngOnDestroy(): void {
-    //this.three.onDestroy();
+    
   }
 }

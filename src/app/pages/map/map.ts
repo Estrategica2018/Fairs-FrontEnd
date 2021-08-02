@@ -19,6 +19,7 @@ export class MapPage implements AfterViewInit, OnInit {
   errors = null;
   fair = null;
   isHover = null;
+  marginTabs = '444';
   
   constructor(
     private fairsService: FairsService,
@@ -30,11 +31,19 @@ export class MapPage implements AfterViewInit, OnInit {
   }
   
   ngOnInit() {
-	 
+     //this.initializeScreen();
   }
   
   ngAfterViewInit() {
      this.initializeScreen();
+  }
+  
+  ngDoCheck(){
+     const main = document.querySelector<HTMLElement>('ion-router-outlet');
+     const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
+     main.style.top = top + 'px';
+     
+     this.initializeMenu();
   }
   
   initializeScreen() {
@@ -61,12 +70,6 @@ export class MapPage implements AfterViewInit, OnInit {
         }
         
         this.scene.banners = this.scene.banners || [];
-        
-        //const main = document.querySelector<HTMLElement>('ion-router-outlet');
-        //const deltaW = main.offsetWidth / this.scene.container.w;
-        //this.scene.container.w *= deltaW;
-        //this.scene.container.h *= deltaW;
-
         this.onResize();
         
     }, error => {
@@ -101,48 +104,47 @@ export class MapPage implements AfterViewInit, OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
 
+     if(!this.scene.container) return;
+     
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
-     const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
+     const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
      
      let newWidth = main.offsetWidth;
      let deltaW =  this.scene.container.w / newWidth;
-     //let newHeight = this.scene.container.h * deltaW;
-	 let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
-	 let deltaH = this.scene.container.h / newHeight;
-	 
+     let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
+     let deltaH = this.scene.container.h / newHeight;
+     
      this.scene.container.w = newWidth;
      if(newHeight<main.offsetWidth) {
-        const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
         newHeight = main.offsetHeight - top;
-      //  newWidth = newHeight * this.scene.container.w / this.scene.container.h;
      }
-	 this.scene.container.h = newHeight;
+     this.scene.container.h = newHeight;
      this.scene.banners.forEach((banner)=>{
         if(banner.size) { 
-           //banner.size.y = this.fullScreen ? ( banner.size.y + (banner.size.y * deltaH) ) : banner.size.y;
-		   banner.size.x /= deltaW;
+           banner.size.x /= deltaW;
            banner.size.y /= deltaH;
-		   //banner.position.x *= deltaW;
-		   banner.position.x /= deltaW;
-		   banner.position.y /= deltaH;//= this.fullScreen ? 
+        }
+        if(banner.position) { 
+           banner.position.x /= deltaW;
+           banner.position.y /= deltaH;
+        }
+        if(banner.fontSize > 0 ) {
+           banner.fontSize /= deltaW;
         }
      });
-     
      this.initializeMenu();
   }
   
   initializeMenu() {
      const tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
-	 let top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      
-     if(tabsmenu) {
-		top = this.fullScreen ? 0 : top;
-        tabsmenu.style.bottom = top + 'px'; 
-		//tabsmenu.style.bottom = 74 + 'px'; 
-        const left = (main.offsetWidth - 406) / 2;
-        tabsmenu.style.left = left + 'px';
+     if(tabsmenu && tabsmenu.offsetWidth > 0) {
+         this.marginTabs = ((main.offsetWidth - tabsmenu.offsetWidth) / 2) + 'px';
+     }
+     else {
+         setTimeout(function(){ this.initializeMenu(); }, 3000);
      }
   }
 
@@ -188,31 +190,33 @@ export class MapPage implements AfterViewInit, OnInit {
     if(!obj.hoverEffects) return;
     
     if(obj.hoverEffects.includes('GirarDerecha')) {
-        const squareA = this.animationCtrl.create()
-              .addElement(document.querySelector('#obj-' + obj.id))
-              
-              .duration(1000)
-              .keyframes([
-                { offset: 0, transform: 'rotate(0)' },
-                { offset: 0.5, transform: 'rotate(45deg)' },
-                { offset: 1, transform: 'rotate(0) '}
-              ]);
-           
-        await squareA.play();
+      const squareA = this.animationCtrl.create()
+      .addElement(document.querySelector('#obj-' + obj.id))
+      
+      .duration(1000)
+      .keyframes([
+        { offset: 0, transform: 'rotate(0)' },
+        { offset: 0.5, transform: 'rotate(45deg)' },
+        { offset: 1, transform: 'rotate(0) '}
+      ]);
+      await squareA.play();
     }
     if(obj.hoverEffects.includes('GirarIzquierda')) {
-        const squareA = this.animationCtrl.create()
-              .addElement(document.querySelector('#obj-' + obj.id))
-              
-              .duration(1000)
-              .keyframes([
-                { offset: 0, transform: 'rotate(0)' },
-                { offset: 0.5, transform: 'rotate(-45deg)' },
-                { offset: 1, transform: 'rotate(0) '}
-              ]);
-           
-        await squareA.play();
+      const squareA = this.animationCtrl.create()
+      .addElement(document.querySelector('#obj-' + obj.id))
+      
+      .duration(1000)
+      .keyframes([
+        { offset: 0, transform: 'rotate(0)' },
+        { offset: 0.5, transform: 'rotate(-45deg)' },
+        { offset: 1, transform: 'rotate(0) '}
+      ]);
+      await squareA.play();
     }
+  }
+  
+  goToInternalUrl(banner){
+     this.onRouterLink(banner.internalUrl);
   }
   
 }

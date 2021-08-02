@@ -30,16 +30,16 @@
   </div>
   
   <div class="scene" *ngFor="let banner of scene?.banners;let i = index"
-     id="obj-{{banner.id}}"
-	 [ngStyle]="{
+       [ngStyle]="{
           'left': banner.position?.x + 'px ', 
           'top': + banner.position?.y + 'px',
           'width': + banner.rotation?.x + 'px',
           'height': + banner.rotation?.y + 'px'
      }">
         <div class="cube">
-          <!--a [routerLink]="banner.internalUrl" routerLinkActive="selected" routerDirection="root" -->
           <div class="cube__face square cube__face--right  {{banner.class}} cursor-pointer"
+            id="obj-{{banner.id}}"
+            (click)="goToInternalUrl(banner)"
             (mouseover)="isHover = banner.id; startAnimation(banner)" 
             (mouseout)="isHover = false"
             [ngClass]="{'link': banner.internalUrl ||  banner.externalUrl }"
@@ -52,11 +52,12 @@
               'width': banner.size?.x + 'px ', 
               'height': + banner.size?.y + 'px',
               'font-size': banner.fontSize + 'px ',
+              'font-family': banner.fontFamily,
               'color': banner.fontColor + '',
               'border-color': banner.border?.color,
               'border-style': banner.border?.style,
               'border-radius': banner.border?.radius + 'px',
-			  'border-width': ''+banner.border?.width+'px'
+              'border-width': ''+banner.border?.width+'px'
               }"> {{ banner.text }} </div>
           <!--/a-->
         </div>
@@ -72,7 +73,7 @@
   
 </ion-content>
 
-  <div class="tabs-menu">
+  <div class="tabs-menu" [ngStyle]="{'left':marginTabs ? marginTabs : '50%', 'bottom': fullScreen ? '0px': '56px'}">
 
     <ion-button color="light" (click)="onRouterLink('/app/tabs/schedule')">
       <ion-icon slot="start" name="calendar-outline"></ion-icon>
@@ -95,4 +96,3 @@
     </ion-button> 
     
   </div>
-  

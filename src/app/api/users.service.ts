@@ -242,7 +242,8 @@ export class UsersService {
   }
   
   getPaymentUser(data,userDataSession) {
-	const httpOptions = {
+
+    const httpOptions = {
       headers: new HttpHeaders({
         'Authorization':  'Bearer ' + userDataSession.token
       })
@@ -262,7 +263,7 @@ export class UsersService {
           })
         )
         .subscribe((data : any )=> {
-			resolve(data);
+           resolve(data);
         },error => {
             reject(error)
         });   
@@ -270,7 +271,8 @@ export class UsersService {
   }
 
   createNewReference( data ,userDataSession) {
-	const httpOptions = {
+
+    const httpOptions = {
       headers: new HttpHeaders({
         'Authorization':  'Bearer ' + userDataSession.token
       })
@@ -290,7 +292,7 @@ export class UsersService {
           })
         )
         .subscribe((data : any )=> {
-			resolve(data);
+            resolve(data);
         },error => {
             reject(error)
         });   

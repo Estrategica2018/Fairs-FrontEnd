@@ -29,6 +29,10 @@ export class SessionDetailPage {
     private router: Router,
     private loading: LoadingService,
   ) { }
+  
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   ionViewWillEnter() {
     

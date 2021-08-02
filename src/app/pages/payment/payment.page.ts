@@ -12,4 +12,8 @@ export class PaymentPage implements OnInit {
   ngOnInit() {
   }
 
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
+  
 }

@@ -1,17 +1,19 @@
-<ion-content fullscreen="true">
+<ion-header class="mt-5">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/super-admin/pavilion/{{pavilion?.id}}"></ion-back-button>
+    </ion-buttons>
+	<ion-buttons slot="end" *ngIf="stand?.id">
+	  <ion-button color="danger" (click)="deleteStand()">
+		<ion-icon slot="start" name="trash-outline"></ion-icon>
+		Borrar
+	  </ion-button>
+	</ion-buttons>
+	<ion-title>Administrar Local comercial</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-   <ion-header class="mt-5">
-      <ion-toolbar>
-        <ion-buttons slot="end" *ngIf="stand?.id">
-          <ion-button color="danger" (click)="deleteStand()">
-            <ion-icon slot="start" name="trash-outline"></ion-icon>
-            Borrar
-          </ion-button>
-        </ion-buttons>
-        <ion-title>Administrar Local comercial</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    
+<ion-content fullscreen="true">
 
   <ion-list-header [hidden]="!errors">
     <div class="alert alert-danger fade show alert-dismissible">
@@ -27,11 +29,11 @@
       <ion-item lines="none"  *ngIf="stand.id" [ngClass]="{'mt-4': stand.id}">
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
            <div class="d-flex ml-auto" style="overflow-x: scroll;">
-              <ion-item style=" min-width: 163px; " *ngFor="let resource of stand?.resources;let i = index" class="scene-icon-mini" 
-                 button="true" routerLink="/super-admin/map-editor/stand/{{pavilion?.id}}_{{stand?.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
-               <img *ngIf="resource && resource.url_image" [src]="resource.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
-               <h2 [hidden]="resource && resource.url_image" style="width: 82px; height: 41px;"><small>{{resource.title}}</small></h2>
-              </ion-item>    
+              <ion-item style=" min-width: 163px; " *ngFor="let scene of stand?.resources.scenes;let i = index" class="scene-icon-mini" 
+                 button="true" routerLink="/super-admin/map-editor/stand/{{pavilion?.id}}/{{stand?.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+               <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
+               <h2 [hidden]="scene && scene.url_image" style="width: 82px; height: 41px;"><small>{{scene.title}}</small></h2>
+              </ion-item>
             </div>
 
          <ion-buttons slot="end">

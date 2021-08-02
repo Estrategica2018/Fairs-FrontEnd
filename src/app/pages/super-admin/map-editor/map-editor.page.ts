@@ -20,6 +20,7 @@ import { processData } from '../../../providers/process-data';
 export class MapEditorPage implements OnInit {
 
   errors = null;
+  success = null;
   
   fullScreen = false;
   fair = null;
@@ -37,10 +38,30 @@ export class MapEditorPage implements OnInit {
   template = null;
   showTool = null;
   tabSelect = 'position';
+  showToolPanel = false;
+  showSceneTools = false;
   isHover = {};
   hoverEffects = [ {"name":"GirarDerecha","isChecked":false},{"name":"GirarIzquierda","isChecked":false}];
   @ViewChild('inputWidth', { static: true }) inputWidth: ElementRef;
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
+  fontFamilyList = [
+    {'label':'Gill Sans Extrabold', 'value':'"Gill Sans Extrabold", Helvetica, sans-serif'},
+    {'label':'Lucida Console', 'value': 'Courier, "Lucida Console", monospace'},
+    {'label':'YoutubeSansMedium', 'value': 'YoutubeSansMedium'},
+    {'label':'YoutubeSansBold', 'value': 'YoutubeSansBold'},
+    {'label':'YoutubeSansLight', 'value': 'YoutubeSansLight'},
+    {'label':'Sans-Serif Arial', 'value': '"Sans-Serif", Arial, sans-serif'},
+    {'label':'Sans-Serif Helvetica', 'value': '"Sans-Serif", Helvetica, sans-serif'},
+    {'label':'Times New Roman', 'value': '"Times New Roman", Times, serif'},
+    {'label':'Arial', 'value': 'Arial, sans-serif'},
+    {'label':'Brush Script MT', 'value': '"Brush Script MT", cursive'},
+    {'label':'Georgia', 'value': 'Georgia, serif'},
+    {'label':'Gill Sans', 'value': '"Gill Sans", serif'},
+    {'label':'Helvetica Narrow', 'value': '"Helvetica Narrow", sans-serif'}
+  ];
+  
+  internalUrlList: any;
+  
   
   constructor(
     private alertCtrl: AlertController,
@@ -56,10 +77,12 @@ export class MapEditorPage implements OnInit {
     private adminStandsService: AdminStandsService) { 
       
       this.listenForFullScreenEvents();
+      this.initializePanel();
   }
 
    ngOnInit() {
       
+     this.bannerSelect = null; 
      this.loading.present({message:'Cargando...'});
      this.template = this.route.snapshot.paramMap.get('template');
      this.objId = this.route.snapshot.paramMap.get('objId');
@@ -74,6 +97,8 @@ export class MapEditorPage implements OnInit {
         const div = document.querySelector<HTMLElement>('.div-container');
         div.addEventListener('scroll', this.logScrolling);
         this.fair = fair;
+        this.initializeInternalUrl();
+        
         if(this.template === 'fair') {
           this.resources = fair.resources;
           this.scene = this.sceneId ? fair.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
@@ -81,26 +106,26 @@ export class MapEditorPage implements OnInit {
         else if(this.template === 'pavilion') {
           this.fair.pavilions.forEach((pavilion)=>{
               if(pavilion.id == this.objId) {
-				this.pavilion = pavilion;
+                this.pavilion = pavilion;
                 this.resources = pavilion.resources;
-				this.scene = this.sceneId ? this.pavilion.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+                this.scene = this.sceneId ? this.pavilion.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
               }
           });
         }
         else if(this.template === 'stand') {
-          const pavilionId = this.objId.split('_')[0];
-          const standId = this.objId.split('_')[1];
+          this.sceneId = this.route.snapshot.paramMap.get('sceneId');
+          const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
+          const standId = this.route.snapshot.paramMap.get('standId');
           this.fair.pavilions.forEach((pavilion)=>{
               if(pavilion.id == pavilionId) {
                 this.pavilion = pavilion;
                 pavilion.stands.forEach((standEl)=>{
-                    if(standEl.id == standId) {
-                       this.stand = standEl;
-                    }
-                })
-                this.pavilion = pavilion;
-                this.resources = this.stand.resources;
-                this.scene = this.sceneId ? this.stand.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+                   if(standEl.id == standId) {
+                      this.stand = standEl;
+                      this.resources = this.stand.resources;
+                      this.scene = this.sceneId ? this.stand.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+                   }
+                });
               }
           });
         }
@@ -108,12 +133,8 @@ export class MapEditorPage implements OnInit {
         this.scene.container = this.scene && this.scene.container ? this.scene.container : {'w': 1290,'h': 767};
         this.scene.ori_container = this.scene.container;
         this.scene.banners = this.scene.banners || [];
-        
-        this.scene.banners.forEach((banner)=> {
-            
-        });
         this.loading.dismiss();
-        this.onResize();
+        
      }, error => {
         this.loading.dismiss();
         this.errors = `Consultando el servicio del mapa general de la feria`;
@@ -144,30 +165,30 @@ export class MapEditorPage implements OnInit {
   onResize() {
 
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
-     const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
+     const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
      
      let newWidth = main.offsetWidth;
      let deltaW =  this.scene.container.w / newWidth;
-     //let newHeight = this.scene.container.h * deltaW;
-	 let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
-	 let deltaH = this.scene.container.h / newHeight;
-	 
+     let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
+     let deltaH = this.scene.container.h / newHeight;
+     
      this.scene.container.w = newWidth;
      if(newHeight<main.offsetWidth) {
-        const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
         newHeight = main.offsetHeight - top;
-      //  newWidth = newHeight * this.scene.container.w / this.scene.container.h;
      }
-	 this.scene.container.h = newHeight;
+     this.scene.container.h = newHeight;
      this.scene.banners.forEach((banner)=>{
         if(banner.size) { 
-           //banner.size.y = this.fullScreen ? ( banner.size.y + (banner.size.y * deltaH) ) : banner.size.y;
-		   banner.size.x /= deltaW;
+           banner.size.x /= deltaW;
            banner.size.y /= deltaH;
-		   //banner.position.x *= deltaW;
-		   banner.position.x /= deltaW;
-		   banner.position.y /= deltaH;//= this.fullScreen ? 
+        }
+        if(banner.position) { 
+           banner.position.x /= deltaW;
+           banner.position.y /= deltaH;
+        }
+        if(banner.fontSize > 0 ) {
+           banner.fontSize /= deltaW;
         }
      });
   }
@@ -200,31 +221,14 @@ export class MapEditorPage implements OnInit {
       this.hoverEffects.forEach((effect)=>{
          effect.isChecked = this.bannerSelect.hoverEffects.includes(effect.name);
       });
-      this.initializePanel();
+      this.showToolPanel = false; 
+      this.showSceneTools = false;
+      this.isHover = bannerSelect.id; 
   }
   
   onChangeItem() {
       this.editSave = true;
   }
-  
-  /*async presentPanel(event, banner) {
-    const modal = await this.modalCtrl.create({
-      component: PanelEditorComponent,
-      swipeToClose: true,
-      presentingElement: this.routerOutlet.nativeEl,
-      componentProps: {
-          'scene': banner
-      }
-    });
-    await modal.present();
-    this.success = null;
-    this.errors = null;
-    const { data } = await modal.onWillDismiss();
-    
-    if (data) {
-      
-    } 
-  }*/
   
   initializePanel() {
       const inputs = Array.from(document.querySelectorAll('.input-form'));
@@ -234,64 +238,72 @@ export class MapEditorPage implements OnInit {
   }
   
   onSave() {
-	  if(this.sceneId) {
-	     this.resources.scenes[this.sceneId] = this.scene;
-	  }
-	  else {
-		 this.resources.scenes.push(this.scene);
-	  }
-		  
+      this.loading.present({message:'Cargando...'});
+      if(this.sceneId) {
+         this.resources.scenes[this.sceneId] = this.scene;
+      }
+      else {
+         this.resources.scenes = this.resources.scenes || [];
+         this.resources.scenes.push(this.scene);
+      }
       if(this.template === 'fair') {
           this.adminFairsService.update(this.fair)
           .then((response) => {
-			  if(!this.sceneId) {
-				  this.resources = processData(response.data_fair.resources);
-				  this.sceneId = this.resources.scenes.length - 1;
-			  }
-			  this.goToScene('fair',this.fair.id,this.sceneId);
+              this.loading.dismiss();
+              this.success= `Escena modificada correctamentes`;
+              this.fairsService.refreshCurrentFair();
+              if(!this.sceneId) {
+                  this.resources = processData(response.data_fair.resources);
+                  this.sceneId = this.resources.scenes.length - 1;
+                  this.goToScene('fair',this.fair.id,this.sceneId);
+              }
+              this.ngOnInit();
               this.errors = null;
            })
            .catch(error => {
-                this.errors = `Consultando el servicio para actualizar feria ${error}`;
+               this.loading.dismiss();
+               this.errors = `Consultando el servicio para actualizar feria ${error}`;
            });
       }
       else if(this.template === 'pavilion') {
-          this.adminPavilionsService.update(this.pavilion.id, this.pavilion)
+          this.adminPavilionsService.update(this.pavilion)
           .then((pavilion) => {
+              this.loading.dismiss();
               this.errors = null;
-			  if(!this.sceneId) {
-				  this.resources = processData(pavilion.resources);
-				  this.sceneId = this.resources.scenes.length - 1;
-			  }
-		      this.goToScene('pavilion',this.pavilion.id,this.sceneId);
+              if(!this.sceneId) {
+                  this.resources = processData(pavilion.resources);
+                  console.log(pavilion);
+                  this.sceneId = this.resources.scenes.length - 1;
+              }
+              this.fairsService.refreshCurrentFair();
+              this.goToScene('pavilion',this.pavilion.id,this.sceneId);
            })
            .catch(error => {
-                this.errors = `Consultando el servicio para actualizar pabellón ${error}`;
+               this.loading.dismiss();
+               this.errors = `Consultando el servicio para actualizar pabellón ${error}`;
            });
       }
       else if(this.template === 'stand') {
           this.adminStandsService.update(this.stand)
           .then((stand) => {
-			  if(!this.sceneId) {
-				  this.resources = processData(this.stand.resources);
-				  this.sceneId = this.resources.scenes.length - 1;
-			  }
-		      this.goToScene('stand',this.stand.id,this.sceneId);
+              this.loading.dismiss();
+              if(!this.sceneId) {
+                  this.sceneId = this.resources.scenes.length - 1;
+              }
+              this.fairsService.refreshCurrentFair();
+              this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
               this.errors = null;
            })
            .catch(error => {
-                this.errors = `Consultando el servicio para actualizar local comercial ${error}`;
+               this.loading.dismiss(); 
+               this.errors = `Consultando el servicio para actualizar local comercial ${error}`;
            });
       }
   }
   
-  onSaveStand() {
-      this.adminFairsService.update(this.fair);
-  }
-  
   addBanner() {
     const id = new Date().valueOf();
-    const banner = {"position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id,"perspective":400, "border":{"style":"none"}};
+    const banner = {"backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id,"perspective":400, "border":{"style":"solid","color":"#000","radius":20,"width":1}};
     this.scene.banners.push(banner);
     
   }
@@ -307,11 +319,10 @@ export class MapEditorPage implements OnInit {
     banner.position.x += $event.x;
   }
    
-  deleteScene(bannerSelect) {
+  onDeleteBanner(bannerSelect) {
     this.scene.banners = this.scene.banners.filter((banner)=>{
         return bannerSelect != banner; 
     });
-    
     this.bannerSelect = null;
   }
   
@@ -346,30 +357,28 @@ export class MapEditorPage implements OnInit {
     if(!obj.hoverEffects) return;
     
     if(obj.hoverEffects.includes('GirarDerecha')) {
-        const squareA = this.animationCtrl.create()
-              .addElement(document.querySelector('#obj-' + obj.id))
-              
-              .duration(1000)
-              .keyframes([
-                { offset: 0, transform: 'rotate(0)' },
-                { offset: 0.5, transform: 'rotate(45deg)' },
-                { offset: 1, transform: 'rotate(0) '}
-              ]);
-           
-        await squareA.play();
+      const squareA = this.animationCtrl.create()
+      .addElement(document.querySelector('#obj-' + obj.id))
+      
+      .duration(1000)
+      .keyframes([
+        { offset: 0, transform: 'rotate(0)' },
+        { offset: 0.5, transform: 'rotate(45deg)' },
+        { offset: 1, transform: 'rotate(0) '}
+      ]);
+      await squareA.play();
     }
     if(obj.hoverEffects.includes('GirarIzquierda')) {
-        const squareA = this.animationCtrl.create()
-              .addElement(document.querySelector('#obj-' + obj.id))
-              
-              .duration(1000)
-              .keyframes([
-                { offset: 0, transform: 'rotate(0)' },
-                { offset: 0.5, transform: 'rotate(-45deg)' },
-                { offset: 1, transform: 'rotate(0) '}
-              ]);
-           
-        await squareA.play();
+      const squareA = this.animationCtrl.create()
+      .addElement(document.querySelector('#obj-' + obj.id))
+      
+      .duration(1000)
+      .keyframes([
+        { offset: 0, transform: 'rotate(0)' },
+        { offset: 0.5, transform: 'rotate(-45deg)' },
+        { offset: 1, transform: 'rotate(0) '}
+      ]);
+      await squareA.play();
     }
   }
   
@@ -393,17 +402,52 @@ export class MapEditorPage implements OnInit {
         {
           text: 'Aceptar',
           handler: (data: any) => {
-             
-             this.fair.resources = this.fair.resources.scenes.filter((scene,key)=>{
+              this.loading.present({message:'Cargando...'});
+              this.resources.scenes = this.resources.scenes.filter((scene,key)=>{
                   return key != sceneId;
-             });
-             
-             if(this.fair.resources.scenes.length == 0) {
-                const main = document.querySelector<HTMLElement>('ion-router-outlet');
-                const scene = { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': main.offsetWidth, 'h': main.offsetHeight } };
-                this.fair.resources.scenes.push(scene);
-             }
-             
+              });
+              
+              if(this.template === 'fair') {
+                  this.adminFairsService.update(this.fair)
+                   .then((response) => {
+                       this.loading.dismiss(); 
+                       this.fairsService.refreshCurrentFair();
+                       this.ngOnDestroy();
+                       this.router.navigateByUrl(`/super-admin/fair`);
+                   })
+                   .catch(error => {
+                       this.loading.dismiss(); 
+                       this.errors = `Consultando el servicio para actualizar la feria: ${error}`;
+                   });
+              }
+              else if(this.template === 'pavilion') {
+                  this.adminPavilionsService.update(this.pavilion)
+                   .then((response) => {
+                       this.loading.dismiss(); 
+                       this.fairsService.refreshCurrentFair();
+                       this.ngOnDestroy();
+                       this.router.navigateByUrl(`/super-admin/fair`);
+                   })
+                   .catch(error => {
+                       this.loading.dismiss(); 
+                       this.errors = `Consultando el servicio para actualizar el pabellón: ${error}`;
+                   });
+               }
+               else if(this.template === 'stand') {
+                  this.adminFairsService.update(this.fair)
+                   .then((response) => {
+                       this.loading.dismiss(); 
+                       this.fairsService.refreshCurrentFair();
+                       this.ngOnDestroy();
+                       this.router.navigateByUrl(`/super-admin/fair`);
+                   })
+                   .catch(error => {
+                       this.loading.dismiss(); 
+                       this.errors = `Consultando el servicio para actualizar el pabellón: ${error}`;
+                   });
+                   this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+               }
+            
           }
         }
       ]
@@ -411,19 +455,43 @@ export class MapEditorPage implements OnInit {
     await alert.present();
   }
   
+  initializeInternalUrl() {
+    this.internalUrlList = {'fair':[],'pavilions':[],'stands':[]};
+    let scene, pavilion, stand;
+    for(let i=0; i<this.fair.resources.scenes.length; i++) {
+        scene = this.fair.resources.scenes[i];
+        this.internalUrlList.fair.push({'label':'Escena - ' + (i+1), 'value':`/map/fair/${i}`});
+    }
+    for(let i=0; i<this.fair.pavilions.length; i++) {
+        pavilion = this.fair.pavilions[i];
+        for(let j=0; j<pavilion.resources.scenes.length; j++) {
+            scene = pavilion.resources.scenes[j];
+            this.internalUrlList.pavilions.push({'label':'Pabellón '+ pavilion.name + '. Escena - ' + (j+1), 'value':`/map/pavilion1/${pavilion.id}/${j}`});
+        }
+        for(let j=0; j<pavilion.stands.length; j++) {
+            stand = pavilion.stands[j];
+            for(let j=0; j<stand.resources.scenes.length; j++) {
+                scene = stand.resources.scenes[j];
+                this.internalUrlList.stands.push({'label':'Local '+ stand.id + '. Escena - ' + (j+1), 'value':`/map/stand1/${pavilion.id}/${stand.id}/${j}`});
+            }
+        }
+    }
+  }
+  
   defaultEscene(resources) {
       const main = document.querySelector<HTMLElement>('ion-router-outlet');
       resources.scenes = resources.scenes || [];
       return { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': main.offsetWidth, 'h': main.offsetHeight },
                'show': true,'menuIcon':'map-outline', 'title': 'Escena #' + (resources.scenes.length + 1) };
-	  
   }
   
   goToScene(template, objId, sceneId) {
     this.router.navigateByUrl(`/super-admin/map-editor/${template}/${objId}/${sceneId}`);
   }
-  
-  
+
+  compareFn(e1: any, e2: any): boolean {
+    return e1 && e2 ? e1.value == e2.value : e1 == e2;
+  }  
 }
 
 

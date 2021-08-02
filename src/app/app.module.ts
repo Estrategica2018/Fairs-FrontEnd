@@ -26,7 +26,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     IonicStorageModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
-    }),
+    })
   ],
   declarations: [AppComponent],
   providers: [

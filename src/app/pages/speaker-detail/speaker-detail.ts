@@ -24,6 +24,10 @@ export class SpeakerDetailPage {
     private loading: LoadingService,
     private speakersService: SpeakersService
   ) {}
+  
+  ngDoCheck(){
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   ionViewWillEnter() {
     this.loading.present({message:'Cargando...'});

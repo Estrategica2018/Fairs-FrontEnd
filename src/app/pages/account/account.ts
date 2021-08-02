@@ -26,6 +26,10 @@ export class AccountPage implements AfterViewInit {
     private loading: LoadingService,
     private usersService: UsersService
   ) { }
+  
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   ngAfterViewInit() {
     this.getUser();

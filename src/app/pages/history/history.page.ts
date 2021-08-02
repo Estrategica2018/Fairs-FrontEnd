@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HistoryPage implements OnInit {
 
-  constructor() { }
+  constructor() { 
 
+  }
+  
   ngOnInit() {
   }
 
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
+  
 }

@@ -96,7 +96,7 @@ export class FairPage implements OnInit {
          })
          .catch(error => {
             this.loading.dismiss(); 
-            this.errors = `Consultando el servicio para agenda`;
+            this.errors = `Consultando el servicio para agenda: ${error}`;
          });
       }, errors => {
           this.errors = errors;
@@ -104,7 +104,7 @@ export class FairPage implements OnInit {
       })
       .catch(error => {
           this.loading.dismiss();
-         this.errors = `Consultando el servicio para agenda`;
+          this.errors = `Consultando el servicio para agenda: ${error}`;
       });
   }
   
@@ -113,7 +113,8 @@ export class FairPage implements OnInit {
       this.fair.resources.scenes = this.fair.resources.scenes || [];
       const scene = { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': main.offsetWidth, 'h': main.offsetHeight },
                       'show': true,'menuIcon':'map-outline', 'title': 'Escena #' + (this.fair.resources.scenes.length+1) };
-	  this.fair.resources.scenes.push(scene);
+
+      this.fair.resources.scenes.push(scene);
   }
   
   ionChange() {

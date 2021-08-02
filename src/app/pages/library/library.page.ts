@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LibraryPage implements OnInit {
 
-  constructor() { }
+  constructor() { 
+
+  }
 
   ngOnInit() {
+  }
+  
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
   }
 
 }

@@ -58,6 +58,14 @@ export class SchedulePage implements OnInit {
     
   }
 
+  ngOnInit() {
+  
+  }
+  
+  ngDoCheck(){
+     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
+  
   ionViewWillEnter () {
 
     this.ios = this.config.get('mode') === 'ios';
@@ -72,61 +80,56 @@ export class SchedulePage implements OnInit {
       then( fair => {
         this.fair = fair;
         if(this.fair.price > 0) {
-              this.usersService.getUser().then(userDataSession=> {
-                if(userDataSession){
-                      this.usersService.getPaymentUser({type:"Fair",id:this.fair.id},userDataSession).
-                      then( (payment:any) => {
-						 if(payment.success) {
-                            this.userPaidAllfair = true;
-							this.showPaymentFair = false;
-                         }
-						 else {
-							 this.showPaymentFair = true;
-						 }
-						 this.onFinishLoad();
-                      },error => {
-                         this.errors = `${error}`;
-						 this.onFinishLoad();
-                      });
-                }
-                else {
-                    this.showPaymentFair = true;
-					this.onFinishLoad();
-                }
-                
-              });
+          this.usersService.getUser().then(userDataSession=> {
+            if(userDataSession){
+                  this.usersService.getPaymentUser({type:"Fair",id:this.fair.id},userDataSession).
+                  then( (payment:any) => {
+                      if(payment.success) {
+                        this.userPaidAllfair = true;
+                        this.showPaymentFair = false;
+                     } else {
+                         this.showPaymentFair = true;
+                     }
+                     this.onFinishLoad();
+                  },error => {
+                     this.errors = `${error}`;
+                     this.onFinishLoad();
+                  });
+            }
+            else {
+                this.showPaymentFair = true;
+                this.onFinishLoad();
+            }
+            
+         });
         }
-		else {
-			this.onFinishLoad();
-		}
+        else {
+          this.onFinishLoad();
+        }
 
         this.agendasService.list()
         .then((data) => {
             this.dataInitMeetings = data;
             this.transformSchedule();
-			this.onFinishLoad();
+            this.onFinishLoad();
          }, error => {
             console.log(error);
             this.errors = `Consultando el servicio para agenda [${error}]`;
-			this.onFinishLoad();
+            this.onFinishLoad();
          });
       },error => {
          this.errors = `Consultando el servicio para agenda [${error}]`;
-	     this.onFinishLoad();
-      }); 
-    
+         this.onFinishLoad();
+      });
   }
   
   onFinishLoad(){
-	  this.loaded ++;
-	  if(this.loaded >=2){
-		  this.loading.dismiss();
-	  }
+      this.loaded ++;
+      if(this.loaded >=2) {
+         this.loading.dismiss();
+      }
   }
   
-  ngOnInit() {
-  
-  }
   
   transformSchedule() {
   
@@ -248,8 +251,8 @@ export class SchedulePage implements OnInit {
       component: WompiPaymentLayoutPage,
       componentProps: {
           'objPrice': this.fair,
-		  'type': 'Fair',
-		  'container': this
+          'type': 'Fair',
+          'container': this
       }
     });
     await this.modal.present();
@@ -262,7 +265,7 @@ export class SchedulePage implements OnInit {
   ngOnDestroy(): void {
      if(this.modal) {
        this.modal.dismiss();
-	 }
+     }
   }
   
   async openTemplateAgenda(session) {
@@ -271,7 +274,7 @@ export class SchedulePage implements OnInit {
       component: WompiPaymentLayoutPage,
       componentProps: {
           'objPrice': session,
-		  'type': 'Agenda'
+          'type': 'Agenda'
       }
     });
     await this.modal.present();
