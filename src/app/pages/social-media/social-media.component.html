@@ -2,39 +2,39 @@
     <ion-row>
      <ion-col>
       <ion-thumbnail  class="social-network" (click)="openInNewTab('https://api.whatsapp.com/send/?phone=573212713666&text=I%27m+interested+in+your+car+for+sale&app_absent=0')">
-        <ion-img [src]="'assets/icon/whatsapp.png'" (mouseover)="isHover1 = true" (mouseout)="isHover1 = false">
+        <ion-img [src]="'assets/icon/whatsapp.png'" (mouseover)="isHover = 1" (mouseout)="isHover = null">
         </ion-img>
        </ion-thumbnail>
      </ion-col>
      <ion-col>
-      <span class="tooltip-social" style="  left: -210px;" *ngIf="isHover1">Contacto Whatsappp</span>
+      <span class="tooltip-social" style="  left: -210px;" *ngIf="isHover==1">Contacto Whatsappp</span>
      </ion-col>
      <ion-col>
        <ion-thumbnail  class="social-network" (click)="openInNewTab('mailto:mail@example.org')">
-         <ion-img [src]="'assets/icon/email.png'" (mouseover)="isHover2 = true" (mouseout)="isHover2 = false">
+         <ion-img [src]="'assets/icon/email.png'" (mouseover)="isHover = 2" (mouseout)="isHover = null">
          </ion-img>
        </ion-thumbnail>
      </ion-col>
      <ion-col>
-         <span class="tooltip-social" *ngIf="isHover2">Enviar Email</span>
+         <span class="tooltip-social" *ngIf="isHover==2">Enviar Email</span>
      </ion-col>
      <ion-col>
          <ion-thumbnail  class="social-network" (click)="openInNewTab('https://www.facebook.com/FacebookforDevelopers/')">
-          <ion-img [src]="'assets/icon/facebook.png'" (mouseover)="isHover3 = true" (mouseout)="isHover3 = false">
+          <ion-img [src]="'assets/icon/facebook.png'" (mouseover)="isHover = 3" (mouseout)="isHover = null">
           </ion-img>
        </ion-thumbnail>
        </ion-col>
        <ion-col>
-            <span class="tooltip-social" style="left: -170px;" *ngIf="isHover3">Perfil facebook</span>
+            <span class="tooltip-social" style="left: -170px;" *ngIf="isHover==3">Perfil facebook</span>
         </ion-col>
         <ion-col>
           <ion-thumbnail  class="social-network" (click)="openInNewTab('mailto:mail@example.org')">
-            <ion-img [src]="'assets/icon/gmail.png'" (mouseover)="isHover4 = true" (mouseout)="isHover4 = false">
+            <ion-img [src]="'assets/icon/gmail.png'" (mouseover)="isHover = 4" (mouseout)="isHover = null">
             </ion-img>
           </ion-thumbnail>
      </ion-col>
      <ion-col>
-         <span class="tooltip-social" *ngIf="isHover4">Enviar Email</span>
+         <span class="tooltip-social" *ngIf="isHover==4">Enviar Email</span>
      </ion-col>
     </ion-row>
  </ion-grid> 

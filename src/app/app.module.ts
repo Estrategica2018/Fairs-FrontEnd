@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -14,6 +14,10 @@ import { environment } from '../environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi-payment-layout.module';
+//import { APP_BASE_HREF } from '@angular/common';
+
+
 
 @NgModule({
   imports: [
@@ -26,7 +30,8 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     IonicStorageModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
-    })
+    }),
+	WompiPaymentLayoutPageModule
   ],
   declarations: [AppComponent],
   providers: [
@@ -34,13 +39,17 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     SplashScreen, 
     StatusBar, 
     DatePipe,
-    {provide: LocationStrategy, useClass: HashLocationStrategy}
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
+	Title,
+	//{provide: APP_BASE_HREF, useValue: 'http://'+window.location.hostname+'/Fair-website/'}
+	
   ],
   bootstrap: [AppComponent]
 })
 
 export class AppModule {
+	
     constructor() {
-        
     }
 }
+

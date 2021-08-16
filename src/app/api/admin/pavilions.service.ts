@@ -24,7 +24,7 @@ export class AdminPavilionsService {
 
   create(data: any): any {
     return new Promise((resolve, reject) => {
-        this.http.post(`/api/pavilion/create/`, processDataToString(data))
+        this.http.post(`/api/pavilion/create2`, processDataToString(data))
         .pipe(
           timeout(30000),
           catchError(e => {

@@ -67,7 +67,7 @@ html {
 
 
 .white-space {
-    white-space: initial;
+    white-space: initial !important;
 }
 
 .alert.alert-dismissible {
@@ -128,26 +128,35 @@ html {
 
 
 /* width */
-::-webkit-scrollbar {
+.div-container::-webkit-scrollbar {
   width: 3px;
   height: 3px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+.div-container::-webkit-scrollbar-track {
   background: #f1f1f1; 
 }
  
 /* Handle */
-::-webkit-scrollbar-thumb {
+.div-container::-webkit-scrollbar-thumb {
   background: #888; 
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+.div-container::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
 
+ion-content {
+  main {
+    overflow: hidden;
+  }
+}
+
+$content-ios-outer-background: #fff;
+
+@import "./app/arrow.component.scss";
 
 ion-router-outlet {
   ion-header:first-of-type {
@@ -155,12 +164,58 @@ ion-router-outlet {
   }
 }
 
-ion-content {
-  
-  main {
-    overflow: hidden;
-  }
+.waybox-modal {
+  overflow: scroll !important;
+}
+
+.waybox-iframe {
+  height: 1500px !important;
+}
+
+/* width */
+.waybox-modal::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+/* Track */
+.waybox-modal::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.waybox-modal::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+.waybox-modal::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
 
 
-$content-ios-outer-background: #fff;
+/* width */
+
+.inner-scroll {
+  background-color: red;
+}
+
+.padding-container::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+/* Track */
+.padding-container::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.padding-container::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+.padding-container::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}

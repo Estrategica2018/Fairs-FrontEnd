@@ -1,17 +1,9 @@
-
-<ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
+<ion-content id="ionContent">
+  
+  <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
     <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
     <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
-</ion-button>
-  
-<ion-content id="ionContent">
-
-  <ion-item [hidden]="!errors">
-   <div class="alert alert-danger alert-dismissible">
-     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-     <strong>Error!</strong> {{errors}}
-   </div>
-  </ion-item>
+  </ion-button>
   
   <video 
     [ngStyle]="{'opacity': scene?.videoUrl ? 1 : 0, 'position': scene?.videoUrl ? 'block' : 'absolute'}"
@@ -24,56 +16,87 @@
     class="video"
   >
   </video>
-  
-  <div class="div-container" scroll-x="0" scroll-y="0" [ngStyle]="{'background-color': scene?.backgroundColor, 'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}">
-     <ion-img *ngIf="scene && scene.url_image" [src]="scene?.url_image" ></ion-img>
-  </div>
-  
-  <div class="scene" *ngFor="let banner of scene?.banners;let i = index"
-       [ngStyle]="{
-          'left': banner.position?.x + 'px ', 
-          'top': + banner.position?.y + 'px',
-          'width': + banner.rotation?.x + 'px',
-          'height': + banner.rotation?.y + 'px'
-     }">
-        <div class="cube">
-          <div class="cube__face square cube__face--right  {{banner.class}} cursor-pointer"
-            id="obj-{{banner.id}}"
-            (click)="goToInternalUrl(banner)"
-            (mouseover)="isHover = banner.id; startAnimation(banner)" 
-            (mouseout)="isHover = false"
-            [ngClass]="{'link': banner.internalUrl ||  banner.externalUrl }"
-            [ngStyle]="{
-              'opacity': banner.opacity,
-              'background-image': 'url('+banner.image_url+')',
-              'background-size': banner.size?.x + 'px ' + banner.size?.y + 'px',
-              'background-repeat': 'no-repeat',
-              'background-color': banner.backgroundColor,
-              'width': banner.size?.x + 'px ', 
-              'height': + banner.size?.y + 'px',
-              'font-size': banner.fontSize + 'px ',
-              'font-family': banner.fontFamily,
-              'color': banner.fontColor + '',
-              'border-color': banner.border?.color,
-              'border-style': banner.border?.style,
-              'border-radius': banner.border?.radius + 'px',
-              'border-width': ''+banner.border?.width+'px'
-              }"> {{ banner.text }} </div>
-          <!--/a-->
-        </div>
 
-        <span class="tooltip-label" *ngIf="banner.tooltipText && isHover === banner.id"
-        [ngStyle]="{ 'width': banner.toolPositionWidth+ 'px',
-                     'left': banner.toolPositionLeft + 'px'}">
-              {{banner.tooltipText}}
-        </span>
-  </div>
+  <ion-item [hidden]="!errors">
+   <div class="alert alert-danger alert-dismissible">
+     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+     <strong>Error!</strong> {{errors}}
+   </div>
+  </ion-item>
+  
+  <div class="div-container"  scroll-x="0" scroll-y="0">
+      <ion-img [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}" (ionScroll)="onScroll($event)"
+       *ngIf="scene && scene.url_image" [src]="scene?.url_image" ></ion-img>
+       <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
+       *ngIf="scene && scene.backgroundColor"></div>
+   </div>
+    
+   <div *ngFor="let banner of scene?.banners;let i = index" class="scene" [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}">
+    
+    <div *ngIf="banner.isLine" class=" arrow {{ (banner.line.style||'container-arrow--curve') }}" 
+        [ngStyle]="{
+         'left': banner.position?.x + 'px',
+         'top': banner.position?.y + 'px',
+         'width': banner.size?.x + 'px',
+         'height': banner.size?.y + 'px',
+         'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
+         'opacity': banner.opacity,
+         'transform': 'rotateZ(' + banner.rotation.z + 'deg)'
+       }"
+       style="position: absolute;"
+       (mouseover)="startAnimation(banner); isHover = banner;"
+       (mouseout)="isHover = null;">
+         <div class="arrow__body"
+          [ngStyle]="{
+           'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
+           'border-style': banner?.line?.type,
+           'border-color': banner?.line?.color
+         }"
+       ></div>
+    </div>
+    
+    <div class="cube" [hidden]="banner.isLine" id="banner-drag-{{banner.id}}"
+         [ngStyle]="{
+           'left': banner.position?.x + 'px',
+           'top': banner.position?.y + 'px',
+           'opacity': banner.opacity,
+           'transform': 'rotateZ(' + banner.rotation.z + 'deg)'
+         }">
+      <div class="cube__face cube__face--right square {{banner.class}}" 
+        id="obj-{{banner.id}}"
+        (click)="goToInternalUrl(banner)"
+        (mouseover)="startAnimation(banner);"
+        (mouseout)="isHover = null;"
+        [ngStyle]="{
+        'background-image': 'url('+banner.image_url+')',
+        'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+        'background-repeat': 'no-repeat',
+        'background-color': banner.backgroundColor,
+        'width': banner.size.x + 'px', 
+        'height': banner.size.y + 'px',
+        'font-size': banner.fontSize + 'px',
+        'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
+        'color': banner.fontColor,
+        'border-color': banner.border?.color,
+        'border-style': banner.border?.style,
+        'border-radius': banner.border?.radius + 'px',
+        'border-width': banner.border?.width +'px'
+        }"> {{ banner.text }}    
+      </div>
+     </div>
+     <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
+         [ngClass]="banner.toolTipArrow"
+         [ngStyle]="{ 
+           'width': banner.toolPositionWidth+ 'px',
+           'top': banner.toolPositionTop + 'px',
+           'left': banner.toolPositionLeft + 'px'}">
+       {{banner.tooltipText}}
+     </span>
+   </div>
  
-
-  
 </ion-content>
 
-  <div class="tabs-menu" [ngStyle]="{'left':marginTabs ? marginTabs : '50%', 'bottom': fullScreen ? '0px': '56px'}">
+  <div class="tabs-menu" [ngStyle]="{'left': marginMenuTabs?.x, 'top': marginMenuTabs.y }">
 
     <ion-button color="light" (click)="onRouterLink('/app/tabs/schedule')">
       <ion-icon slot="start" name="calendar-outline"></ion-icon>

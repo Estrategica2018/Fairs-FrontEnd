@@ -3,13 +3,13 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/super-admin/fair"></ion-back-button>
     </ion-buttons>
-	<ion-buttons slot="end" *ngIf="pavilion?.id">
-	  <ion-button color="danger" (click)="deletePavilion()">
-		<ion-icon slot="start" name="trash-outline"></ion-icon>
-		Borrar
-	  </ion-button>
-	</ion-buttons>
-	<ion-title>Administrar Pabellón</ion-title>
+    <ion-buttons slot="end" *ngIf="pavilion?.id">
+      <ion-button color="danger" (click)="deletePavilion()">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Borrar
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Administrar Pabellón</ion-title>
   </ion-toolbar>
 </ion-header>
 

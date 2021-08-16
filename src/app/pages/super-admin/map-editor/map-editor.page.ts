@@ -21,6 +21,7 @@ export class MapEditorPage implements OnInit {
 
   errors = null;
   success = null;
+  fixedBannerPanel = true;
   
   fullScreen = false;
   fair = null;
@@ -40,10 +41,14 @@ export class MapEditorPage implements OnInit {
   tabSelect = 'position';
   showToolPanel = false;
   showSceneTools = false;
-  isHover = {};
+  showToolItemPanel = false;
+  bannerSelectHover = null;
+  isHover = null;
   hoverEffects = [ {"name":"GirarDerecha","isChecked":false},{"name":"GirarIzquierda","isChecked":false}];
   @ViewChild('inputWidth', { static: true }) inputWidth: ElementRef;
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
+  toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow Rigth","value":"arrow--4"},
+                        {"label":"Arrow Up Inside","value":"arrow--5"},{"label":"Array left Inside","value":"arrow--6"},{"label":"Arrow Down Inside","value":"arrow--7"},{"label":"Arrow Rigth Inside","value":"arrow--8"}];
   fontFamilyList = [
     {'label':'Gill Sans Extrabold', 'value':'"Gill Sans Extrabold", Helvetica, sans-serif'},
     {'label':'Lucida Console', 'value': 'Courier, "Lucida Console", monospace'},
@@ -61,6 +66,7 @@ export class MapEditorPage implements OnInit {
   ];
   
   internalUrlList: any;
+  showItemPanel = false;
   
   
   constructor(
@@ -80,8 +86,22 @@ export class MapEditorPage implements OnInit {
       this.initializePanel();
   }
 
-   ngOnInit() {
-      
+  ngOnInit() {
+     //this.initializeScreen();
+  }
+  
+  onToogleItem() {
+    
+    
+    
+  }
+  
+  ngAfterViewInit() {
+     this.initializeScreen();
+  }
+
+   
+   initializeScreen() {
      this.bannerSelect = null; 
      this.loading.present({message:'Cargando...'});
      this.template = this.route.snapshot.paramMap.get('template');
@@ -92,10 +112,14 @@ export class MapEditorPage implements OnInit {
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
 
      main.style.top = top + 'px';
+     
+     
+     const btnSave = document.querySelector<HTMLElement>('.panel-scene-save');
+     const panelPosX = ( main.offsetWidth - btnSave.offsetWidth - 600 ) + 'px';
+     this.panelPos = { x: panelPosX + 'px', y: '0px' };
+     
 
      this.fairsService.getCurrentFair().then((fair)=>{
-        const div = document.querySelector<HTMLElement>('.div-container');
-        div.addEventListener('scroll', this.logScrolling);
         this.fair = fair;
         this.initializeInternalUrl();
         
@@ -113,7 +137,7 @@ export class MapEditorPage implements OnInit {
           });
         }
         else if(this.template === 'stand') {
-          this.sceneId = this.route.snapshot.paramMap.get('sceneId');
+          
           const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
           const standId = this.route.snapshot.paramMap.get('standId');
           this.fair.pavilions.forEach((pavilion)=>{
@@ -130,20 +154,25 @@ export class MapEditorPage implements OnInit {
           });
         }
         
-        this.scene.container = this.scene && this.scene.container ? this.scene.container : {'w': 1290,'h': 767};
-        this.scene.ori_container = this.scene.container;
         this.scene.banners = this.scene.banners || [];
         this.loading.dismiss();
+        this.onResize();  
+        const div = document.querySelector<HTMLElement>('.div-container');
+        div.addEventListener('scroll', this.logScrolling);
+        
         
      }, error => {
         this.loading.dismiss();
+        console.log(error);     
         this.errors = `Consultando el servicio del mapa general de la feria`;
      });
+     
+
   }
   
-  ngOnDestroy(): void {
-     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
-  }
+ // ngOnDestroy(): void {
+ //    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+ // }
   
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));
@@ -164,6 +193,8 @@ export class MapEditorPage implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
 
+     if(!this.scene.container) return;
+     
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
@@ -173,10 +204,13 @@ export class MapEditorPage implements OnInit {
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
      
-     this.scene.container.w = newWidth;
-     if(newHeight<main.offsetWidth) {
-        newHeight = main.offsetHeight - top;
+     if(newHeight < main.offsetHeight) {
+         newHeight = window.innerHeight;
+         newWidth = newHeight * this.scene.container.w / this.scene.container.h;
+         deltaW =  this.scene.container.w / newWidth;
+         deltaH = this.scene.container.h / newHeight;
      }
+     this.scene.container.w = newWidth;
      this.scene.container.h = newHeight;
      this.scene.banners.forEach((banner)=>{
         if(banner.size) { 
@@ -191,6 +225,7 @@ export class MapEditorPage implements OnInit {
            banner.fontSize /= deltaW;
         }
      });
+     
   }
   
   logScrolling(e) {
@@ -216,7 +251,6 @@ export class MapEditorPage implements OnInit {
   
   onbannerSelect(bannerSelect) {
       this.bannerSelect = bannerSelect;
-      this.tabSelect = 'position';
       this.bannerSelect.hoverEffects = this.bannerSelect.hoverEffects || '';
       this.hoverEffects.forEach((effect)=>{
          effect.isChecked = this.bannerSelect.hoverEffects.includes(effect.name);
@@ -301,15 +335,44 @@ export class MapEditorPage implements OnInit {
       }
   }
   
+  addArrowLineCurve() {
+    const id = new Date().valueOf();
+    const banner = {"isLine":true, "style": "container-arrow--curve","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
+    this.scene.banners.push(banner);
+  }
+
+  addArrowLineRect() {
+    const id = new Date().valueOf();
+    const banner = {"isLine":true, "style":"container-arrow--rect","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
+    this.scene.banners.push(banner);
+  }
+
+  addArrowLineLine() {
+    const id = new Date().valueOf();
+    const banner = {"isLine":true, "style":"container-arrow--line","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
+    this.scene.banners.push(banner);
+  }
+
+
   addBanner() {
     const id = new Date().valueOf();
-    const banner = {"backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id,"perspective":400, "border":{"style":"solid","color":"#000","radius":20,"width":1}};
+    const banner = {"fontSize":12,"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id,"border":{"style":"solid","color":"#000","radius":20,"width":1},
+    "toolTipArrow":"arrow--2"};
     this.scene.banners.push(banner);
+  }
+
+  addText() {
+    const id = new Date().valueOf();
+    const banner = {"fontSize":12,"fontColor":"#000000","text":"Texto aquí","position":{"y":256,"x":95},"rotation":{},"size":{"x":100,"y":20},"id":id,"border":{"style":"none","color":"#000","width":1}};
+    this.scene.banners.push(banner);
+  }
+
+  dragStart(event) {
     
   }
   
-  dragEnd(event) {
-    const panel = document.querySelector<HTMLElement>('.pane-scene-select');
+  dragPanelSceneSelectEnd(event) {
+    const panel = document.querySelector<HTMLElement>('.panel-scene-select');
     this.panelPos.y = ( panel.offsetTop  + event.y ) + 'px';
     this.panelPos.x = ( panel.offsetLeft  + event.x ) + 'px';
   }
@@ -332,22 +395,12 @@ export class MapEditorPage implements OnInit {
         setTimeout(() => {
           this.fullScreen = false;
           this.onResize();
-          const main = document.querySelector<HTMLElement>('ion-router-outlet');
-          let newWidth = main.offsetWidth;
-          let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
-          this.scene.container.w = newWidth;
-          this.scene.container.h = newHeight;
       }, 300);
     });
     window.addEventListener('map:fullscreenIn', (e:any) => {
         setTimeout(() => {
           this.fullScreen = true;
           this.onResize();
-          const main = document.querySelector<HTMLElement>('ion-router-outlet');
-          let newWidth = main.offsetWidth;
-          let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
-          this.scene.container.w = newWidth;
-          this.scene.container.h = newHeight;
       }, 300);
     });
   }
@@ -412,7 +465,6 @@ export class MapEditorPage implements OnInit {
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       this.ngOnDestroy();
                        this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
@@ -425,7 +477,6 @@ export class MapEditorPage implements OnInit {
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       this.ngOnDestroy();
                        this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
@@ -438,7 +489,6 @@ export class MapEditorPage implements OnInit {
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       this.ngOnDestroy();
                        this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
@@ -481,7 +531,7 @@ export class MapEditorPage implements OnInit {
   defaultEscene(resources) {
       const main = document.querySelector<HTMLElement>('ion-router-outlet');
       resources.scenes = resources.scenes || [];
-      return { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': main.offsetWidth, 'h': main.offsetHeight },
+      return { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': 1092, 'h': 768 },
                'show': true,'menuIcon':'map-outline', 'title': 'Escena #' + (resources.scenes.length + 1) };
   }
   
@@ -492,7 +542,22 @@ export class MapEditorPage implements OnInit {
   compareFn(e1: any, e2: any): boolean {
     return e1 && e2 ? e1.value == e2.value : e1 == e2;
   }  
+  
+  onToogleBannerPanel() {
+    this.fixedBannerPanel = !this.fixedBannerPanel;
+    if(this.fixedBannerPanel) {
+       const main = document.querySelector<HTMLElement>('ion-router-outlet');
+       const panel = document.querySelector<HTMLElement>('.panel-scene-select');
+       this.panelPos.x = ( main.offsetWidth - panel.offsetWidth - 100 ) + 'px';
+       this.panelPos.y = '0';
+    }
+  }
+  
+  fixedBannerPanelValidator({ x, y }: any): boolean {
+    const icon = document.querySelector<HTMLElement>('#fixed-banner-icon');
+    return icon.getAttribute('ng-reflect-name') === 'move-outline';
+  }
+
+
+
 }
-
-
-

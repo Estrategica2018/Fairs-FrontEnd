@@ -1,6 +1,4 @@
 .scene {
-  top: 40px;
-  left: 180px;
   position: absolute;
 }
 
@@ -36,7 +34,7 @@
 
 .panel-scene-plus {
   position: absolute;
-  top: 85px;
+  top: 125px;
   right: 0px;
   z-index: 11;
 }
@@ -72,6 +70,7 @@
 .div-container {
   width: 100%;
   overflow: auto;
+  position: absolute;
 }
 
 .scene-setting-panel {
@@ -83,14 +82,12 @@
 
 .tool-panel {
   position: absolute;
-  top: 84px;
+  top: 117px;
   right: -11px;
   width: 385px;
 }
-
-
   
-.pane-scene-select {
+.panel-scene-select {
   position: absolute;
   top: 0px;
   right: 52px;
@@ -98,10 +95,28 @@
 }
 
 .close {
-   position: absolute;
-   z-index: 2;
-   right: 19px;
-   top: 14px;
+  position: absolute;
+  z-index: 2;
+  right: 19px;
+  top: 14px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--color-selected);
+}
+
+.fixed {
+  position: absolute;
+  cursor: pointer;
+  z-index: 2;
+  left: 13px;
+  top: 8px;
+  font-size: 21px;
+}
+
+.fixed:hover {
+  color: var(--color-selected);
 }
 
 
@@ -163,14 +178,12 @@ ion-tab-button {
 }
 
 
-ion-toolbar {
-  height: 46px;
-}
+
 
 .icon-panel-scene {
   border: 1px solid red;
-  height: 72px;
-  width: 77px;
+  height: 54px;
+  width: 63px;
   border-radius: 16px;
   cursor: pointer;
 }
@@ -180,4 +193,25 @@ ion-toolbar {
   top: 23px;
   left: 33px;
   cursor: pointer;
+}
+
+
+.cube__face--right:hover {
+  border: 1px solid gray !important;
+}
+
+.line-arrow-button {
+  left: 11px;
+  top: 4px;
+  width: 29px;
+  height: 47px;
+  position: absolute;
+  border-width: 2px 0 0 2px;
+}
+
+.panel-show-item {
+  position: absolute;
+  top: 81px;
+  right: 0px;
+  z-index: 11;
 }

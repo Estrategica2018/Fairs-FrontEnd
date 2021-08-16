@@ -1,0 +1,269 @@
+@mixin css-arrow($height: 10px, $border: 2px, $color: #efefef, $border-color: #999, $direction: bottom, $outside: true) {
+  $border-shift: $border;
+  
+  @if $border > 0px {
+    $border: round($border * 1.41421356);
+  }
+  
+  &:after,
+  &:before {
+    border: solid transparent;
+    content: " ";
+    display: block;
+    height: 0;
+    position: absolute;
+    pointer-events: none;
+    width: 0;
+    
+    @if $direction == top {
+      @if $outside {
+        bottom: 100%;
+      }
+      @else {
+        margin-top: -$border-shift;
+        top: 0;
+      }
+    }
+    @if $direction == right {
+      @if $outside {
+        left: 100%;
+      }
+      @else {
+        margin-right: -$border-shift;
+        right: 0;
+      }
+    }
+    @if $direction == bottom {
+      @if $outside {
+        top: 100%;
+      }
+      @else {
+        bottom: 0; 
+        margin-bottom: -$border-shift;  
+      }
+    }
+    @if $direction == left {
+      @if $outside {
+        right: 100%;
+      }
+      @else {
+        left: 0;
+        margin-left: -$border-shift;
+      }
+    }
+  }
+
+  &:after {
+    border-color: rgba(255, 255, 255, 0);
+    @if $direction == top {
+      @if $outside {
+        border-bottom-color: $color;
+      }
+      @else {
+        border-top-color: $color;
+      }
+    }
+    @if $direction == right {
+      @if $outside {
+        border-left-color: $color;
+      }
+      @else {
+        border-right-color: $color;
+      }
+    }
+    @if $direction == bottom {
+      @if $outside {
+        border-top-color: $color;
+      }
+      @else {
+        border-bottom-color: $color;
+      }
+    }
+    @if $direction == left {
+      @if $outside {
+        border-right-color: $color;
+      }
+      @else {
+        border-left-color: $color;
+      }
+    }
+    
+    @if $direction == top or $direction == bottom {
+      left: 50%;
+      margin-left: -$height;
+    }
+    
+    @if $direction == left or $direction == right {
+      top: 50%;
+      margin-top: -$height;
+    }
+    
+    border-width: $height;
+  }
+
+  &:before {
+    border-color: rgba(255, 255, 255, 0);
+    @if $direction == top {
+      @if $outside {
+        border-bottom-color: $border-color;
+      }
+      @else {
+        border-top-color: $border-color;
+      }
+    }
+    @if $direction == right {
+      @if $outside {
+        border-left-color: $border-color;
+      }
+      @else {
+        border-right-color: $border-color;
+      }
+    }
+    @if $direction == bottom {
+      @if $outside {
+        border-top-color: $border-color;
+      }
+      @else {
+        border-bottom-color: $border-color;
+      }
+    }
+    @if $direction == left {
+      @if $outside {
+        border-right-color: $border-color;
+      }
+      @else {
+        border-left-color: $border-color;
+      }
+    }
+    
+    @if $direction == top or $direction == bottom {
+      left: 50%;
+      margin-left: -($height + $border);
+    }
+    
+    @if $direction == left or $direction == right {
+      top: 50%;
+      margin-top: -($height + $border);
+    }
+    
+    border-width: $height + $border;
+  }
+}
+
+// Variables
+$background: #000;
+$border-color:  #000;
+$border-size: 3px;
+
+
+.arrow {
+
+}
+
+.arrow--1 {
+  @include css-arrow(5px, $border-size, $background, $border-color, top);
+}
+
+.arrow--2 {
+  @include css-arrow(5px, $border-size, $background, $border-color, right);
+}
+
+.arrow--3 {
+  @include css-arrow(5px, $border-size, $background, $border-color, bottom);
+}
+
+.arrow--4 {
+  @include css-arrow(5px, $border-size, $background, $border-color, left);
+}
+
+.arrow--5 {
+  @include css-arrow(5px, 0, $background);
+  border: none;
+}
+
+.arrow--6 {
+  @include css-arrow(5px, $border-size, #f8f8f8, $border-color, top, false);
+}
+
+.arrow--7 {
+  @include css-arrow(5px, $border-size, #f8f8f8, $border-color, right, false);
+}
+
+.arrow--8 {
+  @include css-arrow(5px, $border-size, #f8f8f8, $border-color, bottom, false);
+}
+
+.arrow--9 {
+  @include css-arrow(5px, $border-size, #f8f8f8, $border-color, left, false);
+}
+
+.arrow--10 {
+  @include css-arrow(5px, 0, #f8f8f8, none, bottom, false);
+  border: none;
+}
+
+:root {
+  --highlight-color: gray;
+}
+
+.container-arrow--curve {
+     position: fixed;
+     .arrow__body {
+       width: 100%;
+       height: 95%;
+       margin-left: 11px;
+       border-width: 5px 0 0 5px;
+       border-style: dashed;
+       border-color: var(--highlight-color);
+       border-top-left-radius: 100%;
+     }
+     .arrow__body::after {
+       content: '';
+       position: absolute;
+       bottom: 0;
+       left: 0;
+       border-width: 20px 15px 0;
+       border-style: solid;
+       border-color: var(--highlight-color)    transparent transparent;
+    }
+}
+
+.container-arrow--rect {
+     position: fixed;
+     bottom: 0;
+     background: transparent;
+     .arrow__body {
+       width: 100%;
+       height: 95%;
+       margin-left: 11px;
+     }
+     .arrow__body::after {
+       content: '';
+       position: absolute;
+       bottom: 0;
+       left: 0;
+       border-width: 20px 15px 0;
+       border-style: solid;
+       border-color: var(--highlight-color)    transparent transparent;
+    }
+}
+
+.container-arrow--line {
+     position: fixed;
+     bottom: 0;
+     background: transparent;
+     .arrow__body {
+       width: 0 !important;
+       height: 95%;
+       margin-left: 11px;
+     }
+     .arrow__body::after {
+       content: '';
+       position: absolute;
+       bottom: 0;
+       left: 0;
+       border-width: 20px 15px 0;
+       border-style: solid;
+       border-color: var(--highlight-color)    transparent transparent;
+    }
+}

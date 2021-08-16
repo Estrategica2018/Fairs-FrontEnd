@@ -29,6 +29,7 @@ export class SpeakerListPage {
     this.speakersService.list()
      .then((data) => {
         this.loading.dismiss();
+        console.log(data);
         this.speakers = data;
      },error => {
         this.loading.dismiss();

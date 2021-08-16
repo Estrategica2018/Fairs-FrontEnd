@@ -1,8 +1,8 @@
 
 export const environment = {
-  production: false,
-  message: 'hello prod'
+  production: true,
+  message: 'hello prod',
+  fairName: ''
 };
 
-//export const SERVER_URL = 'http://3.137.162.227/';
 export const SERVER_URL = 'https://e-logic.com.co/';

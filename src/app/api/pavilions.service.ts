@@ -77,7 +77,7 @@ export class PavilionsService {
   }
   
   refreshCurrentPavilion() {
-	  this.pavilions = null;
+      this.pavilions = null;
   }
    
 }

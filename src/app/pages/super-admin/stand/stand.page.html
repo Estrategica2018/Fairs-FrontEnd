@@ -3,13 +3,13 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/super-admin/pavilion/{{pavilion?.id}}"></ion-back-button>
     </ion-buttons>
-	<ion-buttons slot="end" *ngIf="stand?.id">
-	  <ion-button color="danger" (click)="deleteStand()">
-		<ion-icon slot="start" name="trash-outline"></ion-icon>
-		Borrar
-	  </ion-button>
-	</ion-buttons>
-	<ion-title>Administrar Local comercial</ion-title>
+    <ion-buttons slot="end" *ngIf="stand?.id">
+      <ion-button color="danger" (click)="deleteStand()">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Borrar
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Administrar Local comercial</ion-title>
   </ion-toolbar>
 </ion-header>
 

@@ -27,7 +27,7 @@
   <div *ngIf="showPaymentFair">
      <button class="button-price" ion-button icon-start (click)="openTemplateFair()">
      <ion-icon name="bookmark"></ion-icon>
-     Paga el valor de la Feria <strong> ${{fair?.price}} </strong>
+     Paga el valor total de la Feria <strong>  {{fair?.price  | currency: 'COP $ ':'symbol':'1.0'}} </strong>
      </button>
   </div>
   

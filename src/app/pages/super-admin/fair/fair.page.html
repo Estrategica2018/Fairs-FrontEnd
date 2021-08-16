@@ -20,10 +20,10 @@
      </div>
    </ion-item>
       
-  <form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container">
+  <form #submitForm="ngForm" novalidate class="padding-container">
     <ion-list lines="" *ngIf="fair" class="padding-container">
     
-      <ion-item lines="none">
+      <ion-item lines="none" class="mt-3">
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
           <div class="d-flex ml-auto" style="overflow-x: scroll;" >
               <ion-item  *ngFor="let scene of fair?.resources?.scenes;let i = index" class="scene-icon-mini customSceneCSSClass{{i}}" 
@@ -62,7 +62,7 @@
       </ion-item>
       <ion-item button="true">
         <ion-label> Descripción </ion-label>
-        <ion-input class="ml-auto" class="text-right" required [(ngModel)]="fair.description" name="description" (ionChange)="ionChange()" (ionInput)="ionChange()"></ion-input>
+        <ion-input type="text" class="ml-auto" class="text-right" required [(ngModel)]="fair.description" [ngModelOptions]="{standalone: true}" (ionChange)="ionChange()" (ionInput)="ionChange()"></ion-input>
       </ion-item>
       <ion-item>
           <ion-label>Fecha de inicio</ion-label>
@@ -110,7 +110,7 @@
                   <p>{{pavilion?.stands?.length }} locales asociados</p>
                 </ion-label>
               </ion-item>    
-            </div>
+          </div>
          <ion-buttons slot="end">
             <ion-button routerLink="/super-admin/pavilion/" routerLinkActive="active" routerDirection="root" detail="false">
               <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
@@ -144,7 +144,7 @@
          <ion-img class="ml-auto" [src]="agenda.resources?.url_image"></ion-img>
         </ion-thumbnail>
      </ion-item>
-	 
+     
      <ion-item button="true">
         <ion-label> Contacto de soporte </ion-label>
         <input class="ml-auto" class="text-right" required [(ngModel)]="fair.resources.supportContact" name="description" (ionChange)="ionChange()" (ionInput)="ionChange()">

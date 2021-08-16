@@ -29,6 +29,10 @@ export class PavilionPage implements OnInit {
     private router: Router
     ) { }
 
+  ngDoCheck(){
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
+  
   ngOnInit() {
     this.loading.present({message:'Cargando...'});
     this.errors = null;
@@ -73,10 +77,14 @@ export class PavilionPage implements OnInit {
     this.loading.present({message:'Cargando...'});
     if(this.pavilion.id) {
         this.adminPavilionsService.update(this.pavilion)
-       .then((response) => {
+       .then((pavilion) => {
           this.loading.dismiss();
           this.errors = null;
-          this.pavilion = response.pavilion;
+          this.success = `Pabellón modificado exitosamente`;
+          this.fairsService.refreshCurrentFair();
+          this.pavilionsService.refreshCurrentPavilion();
+          this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
+          this.pavilion = pavilion;
       })
       .catch(error => {
         this.loading.dismiss();
@@ -91,7 +99,6 @@ export class PavilionPage implements OnInit {
           this.errors = null;
           this.success = `Pabellón creado exitosamente`;
           this.fairsService.refreshCurrentFair();
-          this.pavilionsService.refreshCurrentPavilion();
           this.pavilionsService.refreshCurrentPavilion();
           this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
       })

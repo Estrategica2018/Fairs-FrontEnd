@@ -5,7 +5,7 @@ import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
 import { processData } from '../providers/process-data';
-
+import { environment, SERVER_URL } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -58,8 +58,13 @@ export class FairsService {
     if(this.fair === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
         return new Promise((resolve, reject) => {
             try {
-                //this.fairName = window.location.href.split('.')[0].replace('http://','').replace('https://','');
-                this.fairName = 'feriatecnologica2021';
+				if(environment.production ) {
+                     this.fairName = window.location.href.split('.')[0].replace('http://','').replace('https://','');
+                }
+                else {
+                   this.fairName = environment.fairName;
+                }
+                
             } catch(error) {
                 reject(`No se encontró nombre de la feria`);
             }
@@ -68,6 +73,7 @@ export class FairsService {
              .then((data) => {    
                 if(data && data.success == 201 && data.data )
                 for(let fair of data.data ) {
+					
                     if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
                       this.refresTime = moment();
                       this.fair = processData(fair);
@@ -90,6 +96,7 @@ export class FairsService {
                     }
                 }
                 reject(`No se encontraron datos para la feria: ${this.fairName}`);
+				//window.location.href = SERVER_URL;
               },error => { 
                 reject(error)
              })

@@ -2,7 +2,7 @@
  <ion-toolbar>
   <ion-title>Contacto de soporte</ion-title>
     <ion-buttons slot="secondary">
-	  <app-social-media></app-social-media>
+      <app-social-media></app-social-media>
    </ion-buttons>
    <ion-item  class="d-block d-md-none p-0 m-0">
     <ion-grid>
@@ -47,6 +47,21 @@
         <img src="assets/icon/icon.png" alt="Feria logo" *ngIf="!dark">
         <img src="assets/icon/icon-black.png" alt="Feria logo" *ngIf="dark">
      </ion-item>
+     
+     
+        <ion-item [hidden]="!errors" class="not-found">
+          <div class="alert alert-danger m-auto">
+            <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+            <strong>Error!</strong> {{errors}}
+          </div>
+        </ion-item>
+        
+        <ion-item [hidden]="!success">
+          <div class="alert alert-success m-auto">
+            <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+            <strong></strong> {{success}}
+          </div>
+        </ion-item>
       
      <form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="padding-container">
         <ion-item class="form-row mt-4" line="none">
@@ -94,19 +109,6 @@
               <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
             </ion-button>
           </ion-buttons>
-        </ion-item>
-        <ion-item [hidden]="!errors" class="not-found">
-          <div class="alert alert-danger m-auto">
-            <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-            <strong>Error!</strong> {{errors}}
-          </div>
-        </ion-item>
-        
-        <ion-item [hidden]="!success">
-          <div class="alert alert-success m-auto">
-            <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
-            <strong></strong> {{success}}
-          </div>
         </ion-item>
         
         <ion-item class="mb-3">

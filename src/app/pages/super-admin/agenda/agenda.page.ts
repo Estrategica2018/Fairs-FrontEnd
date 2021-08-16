@@ -46,8 +46,12 @@ export class AgendaPage implements OnInit {
     private routerOutlet: IonRouterOutlet,
     private actionSheetController: ActionSheetController
     ) { 
-        this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': '/assets/icon/null-21_1_joxd4u.jpg' } };
+        this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': 'https://res.cloudinary.com/dfxkgtknu/image/upload/v1618157128/feria1/null-21_1_joxd4u.jpg' } };
     }
+    
+  ngDoCheck(){
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   ngOnInit() {
       
@@ -55,7 +59,6 @@ export class AgendaPage implements OnInit {
         this.fair = fair;
         
         const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
-        console.log(agendaId);
         if(agendaId!=null) {
             this.agendasService.
             getEmails(this.fair.id, agendaId).then((response)=>{
@@ -68,6 +71,37 @@ export class AgendaPage implements OnInit {
                 this.errors = error;
             });
         }
+        
+        this.categoryService.list('AgendaType',this.fair).then((response)=>{
+            if(response.success == 201) {
+                this.categories = response.data;
+                const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
+                if(agendaId ) {
+                  this.action = 'update';
+                  this.loading.present({message:'Cargando...'});
+                  this.agendasService.get(agendaId)
+                   .then((agenda) => {
+                      this.loading.dismiss();
+                      this.errors = null;
+                      this.agenda = agenda;
+                      this.agenda.duration_time = this.agenda.duration_time.toString();
+                      if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
+                      this.agenda.start_at_str = moment(this.agenda.start_at).format('DD/MM/YYYY HH:mm');
+                  })
+                  .catch(error => {
+                     this.loading.dismiss();
+                     this.errors = error;
+                  });
+                }
+                else { 
+                  this.action = 'create';
+                }
+            }
+            else {
+                this.errors = `Consultando las categorias de agenda`;
+            }
+        });
+
     });
     
     this.speakersService.
@@ -78,35 +112,6 @@ export class AgendaPage implements OnInit {
         this.errors = error;
     });
     
-    this.categoryService.list('AgendaType').then((response)=>{
-        if(response.success == 201) {
-            this.categories = response.data;
-            const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
-            if(agendaId ) {
-              this.action = 'update';
-              this.loading.present({message:'Cargando...'});
-              this.agendasService.get(agendaId)
-               .then((agenda) => {
-                  this.loading.dismiss();
-                  //this.errors = null;
-                  this.agenda = agenda;
-                  this.agenda.duration_time = this.agenda.duration_time.toString();
-                  if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
-                  this.agenda.start_at_str = moment(this.agenda.start_at).format('DD/MM/YYYY HH:mm');
-              })
-              .catch(error => {
-                 this.loading.dismiss();
-                 this.errors = error;
-              });
-            }
-            else { 
-              this.action = 'create';
-            }
-        }
-        else {
-            this.errors = `Consultando las categorias de agenda`;
-        }
-    });
   }
   
   durations: any[] = [
@@ -138,7 +143,7 @@ export class AgendaPage implements OnInit {
   onCreateAgenda() {
     const data = Object.assign({ 'topic': this.agenda.title, 
                                  'agenda' : this.agenda.description, 'fair_id': this.fair.id,
-                                 'category_id': this.agenda.category.id        }, this.agenda);
+                                 'category_id': this.agenda.category.id }, this.agenda);
     
     this.errors = null;
     this.success = null;
@@ -147,11 +152,10 @@ export class AgendaPage implements OnInit {
     this.adminAgendasService.create(data)
       .then((response) => {
         this.loading.dismiss();
+            this.agenda = response.agenda;    
+            this.fairsService.refreshCurrentFair();
             this.success = `Agenda creada exitosamente`;
-            const tab = `/super-admin/agenda/${data.id}`;
-            this.onRouterLink(tab);
-            //response.agenda.category = this.agenda.category;
-            //this.agenda = response.agenda;
+            this.onRouterLink(`/super-admin/agenda/${this.agenda.id}`);
       },
       (error) => {
           this.loading.dismiss();
@@ -171,7 +175,9 @@ export class AgendaPage implements OnInit {
     
     this.adminAgendasService.update(data)
       .then((response) => {
+        this.fairsService.refreshCurrentFair();
         this.success = `Agenda modificada exitosamente`;
+        this.onRouterLink(`/super-admin/agenda/${this.agenda.id}`);
         this.loading.dismiss();
       },
       (error) => {

@@ -32,6 +32,10 @@ export class StandPage implements OnInit {
     private merchantsService: MerchantsService,
     private actionSheetController: ActionSheetController
     ) { }
+    
+  ngDoCheck(){
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
 
   ngOnInit() {
     const pavilionId = this.route.snapshot.paramMap.get('pavilionId');

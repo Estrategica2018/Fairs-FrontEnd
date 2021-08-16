@@ -59,7 +59,6 @@ export class SchedulePage implements OnInit {
   }
 
   ngOnInit() {
-  
   }
   
   ngDoCheck(){

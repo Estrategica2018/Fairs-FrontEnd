@@ -61,7 +61,7 @@
             </div>
           </ion-item>
           <ion-item lines="none">
-            <input type="checkbox" formControlName="acceptTerms" id="acceptTerms" class="mt-3 form-check-input" [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }" />
+            <ion-checkbox formControlName="acceptTerms" id="acceptTerms" class="mt-3" [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }"> </ion-checkbox>
             <ion-label position="stacked" class="font-18px acceptTerms">
                 Acepto términos y condiciones <span class="required"> (*) </span>
             </ion-label>

@@ -19,7 +19,7 @@ export class MapPage implements AfterViewInit, OnInit {
   errors = null;
   fair = null;
   isHover = null;
-  marginTabs = '444';
+  marginMenuTabs = { x: '50%', y: '0'};
   
   constructor(
     private fairsService: FairsService,
@@ -28,6 +28,7 @@ export class MapPage implements AfterViewInit, OnInit {
     private animationCtrl: AnimationController,
     private loading: LoadingService) {
       this.listenForFullScreenEvents();
+      
   }
   
   ngOnInit() {
@@ -36,12 +37,16 @@ export class MapPage implements AfterViewInit, OnInit {
   
   ngAfterViewInit() {
      this.initializeScreen();
+     
   }
   
   ngDoCheck(){
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      main.style.top = top + 'px';
+
+     const div = document.querySelector<HTMLElement>('.div-container');
+     div.addEventListener('scroll', this.logScrolling);
      
      this.initializeMenu();
   }
@@ -52,7 +57,6 @@ export class MapPage implements AfterViewInit, OnInit {
 
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
-        this.loading.dismiss();
         
         if(this.router.url.indexOf('/fair') >=0 ) {
             const sceneId = this.route.snapshot.paramMap.get('sceneId');
@@ -68,8 +72,23 @@ export class MapPage implements AfterViewInit, OnInit {
                 }
             });
         }
+        else if(this.router.url.indexOf('/stand') >= 0) {
+          const sceneId = this.route.snapshot.paramMap.get('sceneId');
+          const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
+          const standId = this.route.snapshot.paramMap.get('standId');
+          fair.pavilions.forEach((pavilion)=>{
+              if(pavilion.id == pavilionId) {
+                pavilion.stands.forEach((stand)=>{
+                   if(stand.id == standId) {
+                      this.scene = stand.resources.scenes[sceneId];
+                   }
+                });
+              }
+          });
+        }
         
         this.scene.banners = this.scene.banners || [];
+        this.loading.dismiss();
         this.onResize();
         
     }, error => {
@@ -77,18 +96,11 @@ export class MapPage implements AfterViewInit, OnInit {
         console.log(error);
         this.errors = `Consultando el servicio del mapa general de la feria`;
     });
-  
-    const div = document.querySelector<HTMLElement>('.div-container');
-    div.addEventListener('scroll', this.logScrolling);
-  }
 
-  onLoadingDismiss(){
-    this.loading.dismiss();
   }
 
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));    
-    this.onResize();         
   }
     
   onRouterLink(tab) {
@@ -97,15 +109,16 @@ export class MapPage implements AfterViewInit, OnInit {
     this.router.navigate([tab]);
   }
   
-  ngOnDestroy(): void {
-     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
-  }
+  
   
   @HostListener('window:resize', ['$event'])
   onResize() {
 
      if(!this.scene.container) return;
      
+	 const div = document.querySelector<HTMLElement>('.div-container');
+     div.addEventListener('scroll', this.logScrolling);
+	 
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
@@ -115,10 +128,13 @@ export class MapPage implements AfterViewInit, OnInit {
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
      
-     this.scene.container.w = newWidth;
-     if(newHeight<main.offsetWidth) {
-        newHeight = main.offsetHeight - top;
+     if(newHeight < main.offsetHeight) {
+         newHeight = window.innerHeight;
+         newWidth = newHeight * this.scene.container.w / this.scene.container.h;
+         deltaW =  this.scene.container.w / newWidth;
+         deltaH = this.scene.container.h / newHeight;
      }
+     this.scene.container.w = newWidth;
      this.scene.container.h = newHeight;
      this.scene.banners.forEach((banner)=>{
         if(banner.size) { 
@@ -138,18 +154,27 @@ export class MapPage implements AfterViewInit, OnInit {
   
   initializeMenu() {
      const tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
-     const main = document.querySelector<HTMLElement>('ion-router-outlet');
-     
+     const main = document.querySelector<HTMLElement>('#ionContent');
+     const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      if(tabsmenu && tabsmenu.offsetWidth > 0) {
-         this.marginTabs = ((main.offsetWidth - tabsmenu.offsetWidth) / 2) + 'px';
+         this.marginMenuTabs.x = ((main.offsetWidth - tabsmenu.offsetWidth) / 2) + 'px';
+         this.marginMenuTabs.y = ( window.innerHeight - top - 38 )+'px';
      }
      else {
-         setTimeout(function(){ this.initializeMenu(); }, 3000);
+         //setTimeout(function(){ this.initializeMenu(); }, 3000);
      }
   }
 
+logScrollStart(e){ 
+  console.log(e);
+}
+
+logScrollEnd(e){ 
+  console.log(e);
+}
+
   logScrolling(e) {
-      
+      console.log(e);
       let target = e.target;
       //document.querySelector<HTMLElement>('.scene').style.top += 20;
       

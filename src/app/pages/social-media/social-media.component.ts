@@ -8,7 +8,14 @@ import { Component, OnInit } from '@angular/core';
 export class SocialMediaComponent implements OnInit {
 
   constructor() { }
+  
+  isHover = null;
 
   ngOnInit() {}
+  
+  openInNewTab(url) {
+    var win = window.open(url, '_blank');
+    win.focus();
+  }
 
 }

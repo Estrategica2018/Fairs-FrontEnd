@@ -32,11 +32,11 @@
             <br />
             <ion-item [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color,'color': session.category?.color}"> 
             <ion-label class="ml-4 text-uppercase"> {{session?.category?.name}}</ion-label>
-			<br /><br />
+            <br /><br />
             </ion-item>
             
           </div>
-		  <ion-list>
+          <ion-list>
             <ion-item routerLink="/meeting/{{session.id}}" routerLinkActive="selected" routerDirection="root" >
               <ion-label color="primary">Entrar al evento</ion-label>
             </ion-item>
@@ -57,21 +57,21 @@
             <h1>{{session.title}}</h1>
             <br />
             <ion-item line="none"><ion-text>{{session.description}}</ion-text></ion-item>
-			<br /><br />
-			<ion-item>
-			  <ion-text color="medium">
+            <br /><br />
+            <ion-item>
+              <ion-text color="medium">
               {{session.strDay}}
               <br />
               {{session.timeStart}} &ndash; {{session.timeEnd}}
               <span>{{session.timezone}}</span>
               <br /> {{session.location}}
                </ion-text>
-			</ion-item>
-			<br /><br />
+            </ion-item>
+            <br /><br />
             <h4 *ngIf="session?.invited_speakers.length > 1">Conferencistas</h4>
             <h4 *ngIf="session?.invited_speakers.length === 1">Conferencista</h4>
             
-			<ion-item *ngFor="let invited_speaker of session.invited_speakers">
+            <ion-item *ngFor="let invited_speaker of session.invited_speakers">
             <ion-card class="speaker-card" routerLink="/speakers/speaker-details/{{invited_speaker.speaker?.id}}" >
                <ion-card-header> 
                   <div class="d-flex">
@@ -85,7 +85,7 @@
                   </div>
               </ion-card-header>
              </ion-card>
-			 </ion-item>
+             </ion-item>
           </ion-label>
         </ion-col>
       </ion-row>

@@ -12,20 +12,6 @@
     
 <ion-content fullscreen="true">
 
-    
-    <ion-item [hidden]="!errors" class="not-found">
-       <div class="alert alert-danger alert-dismissible">
-         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-         {{errors}}
-       </div>
-    </ion-item>
-
-    <ion-item [hidden]="!success">
-        <div class="alert alert-success alert-dismissible">
-          <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
-          <strong></strong> {{success}}
-        </div>
-    </ion-item>
      
   <ion-item class="padding-container agenda-logo mt-4" *ngIf="agenda" button="true" (click)="onChangeImage()">
     <img [src]="agenda?.resources?.url_image" *ngIf="agenda.resources?.url_image">

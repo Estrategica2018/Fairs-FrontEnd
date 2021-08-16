@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
-
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Storage } from '@ionic/storage';
@@ -11,6 +10,8 @@ import { LoadingService } from './providers/loading.service';
 import { FairsService } from './api/fairs.service';
 import { PavilionsService } from './api/pavilions.service';
 import { AlertController } from '@ionic/angular';
+import { Title } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,8 @@ import { AlertController } from '@ionic/angular';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
-   
+  
+  title = 'angulartitle';
   loggedIn = false;
   dark = false;
   errors: string = null;
@@ -43,7 +45,8 @@ export class AppComponent implements OnInit {
     private toastCtrl: ToastController,
     private loading: LoadingService,
     private fairsService: FairsService,
-    private pavilionsService: PavilionsService
+    private pavilionsService: PavilionsService,
+	private titleService: Title
   ) {
     this.initializeApp();
     this.initializeFair();
@@ -53,6 +56,7 @@ export class AppComponent implements OnInit {
       this.fairsService.getCurrentFair().
       then( fair => {
         this.fair = fair;
+		this.titleService.setTitle(this.fair.description);
       },error=> console.log(error));
   }
 

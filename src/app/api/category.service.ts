@@ -19,9 +19,9 @@ export class CategoryService {
   
   constructor(private http: HttpClient) { }
 
-  list(type): any {
+  list(type,fair): any {
     return new Promise((resolve, reject) => {
-        this.http.get(`/api/category/to_list/${type}`)
+        this.http.get(`/api/category/to_list/${fair.id}/${type}`)
         .pipe(
           timeout(30000),
           catchError(e => {
