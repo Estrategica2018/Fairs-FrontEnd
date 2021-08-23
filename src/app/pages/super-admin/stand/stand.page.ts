@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingService } from './../../../providers/loading.service';
 import { FairsService } from './../../../api/fairs.service';
 import { StandsService } from './../../../api/stands.service';
+import { ProductsService } from './../../../api/products.service';
 import { MerchantsService } from './../../../api/merchants.service';
 import { AdminStandsService } from './../../../api/admin/stands.service';
-import { ActivatedRoute } from '@angular/router';
-import { ActionSheetController } from '@ionic/angular';
-
+import { Router, ActivatedRoute } from '@angular/router';
+import { AlertController,ActionSheetController } from '@ionic/angular';
+import { PavilionsService } from './../../../api/pavilions.service';
 
 @Component({
   selector: 'app-stand',
@@ -22,15 +23,20 @@ export class StandPage implements OnInit {
   merchant: any;
   fair = null;
   errors: string = null;
+  success: string = null;
   
   constructor(
-    private standsService: StandsService,
     private adminStandsService: AdminStandsService,
     private route: ActivatedRoute,
     private loading: LoadingService,
     private fairsService: FairsService,
+    private pavilionsService: PavilionsService,
+    private standsService: StandsService,
+    private productsService: ProductsService,
     private merchantsService: MerchantsService,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private router: Router,
+    private alertCtrl: AlertController,
     ) { }
     
   ngDoCheck(){
@@ -56,14 +62,24 @@ export class StandPage implements OnInit {
               
               if(standId) {
                   this.standsService.get(pavilionId,standId)
-                   .then((stand) => {
-                      this.loading.dismiss();
-                      this.errors = null;
+                   .then((stand) => { 
                       this.stand = stand;
                       if(this.stand.merchant) {
                         this.merchant = this.stand.merchant;
                         this.stand.merchant_id = this.stand.merchant.id;
                       }
+                      
+                      this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id,null)
+                      .then((products) => {
+                          this.loading.dismiss();
+                          this.errors = null;
+                          this.stand.products = products;
+                      })
+                      .catch(error => {
+                         this.loading.dismiss();
+                         this.errors = error;
+                      });
+
                   })
                   .catch(error => {
                      this.loading.dismiss();
@@ -74,30 +90,35 @@ export class StandPage implements OnInit {
                     this.stand = { 
                          'nick':' #Nuevo Local Comercial',
                          'name': 'Descripción local comercial',
-                         'resources': {"scenes":[{'url_image':'https://dummyimage.com/1092x768/EFEFEF/000.png'}] }};
-                    this.loading.dismiss();
+                         'resources':  {'scenes':[]} 
+                   };
+                   this.loading.dismiss();
                 }
               
           })
           .catch(error => {
              this.errors = error;
+             this.loading.dismiss();
           });
       })
       .catch(error => {
+          this.loading.dismiss();
          this.errors = error;
       });
-      
-    
   }
   
   updateStand() {
       this.loading.present({message:'Cargando...'});
       this.stand.pavilion_id = this.pavilion.id;
       this.stand.merchant_id = this.merchant.id;
+      
       if(this.stand.id) {
           this.adminStandsService.update(this.stand)
           .then((stand) => {
              this.loading.dismiss();
+             this.fairsService.refreshCurrentFair();
+             this.success = `Local comercial modificado exitosamente`;
+             this.onRouterLink(`/super-admin/stand/${this.pavilion.id}/${stand.id}`);
              this.errors = null;
              this.stand = stand;
           })
@@ -113,6 +134,10 @@ export class StandPage implements OnInit {
              this.loading.dismiss();
              this.errors = null;
              this.stand = stand;
+             this.fairsService.refreshCurrentFair();
+             this.pavilionsService.refreshCurrentPavilion();
+             this.success = `Local comercial creado exitosamente`;
+             this.onRouterLink(`/super-admin/stand/${this.pavilion.id}/${stand.id}`);
           })
           .catch(error => {
             this.loading.dismiss();
@@ -121,17 +146,43 @@ export class StandPage implements OnInit {
       }
   }
   
-  deleteStand() {
-      this.adminStandsService.delete(this.stand)
-          .then((stand) => {
-             this.loading.dismiss();
-             this.errors = null;
-             this.stand = stand;
-          })
-          .catch(error => {
-            this.loading.dismiss();
-            this.errors = error;
-          });
+  async deleteStand() {
+      
+    
+      const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
+      header: 'Borrar Local comercial?',
+      subHeader: 'Confirmar para borrar el local comercial',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+          }
+        }, {
+          text: 'Confirmar',
+          cssClass: 'danger',
+          handler: (data) => {
+            this.adminStandsService.delete(this.stand)
+              .then((response) => {
+                   this.success = `Local comercial borrado exitosamente`;
+                   this.fairsService.refreshCurrentFair();
+                   this.pavilionsService.refreshCurrentPavilion();
+                   this.onRouterLink(`/super-admin/pavilion/${this.pavilion.id}`);
+              },
+              (error) => {
+                  this.errors = error;
+             })
+            .catch(error => {
+                this.errors = error; 
+             });        
+
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
   
   onChangeItem() {
@@ -177,7 +228,7 @@ export class StandPage implements OnInit {
       
       
     const actionSheet = await this.actionSheetController.create({
-      header: 'Albums',
+      header: 'Comercios',
       cssClass: 'my-custom-class',
       buttons: buttons
     });
@@ -185,6 +236,15 @@ export class StandPage implements OnInit {
 
     const { role } = await actionSheet.onDidDismiss();
     console.log('onDidDismiss resolved with role', role);
+  }
+  
+  
+  addNewProduct() {
+   
+  }
+  
+  onRouterLink(tab) {
+    this.router.navigate([tab]);
   }
   
 }

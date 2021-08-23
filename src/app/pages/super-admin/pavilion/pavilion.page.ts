@@ -58,9 +58,8 @@ export class PavilionPage implements OnInit {
             
                 this.pavilion = { 'name':'Pabellón #' + (this.fair.pavilions.length + 1),
                              'description': 'Descripción Pabellón #' + (this.fair.pavilions.length + 1),
-                             'resources':  {'scenes':[{
-                                 'url_image':'https://dummyimage.com/1092x768/EFEFEF/000.png'
-                             }]} };
+                             'resources':  {'scenes':[]} 
+                };
                 
                 this.fair.pavilions.push(this.pavilion);
                 this.loading.dismiss();

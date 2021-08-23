@@ -69,6 +69,9 @@ const routes: Routes = [
     path: 'map/fair5/:sceneId',
     loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
+  {     path: 'map/pavilion/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
+  },
   {     path: 'map/pavilion1/:pavilionId/:sceneId',
         loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
@@ -91,6 +94,9 @@ const routes: Routes = [
         loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
   {     path: 'map/pavilion8/:pavilionId/:sceneId',
+        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
+  },
+  {     path: 'map/stand/:pavilionId/:standId/:sceneId',
         loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
   {     path: 'map/stand1/:pavilionId/:standId/:sceneId',
@@ -146,6 +152,10 @@ const routes: Routes = [
   },  {
     path: 'wompi-payment-layout',
     loadChildren: () => import('./pages/wompi-payment-layout/wompi-payment-layout.module').then( m => m.WompiPaymentLayoutPageModule)
+  },
+  {
+    path: 'product-catalog',
+    loadChildren: () => import('./pages/product-catalog/product-catalog.module').then( m => m.ProductCatalogPageModule)
   }
 
 

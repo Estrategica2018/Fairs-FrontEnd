@@ -24,14 +24,21 @@
     Pagando este valor podrás acceder a todos los eventos exclusivos de la feria
   </ion-card-content>
   
-  <div *ngIf="objPrice && user" ><div class="payment-button" slot="end"></div></div>
+  <div *ngIf="objPrice && user">
+    <button class="button-price" ion-button icon-start (click)="showPaymentButton()">
+      <ion-icon name="bookmark"></ion-icon>
+       Paga <strong>  {{objPrice?.price  | currency: 'COP $ ':'symbol':'1.0'}} </strong>
+     </button>
+  </div>
+  <!--div *ngIf="objPrice && user" ><div class="button-price payment-button" slot="end">
 
-  <ion-item  href="#" class="ion-item-card ion-activated " *ngFor="let item of objPrice.resources">
+  </div-->
+	
+  <ion-item  href="#" class="ion-item-card ion-activated " *ngFor="let item of objPrice.resources.detailPayment">
     <ion-icon [name]="item.icon" slot="start"></ion-icon>
     <ion-label class="white-space">{{item.name}}</ion-label>
   </ion-item>
- 
-  
+
   <ion-item class="ion-item-card ion-activated" *ngIf="!user">
     <ion-icon name="warning" slot="start"></ion-icon>
     <ion-label class="white-space">Para acceder a estos eventos realiza primero el registro</ion-label>

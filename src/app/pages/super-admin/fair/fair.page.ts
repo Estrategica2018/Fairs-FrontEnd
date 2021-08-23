@@ -87,7 +87,7 @@ export class FairPage implements OnInit {
         this.setBackground();
         this.pavilions = fair.pavilions;
         this.showPrice = fair.price > 0;
-        console.log(this.fair.init_date);
+        
         this.agendasService.list()
         .then((agendas) => {
             this.agendas = agendas;
@@ -110,15 +110,6 @@ export class FairPage implements OnInit {
           this.loading.dismiss();
           this.errors = `Consultando el servicio para agenda: ${error}`;
       });
-  }
-  
-  onAddEscene() {
-      const main = document.querySelector<HTMLElement>('ion-router-outlet');
-      this.fair.resources.scenes = this.fair.resources.scenes || [];
-      const scene = { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': main.offsetWidth, 'h': main.offsetHeight },
-                      'show': true,'menuIcon':'map-outline', 'title': 'Escena #' + (this.fair.resources.scenes.length+1) };
-
-      this.fair.resources.scenes.push(scene);
   }
   
   ionChange() {
@@ -200,11 +191,18 @@ export class FairPage implements OnInit {
       message: "Ingresa las Url de los íconos la feria",
       inputs: [{
           name: 'icon',
+          label: 'Icono Logo',
           value: this.fair.social_media.icon,
           placeholder: ''
         },{
           name: 'iconNight',
+          label: 'Icono Logo Noche',
           value: this.fair.social_media.iconNight,
+          placeholder: ''
+        },{
+          name: 'iconMini',
+          label: 'Icono Pequeño',
+          value: this.fair.social_media.iconMini,
           placeholder: ''
         }],
       buttons: [{

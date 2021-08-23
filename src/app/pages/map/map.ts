@@ -19,7 +19,8 @@ export class MapPage implements AfterViewInit, OnInit {
   errors = null;
   fair = null;
   isHover = null;
-  marginMenuTabs = { x: '50%', y: '0'};
+  tabMenuObj:any;
+  resources = null;
   
   constructor(
     private fairsService: FairsService,
@@ -48,7 +49,7 @@ export class MapPage implements AfterViewInit, OnInit {
      const div = document.querySelector<HTMLElement>('.div-container');
      div.addEventListener('scroll', this.logScrolling);
      
-     this.initializeMenu();
+     div.style.height = ( window.innerHeight - top )  + 'px';
   }
   
   initializeScreen() {
@@ -61,6 +62,7 @@ export class MapPage implements AfterViewInit, OnInit {
         if(this.router.url.indexOf('/fair') >=0 ) {
             const sceneId = this.route.snapshot.paramMap.get('sceneId');
             this.scene = fair.resources.scenes[sceneId];
+            this.resources = fair.resources;
         }
         else if(this.router.url.indexOf('/pavilion') >= 0) {
             const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
@@ -68,6 +70,7 @@ export class MapPage implements AfterViewInit, OnInit {
             
             fair.pavilions.forEach((pavilion)=>{
                 if(pavilion.id == pavilionId) {
+                      this.resources = pavilion.resources;
                       this.scene = pavilion.resources.scenes[sceneId];
                 }
             });
@@ -80,6 +83,7 @@ export class MapPage implements AfterViewInit, OnInit {
               if(pavilion.id == pavilionId) {
                 pavilion.stands.forEach((stand)=>{
                    if(stand.id == standId) {
+                      this.resources = stand.resources;
                       this.scene = stand.resources.scenes[sceneId];
                    }
                 });
@@ -88,6 +92,13 @@ export class MapPage implements AfterViewInit, OnInit {
         }
         
         this.scene.banners = this.scene.banners || [];
+        
+        if(this.scene.menuTabs.showMenuParent) {
+           this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
+        }
+        else {
+            this.tabMenuObj = this.scene.menuTabs;
+        }
         this.loading.dismiss();
         this.onResize();
         
@@ -109,20 +120,16 @@ export class MapPage implements AfterViewInit, OnInit {
     this.router.navigate([tab]);
   }
   
-  
-  
   @HostListener('window:resize', ['$event'])
   onResize() {
 
+     const main = document.querySelector<HTMLElement>('ion-router-outlet');
+     
      if(!this.scene.container) return;
      
-	 const div = document.querySelector<HTMLElement>('.div-container');
-     div.addEventListener('scroll', this.logScrolling);
-	 
-     const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
-     
+   
      let newWidth = main.offsetWidth;
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
@@ -149,32 +156,12 @@ export class MapPage implements AfterViewInit, OnInit {
            banner.fontSize /= deltaW;
         }
      });
-     this.initializeMenu();
+     
   }
   
-  initializeMenu() {
-     const tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
-     const main = document.querySelector<HTMLElement>('#ionContent');
-     const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
-     if(tabsmenu && tabsmenu.offsetWidth > 0) {
-         this.marginMenuTabs.x = ((main.offsetWidth - tabsmenu.offsetWidth) / 2) + 'px';
-         this.marginMenuTabs.y = ( window.innerHeight - top - 38 )+'px';
-     }
-     else {
-         //setTimeout(function(){ this.initializeMenu(); }, 3000);
-     }
-  }
-
-logScrollStart(e){ 
-  console.log(e);
-}
-
-logScrollEnd(e){ 
-  console.log(e);
-}
 
   logScrolling(e) {
-      console.log(e);
+      
       let target = e.target;
       //document.querySelector<HTMLElement>('.scene').style.top += 20;
       

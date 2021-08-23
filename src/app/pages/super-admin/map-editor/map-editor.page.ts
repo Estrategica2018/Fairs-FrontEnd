@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, OnInit} from '@angular/core';
-import { HostListener } from "@angular/core";
+import { HostListener,ItemReorderEventDetail } from "@angular/core";
 import { FairsService } from './../../../api/fairs.service';
 import { AdminFairsService } from './../../../api/admin/fairs.service';
 import { AdminPavilionsService } from './../../../api/admin/pavilions.service';
@@ -11,6 +11,7 @@ import { AlertController, ModalController, IonRouterOutlet } from '@ionic/angula
 import { Router } from '@angular/router';
 import { Animation, AnimationController } from '@ionic/angular';
 import { processData } from '../../../providers/process-data';
+import { IonReorderGroup } from '@ionic/angular';
 
 @Component({
   selector: 'app-map-editor',
@@ -23,13 +24,18 @@ export class MapEditorPage implements OnInit {
   success = null;
   fixedBannerPanel = true;
   
+  @ViewChild('menuTabsbanner') menuTabsbanner: any;
+  @ViewChild(IonReorderGroup) reorderGroup: IonReorderGroup;
+  
   fullScreen = false;
+  tabMenuSelected = null;
   fair = null;
   pavilion = null;
   stand = null;
   bannerSelect = null;
   showTools = null;
   editSave = false;
+  editMenuTabSave = false;
   panelPos = { x: '27px', y: '0px' };
   mainObj = null;
   resources = null;
@@ -39,16 +45,18 @@ export class MapEditorPage implements OnInit {
   template = null;
   showTool = null;
   tabSelect = 'position';
-  showToolPanel = false;
-  showSceneTools = false;
-  showToolItemPanel = false;
-  bannerSelectHover = null;
+  showPanelTool = null;
   isHover = null;
+  bannerCopy = [];
+  tabMenuObj:any;
+  tabMenuInstance: any = null;
   hoverEffects = [ {"name":"GirarDerecha","isChecked":false},{"name":"GirarIzquierda","isChecked":false}];
-  @ViewChild('inputWidth', { static: true }) inputWidth: ElementRef;
+  groupOfLinks = [];
+  
+  
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
-  toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow Rigth","value":"arrow--4"},
-                        {"label":"Arrow Up Inside","value":"arrow--5"},{"label":"Array left Inside","value":"arrow--6"},{"label":"Arrow Down Inside","value":"arrow--7"},{"label":"Arrow Rigth Inside","value":"arrow--8"}];
+  toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow right","value":"arrow--4"},
+                        {"label":"Arrow Up Inside","value":"arrow--5"},{"label":"Array left Inside","value":"arrow--6"},{"label":"Arrow Down Inside","value":"arrow--7"},{"label":"Arrow right Inside","value":"arrow--8"}];
   fontFamilyList = [
     {'label':'Gill Sans Extrabold', 'value':'"Gill Sans Extrabold", Helvetica, sans-serif'},
     {'label':'Lucida Console', 'value': 'Courier, "Lucida Console", monospace'},
@@ -64,10 +72,10 @@ export class MapEditorPage implements OnInit {
     {'label':'Gill Sans', 'value': '"Gill Sans", serif'},
     {'label':'Helvetica Narrow', 'value': '"Helvetica Narrow", sans-serif'}
   ];
-  
+  menuIcons = ["accessibility-outline","add-outline","add-circle-outline","airplane-outline","alarm-outline","albums-outline","alert-outline","alert-circle-outline","american-football-outline","analytics-outline","aperture-outline","apps-outline","archive-outline","arrow-back-outline","arrow-back-circle-outline","arrow-down-outline","arrow-down-circle-outline","arrow-forward-outline","arrow-forward-circle-outline","arrow-redo-outline","arrow-redo-circle-outline","arrow-undo-outline","arrow-undo-circle-outline","arrow-up-outline","arrow-up-circle-outline","at-outline","at-circle-outline","attach-outline","backspace-outline","bag-outline","bag-add-outline","bag-check-outline","bag-handle-outline","bag-remove-outline","balloon-outline","ban-outline","bandage-outline","bar-chart-outline","barbell-outline","barcode-outline","baseball-outline","basket-outline","basketball-outline","battery-charging-outline","battery-dead-outline","battery-full-outline","battery-half-outline","beaker-outline","bed-outline","beer-outline","bicycle-outline","bluetooth-outline","boat-outline","body-outline","bonfire-outline","book-outline","bookmark-outline","bookmarks-outline","bowling-ball-outline","briefcase-outline","browsers-outline","brush-outline","bug-outline","build-outline","bulb-outline","bus-outline","business-outline","cafe-outline","calculator-outline","calendar-outline","calendar-clear-outline","calendar-number-outline","call-outline","camera-outline","camera-reverse-outline","car-outline","car-sport-outline","card-outline","caret-back-outline","caret-back-circle-outline","caret-down-outline","caret-down-circle-outline","caret-forward-outline","caret-forward-circle-outline","caret-up-outline","caret-up-circle-outline","cart-outline","cash-outline","cellular-outline","chatbox-outline","chatbox-ellipses-outline","chatbubble-outline","chatbubble-ellipses-outline","chatbubbles-outline","checkbox-outline","checkmark-outline","checkmark-circle-outline","checkmark-done-outline","checkmark-done-circle-outline","chevron-back-outline","chevron-back-circle-outline","chevron-down-outline","chevron-down-circle-outline","chevron-forward-outline","chevron-forward-circle-outline","chevron-up-outline","chevron-up-circle-outline","clipboard-outline","close-outline","close-circle-outline","cloud-outline","cloud-circle-outline","cloud-done-outline","cloud-download-outline","cloud-offline-outline","cloud-upload-outline","cloudy-outline","cloudy-night-outline","code-outline","code-download-outline","code-slash-outline","code-working-outline","cog-outline","color-fill-outline","color-filter-outline","color-palette-outline","color-wand-outline","compass-outline","construct-outline","contract-outline","contrast-outline","copy-outline","create-outline","crop-outline","cube-outline","cut-outline","desktop-outline","diamond-outline","dice-outline","disc-outline","document-outline","document-attach-outline","document-lock-outline","document-text-outline","documents-outline","download-outline","duplicate-outline","ear-outline","earth-outline","easel-outline","egg-outline","ellipse-outline","ellipsis-horizontal-outline","ellipsis-horizontal-circle-outline","ellipsis-vertical-outline","ellipsis-vertical-circle-outline","enter-outline","exit-outline","expand-outline","extension-puzzle-outline","eye-outline","eye-off-outline","eyedrop-outline","fast-food-outline","female-outline","file-tray-outline","file-tray-full-outline","file-tray-stacked-outline","film-outline","filter-outline","filter-circle-outline","finger-print-outline","fish-outline","fitness-outline","flag-outline","flame-outline","flash-outline","flash-off-outline","flashlight-outline","flask-outline","flower-outline","folder-outline","folder-open-outline","football-outline","footsteps-outline","funnel-outline","game-controller-outline","gift-outline","git-branch-outline","git-commit-outline","git-compare-outline","git-merge-outline","git-network-outline","git-pull-request-outline","glasses-outline","globe-outline","golf-outline","grid-outline","hammer-outline","hand-left-outline","hand-right-outline","happy-outline","hardware-chip-outline","headset-outline","heart-outline","heart-circle-outline","heart-dislike-outline","heart-dislike-circle-outline","heart-half-outline","help-outline","help-buoy-outline","help-circle-outline","home-outline","hourglass-outline","ice-cream-outline","id-card-outline","image-outline","images-outline","infinite-outline","information-outline","information-circle-outline","invert-mode-outline","journal-outline","key-outline","keypad-outline","language-outline","laptop-outline","layers-outline","leaf-outline","library-outline","link-outline","list-outline","list-circle-outline","locate-outline","location-outline","lock-closed-outline","lock-open-outline","log-in-outline","log-out-outline","magnet-outline","mail-outline","mail-open-outline","mail-unread-outline","male-outline","male-female-outline","man-outline","map-outline","medal-outline","medical-outline","medkit-outline","megaphone-outline","menu-outline","mic-outline","mic-circle-outline","mic-off-outline","mic-off-circle-outline","moon-outline","move-outline","musical-note-outline","musical-notes-outline","navigate-outline","navigate-circle-outline","newspaper-outline","notifications-outline","notifications-circle-outline","notifications-off-outline","notifications-off-circle-outline","nuclear-outline","nutrition-outline","open-outline","options-outline","paper-plane-outline","partly-sunny-outline","pause-outline","pause-circle-outline","paw-outline","pencil-outline","people-outline","people-circle-outline","person-outline","person-add-outline","person-circle-outline","person-remove-outline","phone-landscape-outline","phone-portrait-outline","pie-chart-outline","pin-outline","pint-outline","pizza-outline","planet-outline","play-outline","play-back-outline","play-back-circle-outline","play-circle-outline","play-forward-outline","play-forward-circle-outline","play-skip-back-outline","play-skip-back-circle-outline","play-skip-forward-outline","play-skip-forward-circle-outline","podium-outline","power-outline","pricetag-outline","pricetags-outline","print-outline","prism-outline","pulse-outline","push-outline","qr-code-outline","radio-outline","radio-button-off-outline","radio-button-on-outline","rainy-outline","reader-outline","receipt-outline","recording-outline","refresh-outline","refresh-circle-outline","reload-outline","reload-circle-outline","remove-outline","remove-circle-outline","reorder-four-outline","reorder-three-outline","reorder-two-outline","repeat-outline","resize-outline","restaurant-outline","return-down-back-outline","return-down-forward-outline","return-up-back-outline","return-up-forward-outline","ribbon-outline","rocket-outline","rose-outline","sad-outline","save-outline","scale-outline","scan-outline","scan-circle-outline","school-outline","search-outline","search-circle-outline","send-outline","server-outline","settings-outline","shapes-outline","share-outline","share-social-outline","shield-outline","shield-checkmark-outline","shield-half-outline","shirt-outline","shuffle-outline","skull-outline","snow-outline","sparkles-outline","speedometer-outline","square-outline","star-outline","star-half-outline","stats-chart-outline","stop-outline","stop-circle-outline","stopwatch-outline","storefront-outline","subway-outline","sunny-outline","swap-horizontal-outline","swap-vertical-outline","sync-outline","sync-circle-outline","tablet-landscape-outline","tablet-portrait-outline","telescope-outline","tennisball-outline","terminal-outline","text-outline","thermometer-outline","thumbs-down-outline","thumbs-up-outline","thunderstorm-outline","ticket-outline","time-outline","timer-outline","today-outline","toggle-outline","trail-sign-outline","train-outline","transgender-outline","trash-outline","trash-bin-outline","trending-down-outline","trending-up-outline","triangle-outline","trophy-outline","tv-outline","umbrella-outline","unlink-outline","videocam-outline","videocam-off-outline","volume-high-outline","volume-low-outline","volume-medium-outline","volume-mute-outline","volume-off-outline","walk-outline","wallet-outline","warning-outline","watch-outline","water-outline","wifi-outline","wine-outline","woman-outline","logo-alipay","logo-amazon","logo-amplify","logo-android","logo-angular","logo-apple","logo-apple-appstore","logo-apple-ar","logo-behance","logo-bitbucket","logo-bitcoin","logo-buffer","logo-capacitor","logo-chrome","logo-closed-captioning","logo-codepen","logo-css3","logo-designernews","logo-deviantart","logo-discord","logo-docker","logo-dribbble","logo-dropbox","logo-edge","logo-electron","logo-euro","logo-facebook","logo-figma","logo-firebase","logo-firefox","logo-flickr","logo-foursquare","logo-github","logo-gitlab","logo-google","logo-google-playstore","logo-hackernews","logo-html5","logo-instagram","logo-ionic","logo-ionitron","logo-javascript","logo-laravel","logo-linkedin","logo-markdown","logo-mastodon","logo-medium","logo-microsoft","logo-no-smoking","logo-nodejs","logo-npm","logo-octocat","logo-paypal","logo-pinterest","logo-playstation","logo-pwa","logo-python","logo-react","logo-reddit","logo-rss","logo-sass","logo-skype","logo-slack","logo-snapchat","logo-soundcloud","logo-stackoverflow","logo-steam","logo-stencil","logo-tableau","logo-tiktok","logo-tumblr","logo-tux","logo-twitch","logo-twitter","logo-usd","logo-venmo","logo-vercel","logo-vimeo","logo-vk","logo-vue","logo-web-component","logo-wechat","logo-whatsapp","logo-windows","logo-wordpress","logo-xbox","logo-xing","logo-yahoo","logo-yen"];
+  textAligns = [{"value":"center","label":"Centrado"},{"value":"justify","label":"Justificado"},{"value":"right","label":"Derecha"},{"value":"left","label":"Izquierda"}];
+  lineTypes = [{"value":"dashed","label":"Cortada"},{"value":"solid","label":"Sólida"},{"value":"dotted","label":"Punteada"},{"value":"double","label":"Doble"},{"value":"groove","label":"Sombreada"},{"value":"hidden","label":"Oculta"},]
   internalUrlList: any;
-  showItemPanel = false;
-  
   
   constructor(
     private alertCtrl: AlertController,
@@ -92,27 +100,39 @@ export class MapEditorPage implements OnInit {
   
   onToogleItem() {
     
-    
-    
   }
   
   ngAfterViewInit() {
      this.initializeScreen();
   }
 
+  ngDoCheck(){
+     const main = document.querySelector<HTMLElement>('ion-router-outlet');
+     const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
+     main.style.top = top + 'px';
+
+     const div = document.querySelector<HTMLElement>('.div-container');
+     div.addEventListener('scroll', this.logScrolling);
+     
+     div.style.height = ( window.innerHeight - top )  + 'px';
+  }
    
    initializeScreen() {
      this.bannerSelect = null; 
      this.loading.present({message:'Cargando...'});
-     this.template = this.route.snapshot.paramMap.get('template');
-     this.objId = this.route.snapshot.paramMap.get('objId');
+     const url = window.location.href;
+	 this.template = url.indexOf('super-admin/map-editor/fair')  >= 0 ? 'fair' : 
+	 url.indexOf('super-admin/map-editor/pavilion')  >= 0 ? 'pavilion' :
+	 url.indexOf('super-admin/map-editor/stand')  >= 0 ? 'stand' : '';
+	 
+     const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
+     const standId = this.route.snapshot.paramMap.get('standId');
      this.sceneId = this.route.snapshot.paramMap.get('sceneId');
      
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
 
      main.style.top = top + 'px';
-     
      
      const btnSave = document.querySelector<HTMLElement>('.panel-scene-save');
      const panelPosX = ( main.offsetWidth - btnSave.offsetWidth - 600 ) + 'px';
@@ -122,14 +142,15 @@ export class MapEditorPage implements OnInit {
      this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
         this.initializeInternalUrl();
-        
+        this.initializeGroupOfLinks();
+
         if(this.template === 'fair') {
           this.resources = fair.resources;
           this.scene = this.sceneId ? fair.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
         }
         else if(this.template === 'pavilion') {
           this.fair.pavilions.forEach((pavilion)=>{
-              if(pavilion.id == this.objId) {
+              if(pavilion.id == pavilionId) {
                 this.pavilion = pavilion;
                 this.resources = pavilion.resources;
                 this.scene = this.sceneId ? this.pavilion.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
@@ -138,8 +159,6 @@ export class MapEditorPage implements OnInit {
         }
         else if(this.template === 'stand') {
           
-          const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
-          const standId = this.route.snapshot.paramMap.get('standId');
           this.fair.pavilions.forEach((pavilion)=>{
               if(pavilion.id == pavilionId) {
                 this.pavilion = pavilion;
@@ -148,6 +167,7 @@ export class MapEditorPage implements OnInit {
                       this.stand = standEl;
                       this.resources = this.stand.resources;
                       this.scene = this.sceneId ? this.stand.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+                      
                    }
                 });
               }
@@ -155,18 +175,23 @@ export class MapEditorPage implements OnInit {
         }
         
         this.scene.banners = this.scene.banners || [];
+        this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
+        this.resources.menuTabs = this.resources.menuTabs || {};
+        
+        if(this.scene.menuTabs.showMenuParent) {
+           this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
+        }
+        else {
+            this.tabMenuObj = this.scene.menuTabs;
+        }
         this.loading.dismiss();
         this.onResize();  
-        const div = document.querySelector<HTMLElement>('.div-container');
-        div.addEventListener('scroll', this.logScrolling);
-        
         
      }, error => {
         this.loading.dismiss();
         console.log(error);     
         this.errors = `Consultando el servicio del mapa general de la feria`;
      });
-     
 
   }
   
@@ -192,13 +217,14 @@ export class MapEditorPage implements OnInit {
   
   @HostListener('window:resize', ['$event'])
   onResize() {
-
+    
+     const main = document.querySelector<HTMLElement>('ion-router-outlet');
+     
      if(!this.scene.container) return;
      
-     const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
-     
+    
      let newWidth = main.offsetWidth;
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
@@ -255,8 +281,7 @@ export class MapEditorPage implements OnInit {
       this.hoverEffects.forEach((effect)=>{
          effect.isChecked = this.bannerSelect.hoverEffects.includes(effect.name);
       });
-      this.showToolPanel = false; 
-      this.showSceneTools = false;
+      this.showPanelTool = 'settingsBanner';
       this.isHover = bannerSelect.id; 
   }
   
@@ -280,6 +305,11 @@ export class MapEditorPage implements OnInit {
          this.resources.scenes = this.resources.scenes || [];
          this.resources.scenes.push(this.scene);
       }
+      
+      if(this.editMenuTabSave && this.scene.menuTabs.showMenuParent) {
+          this.resources.menuTabs = this.tabMenuObj;
+      }
+      
       if(this.template === 'fair') {
           this.adminFairsService.update(this.fair)
           .then((response) => {
@@ -289,6 +319,8 @@ export class MapEditorPage implements OnInit {
               if(!this.sceneId) {
                   this.resources = processData(response.data_fair.resources);
                   this.sceneId = this.resources.scenes.length - 1;
+                  this.editMenuTabSave = null;
+                  this.editSave = null;
                   this.goToScene('fair',this.fair.id,this.sceneId);
               }
               this.ngOnInit();
@@ -335,6 +367,26 @@ export class MapEditorPage implements OnInit {
       }
   }
   
+  onSaveTabMenu(){
+      this.resources.menuTabs = this.resources.menuTabs || {'actions':[]};
+      this.resources.menuTabs.actions = this.resources.menuTabs.actions || [];
+      if(this.scene.menuTabs.showMenuParent) {
+          if(this.tabMenuInstance.isNew) {
+              this.tabMenuInstance.isNew = false;
+              this.tabMenuInstance.tabId = this.resources.menuTabs.actions.length + 1;
+              this.resources.menuTabs.actions.push(this.tabMenuInstance);
+              this.onChangeMenuTabs();
+          }
+      }
+      else {
+          if(this.tabMenuInstance.isNew) {
+              this.tabMenuInstance.isNew = false;
+              this.tabMenuInstance.tabId = this.scene.menuTabs.actions.length + 1;
+              this.scene.menuTabs.actions.push(this.tabMenuInstance);
+              this.onChangeMenuTabs();
+          }
+      }
+  }
   addArrowLineCurve() {
     const id = new Date().valueOf();
     const banner = {"isLine":true, "style": "container-arrow--curve","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
@@ -354,19 +406,42 @@ export class MapEditorPage implements OnInit {
   }
 
 
-  addBanner() {
+  addBanner(type) {
     const id = new Date().valueOf();
-    const banner = {"fontSize":12,"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id,"border":{"style":"solid","color":"#000","radius":20,"width":1},
-    "toolTipArrow":"arrow--2"};
-    this.scene.banners.push(banner);
+    let banner: any;
+    const _defaultBanner = {id:id,type:type,rotation:{"x":0,"y":0,"z":0},position: this.getNewPosition({"x":156,"y":195}),border:{"style":"none"},fontSize:16};
+    switch(type) { 
+      case 'Text':
+          banner = {"fontColor":"#000000","text":"Texto aquí","size":{"x":100,"y":20}};
+      break;
+      case 'Image':
+          banner = {"size":{"x":114,"y":105},"image_url": "https://dummyimage.com/114x105/EFEFEF/000.png"};
+      break;
+      case 'Carret':
+          banner = {"size":{"x":114,"y":105},"image_url": "https://dummyimage.com/114x105/EFEFEF/000.png"};
+      break;
+      case 'Video':
+          banner = {"size":{"x":114,"y":105},"video_url": "https://player.vimeo.com/video/286898202"};
+      break;
+      default:
+          banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
+                    "border":{"style":"solid","color":"#000","radius":20,"width":1}};
+      break;
+    }
+    
+    this.scene.banners.push(Object.assign(_defaultBanner,banner));
+  }
+  
+  getNewPosition(pos) {
+      this.scene.banners.forEach((banner)=>{
+          if(banner.position.x == pos.x && banner.position.y == pos.y) {
+              pos = this.getNewPosition({"x":pos.x + 10,"y":pos.y + 10});
+          }
+      });
+      return pos;
   }
 
-  addText() {
-    const id = new Date().valueOf();
-    const banner = {"fontSize":12,"fontColor":"#000000","text":"Texto aquí","position":{"y":256,"x":95},"rotation":{},"size":{"x":100,"y":20},"id":id,"border":{"style":"none","color":"#000","width":1}};
-    this.scene.banners.push(banner);
-  }
-
+  
   dragStart(event) {
     
   }
@@ -387,6 +462,23 @@ export class MapEditorPage implements OnInit {
         return bannerSelect != banner; 
     });
     this.bannerSelect = null;
+  }
+  
+  onCopyBanner(bannerSelect) {
+    this.bannerCopy.push(bannerSelect);
+  }
+  
+  onPasteBanner() {
+    let id = new Date().valueOf();
+    this.bannerCopy.forEach((banner)=>{
+       const newBanner = Object.assign({},banner);
+       newBanner.id = id;
+       newBanner.position = this.getNewPosition(banner.position);
+       this.scene.banners.push(newBanner);
+       id ++;
+    });
+    
+    this.bannerCopy = [];
   }
   
   listenForFullScreenEvents() {
@@ -505,6 +597,27 @@ export class MapEditorPage implements OnInit {
     await alert.present();
   }
   
+  async onDeleteTabMenu(tabMenuInstance) {
+    const alert = await this.alertCtrl.create({
+      message: 'Confirma para eliminar el menú',
+      buttons: [
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Aceptar',
+          handler: (data: any) => {
+              this.loading.present({message:'Cargando...'});
+              this.tabMenuObj.actions = this.tabMenuObj.actions.filter((tab,key)=>{
+                  return key != tabMenuInstance.tabId;
+              });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+  
   initializeInternalUrl() {
     this.internalUrlList = {'fair':[],'pavilions':[],'stands':[]};
     let scene, pavilion, stand;
@@ -516,13 +629,13 @@ export class MapEditorPage implements OnInit {
         pavilion = this.fair.pavilions[i];
         for(let j=0; j<pavilion.resources.scenes.length; j++) {
             scene = pavilion.resources.scenes[j];
-            this.internalUrlList.pavilions.push({'label':'Pabellón '+ pavilion.name + '. Escena - ' + (j+1), 'value':`/map/pavilion1/${pavilion.id}/${j}`});
+            this.internalUrlList.pavilions.push({'label':'Pabellón '+ pavilion.name + '. Escena - ' + (j+1), 'value':`/map/pavilion/${pavilion.id}/${j}`});
         }
         for(let j=0; j<pavilion.stands.length; j++) {
             stand = pavilion.stands[j];
             for(let j=0; j<stand.resources.scenes.length; j++) {
                 scene = stand.resources.scenes[j];
-                this.internalUrlList.stands.push({'label':'Local '+ stand.id + '. Escena - ' + (j+1), 'value':`/map/stand1/${pavilion.id}/${stand.id}/${j}`});
+                this.internalUrlList.stands.push({'label':'Local '+ stand.id + '. Escena - ' + (j+1), 'value':`/map/stand/${pavilion.id}/${stand.id}/${j}`});
             }
         }
     }
@@ -531,8 +644,14 @@ export class MapEditorPage implements OnInit {
   defaultEscene(resources) {
       const main = document.querySelector<HTMLElement>('ion-router-outlet');
       resources.scenes = resources.scenes || [];
-      return { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 'banners': [], 'container':  { 'w': 1092, 'h': 768 },
-               'show': true,'menuIcon':'map-outline', 'title': 'Escena #' + (resources.scenes.length + 1) };
+      
+      return { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 
+               'banners': [], 
+               'container':  { 'w': 1092, 'h': 768 },
+               'show': true,
+               'menuIcon': 'map-outline', 
+               'title': 'Escena #' + (resources.scenes.length + 1),
+               'menuTabs': {'showMenuParent':true, 'position':'none' }}
   }
   
   goToScene(template, objId, sceneId) {
@@ -558,6 +677,115 @@ export class MapEditorPage implements OnInit {
     return icon.getAttribute('ng-reflect-name') === 'move-outline';
   }
 
+  onSelectPanel(tabname) {
+     if(this.showPanelTool == tabname) {
+        this.showPanelTool = null;
+     }
+     else {
+        this.showPanelTool = tabname; 
+     }
+  }
 
+  onChangeColorTabMenu() {
+    let style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = '.tabs-menu.bottom::before, .tabs-menu.bottom::after {box-shadow: 0 -17px 0 0 '+this.tabMenuObj.backgroundColor+' !important}';
+    style.innerHTML += '.tabs-menu .head { background-color: ' + this.tabMenuObj.backgroundColorLogo + '} ';
+    style.innerHTML += '.tabs-menu.bottom .head::before, .tabs-menu.bottom .head::after { box-shadow: 0 -17px 0 0 ' + this.tabMenuObj.backgroundColorLogo + ' !important;}';
+    
+    document.getElementsByTagName('head')[0].appendChild(style);
+    this.onChangeMenuTabs();
+  }
+  
+  initializeGroupOfLinks() {
+
+    this.groupOfLinks = [];
+
+    let group, scene, pavilion, stand;
+    group = {'label':'Escenas de Feria', 'links': []};
+    for(let i=0; i<this.fair.resources.scenes.length; i++) {
+        scene = this.fair.resources.scenes[i];
+        group.links.push({'label':'Escena - ' + (i+1), 'value':`/map/fair/${i}`});
+    }
+    this.groupOfLinks.push(group);
+
+    for(let i=0; i<this.fair.pavilions.length; i++) {
+        pavilion = this.fair.pavilions[i];
+        group = {'label':'Escenas de Pabellón - ' + pavilion.name , 'links': []};
+        for(let j=0; j<pavilion.resources.scenes.length; j++) {
+            scene = pavilion.resources.scenes[j];
+            group.links.push({'label':'Escena - ' + (j+1), 'value':`/map/pavilion1/${pavilion.id}/${j}`});
+        }
+        this.groupOfLinks.push(group);
+        
+        for(let j=0; j<pavilion.stands.length; j++) {
+            stand = pavilion.stands[j];
+            group = {'label':'Escenas de Local - ' + stand.name , 'links': []};
+            for(let j=0; j<stand.resources.scenes.length; j++) {
+                scene = stand.resources.scenes[j];
+                group.links.push({'label': 'Escena - ' + (j+1), 'value':`/map/stand1/${pavilion.id}/${stand.id}/${j}`});
+            }
+            this.groupOfLinks.push(group);
+        }
+    }
+      
+  }
+
+  doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
+    // Before complete is called with the items they will remain in the
+    // order before the drag
+    console.log('Before complete', this.scene.banners);
+
+    // Finish the reorder and position the item in the DOM based on
+    // where the gesture ended. Update the items variable to the
+    // new order of items
+    
+    
+    let from = this.scene.banners[ev.detail.from];
+    let to = this.scene.banners[ev.detail.to];
+
+    let list = [];
+    this.scene.banners.forEach((banner, key)=>{
+        
+        if(ev.detail.from < ev.detail.to) { //down mode
+            if(key == ev.detail.to){
+                list.push(banner);
+                list.push(from);
+            }
+            else if( key < ev.detail.from || key > ev.detail.from && key < ev.detail.to || key > ev.detail.to) {
+                list.push(banner);
+            }
+        }
+        else { //up mode
+            if(key == ev.detail.to){
+                list.push(from);
+                list.push(banner);
+            }
+            else if( key < ev.detail.from || key > ev.detail.from && key < ev.detail.to || key > ev.detail.to) {
+                list.push(banner);
+            }
+        }
+    });
+    this.scene.banners = ev.detail.complete(this.scene.banners);
+    //this.scene.banners = list;
+  }
+
+  toggleReorderGroup() {
+    this.reorderGroup.disabled = !this.reorderGroup.disabled;
+  }
+  
+  toogleTabMenu() {
+    this.scene.menuTabs.showMenuParent = !this.scene.menuTabs.showMenuParent;
+    this.tabMenuObj = this.scene.menuTabs.showMenuParent ? this.resources.menuTabs : this.scene.menuTabs;
+  }
+  
+  onChangeMenuTabs() {
+      this.editSave = true;
+      this.editMenuTabSave = true;
+  }
+
+  setModifyTab(tab, i) {
+     this.tabMenuInstance = Object.assign(tab,{'tabId':i,'isNew':false});
+  }
 
 }

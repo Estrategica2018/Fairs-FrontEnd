@@ -2,3 +2,21 @@
   min-width: 129px;
   width: 100px;
 }
+.attributtes {
+  
+  .color-attributte {
+     width: 10px;
+	 height: 10px;
+	 border-radius: 10px;
+  }
+}
+
+.product-box {
+  
+}
+
+.product-box:hover {
+  border: 1px solid gray;
+  opacity: 0.8;
+  border-radius: 5px;
+}

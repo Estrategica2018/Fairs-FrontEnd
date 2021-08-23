@@ -55,10 +55,10 @@ export class FairsService {
   
   getCurrentFair(): any {
     
-    if(this.fair === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
+    if(this.fair === null || moment().isAfter(moment(this.refresTime).add(/*120 */1, 'seconds'))) {
         return new Promise((resolve, reject) => {
             try {
-				if(environment.production ) {
+                if(environment.production ) {
                      this.fairName = window.location.href.split('.')[0].replace('http://','').replace('https://','');
                 }
                 else {
@@ -73,7 +73,7 @@ export class FairsService {
              .then((data) => {    
                 if(data && data.success == 201 && data.data )
                 for(let fair of data.data ) {
-					
+                    
                     if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
                       this.refresTime = moment();
                       this.fair = processData(fair);
@@ -96,7 +96,7 @@ export class FairsService {
                     }
                 }
                 reject(`No se encontraron datos para la feria: ${this.fairName}`);
-				//window.location.href = SERVER_URL;
+                //window.location.href = SERVER_URL;
               },error => { 
                 reject(error)
              })

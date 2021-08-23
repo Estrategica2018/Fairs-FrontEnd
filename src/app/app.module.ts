@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { AppRoutingModule } from './app-routing.module';
+import { ComponentModule } from './components.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -31,9 +32,11 @@ import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
     }),
-	WompiPaymentLayoutPageModule
+	WompiPaymentLayoutPageModule,
+	ComponentModule
   ],
   declarations: [AppComponent],
+  entryComponents: [],
   providers: [
     InAppBrowser, 
     SplashScreen, 

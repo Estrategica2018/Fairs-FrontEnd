@@ -27,14 +27,14 @@
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
           <div class="d-flex ml-auto" style="overflow-x: scroll;" >
               <ion-item  *ngFor="let scene of fair?.resources?.scenes;let i = index" class="scene-icon-mini customSceneCSSClass{{i}}" 
-              button="true" routerLink="/super-admin/map-editor/fair/{{fair.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+              button="true" routerLink="/super-admin/map-editor/fair/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
                <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
                <h2 [hidden]="scene && scene.url_image" style="width: 82px; height: 41px;"><small>{{scene.title}}</small></h2>
               </ion-item>    
             </div>
 
          <ion-buttons slot="end">
-            <ion-button routerLink="/super-admin/map-editor/fair/{{fair.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+            <ion-button routerLink="/super-admin/map-editor/fair/" routerLinkActive="active" routerDirection="root" detail="false">
               <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
             </ion-button>
          </ion-buttons>
@@ -55,6 +55,7 @@
             <ion-col class="d-flex">
                <img [src]="fair?.social_media?.icon" class=" ml-auto icon">
                <img [src]="fair?.social_media?.iconNight" class="ml-3 icon">
+               <img [src]="fair?.social_media?.iconMini" class="ml-3 icon">
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -150,7 +151,7 @@
         <input class="ml-auto" class="text-right" required [(ngModel)]="fair.resources.supportContact" name="description" (ionChange)="ionChange()" (ionInput)="ionChange()">
      </ion-item>
      
-     <ion-button class="mt-4" expand="full" [disabled]="!editSave || !submitForm.valid " (click)="updateFair()">
+     <ion-button class="mt-4" expand="full" [disabled]="!editSave" (click)="updateFair()">
         <ion-label> Guardar cambios </ion-label>
         <ion-icon slot="end" name="save-outline"></ion-icon>
      </ion-button>

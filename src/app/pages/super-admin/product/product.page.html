@@ -1,0 +1,87 @@
+<ion-header class="mt-5">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/super-admin/stand/{{pavilion?.id}}/{{stand?.id}}"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="product?.id">
+      <ion-button color="danger" (click)="deleteProduct()">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Borrar
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Administrar Producto </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+
+    <ion-list *ngIf="product" class="padding-container">
+    
+       <ion-item lines="none" *ngIf="product.id" [ngClass]="{'mt-4': product.id}">
+          <ion-label style="max-width: 75px;" slot="start">Imagenes</ion-label>
+           <div class="d-flex ml-auto" style="overflow-x: scroll;">
+              <ion-item *ngFor="let scene of product?.resources.scenes;let i = index" class="scene-icon-mini">
+               <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
+              </ion-item>    
+            </div>
+
+         <ion-buttons slot="end">
+            <ion-button (click)="onAddImagen()">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+       </ion-item>
+    
+      <ion-item button="true" [ngClass]="{'mt-4': !product.id}">
+        <ion-label> Nombre </ion-label>
+        <ion-input class="ml-auto" class="text-right" [(ngModel)]="product.name" (ionChange)="editSave=true" name="name"></ion-input>
+      </ion-item>
+      <ion-item button="true">
+        <ion-label> Descripción </ion-label>
+        <ion-input class="ml-auto" class="text-right" [(ngModel)]="product.description" (ionChange)="editSave=true" name="description"></ion-input>
+      </ion-item>
+      
+      <ion-item lines="" *ngIf="product.id">
+          <ion-label style="max-width: 153px;" slot="start">Lista de precios </ion-label>
+          <div class="d-flex ml-auto" style="overflow-x: scroll;">
+              <ion-item  *ngFor="let price of product?.prices;let i = index" class="scene-icon-mini"  style="min-width: 148px"
+              button="true" routerLink="/super-admin/stand/{{pavilion.id}}/{{stand.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+                <ion-avatar class="mr-3">
+                  <img [src]="stand.merchant?.resources?.url_image">
+                </ion-avatar>
+                <ion-label>
+                  <h2>{{price.price}}</h2>
+                </ion-label>
+              </ion-item>
+            </div>
+         <ion-buttons slot="end">
+            <ion-button routerLink="/super-admin/stand/{{pavilion.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+       </ion-item>
+      
+      <ion-item [hidden]="!errors">
+        <div class="alert alert-danger m-auto">
+         <a href="javascript:void(0)" class="close" (click)="errors=null" title="close">×</a>
+         <strong>Error!</strong> {{errors}}
+        </div>
+      </ion-item>
+
+      <ion-item [hidden]="!success">
+        <div class="alert alert-success m-auto">
+         <a href="javascript:void(0)" class="close" (click)="success=null" title="close">×</a>
+         <strong></strong> {{success}}
+        </div>
+      </ion-item>
+      
+      <ion-button class="mt-4" expand="block" [disabled]="!editSave" (click)="updateProduct()">
+        {{this.product.id? 'Guardar cambios':'Crear Producto'}}
+        <ion-icon slot="start" name="save"></ion-icon>
+      </ion-button>
+    
+    </ion-list>
+
+  <!--/form-->
+
+</ion-content>

@@ -24,11 +24,22 @@
   cursor: pointer;
 }
 
-.payment-button{
-      position: absolute;
+.button-price {
+    position: absolute;
     top: 34px;
+	min-width: 198px;
     right: 27px;
-}
-
-
- 
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    background-color: rgb(26, 69, 148);
+    border: 0px;
+    border-radius: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-weight: 400;
+    font-size: 14px;
+    padding: 0px 16px;
+    color: white;
+    cursor: pointer;
+    -webkit-font-smoothing: subpixel-antialiased;
+} 

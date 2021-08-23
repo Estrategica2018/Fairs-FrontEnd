@@ -33,20 +33,40 @@ const routes: Routes = [
     loadChildren: () => import('./agenda/agenda.module').then( m => m.AgendaPageModule)
   },
   {
-    path: 'map-editor/:template/:objId',
+    path: 'map-editor/fair',
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
   },
   {
-    path: 'map-editor/:template/:objId/:sceneId',
+    path: 'map-editor/fair/:sceneId',
+    loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
+  },  
+  {
+    path: 'map-editor/pavilion/:pavilionId',
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
   },
   {
-    path: 'map-editor/:template/:pavilionId/:standId/:sceneId',
+    path: 'map-editor/pavilion/:pavilionId/:sceneId',
+    loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
+  },
+  {
+    path: 'map-editor/stand/:pavilionId/:standId',
+    loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
+  },
+  {
+    path: 'map-editor/stand/:pavilionId/:standId/:sceneId',
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
   },
   {
     path: 'merchant',
     loadChildren: () => import('./merchant/merchant.module').then( m => m.MerchantPageModule)
+  },
+  {
+    path: 'product/:pavilionId/:standId',
+    loadChildren: () => import('./product/product.module').then( m => m.ProductPageModule)
+  },
+  {
+    path: 'product/:pavilionId/:standId/:productId',
+    loadChildren: () => import('./product/product.module').then( m => m.ProductPageModule)
   }
 ];
 
