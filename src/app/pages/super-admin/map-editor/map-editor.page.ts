@@ -1,17 +1,18 @@
 import { Component, ElementRef, ViewChild, OnInit} from '@angular/core';
-import { HostListener,ItemReorderEventDetail } from "@angular/core";
+import { HostListener } from "@angular/core";
 import { FairsService } from './../../../api/fairs.service';
+import { PavilionsService } from './../../../api/pavilions.service';
 import { AdminFairsService } from './../../../api/admin/fairs.service';
 import { AdminPavilionsService } from './../../../api/admin/pavilions.service';
 import { AdminStandsService } from './../../../api/admin/stands.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from './../../../providers/loading.service';
 import { PanelEditorComponent } from './panel-editor/panel-editor.component';
-import { AlertController, ModalController, IonRouterOutlet } from '@ionic/angular';
+import { AlertController, ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Animation, AnimationController } from '@ionic/angular';
 import { processData } from '../../../providers/process-data';
-import { IonReorderGroup } from '@ionic/angular';
+import { IonReorderGroup } from '@ionic/angular'; 
 
 @Component({
   selector: 'app-map-editor',
@@ -20,13 +21,11 @@ import { IonReorderGroup } from '@ionic/angular';
 })
 export class MapEditorPage implements OnInit {
 
+  @ViewChild('videoMeeting', { static: true }) videoElement: ElementRef;
   errors = null;
   success = null;
   fixedBannerPanel = true;
-  
-  @ViewChild('menuTabsbanner') menuTabsbanner: any;
-  @ViewChild(IonReorderGroup) reorderGroup: IonReorderGroup;
-  
+    
   fullScreen = false;
   tabMenuSelected = null;
   fair = null;
@@ -76,10 +75,13 @@ export class MapEditorPage implements OnInit {
   textAligns = [{"value":"center","label":"Centrado"},{"value":"justify","label":"Justificado"},{"value":"right","label":"Derecha"},{"value":"left","label":"Izquierda"}];
   lineTypes = [{"value":"dashed","label":"Cortada"},{"value":"solid","label":"Sólida"},{"value":"dotted","label":"Punteada"},{"value":"double","label":"Doble"},{"value":"groove","label":"Sombreada"},{"value":"hidden","label":"Oculta"},]
   internalUrlList: any;
+  typeCarouselList = [{'label':'Horizontal','value':'horizontal'}, {'label':'Horizontal 1','value':'horizontal-1'},{'label':'Horizontal 2','value':'horizontal-2'}];
+  carouselOptionList = ['slidesPerView','rotate','stretch','depth','slideShadows','modifier'];
   
   constructor(
     private alertCtrl: AlertController,
     private fairsService: FairsService,
+    private pavilionsService: PavilionsService,
     private route: ActivatedRoute,
     private router: Router,
     private modalCtrl: ModalController,
@@ -88,7 +90,8 @@ export class MapEditorPage implements OnInit {
     private animationCtrl: AnimationController,
     private adminFairsService: AdminFairsService,
     private adminPavilionsService: AdminPavilionsService,
-    private adminStandsService: AdminStandsService) { 
+    private adminStandsService: AdminStandsService,
+    private toastController: ToastController) { 
       
       this.listenForFullScreenEvents();
       this.initializePanel();
@@ -121,10 +124,10 @@ export class MapEditorPage implements OnInit {
      this.bannerSelect = null; 
      this.loading.present({message:'Cargando...'});
      const url = window.location.href;
-	 this.template = url.indexOf('super-admin/map-editor/fair')  >= 0 ? 'fair' : 
-	 url.indexOf('super-admin/map-editor/pavilion')  >= 0 ? 'pavilion' :
-	 url.indexOf('super-admin/map-editor/stand')  >= 0 ? 'stand' : '';
-	 
+     this.template = url.indexOf('super-admin/map-editor/fair')  >= 0 ? 'fair' : 
+     url.indexOf('super-admin/map-editor/pavilion')  >= 0 ? 'pavilion' :
+     url.indexOf('super-admin/map-editor/stand')  >= 0 ? 'stand' : '';
+     
      const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
      const standId = this.route.snapshot.paramMap.get('standId');
      this.sceneId = this.route.snapshot.paramMap.get('sceneId');
@@ -204,7 +207,7 @@ export class MapEditorPage implements OnInit {
   }
   
   onChangeOpacity() {
-      const originYRange : any= document.querySelector('.origin-y-range');
+      const originYRange : any= document.querySelector<HTMLElement>('.origin-y-range');
       this.bannerSelect.opacity = originYRange.value / 100;
   }
   
@@ -275,7 +278,7 @@ export class MapEditorPage implements OnInit {
       document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',scrollTop.toString());      
   }
   
-  onbannerSelect(bannerSelect) {
+  onBannerSelect(bannerSelect) {
       this.bannerSelect = bannerSelect;
       this.bannerSelect.hoverEffects = this.bannerSelect.hoverEffects || '';
       this.hoverEffects.forEach((effect)=>{
@@ -321,7 +324,7 @@ export class MapEditorPage implements OnInit {
                   this.sceneId = this.resources.scenes.length - 1;
                   this.editMenuTabSave = null;
                   this.editSave = null;
-                  this.goToScene('fair',this.fair.id,this.sceneId);
+                  this.router.navigateByUrl(`/super-admin/map-editor/fair/${this.sceneId}`);
               }
               this.ngOnInit();
               this.errors = null;
@@ -342,7 +345,8 @@ export class MapEditorPage implements OnInit {
                   this.sceneId = this.resources.scenes.length - 1;
               }
               this.fairsService.refreshCurrentFair();
-              this.goToScene('pavilion',this.pavilion.id,this.sceneId);
+              this.pavilionsService.refreshCurrentPavilion();
+              this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
            })
            .catch(error => {
                this.loading.dismiss();
@@ -389,19 +393,19 @@ export class MapEditorPage implements OnInit {
   }
   addArrowLineCurve() {
     const id = new Date().valueOf();
-    const banner = {"isLine":true, "style": "container-arrow--curve","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
+    const banner = {"style": "container-arrow--curve","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
   }
 
   addArrowLineRect() {
     const id = new Date().valueOf();
-    const banner = {"isLine":true, "style":"container-arrow--rect","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
+    const banner = {"style":"container-arrow--rect","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
   }
 
   addArrowLineLine() {
     const id = new Date().valueOf();
-    const banner = {"isLine":true, "style":"container-arrow--line","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
+    const banner = {"style":"container-arrow--line","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
   }
 
@@ -417,11 +421,25 @@ export class MapEditorPage implements OnInit {
       case 'Image':
           banner = {"size":{"x":114,"y":105},"image_url": "https://dummyimage.com/114x105/EFEFEF/000.png"};
       break;
-      case 'Carret':
-          banner = {"size":{"x":114,"y":105},"image_url": "https://dummyimage.com/114x105/EFEFEF/000.png"};
+      case 'Carousel':
+          const allImages = [
+            { "size":{"x":50,"y":88},"title": "We are covered", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/covered.jpg" },
+            { "size":{"x":50,"y":88},"title": "Generation Gap", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/generation.jpg" },
+            { "size":{"x":50,"y":88},"title": "Potter Me", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/potter.jpg" },
+            { "size":{"x":50,"y":88},"title": "Pre-School Kids", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/preschool.jpg" },
+            { "size":{"x":50,"y":88}, "title": "Young Peter Cech", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/soccer.jpg" }    
+          ];
+          banner = {"size":{"x":285,"y":182},"carousel": { "options":{
+      slidesPerView: 3,
+      rotate: 0,
+      stretch: 50,
+      depth: 100,
+      slideShadows: false,
+      modifier: 1,
+    },"type":"horizontal","images": allImages}};
       break;
       case 'Video':
-          banner = {"size":{"x":114,"y":105},"video_url": "https://player.vimeo.com/video/286898202"};
+          banner = {"size":{"x":114,"y":105},"video": { "video_url":"https://player.vimeo.com/video/286898202"}};
       break;
       default:
           banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
@@ -464,11 +482,31 @@ export class MapEditorPage implements OnInit {
     this.bannerSelect = null;
   }
   
-  onCopyBanner(bannerSelect) {
-    this.bannerCopy.push(bannerSelect);
+  async onCopyBanner(itemList) {
+    let id = new Date().valueOf();
+    this.bannerCopy = [];
+    itemList.forEach((banner)=>{        
+       const newBanner = Object.assign({},banner);
+       newBanner.id = id;
+       newBanner.position = this.getNewPosition(banner.position);
+       this.bannerCopy.push(newBanner);
+       id ++;
+    });
+    
+    let aux = document.createElement("input");
+    aux.setAttribute("value", JSON.stringify(itemList));
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+    const toast = await this.toastController.create({
+      message: itemList.length > 1 ? `${itemList.length} Objetos copiados en el portapapeles` : ` 1 Objeto copiado en el portapapeles`,
+      duration: 2000
+    });
+    toast.present();
   }
   
-  onPasteBanner() {
+  onPasteBannerBtn() {
     let id = new Date().valueOf();
     this.bannerCopy.forEach((banner)=>{
        const newBanner = Object.assign({},banner);
@@ -503,7 +541,7 @@ export class MapEditorPage implements OnInit {
     
     if(obj.hoverEffects.includes('GirarDerecha')) {
       const squareA = this.animationCtrl.create()
-      .addElement(document.querySelector('#obj-' + obj.id))
+      .addElement(document.querySelector<HTMLElement>('#obj-' + obj.id))
       
       .duration(1000)
       .keyframes([
@@ -515,7 +553,7 @@ export class MapEditorPage implements OnInit {
     }
     if(obj.hoverEffects.includes('GirarIzquierda')) {
       const squareA = this.animationCtrl.create()
-      .addElement(document.querySelector('#obj-' + obj.id))
+      .addElement(document.querySelector<HTMLElement>('#obj-' + obj.id))
       
       .duration(1000)
       .keyframes([
@@ -553,6 +591,7 @@ export class MapEditorPage implements OnInit {
               });
               
               if(this.template === 'fair') {
+                  this.fair.resources = this.resources;
                   this.adminFairsService.update(this.fair)
                    .then((response) => {
                        this.loading.dismiss(); 
@@ -565,11 +604,13 @@ export class MapEditorPage implements OnInit {
                    });
               }
               else if(this.template === 'pavilion') {
+                  this.pavilion.resources = this.resources;
                   this.adminPavilionsService.update(this.pavilion)
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       this.router.navigateByUrl(`/super-admin/fair`);
+                       this.pavilionsService.refreshCurrentPavilion();
+					   this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -577,17 +618,17 @@ export class MapEditorPage implements OnInit {
                    });
                }
                else if(this.template === 'stand') {
-                  this.adminFairsService.update(this.fair)
+                  this.stand.resources = this.resources;
+                  this.adminStandsService.update(this.stand)
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       this.router.navigateByUrl(`/super-admin/fair`);
+                       this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
                        this.errors = `Consultando el servicio para actualizar el pabellón: ${error}`;
                    });
-                   this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
                }
             
           }
@@ -654,10 +695,6 @@ export class MapEditorPage implements OnInit {
                'menuTabs': {'showMenuParent':true, 'position':'none' }}
   }
   
-  goToScene(template, objId, sceneId) {
-    this.router.navigateByUrl(`/super-admin/map-editor/${template}/${objId}/${sceneId}`);
-  }
-
   compareFn(e1: any, e2: any): boolean {
     return e1 && e2 ? e1.value == e2.value : e1 == e2;
   }  
@@ -731,7 +768,7 @@ export class MapEditorPage implements OnInit {
       
   }
 
-  doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
+  doReorderBanners(ev: any) {
     // Before complete is called with the items they will remain in the
     // order before the drag
     console.log('Before complete', this.scene.banners);
@@ -768,11 +805,11 @@ export class MapEditorPage implements OnInit {
     });
     this.scene.banners = ev.detail.complete(this.scene.banners);
     //this.scene.banners = list;
-  }
-
-  toggleReorderGroup() {
-    this.reorderGroup.disabled = !this.reorderGroup.disabled;
-  }
+  } 
+  
+  doReorderCarousel(ev: any) {
+    this.bannerSelect.carousel.images = ev.detail.complete(this.bannerSelect.carousel.images);
+  } 
   
   toogleTabMenu() {
     this.scene.menuTabs.showMenuParent = !this.scene.menuTabs.showMenuParent;
@@ -787,5 +824,79 @@ export class MapEditorPage implements OnInit {
   setModifyTab(tab, i) {
      this.tabMenuInstance = Object.assign(tab,{'tabId':i,'isNew':false});
   }
+      
+  //@HostListener('window:keydown',['$event'])
+  //onKeyPress($event: KeyboardEvent) {
+  //  if(($event.ctrlKey || $event.metaKey) && $event.keyCode == 67) {
+  //      console.log('CTRL + C');
+  //  } else if(($event.ctrlKey || $event.metaKey) && $event.keyCode == 86) {
+  //      console.log('CTRL +  V');
+  //      
+  //      //this.onPasteBanner();
+  //      var pasteText = document.querySelector<HTMLElement>("#output");
+  //      pasteText.focus();
+  //      document.execCommand("paste");
+  //      const _self = this;
+  //      setTimeout(function(){ 
+    //      //_self.onPasteBanner(); 
+    //    }, 300);
+  //
+  //  }
+  //}
+  
+  async onPasteBanner() {
+    let pasteText = <HTMLInputElement> document.getElementById("#output");
+    const jsonText = pasteText.value;
+    const itemList = JSON.parse(jsonText);
+    pasteText.value = '';
+    let id = new Date().valueOf();
+    this.bannerCopy = [];
+    itemList.forEach((banner)=>{        
+       const newBanner = Object.assign({},banner);
+       newBanner.id = id;
+       newBanner.position = this.getNewPosition(banner.position);
+       this.bannerCopy.push(newBanner);
+       id ++;
+    });
+    
+    const toast = await this.toastController.create({
+      message: itemList.length > 1 ? `${itemList.length} Objetos listos para pegar en la escena` : `1 Objeto listo para pegar en la escena`,
+      duration: 2000
+    });
+    toast.present();
+  }
 
+  async onOpenChangeImg(image){
+    
+    const actionAlert = await this.alertCtrl.create({
+      message: "Ingresa la ruta de la imágen",
+      inputs: [
+        {
+          name: 'url',
+          value: image.url,
+          placeholder: 'Url'
+        },
+      ],
+      buttons: [{
+          text: 'Eliminar',
+          handler: (data) => {
+          this.editSave = true;
+          image.url = data.url;
+         }
+        },{
+          text: 'Cancel',
+          role: 'cancel'
+        },{
+         text: 'Guardar', 
+         role: 'destructive', 
+         handler: (data) => {
+          this.editSave = true;
+          image.url = data.url;
+         }
+        }]
+    });
+    await actionAlert.present();
+
+  }  
 }
+

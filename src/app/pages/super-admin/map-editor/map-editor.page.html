@@ -1,9 +1,10 @@
 <ion-content id="ionContent" cdkDropList class="content-boundary">
+   <input id="output" style="opacity: 0; position:absolute;"/> 
    <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
       <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
       <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
    </ion-button>
-   <ion-button *ngIf="this.bannerCopy.length > 0" color="warning" class="paste-button" (click)="onPasteBanner()">
+   <ion-button *ngIf="this.bannerCopy.length > 0" color="warning" class="paste-button" (click)="onPasteBannerBtn()">
       Pegar
       <ion-icon name="clipboard-outline"></ion-icon>
    </ion-button>
@@ -13,6 +14,7 @@
          <strong>Error!</strong> {{errors}}
       </div>
    </ion-item>
+   <!--Scene Background Image-->
    <div class="div-container"  scroll-x="0" scroll-y="0">
       <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
@@ -23,35 +25,18 @@
       }" (ionScroll)="logScrolling($event)"
       *ngIf="scene && scene.url_image">
    </div>
+   <!--Scene Background Color-->
    <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
    *ngIf="scene && scene.backgroundColor && !scene.url_image">
    </div>
    </div>
+   <!--Banner List-->
    <div *ngFor="let banner of scene?.banners;let i = index" class="scene">
-     <div *ngIf="banner.isLine" class=" arrow cursor-pointer {{ (banner.line.style||'container-arrow--curve') }}" 
-     mwlDraggable (dragEnd)="dragBannerEnd($event,banner)"
-     [ngStyle]="{
-     'left': banner.position?.x + 'px',
-     'top': banner.position?.y + 'px',
-     'width': banner.size?.x + 'px',
-     'height': banner.size?.y + 'px',
-     'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
-     'opacity': bannerSelectHover ? ( bannerSelectHover.id !== banner.id ?  ( banner.opacity || 1 ) * 0.6  : 1  ) : banner.opacity,
-     'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
-     }" 
-     style="position: absolute;"    
-     (mouseover)="startAnimation(banner); bannerSelectHover = bannerSelect ? bannerSelectHover : banner;"
-     (mouseout)="isHover = bannerSelect ? isHover : null; bannerSelectHover = bannerSelect ? bannerSelectHover : null;"
-     (click)="onbannerSelect(banner)"> 
-        <div class="arrow__body"
-        [ngStyle]="{
-        'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
-        'border-style': banner?.line?.type,
-        'border-color': banner?.line?.color
-        }"
-        ></div>
-     </div>
-     <div class="cube" [hidden]="banner.isLine" id="banner-drag-{{banner.id}}"
+      
+     <div
+      [ngClass]="{'cube': !banner.line, 'arrow cursor-pointer':banner.line}" 
+      class="{{ banner.line ? (banner.line.style||'container-arrow--curve') : ''}}"
+      id="banner-drag-{{banner.id}}"
      mwlDraggable (dragEnd)="dragBannerEnd($event,banner)"
      [ngStyle]="{
      'left': banner.position?.x + 'px',
@@ -59,10 +44,21 @@
      'opacity': bannerSelectHover ? ( bannerSelectHover.id !== banner.id ?  ( banner.opacity || 1 ) * 0.6  : 1  ) : banner.opacity,
      'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
      }">
+       <!--if banner is line-->
+        <div class="arrow__body" *ngIf="banner.line"
+        [ngStyle]="{
+        'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
+        'border-style': banner?.line?.type,
+        'border-color': banner?.line?.color,
+        'width': banner.size.x + 'px', 
+        'height': banner.size.y + 'px'
+        }"
+        ></div>
+       <!--if banner is banner-->
        <div class="cube__face cube__face--right square {{banner.class}}"
-       [hidden]="banner.video_url"   
+       [hidden]="banner.video_url || banner.line"
        id="obj-{{banner.id}}"
-       (click)="onbannerSelect(banner);"
+       (click)="onBannerSelect(banner);"
        (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
        (mouseout)="isHover = null; bannerSelectHover = null;"
        [ngStyle]="{
@@ -82,23 +78,28 @@
        'text-align': banner.textAlign
        }"> {{ banner.text }}
        </div>
-       <video width="320" height="240" controls *ngIf="banner.video_url" class="{{banner.class}}"
-       (click)="onbannerSelect(banner);"
-       (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
-       (mouseout)="isHover = null; bannerSelectHover = null;"
+       <!--if banner is Video-->
+       <video controls *ngIf="banner.video"
+       (click)="onBannerSelect(banner);"
        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-          <source src="{{banner.video_url}}" type="video/mp4">
+          <source src="{{banner.video.url}}"     type="video/mp4">
            Your browser does not support the video tag.
        </video>
+       <!--if banner is carousel-->
+       <app-carousel-template [banner]="banner" *ngIf="banner.carousel">
+       </app-carousel-template>
      </div>
-     <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
-     [ngClass]="banner.toolTipArrow"
-     [ngStyle]="{ 
-     'width': banner.toolPositionWidth+ 'px',
-     'top': banner.toolPositionTop + 'px',
-     'left': banner.toolPositionLeft + 'px'}">
+    <!--Tooltip-->
+    <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
+    [ngClass]="banner.toolTipArrow"
+    [ngStyle]="{ 
+    'width': banner.toolPositionWidth+ 'px',
+    'height': banner.toolPosition+ 'px',
+    'top': (banner.position?.y + banner.toolPositionTop) + 'px',
+    'left': (banner.position?.x + banner.toolPositionLeft) + 'px'}">
      {{banner.tooltipText}}
-     </span>
+    </span>
+
    </div>
 </ion-content>
 <ion-button [color]="editSave ? 'primary' : 'light'" class="panel-scene-save" (click)="onSave()">
@@ -145,7 +146,7 @@
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input class="mt-2 ml-2" type="text" [(ngModel)]="scene.title"> 
+                  <input class="mt-2 ml-2" type="text" [(ngModel)]="scene.title"/> 
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -155,7 +156,7 @@
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input class="mt-2 ml-2" type="text" [(ngModel)]="scene.url_image">
+                  <input class="mt-2 ml-2" type="text" [(ngModel)]="scene.url_image"/>
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -167,7 +168,7 @@
                <ion-label (click)="scene.backgroundColor = '';">Clear </ion-label>
                <ion-icon name="close-outline" (click)="bannerSelect.backgroundColor = '';">  </ion-icon>
                <ion-card-subtitle>
-                  <input [ngStyle]="{'opacity': scene.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color" [(ngModel)]="scene.backgroundColor">
+                  <input [ngStyle]="{'opacity': scene.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color" [(ngModel)]="scene.backgroundColor"/>
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -219,7 +220,7 @@
       </ion-card-content>
    </ion-card>
 </div>
-<!-- Panel Banners-->
+<!-- Panel Add Banners-->
 <div *ngIf="showPanelTool === 'banners'" class="scene-setting-panel">
    <div class="close" (click)="showPanelTool = false">
       <ion-icon slot="icon-only" name="close-outline"></ion-icon>
@@ -242,14 +243,13 @@
                Imagen
                <ion-icon style="font-size: 24px" name="image-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Carret');">
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Carousel');">
                Carrete
                <ion-icon style="font-size: 24px" name="albums-outline"></ion-icon>
             </div>
             <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Video');">
                Video
                <ion-icon style="font-size: 24px" name="videocam-outline"></ion-icon>
-               
             </div>
          </div>
       </ion-card-content>
@@ -283,7 +283,7 @@
       </ion-card-content>
    </ion-card>
 </div>
-<!-- Panel items-->
+<!-- Panel Item list-->
 <div *ngIf="showPanelTool === 'items'" class="tool-panel">
    <div class="close" (click)="showPanelTool = false">
       <ion-icon slot="icon-only" name="close-outline"></ion-icon>
@@ -292,34 +292,39 @@
       <ion-card-header>
          <ion-card-title><small>Lista de ({{ scene.banners.length}}) Elemento(s)</small></ion-card-title>
       </ion-card-header>
-      <ion-card-content class="reorder">
+      <ion-card-content class="reorder d-flex">
+         <ion-list class=" mt--8">
+         <ion-item *ngFor="let banner of scene.banners" buttom="true" class="border-gray">
+             <ion-checkbox [(ngModel)]="banner.isChecked"></ion-checkbox>
+         </ion-item>
+         </ion-list>
          <!-- The reorder gesture is disabled by default, enable it to drag and drop items -->
-         <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
+         <ion-reorder-group (ionItemReorder)="doReorderBanners($event)" disabled="false">
             <!-- Items wrapped in a reorder, entire item can be dragged -->
-            <ion-reorder *ngFor="let banner of scene.banners">
-               <ion-item>
-                  <ion-buttons slot="start">
+            <ion-reorder *ngFor="let banner of scene.banners" buttom="true" class="border-gray" style="width: 215px;"
+             (mouseover)="bannerSelectHover =  banner;"
+             (mouseout)="isHover = null; bannerSelectHover = null;"
+            >
+               <ion-item class="reorder-banner" >
                      <ion-card-subtitle> {{ banner.type || 'Elemento' }}
                      </ion-card-subtitle>
-                  </ion-buttons>
-                  <ion-buttons slot="end">
-                     <ion-card-subtitle>
-                        <ion-button size="small" color="danger" (click)="onCopyBanner(bannerSelect)">
-                           <ion-icon slot="end" name="trash-outline"></ion-icon>
-                           <ion-label></ion-label>
-                        </ion-button>
-                     </ion-card-subtitle>
-                  </ion-buttons>
                </ion-item>
             </ion-reorder>
          </ion-reorder-group>
+         <ion-list class=" mt--8">
+         <ion-item *ngFor="let banner of scene.banners" buttom="true"  class="border-gray">
+           <ion-button size="small" color="light" (click)="onBannerSelect(banner)">
+             <ion-icon name="create-outline"></ion-icon>
+           </ion-button>
+         </ion-item>
+         </ion-list>
       </ion-card-content>
    </ion-card>
 </div>
 <!-- Panel setting banner -->
 <div *ngIf="showPanelTool=== 'settingsBanner'" class="panel-scene-select" id="bannerPanel" [ngStyle]="{'top': panelPos.y, 'left': panelPos.x }" 
 [validateDrag]="fixedBannerPanelValidator" mwlDraggable (dragEnd)="dragPanelSceneSelectEnd($event)">
-<div class="close" (click)="showPanelTool = null">
+<div class="close" (click)="showPanelTool = null; bannerSelect = null">
    <ion-icon slot="icon-only" name="close-outline"></ion-icon>
 </div>
 <div class="close fixed" style="width: 10%" (click)="onToogleBannerPanel()">
@@ -334,29 +339,35 @@
                <ion-tab-button (click)="tabSelect = 'position'">
                   <ion-label>Posición</ion-label>
                </ion-tab-button>
-               <ion-tab-button (click)="tabSelect = 'line'" *ngIf="bannerSelect.isLine">
+               <ion-tab-button (click)="tabSelect = 'line'" *ngIf="bannerSelect.line">
                <ion-label>Linea</ion-label>
                </ion-tab-button>
-               <ion-tab-button (click)="tabSelect = 'background'" [hidden]="bannerSelect.isLine">
+               <ion-tab-button (click)="tabSelect = 'video'" *ngIf="bannerSelect.video">
+               <ion-label>Video</ion-label>
+               </ion-tab-button>
+               <ion-tab-button (click)="tabSelect = 'carousel'" *ngIf="bannerSelect.carousel">
+               <ion-label>Carrete</ion-label>
+               </ion-tab-button>
+               <ion-tab-button (click)="tabSelect = 'background'" [hidden]="bannerSelect.line">
                <ion-label>Fondo</ion-label>
                </ion-tab-button>
                <ion-tab-button (click)="tabSelect = 'rotate'">
                   <ion-label>Rotar</ion-label>
                </ion-tab-button>
-               <ion-tab-button (click)="tabSelect = 'font'" [hidden]="bannerSelect.isLine">
+               <ion-tab-button (click)="tabSelect = 'font'" [hidden]="bannerSelect.line">
                <ion-label>Texto</ion-label>
                </ion-tab-button>
             </ion-tab-bar>
          </ion-tabs>
          <ion-tabs style="top:-31px">
             <ion-tab-bar slot="bottom">
-               <ion-tab-button (click)="tabSelect = 'link'" [hidden]="bannerSelect.isLine">
+               <ion-tab-button (click)="tabSelect = 'link'" [hidden]="bannerSelect.line">
                <ion-label>Link</ion-label>
                </ion-tab-button>
-               <ion-tab-button (click)="tabSelect = 'border'" [hidden]="bannerSelect.isLine">
+               <ion-tab-button (click)="tabSelect = 'border'" [hidden]="bannerSelect.line">
                <ion-label>Bordear</ion-label>
                </ion-tab-button>
-               <ion-tab-button (click)="tabSelect = 'css'" [hidden]="bannerSelect.isLine"> 
+               <ion-tab-button (click)="tabSelect = 'css'" [hidden]="bannerSelect.line"> 
                <ion-label>Estilos CSS</ion-label>
                </ion-tab-button>
                <ion-tab-button (click)="tabSelect = 'tooltip'">
@@ -374,7 +385,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.y">
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.y"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -385,7 +396,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.x">
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.x"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -396,7 +407,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.size.x">
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.size.x"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -407,7 +418,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form"  type="number" [(ngModel)]="bannerSelect.size.y">
+               <input class="mt-2 ml-2 input-form"  type="number" [(ngModel)]="bannerSelect.size.y"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -421,7 +432,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" min="1" max="50" [(ngModel)]="bannerSelect.line.weight">
+               <input class="mt-2 ml-2 input-form" type="number" min="1" max="50" [(ngModel)]="bannerSelect.line.weight"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -458,7 +469,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="color" [(ngModel)]="bannerSelect.line.color">
+               <input class="mt-2 ml-2 input-form" type="color" [(ngModel)]="bannerSelect.line.color"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -470,7 +481,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.x"> grade
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.x"/> grade
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -480,7 +491,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.y"> grade
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.y"/> grade
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -490,7 +501,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.z"> grade
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.z"/> grade
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -498,14 +509,14 @@
    <ion-card-content *ngIf="tabSelect == 'background'">
       <ion-toolbar>
          <ion-card-subtitle slot="start"> Imagen de Fondo </ion-card-subtitle>
-         <input slot="end" class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.image_url"> 
+         <input slot="end" class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.image_url"/> 
       </ion-toolbar>
       <ion-toolbar>
          <ion-card-subtitle slot="start"> Color de Fondo</ion-card-subtitle>
          <ion-buttons slot="end">
             <ion-label (click)="bannerSelect.backgroundColor = '';">Clear </ion-label>
             <ion-icon name="close-outline" (click)="bannerSelect.backgroundColor = '';">  </ion-icon>
-            <input [ngStyle]="{'opacity': bannerSelect.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.backgroundColor"> 
+            <input [ngStyle]="{'opacity': bannerSelect.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.backgroundColor"/> 
          </ion-buttons>
       </ion-toolbar>
       <ion-toolbar>
@@ -520,6 +531,64 @@
          </ion-buttons>
       </ion-toolbar>
    </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'video'">
+      <ion-toolbar>
+         <ion-card-subtitle slot="start"> Url de video </ion-card-subtitle>
+         <input slot="end" class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.video.video_url"/> 
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'carousel'" style="overflow: auto;height: 421px;">
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Tipo de Carrete </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <select [(ngModel)]="bannerSelect.carousel.type">
+               <option *ngFor="let type of typeCarouselList" value="{{type.value}}">{{type.label}}</option>
+               </select>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar *ngFor="let option of carouselOptionList">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> {{option}} </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="text" [(ngModel)]="bannerSelect.carousel['options'][option]"/>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-card-subtitle> Lista de {{bannerSelect.carousel.images.length}} Imágene(s)</ion-card-subtitle>
+      </ion-toolbar>
+      <ion-item class="d-flex">
+        <ion-reorder-group (ionItemReorder)="doReorderCarousel($event)" disabled="false">
+            <!-- Items wrapped in a reorder, entire item can be dragged -->
+            <ion-reorder *ngFor="let image of bannerSelect.carousel.images" buttom="true" class="border-gray">
+               <ion-item class="reorder-banner" >
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> {{ image.title }}
+                     </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-card-subtitle>
+                        <img [src]="image.url" class="carousel-image" width="65"/>
+                     </ion-card-subtitle>
+                  </ion-buttons>
+               </ion-item>
+            </ion-reorder>
+        </ion-reorder-group>
+        <ion-list>
+         <ion-item *ngFor="let image of bannerSelect.carousel.images" buttom="true"  class="border-gray">
+           <ion-button size="small" color="light" (click)="onOpenChangeImg(image)">
+             <ion-icon name="create-outline"></ion-icon>
+           </ion-button>
+         </ion-item>
+        </ion-list>
+      </ion-item>
+   </ion-card-content>
    <ion-card-content *ngIf="tabSelect == 'font'">
       <ion-toolbar>
          <ion-buttons slot="start">
@@ -528,7 +597,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.text">
+               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.text"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -536,7 +605,7 @@
          <ion-card-subtitle> Color de letra</ion-card-subtitle>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.fontColor"> 
+               <input class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.fontColor"/> 
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -560,7 +629,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.fontSize"> 
+               <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.fontSize"/> 
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -584,7 +653,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.tooltipText">
+               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.tooltipText"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -592,7 +661,7 @@
          <ion-card-subtitle> Izquierda </ion-card-subtitle>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.toolPositionLeft">
+               <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.toolPositionLeft"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -604,7 +673,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.toolPositionTop">
+               <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.toolPositionTop"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -616,7 +685,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.toolPositionWidth">
+               <input class="mt-2 ml-2" type="number" [(ngModel)]="bannerSelect.toolPositionWidth"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -652,7 +721,7 @@
                <ion-card-subtitle> Color del borde</ion-card-subtitle>
             </ion-buttons>
             <ion-buttons slot="end">
-               <input [disabled]="bannerSelect.border.style=='none'" class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.border.color"> 
+               <input [disabled]="bannerSelect.border.style=='none'" class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.border.color"/> 
             </ion-buttons>
          </ion-toolbar>
          <ion-toolbar>
@@ -660,7 +729,7 @@
                <ion-card-subtitle> Border radius  </ion-card-subtitle>
             </ion-buttons>
             <ion-buttons slot="end">
-               <input class="mt-2 ml-2 mr-2" type="number" [(ngModel)]="bannerSelect.border.radius"> px
+               <input class="mt-2 ml-2 mr-2" type="number" [(ngModel)]="bannerSelect.border.radius"/> px
             </ion-buttons>
          </ion-toolbar>
          <ion-toolbar>
@@ -668,7 +737,7 @@
                <ion-card-subtitle> Border Width  </ion-card-subtitle>
             </ion-buttons>
             <ion-buttons slot="end">
-               <input [disabled]="bannerSelect.border.style=='none'" class="mt-2 ml-2 m-2" type="number" [(ngModel)]="bannerSelect.border.width"> px
+               <input [disabled]="bannerSelect.border.style=='none'" class="mt-2 ml-2 m-2" type="number" [(ngModel)]="bannerSelect.border.width"/> px
             </ion-buttons>
          </ion-toolbar>
       </div>
@@ -680,7 +749,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.class"> 
+               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.class"/> 
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -690,7 +759,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.style"> 
+               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.style"/> 
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -713,7 +782,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.externalUrl"> 
+               <input class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.externalUrl"/> 
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -754,7 +823,7 @@
       </ion-buttons>
       <ion-buttons slot="end">
          <ion-card-subtitle>
-            <ion-button size="small" color="primary" (click)="onCopyBanner(bannerSelect)">
+            <ion-button size="small" color="primary" (click)="onCopyBanner([bannerSelect]); showPanelTool = null;">
                <ion-label color="primary"> Copiar </ion-label>
                <ion-icon slot="end" name="copy-outline"></ion-icon>
             </ion-button>
@@ -814,7 +883,7 @@
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input (keyup)="onChangeMenuTabs()" class="mt-2 ml-2" type="text" [(ngModel)]="tabMenuObj.icon" (change)="onChangeMenuTabs()" (ionChange)="onChangeMenuTabs()">
+                  <input (keyup)="onChangeMenuTabs()" class="mt-2 ml-2" type="text" [(ngModel)]="tabMenuObj.icon" (change)="onChangeMenuTabs()" (ionChange)="onChangeMenuTabs()"/>
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -828,7 +897,7 @@
                <ion-card-subtitle>
                   <input [ngStyle]="{'opacity': tabMenuObj.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" 
                   (change)="onChangeColorTabMenu()"
-                  (ionChange)="onChangeColorTabMenu()" type="color" [(ngModel)]="tabMenuObj.backgroundColor">
+                  (ionChange)="onChangeColorTabMenu()" type="color" [(ngModel)]="tabMenuObj.backgroundColor"/>
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -842,7 +911,7 @@
                <ion-card-subtitle>
                   <input [ngStyle]="{'opacity': tabMenuObj.backgroundColorLogo == '' ? '0.5' : '1' }" class="mt-2 ml-2" 
                   (change)="onChangeColorTabMenu()"
-                  (ionChange)="onChangeColorTabMenu()" type="color" [(ngModel)]="tabMenuObj.backgroundColorLogo">
+                  (ionChange)="onChangeColorTabMenu()" type="color" [(ngModel)]="tabMenuObj.backgroundColorLogo"/>
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -885,7 +954,7 @@
                </ion-buttons>
                <ion-buttons slot="end">
                   <ion-card-subtitle>
-                     <input class="mt-2 ml-2" type="text" [(ngModel)]="tabMenuInstance.title"> 
+                     <input class="mt-2 ml-2" type="text" [(ngModel)]="tabMenuInstance.title"/> 
                   </ion-card-subtitle>
                </ion-buttons>
             </ion-toolbar>

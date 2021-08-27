@@ -6,7 +6,6 @@ import { MapEditorPageRoutingModule } from './map-editor-routing.module';
 import { MapEditorPage } from './map-editor.page';
 import { PanelEditorComponent } from './panel-editor/panel-editor.component';
 import { DragAndDropModule } from 'angular-draggable-droppable';
-import { TabMenuScenesComponent } from '../../tab-menu-scenes/tab-menu-scenes.component';
 import { ComponentModule } from '../../../components.module';
 
 @NgModule({
@@ -16,9 +15,9 @@ import { ComponentModule } from '../../../components.module';
     IonicModule,
     DragAndDropModule,
     MapEditorPageRoutingModule,
-	ComponentModule
+    ComponentModule
   ],
   declarations: [MapEditorPage, PanelEditorComponent], 
-  entryComponents: [PanelEditorComponent, TabMenuScenesComponent]
+  entryComponents: [PanelEditorComponent]
 })
 export class MapEditorPageModule {}

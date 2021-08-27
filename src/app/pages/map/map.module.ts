@@ -11,7 +11,7 @@ import { ComponentModule } from '../../components.module';
     CommonModule,
     IonicModule,
     MapPageRoutingModule,
-	ComponentModule
+    ComponentModule
   ],
   declarations: [
     MapPage

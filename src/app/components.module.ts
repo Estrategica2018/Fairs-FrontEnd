@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 
-import { TabMenuScenesComponent } from './pages/tab-menu-scenes/tab-menu-scenes.component';
+import { TabMenuScenesComponent } from './pages/map/tab-menu-scenes/tab-menu-scenes.component';
+import { CarouselTemplateComponent } from './pages/map/carousel-template/carousel-template.component';
 
 @NgModule({
   imports: [
@@ -10,10 +11,10 @@ import { TabMenuScenesComponent } from './pages/tab-menu-scenes/tab-menu-scenes.
     IonicModule
   ],
   declarations: [
-    TabMenuScenesComponent
+    TabMenuScenesComponent,CarouselTemplateComponent
   ],
   exports: [
-    TabMenuScenesComponent
+    TabMenuScenesComponent,CarouselTemplateComponent
   ]
   
 })

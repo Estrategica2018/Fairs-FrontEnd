@@ -20,6 +20,7 @@
          <strong>Error!</strong> {{errors}}
       </div>
    </ion-item>
+   <!--Scene Background Image-->
    <div class="div-container"  scroll-x="0" scroll-y="0">
       <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
@@ -30,78 +31,83 @@
       }" (ionScroll)="logScrolling($event)"
       *ngIf="scene && scene.url_image">
    </div>
+   <!--Scene Background Color-->
    <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
    *ngIf="scene && scene.backgroundColor && !scene.url_image">
    </div>
    </div>
-   <div *ngFor="let banner of scene?.banners;let i = index" class="scene" [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}">
-   <div *ngIf="banner.isLine" class=" arrow {{ (banner.line.style||'container-arrow--curve') }}" 
-   [ngStyle]="{
-   'left': banner.position?.x + 'px',
-   'top': banner.position?.y + 'px',
-   'width': banner.size?.x + 'px',
-   'height': banner.size?.y + 'px',
-   'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
-   'opacity': banner.opacity,
-   'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
-   }"
-   style="position: absolute;"
-   (mouseover)="startAnimation(banner); isHover = banner;"
-   (mouseout)="isHover = null;">
-   <div class="arrow__body"
-      [ngStyle]="{
-      'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
-      'border-style': banner?.line?.type,
-      'border-color': banner?.line?.color
-      }"
-      ></div>
-   </div>
-   <div class="cube" [hidden]="banner.isLine" id="banner-drag-{{banner.id}}"
-   [ngStyle]="{
-   'left': banner.position?.x + 'px',
-   'top': banner.position?.y + 'px',
-   'opacity': banner.opacity,
-   'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
-   }">
-   <div class="cube__face cube__face--right square {{banner.class}}" 
-   id="obj-{{banner.id}}"
-   (click)="goToInternalUrl(banner)"
-   (mouseover)="startAnimation(banner);"
-   (mouseout)="isHover = null;"
-   [ngStyle]="{
-   'background-image': 'url('+banner.image_url+')',
-   'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
-   'background-repeat': 'no-repeat',
-   'background-color': banner.backgroundColor,
-   'width': banner.size.x + 'px', 
-   'height': banner.size.y + 'px',
-   'font-size': banner.fontSize + 'px',
-   'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
-   'color': banner.fontColor,
-   'border-color': banner.border?.color,
-   'border-style': banner.border?.style,
-   'border-radius': banner.border?.radius + 'px',
-   'border-width': banner.border?.width +'px',
-   'text-align': banner.textAlign
-   }"> {{ banner.text }}    
-   </div>
-   <video width="320" height="240" controls *ngIf="banner.video_url" class="{{banner.class}}"
-   (click)="onbannerSelect(banner);"
-   (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
-   (mouseout)="isHover = null; bannerSelectHover = null;"
-   [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-     <source src="{{banner.video_url}}" type="video/mp4">
-      Your browser does not support the video tag.
-   </video>
-   </div>
-   <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
-   [ngClass]="banner.toolTipArrow"
-   [ngStyle]="{ 
-   'width': banner.toolPositionWidth+ 'px',
-   'top': banner.toolPositionTop + 'px',
-   'left': banner.toolPositionLeft + 'px'}">
-   {{scene.menuTabs?.display}}
-   </span>
+   <!--Banner List-->
+   <div *ngFor="let banner of scene?.banners;let i = index" class="scene"
+   [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}">
+        
+       <div 
+       [ngClass]="{'cube': !banner.line, 'arrow cursor-pointer':banner.line}" 
+       class="{{ banner.line ? (banner.line.style||'container-arrow--curve') : ''}}"
+       id="banner-drag-{{banner.id}}"
+       (mouseover)="startAnimation(banner); isHover = banner.id"
+       (mouseout)="isHover = null;"
+       [ngStyle]="{
+       'left': banner.position?.x + 'px',
+       'top': banner.position?.y + 'px',
+       'opacity': banner.opacity,
+       'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
+       }">
+       <!--if banner is line-->
+        <div class="arrow__body" *ngIf="banner.line"
+        [ngStyle]="{
+        'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
+        'border-style': banner?.line?.type,
+        'border-color': banner?.line?.color,
+        'width': banner.size.x + 'px', 
+        'height': banner.size.y + 'px'
+        }"
+        ></div>
+        <!--if banner is banner-->
+       <div class="cube__face cube__face--right square {{banner.class}}" 
+       [hidden]="banner.video_url || banner.line"
+       id="obj-{{banner.id}}"
+       (click)="goToInternalUrl(banner)"
+       [ngStyle]="{
+       'background-image': 'url('+banner.image_url+')',
+       'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+       'background-repeat': 'no-repeat',
+       'background-color': banner.backgroundColor,
+       'width': banner.size.x + 'px', 
+       'height': banner.size.y + 'px',
+       'font-size': banner.fontSize + 'px',
+       'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
+       'color': banner.fontColor,
+       'border-color': banner.border?.color,
+       'border-style': banner.border?.style,
+       'border-radius': banner.border?.radius + 'px',
+       'border-width': banner.border?.width +'px',
+       'text-align': banner.textAlign
+       }"> {{ banner.text }}    
+       </div>
+       <!--if banner is Video-->
+       <video width="320" height="240" controls *ngIf="banner.video_url" class="{{banner.class}}"
+       (click)="onBannerSelect(banner);"
+       [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+          <source src="{{banner.video_url}}"     type="video/mp4">
+           Your browser does not support the video tag.
+       </video>
+       <!--if banner is carousel-->
+       <app-carousel-template [banner]="banner" *ngIf="banner.carousel" 
+       [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+       </app-carousel-template>
+     </div>
+    <!--Tooltip-->
+    <span class="tooltip-label" *ngIf="banner.tooltipText && isHover == banner.id"
+    [ngClass]="banner.toolTipArrow"
+    [ngStyle]="{ 
+    'width': banner.toolPositionWidth+ 'px',
+    'height': banner.toolPosition+ 'px',
+    'top': (banner.position?.y + banner.toolPositionTop) + 'px',
+    'left': (banner.position?.x + banner.toolPositionLeft) + 'px'}">
+     {{banner.tooltipText}}
+    </span>
+   
    </div>
 </ion-content>
+
 <app-tab-menu-scenes *ngIf="scene" [position]="scene.menuTabs.position"  [options]="tabMenuObj" ></app-tab-menu-scenes>

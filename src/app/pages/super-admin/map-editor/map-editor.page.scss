@@ -269,3 +269,17 @@ ion-tab-button {
   left: 63px;
   z-index: 11;
 }
+
+.reorder-banner {}
+.reorder-banner:hover {
+   --background: var(--ion-color-light-tint);
+   --color: white;
+}
+
+
+.border-gray {
+  height: 49px;
+}
+.mt--8 {
+    margin-top: -8px;
+}
