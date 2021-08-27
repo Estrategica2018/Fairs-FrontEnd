@@ -7,6 +7,9 @@
   </ul>
 </div-->
 
+<ion-button *ngIf="editorMode" color="light" class="refresh-button" (click)="onRefresh()">
+   <ion-icon name="refresh-outline"></ion-icon>
+</ion-button>
 
  <ion-slides pager="true" [ngStyle]="{'width': banner.size.x + 'px'}">
   <ion-slide *ngFor="let image of banner.carousel.images"  [ngStyle]="{'height': banner.size.y + 'px'}">

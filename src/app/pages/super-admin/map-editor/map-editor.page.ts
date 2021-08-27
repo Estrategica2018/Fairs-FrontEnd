@@ -314,6 +314,7 @@ export class MapEditorPage implements OnInit {
       }
       
       if(this.template === 'fair') {
+		  this.fair.resources = this.resources;
           this.adminFairsService.update(this.fair)
           .then((response) => {
               this.loading.dismiss();
@@ -335,6 +336,7 @@ export class MapEditorPage implements OnInit {
            });
       }
       else if(this.template === 'pavilion') {
+		  this.pavilion.resources = this.resources;
           this.adminPavilionsService.update(this.pavilion)
           .then((pavilion) => {
               this.loading.dismiss();
@@ -354,6 +356,7 @@ export class MapEditorPage implements OnInit {
            });
       }
       else if(this.template === 'stand') {
+		  this.stand.resources = this.resources;
           this.adminStandsService.update(this.stand)
           .then((stand) => {
               this.loading.dismiss();
@@ -429,7 +432,7 @@ export class MapEditorPage implements OnInit {
             { "size":{"x":50,"y":88},"title": "Pre-School Kids", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/preschool.jpg" },
             { "size":{"x":50,"y":88}, "title": "Young Peter Cech", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/soccer.jpg" }    
           ];
-          banner = {"size":{"x":285,"y":182},"carousel": { "options":{
+          banner = {"size":{"x":1256,"y":271},"carousel": { "options":{
       slidesPerView: 3,
       rotate: 0,
       stretch: 50,
@@ -480,6 +483,7 @@ export class MapEditorPage implements OnInit {
         return bannerSelect != banner; 
     });
     this.bannerSelect = null;
+	this.showPanelTool = false
   }
   
   async onCopyBanner(itemList) {

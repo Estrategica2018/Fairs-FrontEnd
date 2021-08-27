@@ -49,8 +49,8 @@ export class AdminFairsService {
   
   update(fair: any): any {
     return new Promise((resolve, reject) => {
-
-            this.http.post(`/api/fair/update/${fair.id}`,processDataToString(fair))
+            const newFair = processDataToString(fair);
+            this.http.post(`/api/fair/update/${fair.id}`,newFair)
             .pipe(
               timeout(30000),
               catchError(e => {

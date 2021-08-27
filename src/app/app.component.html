@@ -45,7 +45,7 @@
                 <ion-item [routerLink]="'/map/fair'+(i+1)+'/'+i" routerLinkActive="selected" routerDirection="root" 
                           (click)="showPavilionDetail = null">
                   <ion-icon slot="start" [name]="scene.menuIcon"></ion-icon>
-                  <ion-label>
+                  <ion-label class="ion-text-wrap">
                     {{scene.title}}
                   </ion-label>
                 </ion-item>
@@ -61,7 +61,7 @@
                       button="true"
                       lines="none">
                 <ion-icon slot="start" name="albums-outline"></ion-icon>
-                <ion-label class="menu-label">{{pavilion.name}}</ion-label>
+                <ion-label class="menu-label ion-text-wrap">{{pavilion.name}}</ion-label>
                 <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionDetail !== 'pavilion_id_'+pavilion.id"></ion-icon>
                 <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionDetail === 'pavilion_id_'+pavilion.id"></ion-icon>
               </ion-item>
@@ -81,7 +81,7 @@
                               [routerLink]="'/map/stand'+(i_stand+1)+'/'+pavilion.id+'/'+stand.id+'/0'" routerLinkActive="selected" routerDirection="root" 
                               lines="none" class="sub-menu-stand">
                       <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                      <ion-label class="menu-label">{{stand.merchant.name}}</ion-label>
+                      <ion-label class="menu-label ion-text-wrap">{{stand.merchant.name}}</ion-label>
                     </ion-item>
                 </div>
              </div>

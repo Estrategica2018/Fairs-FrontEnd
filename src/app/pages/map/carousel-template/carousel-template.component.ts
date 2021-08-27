@@ -9,12 +9,18 @@ import {Output, EventEmitter} from '@angular/core';
 export class CarouselTemplateComponent implements OnInit {
   
   @Input() banner: any;
+  @Input() editorMode: any;
   
   slideOptsHorizontal: any;
   
   constructor() { }
 
   ngOnInit() {
+	this.onRefresh();
+  }
+  
+  onRefresh() {
+	  
     if(this.banner && this.banner.carousel) {
         this.slideOptsHorizontal = {
             slidesPerView: this.banner.carousel.options.slidesPerView,
