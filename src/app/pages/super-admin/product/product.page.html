@@ -17,22 +17,13 @@
 
     <ion-list *ngIf="product" class="padding-container">
     
-       <ion-item lines="none" *ngIf="product.id" [ngClass]="{'mt-4': product.id}">
-          <ion-label style="max-width: 75px;" slot="start">Imagenes</ion-label>
-           <div class="d-flex ml-auto" style="overflow-x: scroll;">
-              <ion-item *ngFor="let scene of product?.resources.scenes;let i = index" class="scene-icon-mini">
-               <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
-              </ion-item>    
-            </div>
-
-         <ion-buttons slot="end">
-            <ion-button (click)="onAddImagen()">
-              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-            </ion-button>
-         </ion-buttons>
-       </ion-item>
-    
       <ion-item button="true" [ngClass]="{'mt-4': !product.id}">
+        <ion-label> Categoría </ion-label>
+        <select [(ngModel)]="product.category_id">
+           <option value="{{category.value}}" *ngFor="let category of categories"> {{category.label}}</option>
+        </select>
+      </ion-item>    
+      <ion-item button="true">
         <ion-label> Nombre </ion-label>
         <ion-input class="ml-auto" class="text-right" [(ngModel)]="product.name" (ionChange)="editSave=true" name="name"></ion-input>
       </ion-item>
@@ -43,19 +34,19 @@
       
       <ion-item lines="" *ngIf="product.id">
           <ion-label style="max-width: 153px;" slot="start">Lista de precios </ion-label>
-          <div class="d-flex ml-auto" style="overflow-x: scroll;">
-              <ion-item  *ngFor="let price of product?.prices;let i = index" class="scene-icon-mini"  style="min-width: 148px"
-              button="true" routerLink="/super-admin/stand/{{pavilion.id}}/{{stand.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+          <div class="d-flex ml-auto" style="overflow-x: scroll; ">
+              <ion-item  *ngFor="let price of product?.prices;let i = index" class="scene-icon-mini"  style="min-width: 184px"
+              button="true" routerLink="/super-admin/product-price/{{pavilion.id}}/{{stand.id}}/{{product.id}}/{{price.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                 <ion-avatar class="mr-3">
-                  <img [src]="stand.merchant?.resources?.url_image">
+                  <img [src]="price.resources?.images[0].url_image">
                 </ion-avatar>
-                <ion-label>
-                  <h2>{{price.price}}</h2>
+                <ion-label style="white-space: initial;">
+                  <h2>{{ price.price | currency: 'COP $ ':'symbol':'1.2-2' }}</h2>
                 </ion-label>
               </ion-item>
             </div>
          <ion-buttons slot="end">
-            <ion-button routerLink="/super-admin/stand/{{pavilion.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+            <ion-button routerLink="/super-admin/product-price/{{pavilion.id}}/{{stand.id}}/{{product.id}}" routerLinkActive="active" routerDirection="root" detail="false">
               <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
             </ion-button>
          </ion-buttons>

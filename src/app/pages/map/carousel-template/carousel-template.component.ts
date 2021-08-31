@@ -10,19 +10,52 @@ export class CarouselTemplateComponent implements OnInit {
   
   @Input() banner: any;
   @Input() editorMode: any;
+  @Input() fair: any;
+  @Input() pavilion: any;
+  @Input() stand: any;
+  @Input() product: any;
   
   slideOptsHorizontal: any;
   
   constructor() { }
 
   ngOnInit() {
-	this.onRefresh();
+    window.addEventListener('carousel:refresh', (e:any) => {
+        setTimeout(() => {
+            this.onRefresh();
+        }, 60);
+
+    });
+    setTimeout(() => {
+            this.onRefresh();
+    }, 60);
+    
   }
   
   onRefresh() {
-	  
+      
     if(this.banner && this.banner.carousel) {
-        this.slideOptsHorizontal = {
+    
+        this.initializeCarousel();
+        
+        let slides = document.querySelector<any>('#ion-slides-'+this.banner.id);
+        if(slides) {
+          slides.options = this.slideOptsHorizontal;
+          console.log(slides.options);
+        } else {
+            console.log('error',slides);
+        }
+    }
+  }
+  
+  goToProduct(product) {
+      if( typeof this.editorMode === 'undefined' || !this.editorMode ) {
+         window.location.href= '/#/product-detail/'+this.pavilion.id+'/'+this.stand.id+'/'+product.id;
+      }
+  }
+
+  initializeCarousel() {
+      this.slideOptsHorizontal = {
             slidesPerView: this.banner.carousel.options.slidesPerView,
             coverflowEffect: {
               rotate: this.banner.carousel.options.rotate,
@@ -110,11 +143,6 @@ export class CarouselTemplateComponent implements OnInit {
               }
             }
         };
-
-
-        let slides = document.querySelector('ion-slides');
-        slides.options = this.slideOptsHorizontal;
-    }
   }
   
 }

@@ -23,6 +23,12 @@ export class ProductPage implements OnInit {
   errors: string = null;
   success: string = null;
   editSave = false;
+  productPriceSel = null;
+  categories = [
+  {'value':'1','label':'Hogar'},
+  {'value':'2','label':'Casa'},
+  {'value':'3','label':'Juguete'},
+  ]
   
   
   constructor(
@@ -32,8 +38,8 @@ export class ProductPage implements OnInit {
     private alertCtrl: AlertController,
     private fairsService: FairsService,
     private pavilionsService: PavilionsService,
-	private standsService: StandsService,
-	private productsService: ProductsService,
+    private standsService: StandsService,
+    private productsService: ProductsService,
     private router: Router
     ) { }
 
@@ -47,47 +53,48 @@ export class ProductPage implements OnInit {
     this.productId = this.route.snapshot.paramMap.get('productId');
     this.loading.present({message:'Cargando...'});
     this.errors = null;
-	
-	this.fairsService.getCurrentFair()
+    
+    this.fairsService.getCurrentFair()
       .then((fair) => {
             this.fair = fair;
-			this.fair.pavilions.forEach((pavilion)=>{
-				if(pavilion.id == pavilionId ) {
-					this.pavilion = pavilion;
-					for(let stand of this.pavilion.stands) {
-					  if(Number(stand.id)  === Number(standId)) { 
-					    this.stand = stand;
-						break;
-					  }
-					}
-				}
-			});
+            this.fair.pavilions.forEach((pavilion)=>{
+                if(pavilion.id == pavilionId ) {
+                    this.pavilion = pavilion;
+                    for(let stand of this.pavilion.stands) {
+                      if(Number(stand.id)  === Number(standId)) { 
+                        this.stand = stand;
+                        break;
+                      }
+                    }
+                }
+            });
             if(this.productId) {
-				this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id, this.productId)
-				.then((products) => {
-					this.loading.dismiss();
-					this.product = products[0];
-				  })
-				  .catch(error => {
-					 this.loading.dismiss();
-					 this.errors = error;
-				  });
-			 }
-			 else {
-				 this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id, this.productId)
-				.then((products) => {
-					this.loading.dismiss(); 
-					this.product = { 'name': 'Producto #' + (products.length + 1 ), 'description':  'Descripción producto #' + (products.length + 1 ), 'prices': [], 'resources': {'scenes':[{'url_image':'https://dummyimage.com/648x300/EFEFEF/000.png'}]} }
-					this.editSave = true;
-				    this.loading.dismiss();
-				  })
-				  .catch(error => {
-					 this.loading.dismiss();
-					 this.errors = error;
-				  });
-				
-			 }
-	  });
+                this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id, this.productId)
+                .then((products) => {
+                    this.loading.dismiss();
+                    this.product = products[0];
+					this.product.url_imagen = this.product.prices[0].resources.images[0].url_image;
+                  })
+                  .catch(error => {
+                     this.loading.dismiss();
+                     this.errors = error;
+                  });
+             }
+             else {
+                 this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id, this.productId)
+                .then((products) => {
+                    let id = products && products.length ? products.length + 1 : 1;
+                    this.product = { 'name': 'Producto #' + id , 'description':  'Descripción producto #' + id }
+                    this.editSave = true;
+                    this.loading.dismiss();
+                  })
+                  .catch(error => {
+                     this.loading.dismiss();
+                     this.errors = error;
+                  });
+                
+             }
+      });
   }
   
   updateProduct(){
@@ -100,8 +107,7 @@ export class ProductPage implements OnInit {
           this.success = `Producto modificado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          this.onRouterLink(`/super-admin/product/${product.id}`);
-          this.product = product;
+          this.onRouterLink(`/super-admin/product/${this.pavilion.id}/${this.stand.id}/${product.id}`);
       })
       .catch(error => {
         this.loading.dismiss();
@@ -110,14 +116,14 @@ export class ProductPage implements OnInit {
     }
     else {
       
-	  this.adminProductsService.create(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id},this.product))
+      this.adminProductsService.create(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id},this.product))
        .then((product) => {
           this.loading.dismiss();
           this.errors = null;
           this.success = `Producto creado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          this.onRouterLink(`/super-admin/product/${product.id}`);
+          this.onRouterLink(`/super-admin/product/${this.pavilion.id}/${this.stand.id}/${product.id}`);
       })
       .catch(error => {
          this.loading.dismiss();
@@ -131,7 +137,7 @@ export class ProductPage implements OnInit {
       const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: 'Borrar producto?',
-      subHeader: 'Confirmar para borrar el producto',
+      subHeader: 'Confirma para borrar el producto',
       buttons: [
         {
           text: 'Cancelar',
@@ -143,10 +149,10 @@ export class ProductPage implements OnInit {
           text: 'Confirmar',
           cssClass: 'danger',
           handler: (data) => {
-            this.adminProductsService.delete(this.product.id)
+            this.adminProductsService.delete(this.product)
               .then((response) => {
                    this.success = `Producto borrado exitosamente`;
-                   const tab = `/super-admin/stand/${this.pavilion.id}`;
+                   const tab = `/super-admin/stand/${this.pavilion.id}/${this.stand.id}`;
                    this.onRouterLink(tab);
                 
               },
@@ -168,7 +174,4 @@ export class ProductPage implements OnInit {
     this.router.navigate([tab]);
   }
 
-  onAddImagen(){
-	  
-  }
 }

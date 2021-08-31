@@ -2,7 +2,7 @@
   min-width: 129px;
   width: 100px;
 }
-.attributtes {
+.attributes {
   
   .color-attributte {
      width: 10px;
@@ -12,7 +12,8 @@
 }
 
 .product-box {
-  
+  max-width: 203px;
+  min-height: 79px;
 }
 
 .product-box:hover {

@@ -1,4 +1,4 @@
-.scene {
+.banner {
   position: absolute;
 }
 
@@ -25,6 +25,20 @@
 .full-screen-button {
   position: absolute;
   top: 0px;
+  z-index: 11;
+}
+
+.goto-edit-button {
+  position: absolute;
+  top: 0px;
+  left: 118px;
+  z-index: 11;
+}
+
+.goto-back-button {
+  position: absolute;
+  top: 0px;
+  left: 58px;
   z-index: 11;
 }
 

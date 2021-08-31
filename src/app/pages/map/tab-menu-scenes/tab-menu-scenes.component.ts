@@ -28,6 +28,7 @@ export class TabMenuScenesComponent implements OnInit {
   }
   
   initializeMenu() {
+	  
      const tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
      const main = document.querySelector<HTMLElement>('#ionContent');
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;

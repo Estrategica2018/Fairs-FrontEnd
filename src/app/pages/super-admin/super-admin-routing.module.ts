@@ -67,6 +67,14 @@ const routes: Routes = [
   {
     path: 'product/:pavilionId/:standId/:productId',
     loadChildren: () => import('./product/product.module').then( m => m.ProductPageModule)
+  },
+  {
+    path: 'product-price/:pavilionId/:standId/:productId',
+    loadChildren: () => import('./product-price/product-price.module').then( m => m.ProductPricePageModule)
+  },
+  {
+    path: 'product-price/:pavilionId/:standId/:productId/:productPriceId',
+    loadChildren: () => import('./product-price/product-price.module').then( m => m.ProductPricePageModule)
   }
 ];
 

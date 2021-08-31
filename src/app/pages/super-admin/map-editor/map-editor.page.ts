@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, OnInit} from '@angular/core';
 import { HostListener } from "@angular/core";
 import { FairsService } from './../../../api/fairs.service';
 import { PavilionsService } from './../../../api/pavilions.service';
+import { ProductsService } from './../../../api/products.service';
 import { AdminFairsService } from './../../../api/admin/fairs.service';
 import { AdminPavilionsService } from './../../../api/admin/pavilions.service';
 import { AdminStandsService } from './../../../api/admin/stands.service';
@@ -13,6 +14,11 @@ import { Router } from '@angular/router';
 import { Animation, AnimationController } from '@ionic/angular';
 import { processData } from '../../../providers/process-data';
 import { IonReorderGroup } from '@ionic/angular'; 
+import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
+import { PopoverController } from '@ionic/angular';
+
+
+declare var tinymce;
 
 @Component({
   selector: 'app-map-editor',
@@ -25,8 +31,10 @@ export class MapEditorPage implements OnInit {
   errors = null;
   success = null;
   fixedBannerPanel = true;
+  
     
   fullScreen = false;
+  showInputClipboard = false;
   tabMenuSelected = null;
   fair = null;
   pavilion = null;
@@ -45,12 +53,19 @@ export class MapEditorPage implements OnInit {
   showTool = null;
   tabSelect = 'position';
   showPanelTool = null;
+  htmlEditor = {obj: null, idType: null};
   isHover = null;
   bannerCopy = [];
+  showHtmlEditor = false;
   tabMenuObj:any;
   tabMenuInstance: any = null;
+  bannerSelectHover = null;
   hoverEffects = [ {"name":"GirarDerecha","isChecked":false},{"name":"GirarIzquierda","isChecked":false}];
   groupOfLinks = [];
+  copyMultiFromList = [];
+  
+  productCatalogList = null;
+  selectionElementList = null;
   
   
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
@@ -76,7 +91,7 @@ export class MapEditorPage implements OnInit {
   lineTypes = [{"value":"dashed","label":"Cortada"},{"value":"solid","label":"Sólida"},{"value":"dotted","label":"Punteada"},{"value":"double","label":"Doble"},{"value":"groove","label":"Sombreada"},{"value":"hidden","label":"Oculta"},]
   internalUrlList: any;
   typeCarouselList = [{'label':'Horizontal','value':'horizontal'}, {'label':'Horizontal 1','value':'horizontal-1'},{'label':'Horizontal 2','value':'horizontal-2'}];
-  carouselOptionList = ['slidesPerView','rotate','stretch','depth','slideShadows','modifier'];
+  carouselOptionList = ['slidesPerView','rotate','stretch','depth','modifier'];
   
   constructor(
     private alertCtrl: AlertController,
@@ -91,14 +106,27 @@ export class MapEditorPage implements OnInit {
     private adminFairsService: AdminFairsService,
     private adminPavilionsService: AdminPavilionsService,
     private adminStandsService: AdminStandsService,
-    private toastController: ToastController) { 
+    private toastController: ToastController,
+    private sanitizer: DomSanitizer,
+    private productsService: ProductsService,
+    private popoverCtrl: PopoverController) { 
       
       this.listenForFullScreenEvents();
       this.initializePanel();
   }
 
   ngOnInit() {
-     //this.initializeScreen();
+    //this.initializeScreen();   
+     
+
+	setTimeout(function(){
+     const div2 = document.querySelector<HTMLElement>('#obj-1630031143541');
+	 div2.addEventListener('scroll', this.logBannerScrolling);
+
+     document.querySelectorAll('.banner div').forEach((bannerDiv:HTMLElement) => {
+          bannerDiv.addEventListener('scroll', this.logBannerScrolling);
+     });
+	},600);
   }
   
   onToogleItem() {
@@ -113,11 +141,13 @@ export class MapEditorPage implements OnInit {
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      main.style.top = top + 'px';
-
-     const div = document.querySelector<HTMLElement>('.div-container');
+	 const div = document.querySelector<HTMLElement>('.div-container');
      div.addEventListener('scroll', this.logScrolling);
-     
      div.style.height = ( window.innerHeight - top )  + 'px';
+	 
+     const div2 = document.querySelector<HTMLElement>('#obj-1630031143541');
+	 if(div2)
+	 div2.addEventListener('scroll', this.logBannerScrolling);
   }
    
    initializeScreen() {
@@ -144,7 +174,9 @@ export class MapEditorPage implements OnInit {
 
      this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
+        
         this.initializeInternalUrl();
+        
         this.initializeGroupOfLinks();
 
         if(this.template === 'fair') {
@@ -168,8 +200,43 @@ export class MapEditorPage implements OnInit {
                 pavilion.stands.forEach((standEl)=>{
                    if(standEl.id == standId) {
                       this.stand = standEl;
+                      
                       this.resources = this.stand.resources;
                       this.scene = this.sceneId ? this.stand.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+                      
+                      this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id,null)
+                      .then((products) => {
+                          if(products.length>0) {
+                              this.errors = null;
+                              
+                              //create product catalog list
+                              this.productCatalogList = [];
+                              products.forEach((product)=>{
+                                  product.url_image = product.prices[0].resources.images[0].url_image;
+                                  let hasCategory = false;
+                                  let category = null;
+                                  
+                                  if(this.productCatalogList.length > 0) {
+                                    this.productCatalogList.forEach((cat)=>{
+                                      if(cat.name == product.category.name) {
+                                         hasCategory = true;
+                                         category = cat;
+                                      }
+                                    });
+                                  }
+                                  if(!hasCategory) {
+                                    category = {'id':product.category.id,'name':product.category.name, 'products': []};
+                                    this.productCatalogList.push(category);
+                                  }
+                                  category.products.push(product);
+                              });
+                          }
+                      })
+                      .catch(error => {
+                         this.loading.dismiss();
+                         this.errors = error;
+                      });
+                      
                       
                    }
                 });
@@ -178,6 +245,10 @@ export class MapEditorPage implements OnInit {
         }
         
         this.scene.banners = this.scene.banners || [];
+        setTimeout(() => {
+          this.initializeHtmlTexts(this.scene.banners);
+        }, 100);
+      
         this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
         this.resources.menuTabs = this.resources.menuTabs || {};
         
@@ -196,6 +267,15 @@ export class MapEditorPage implements OnInit {
         this.errors = `Consultando el servicio del mapa general de la feria`;
      });
 
+  }
+  
+  initializeHtmlTexts(banners) {
+      banners.forEach((banner)=>{
+          if(banner.text && banner.text.length > 0) {
+              const divHtmlText = document.querySelector<HTMLElement>('#obj-'+banner.id + ' .innerHtml');
+              divHtmlText.outerHTML = '<div class="innerHtml">'+banner.text+'</div>';
+          }
+      });
   }
   
  // ngOnDestroy(): void {
@@ -222,9 +302,6 @@ export class MapEditorPage implements OnInit {
   onResize() {
     
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
-     
-     if(!this.scene.container) return;
-     
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
     
@@ -232,6 +309,13 @@ export class MapEditorPage implements OnInit {
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
+
+     if(newHeight==0 && newWidth==0){
+         setTimeout(() => {
+          this.onResize();
+      }, 300);
+      return;
+     };     
      
      if(newHeight < main.offsetHeight) {
          newHeight = window.innerHeight;
@@ -241,6 +325,7 @@ export class MapEditorPage implements OnInit {
      }
      this.scene.container.w = newWidth;
      this.scene.container.h = newHeight;
+     
      this.scene.banners.forEach((banner)=>{
         if(banner.size) { 
            banner.size.x /= deltaW;
@@ -253,8 +338,32 @@ export class MapEditorPage implements OnInit {
         if(banner.fontSize > 0 ) {
            banner.fontSize /= deltaW;
         }
+        
      });
      
+     window.dispatchEvent(new CustomEvent('carousel:refresh'));
+     
+  }
+  
+  logBannerScrolling(e) {
+      alert(e);
+      let target = e.target;
+      //document.querySelector<HTMLElement>('.scene').style.top += 20;
+      
+      const scrollLeft = document.querySelector<HTMLElement>('.div-container').scrollLeft;
+      const scrollTop = document.querySelector<HTMLElement>('.div-container').scrollTop;
+      const oldScrollX = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-x'));
+      const oldScrollY = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-y'));
+      const deltaX = scrollLeft - oldScrollX;
+      const deltaY = scrollTop - oldScrollY;
+      
+      document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
+          banner.style.left = ( banner.offsetLeft - deltaX ) + 'px';  
+          banner.style.top  = ( banner.offsetTop - deltaY ) + 'px';
+      });
+      
+      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
+      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',scrollTop.toString());      
   }
   
   logScrolling(e) {
@@ -269,9 +378,9 @@ export class MapEditorPage implements OnInit {
       const deltaX = scrollLeft - oldScrollX;
       const deltaY = scrollTop - oldScrollY;
       
-      document.querySelectorAll('.scene').forEach((scene:HTMLElement) => {
-          scene.style.left = ( scene.offsetLeft - deltaX ) + 'px';  
-          scene.style.top  = ( scene.offsetTop - deltaY ) + 'px';
+      document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
+          banner.style.left = ( banner.offsetLeft - deltaX ) + 'px';  
+          banner.style.top  = ( banner.offsetTop - deltaY ) + 'px';
       });
       
       document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
@@ -314,7 +423,7 @@ export class MapEditorPage implements OnInit {
       }
       
       if(this.template === 'fair') {
-		  this.fair.resources = this.resources;
+          this.fair.resources = this.resources;
           this.adminFairsService.update(this.fair)
           .then((response) => {
               this.loading.dismiss();
@@ -325,7 +434,9 @@ export class MapEditorPage implements OnInit {
                   this.sceneId = this.resources.scenes.length - 1;
                   this.editMenuTabSave = null;
                   this.editSave = null;
-                  this.router.navigateByUrl(`/super-admin/map-editor/fair/${this.sceneId}`);
+                  this.showPanelTool = false
+                  this.bannerSelect = null;
+                  window.location.replace(`/#/super-admin/map-editor/fair/${this.sceneId}`);
               }
               this.ngOnInit();
               this.errors = null;
@@ -336,19 +447,23 @@ export class MapEditorPage implements OnInit {
            });
       }
       else if(this.template === 'pavilion') {
-		  this.pavilion.resources = this.resources;
+          this.pavilion.resources = this.resources;
           this.adminPavilionsService.update(this.pavilion)
           .then((pavilion) => {
               this.loading.dismiss();
               this.errors = null;
               if(!this.sceneId) {
                   this.resources = processData(pavilion.resources);
-                  console.log(pavilion);
                   this.sceneId = this.resources.scenes.length - 1;
               }
               this.fairsService.refreshCurrentFair();
               this.pavilionsService.refreshCurrentPavilion();
-              this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+              this.editMenuTabSave = null;
+              this.editSave = null;
+              this.showPanelTool = false
+              this.bannerSelect = null;
+              window.location.replace(`/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+              //this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
            })
            .catch(error => {
                this.loading.dismiss();
@@ -356,7 +471,7 @@ export class MapEditorPage implements OnInit {
            });
       }
       else if(this.template === 'stand') {
-		  this.stand.resources = this.resources;
+          this.stand.resources = this.resources;
           this.adminStandsService.update(this.stand)
           .then((stand) => {
               this.loading.dismiss();
@@ -364,8 +479,15 @@ export class MapEditorPage implements OnInit {
                   this.sceneId = this.resources.scenes.length - 1;
               }
               this.fairsService.refreshCurrentFair();
-              this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+              this.pavilionsService.refreshCurrentPavilion();
               this.errors = null;
+              this.editMenuTabSave = null;
+              this.editSave = null;
+              this.showPanelTool = false
+              this.bannerSelect = null;
+              
+              window.location.replace(`/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+              //this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
            })
            .catch(error => {
                this.loading.dismiss(); 
@@ -384,32 +506,39 @@ export class MapEditorPage implements OnInit {
               this.resources.menuTabs.actions.push(this.tabMenuInstance);
               this.onChangeMenuTabs();
           }
+          this.tabMenuObj = this.resources.menuTabs;
       }
       else {
           if(this.tabMenuInstance.isNew) {
               this.tabMenuInstance.isNew = false;
               this.tabMenuInstance.tabId = this.scene.menuTabs.actions.length + 1;
               this.scene.menuTabs.actions.push(this.tabMenuInstance);
+              this.tabMenuObj = this.scene.menuTabs;
               this.onChangeMenuTabs();
           }
       }
+      this.editSave = true;
   }
+  
   addArrowLineCurve() {
     const id = new Date().valueOf();
     const banner = {"style": "container-arrow--curve","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
+    this.editSave = true;
   }
 
   addArrowLineRect() {
     const id = new Date().valueOf();
     const banner = {"style":"container-arrow--rect","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
+    this.editSave = true;
   }
 
   addArrowLineLine() {
     const id = new Date().valueOf();
     const banner = {"style":"container-arrow--line","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
+    this.editSave = true;
   }
 
 
@@ -419,12 +548,12 @@ export class MapEditorPage implements OnInit {
     const _defaultBanner = {id:id,type:type,rotation:{"x":0,"y":0,"z":0},position: this.getNewPosition({"x":156,"y":195}),border:{"style":"none"},fontSize:16};
     switch(type) { 
       case 'Text':
-          banner = {"fontColor":"#000000","text":"Texto aquí","size":{"x":100,"y":20}};
+          banner = {"textAlign":"left","fontColor":"#000000","text":"Texto aquí","size":{"x":100,"y":20}};
       break;
       case 'Image':
           banner = {"size":{"x":114,"y":105},"image_url": "https://dummyimage.com/114x105/EFEFEF/000.png"};
       break;
-      case 'Carousel':
+      case 'Carrete':
           const allImages = [
             { "size":{"x":50,"y":88},"title": "We are covered", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/covered.jpg" },
             { "size":{"x":50,"y":88},"title": "Generation Gap", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/generation.jpg" },
@@ -432,14 +561,18 @@ export class MapEditorPage implements OnInit {
             { "size":{"x":50,"y":88},"title": "Pre-School Kids", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/preschool.jpg" },
             { "size":{"x":50,"y":88}, "title": "Young Peter Cech", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/soccer.jpg" }    
           ];
-          banner = {"size":{"x":1256,"y":271},"carousel": { "options":{
-      slidesPerView: 3,
-      rotate: 0,
-      stretch: 50,
-      depth: 100,
-      slideShadows: false,
-      modifier: 1,
-    },"type":"horizontal","images": allImages}};
+          banner = {"size":{"x":1156,"y":236},"carousel": { "options":{slidesPerView: 3,rotate: 0,stretch: 50,depth: 100,slideShadows: false,modifier: 1},"style":"horizontal","images": allImages}};
+      break;
+      case 'CarreteProducts':
+         let productList = [];
+         if(this.productCatalogList && this.productCatalogList.length > 0) {
+           this.productCatalogList.forEach((group)=>{
+               group.products.forEach((product)=>{
+                productList.push(product);
+              });   
+           });
+         }
+         banner = {"position":this.getNewPosition({"x":16,"y":145}),"size":{"x":668,"y":120},"carousel": { "options":{slidesPerView: 3,rotate: 0,stretch: 50,depth: 100,slideShadows: false,modifier: 1},"style":"horizontal","products": productList}};
       break;
       case 'Video':
           banner = {"size":{"x":114,"y":105},"video": { "video_url":"https://player.vimeo.com/video/286898202"}};
@@ -451,6 +584,11 @@ export class MapEditorPage implements OnInit {
     }
     
     this.scene.banners.push(Object.assign(_defaultBanner,banner));
+    
+    //open settingsBanner panel with last element
+    this.bannerSelect = this.scene.banners[this.scene.banners.length-1];
+    this.editSave = true;
+    this.showPanelTool = 'settingsBanner'; 
   }
   
   getNewPosition(pos) {
@@ -476,6 +614,7 @@ export class MapEditorPage implements OnInit {
   dragBannerEnd($event,banner) {
     banner.position.y += $event.y;
     banner.position.x += $event.x;
+    this.editSave = true;
   }
    
   onDeleteBanner(bannerSelect) {
@@ -483,7 +622,45 @@ export class MapEditorPage implements OnInit {
         return bannerSelect != banner; 
     });
     this.bannerSelect = null;
-	this.showPanelTool = false
+    this.showPanelTool = false;
+    this.editSave = true;
+  }
+  
+  async onDeleteBannerList(itemList) {
+    
+      const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
+      header: 'Borra agenda?',
+      subHeader: 'Confirma para borrar los elementos seleccionados',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            
+          }
+        }, {
+          text: 'Confirmar',
+          cssClass: 'danger',
+          handler: (data) => {
+                   
+            const newList = [];
+            this.scene.banners.forEach((banner)=>{
+              if(!banner.isChecked) {
+                newList.push(banner);
+              }
+            });
+
+            this.scene.banners = newList;
+            this.editSave = true;
+            this.copyMultiFromList = [];
+          }
+        }
+      ]
+    });
+    await alert.present();
+    
   }
   
   async onCopyBanner(itemList) {
@@ -518,7 +695,12 @@ export class MapEditorPage implements OnInit {
        newBanner.position = this.getNewPosition(banner.position);
        this.scene.banners.push(newBanner);
        id ++;
+       this.editSave = true;
     });
+    
+    setTimeout(() => {
+      this.initializeHtmlTexts(this.scene.banners);
+    }, 100);
     
     this.bannerCopy = [];
   }
@@ -577,6 +759,7 @@ export class MapEditorPage implements OnInit {
              this.bannerSelect.hoverEffects += effect.name + ";";
           }
       });
+      this.editSave = true;
   }
   
   async onDeleteScene(sceneId) {
@@ -600,7 +783,8 @@ export class MapEditorPage implements OnInit {
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       this.router.navigateByUrl(`/super-admin/fair`);
+                       window.location.replace(`/#/super-admin/fair`);
+                       //this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -614,7 +798,8 @@ export class MapEditorPage implements OnInit {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
                        this.pavilionsService.refreshCurrentPavilion();
-					   this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
+                       window.location.replace(`/#/super-admin/pavilion/${this.pavilion.id}`);
+                       //this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -627,7 +812,8 @@ export class MapEditorPage implements OnInit {
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                       //this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                       window.location.replace(`/#/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -644,7 +830,7 @@ export class MapEditorPage implements OnInit {
   
   async onDeleteTabMenu(tabMenuInstance) {
     const alert = await this.alertCtrl.create({
-      message: 'Confirma para eliminar el menú',
+      message: 'Confirma para eliminar acción de menú',
       buttons: [
         { text: 'Cancelar',
           role: 'cancel'
@@ -652,10 +838,10 @@ export class MapEditorPage implements OnInit {
         {
           text: 'Aceptar',
           handler: (data: any) => {
-              this.loading.present({message:'Cargando...'});
               this.tabMenuObj.actions = this.tabMenuObj.actions.filter((tab,key)=>{
                   return key != tabMenuInstance.tabId;
               });
+              this.editSave = true;
           }
         }
       ]
@@ -736,6 +922,7 @@ export class MapEditorPage implements OnInit {
     
     document.getElementsByTagName('head')[0].appendChild(style);
     this.onChangeMenuTabs();
+    this.editSave = true;
   }
   
   initializeGroupOfLinks() {
@@ -808,16 +995,18 @@ export class MapEditorPage implements OnInit {
         }
     });
     this.scene.banners = ev.detail.complete(this.scene.banners);
-    //this.scene.banners = list;
+    this.editSave = true;
   } 
   
   doReorderCarousel(ev: any) {
     this.bannerSelect.carousel.images = ev.detail.complete(this.bannerSelect.carousel.images);
+    this.editSave = true;
   } 
   
   toogleTabMenu() {
     this.scene.menuTabs.showMenuParent = !this.scene.menuTabs.showMenuParent;
     this.tabMenuObj = this.scene.menuTabs.showMenuParent ? this.resources.menuTabs : this.scene.menuTabs;
+    this.editSave = true;
   }
   
   onChangeMenuTabs() {
@@ -829,48 +1018,70 @@ export class MapEditorPage implements OnInit {
      this.tabMenuInstance = Object.assign(tab,{'tabId':i,'isNew':false});
   }
       
-  //@HostListener('window:keydown',['$event'])
-  //onKeyPress($event: KeyboardEvent) {
-  //  if(($event.ctrlKey || $event.metaKey) && $event.keyCode == 67) {
-  //      console.log('CTRL + C');
-  //  } else if(($event.ctrlKey || $event.metaKey) && $event.keyCode == 86) {
-  //      console.log('CTRL +  V');
-  //      
-  //      //this.onPasteBanner();
-  //      var pasteText = document.querySelector<HTMLElement>("#output");
-  //      pasteText.focus();
-  //      document.execCommand("paste");
-  //      const _self = this;
-  //      setTimeout(function(){ 
-    //      //_self.onPasteBanner(); 
-    //    }, 300);
-  //
-  //  }
-  //}
-  
-  async onPasteBanner() {
-    let pasteText = <HTMLInputElement> document.getElementById("#output");
-    const jsonText = pasteText.value;
-    const itemList = JSON.parse(jsonText);
-    pasteText.value = '';
-    let id = new Date().valueOf();
-    this.bannerCopy = [];
-    itemList.forEach((banner)=>{        
-       const newBanner = Object.assign({},banner);
-       newBanner.id = id;
-       newBanner.position = this.getNewPosition(banner.position);
-       this.bannerCopy.push(newBanner);
-       id ++;
-    });
-    
-    const toast = await this.toastController.create({
-      message: itemList.length > 1 ? `${itemList.length} Objetos listos para pegar en la escena` : `1 Objeto listo para pegar en la escena`,
-      duration: 2000
-    });
-    toast.present();
+  async onPasteFromClipboard() {
+    try { 
+      let pasteText = <HTMLInputElement> document.getElementById("output-clipboard");
+      const jsonText = pasteText.value;
+      
+      const itemList = JSON.parse(jsonText);
+      pasteText.value = '';
+      let id = new Date().valueOf();
+      this.bannerCopy = [];
+      if( itemList.length > 0 ){
+        itemList.forEach((banner)=>{        
+           const newBanner = Object.assign({},banner);
+           newBanner.id = id;
+           newBanner.position = this.getNewPosition(banner.position);
+           this.bannerCopy.push(newBanner);
+           id ++;
+           this.editSave = true;
+           this.showInputClipboard = false;
+        });
+        
+        //Add element into scene
+        this.onPasteBannerBtn();
+        
+        const toast = await this.toastController.create({
+          message: itemList.length > 1 ? `${itemList.length} objetos adicionados en la escena` : `1 objeto adicionado en la escena`,
+          duration: 2000
+        });
+        toast.present();
+      }
+    }catch(e) {}
   }
 
-  async onOpenChangeImg(image){
+  async onAddImg(list,index){
+    
+    const actionAlert = await this.alertCtrl.create({
+      message: "Ingresa la ruta de la imágen",
+      inputs: [
+        {
+          name: 'url',
+          value: 'https://dummyimage.com/225x105/EFEFEF/000.png',
+          placeholder: 'Url'
+        },
+        {
+          name: 'title',
+          value: 'Título de imágen'
+        },
+      ],
+      buttons: [{
+          text: 'Cancel',
+          role: 'cancel'
+        },{
+         text: 'Guardar', 
+         role: 'destructive', 
+         handler: (data) => {
+          this.editSave = true;
+          list[index].push({'url':data.url,'title':data.title});
+         }
+        }]
+    });
+    await actionAlert.present();
+
+  }  
+  
+  async onOpenChangeImg(image,list,index){
     
     const actionAlert = await this.alertCtrl.create({
       message: "Ingresa la ruta de la imágen",
@@ -882,12 +1093,6 @@ export class MapEditorPage implements OnInit {
         },
       ],
       buttons: [{
-          text: 'Eliminar',
-          handler: (data) => {
-          this.editSave = true;
-          image.url = data.url;
-         }
-        },{
           text: 'Cancel',
           role: 'cancel'
         },{
@@ -902,5 +1107,127 @@ export class MapEditorPage implements OnInit {
     await actionAlert.present();
 
   }  
-}
 
+  
+  async onDeleteCarretImg(image,list,type,index){
+    
+    const actionAlert = await this.alertCtrl.create({
+      message: "Confirma para eliminar la imágen",
+      buttons: [{
+          text: 'Cancel',
+          role: 'cancel'
+        },{
+         text: 'Eliminar', 
+         role: 'destructive', 
+         cssClass: 'danger',
+         handler: (data) => {
+          this.editSave = true;
+          list[type] = list[type].filter((img,key)=>{
+              return key != index;
+          });
+         }
+        }]
+    });
+    await actionAlert.present();
+
+  } 
+  
+  onClickOpenHtmlInput(obj,idType){
+     if(obj[idType].isHtml) {
+        this.onClickOpenHtml(obj,idType)
+     }
+  }
+  
+  onClickOpenHtml(obj,idType){
+      
+      this.showHtmlEditor = true;
+      this.showPanelTool = null;
+      this.htmlEditor = {obj: obj, idType: idType};
+      
+      //const divHtmlText = document.querySelector<HTMLElement>('#editorhtml');
+      //divHtmlText.outerHTML = '<textarea id="editorhtml">' + obj[idType] + '</textarea>';
+      
+      document.querySelector<HTMLElement>('#editorhtml').innerHTML = obj[idType];
+      
+      (window as any).tinymce.init({
+          selector: 'textarea#editorhtml',
+          height: 500,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen textcolor',
+            'link image imagetools table spellchecker lists',
+            'insertdatetime media table paste code help wordcount'
+          ],
+          toolbar: 
+          'undo redo | formatselect | ' +
+          'bold italic backcolor forecolor | alignleft aligncenter ' +
+          'alignright alignjustify | bullist numlist outdent indent | ' +
+          'removeformat | help',
+          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        });
+  }
+  
+  onCleanHtml() {
+    this.showHtmlEditor = false;  
+    this.showPanelTool = 'settingsBanner';
+    this.htmlEditor.obj[this.htmlEditor.idType] = '';
+    this.htmlEditor.obj.isHtml = false;
+  }
+  
+  onCloseHtml(){
+    this.showHtmlEditor = false;  
+    this.showPanelTool = 'settingsBanner';
+  }
+  
+  onAcceptHtml() {
+    const iframe = <HTMLIFrameElement> document.querySelector('#editorhtml_ifr');
+    const newText = (<HTMLElement>iframe.contentWindow.document.body).innerHTML;
+    this.htmlEditor.obj[this.htmlEditor.idType] = (<any>this.sanitizer.bypassSecurityTrustHtml(newText)).changingThisBreaksApplicationSecurity;
+    this.showPanelTool = 'settingsBanner';
+    this.showHtmlEditor = false;
+    this.htmlEditor.obj.isHtml = true;
+    this.initializeHtmlTexts([this.htmlEditor.obj]);
+  }
+  
+  onToBackEditor(scene) {
+    window.history.back();
+  }
+  
+  onChangeCarousel() {
+    this.editSave = true;
+    window.dispatchEvent(new CustomEvent('carousel:refresh'));
+  }
+  
+  toogleSelection() {
+    this.selectionElementList = this.selectionElementList ? false : true;
+    this.scene.banners.forEach((banner)=>{
+        banner.isChecked = this.selectionElementList;
+    });
+    this.copyMultiFromList = [];
+    this.scene.banners.forEach((banner)=>{
+        if(banner.isChecked) {
+            this.copyMultiFromList.push(banner);
+        }
+    });
+  }
+
+  toogleOneSelection() {
+    this.copyMultiFromList = [];
+    this.scene.banners.forEach((banner)=>{
+        if(banner.isChecked) {
+            this.copyMultiFromList.push(banner);
+        }
+    });      
+  }
+  
+  onMouseWheel(evt) {
+      //console.log(evt);
+      //console.log(evt.deltaX, evt.deltaY);
+	  const div = document.querySelector<HTMLElement>('.div-container');
+      const scrollLeft = div.scrollLeft + evt.deltaY;
+      const scrollTop = div.scrollTop + evt.deltaY;	
+      div.scrollLeft = scrollLeft;
+      div.scrollTop = scrollTop;
+  }
+
+}

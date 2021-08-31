@@ -1,4 +1,4 @@
-.scene {
+.banner {
   position: absolute;
 }
 
@@ -266,7 +266,7 @@ ion-tab-button {
 .paste-button {
   position: absolute;
   top: 0px;
-  left: 63px;
+  left: 174px;
   z-index: 11;
 }
 
@@ -282,4 +282,53 @@ ion-tab-button {
 }
 .mt--8 {
     margin-top: -8px;
+}
+
+.clean-html-button {
+  position: absolute;
+  top: 0px;
+  right: 186px;
+  z-index: 10;
+}
+.close-html-button {
+  position: absolute;
+  top: 0px;
+  right: 97px;
+  z-index: 10;
+}
+.accept-html-button {
+  position: absolute;
+  top: 0px;
+  right: 7px;
+  z-index: 10;
+}
+
+.edit-carousel-button {
+  top: 48px;
+  position: absolute;
+  z-index: 2;
+}
+
+.goto-back-button {
+  position: absolute;
+  top: 0px;
+  left: 58px;
+  z-index: 11;
+}
+
+.max-height {
+  height: 1934px;
+}
+
+.card-shadow {
+  background-color: white;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 128px;
+}
+
+.toolbar-styles-scroll {
+  height: 413px;
+  overflow: auto;
 }

@@ -1,4 +1,5 @@
-<ion-app [class.dark-theme]="dark">
+<!--ion-app [class.dark-theme]="dark"-->
+<ion-app>
 <ion-header translucent="true">
   <ion-toolbar color="light" [ngClass]="{'full-screen': fullScreen}" class="app-toolbar-header">
     <ion-buttons *ngIf="!showSearchbar" slot="start">
@@ -21,7 +22,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-  <ion-split-pane contentId="main-content">
+  <ion-split-pane contentId="main-content" when="lg">
 
     <ion-menu [ngClass]="{'full-screen': fullScreen}" contentId="main-content" class="menu-main-content">
       <ion-content>

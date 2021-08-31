@@ -1,0 +1,123 @@
+<ion-header class="mt-5">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/super-admin/product/{{pavilion?.id}}/{{stand?.id}}/{{product?.id}}"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="productPrice?.id">
+      <ion-button color="danger" (click)="deleteProductPrice()">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Borrar
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Administrar Características y precio del producto </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+
+    <ion-list *ngIf="productPrice" class="padding-container">
+    
+       <ion-item lines="none" [ngClass]="{'mt-4': productPrice.id}">
+          <ion-label style="max-width: 75px;" slot="start">Imágenes</ion-label>
+           <div class="d-flex ml-auto" style="overflow-x: scroll;">
+              <ion-item *ngFor="let image of productPrice?.resources?.images;let i = index" class="scene-icon-mini">
+               <img *ngIf="image.url_image" [src]="image.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
+              </ion-item>    
+            </div>
+
+         <ion-buttons slot="end">
+            <ion-button  (click)="presentModifyImage(productPrice.resources,'images')">
+              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+       </ion-item>
+       
+      <ion-item button="true" (click)="presentActionPrice()">
+       <ion-label> Precio por evento </ion-label>
+       <ion-buttons>
+          <ion-label slot="end"> {{productPrice.price  | currency: 'COP $ ':'symbol':'1.2-2'}}</ion-label>
+        </ion-buttons>
+      </ion-item>
+    
+      <ion-item lines="none" class="mt-2">
+        <ion-label> Atributos / Características </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-grid class="mt-6">
+          <ion-row>
+          <ion-col *ngFor="let group of attributeList">
+              <ion-label>{{group.groupName}}</ion-label>
+              <ion-list style="max-width: 420px;">
+                <ion-item button="true" *ngFor="let attribute of group.values" class="pr-2 attribute-group">
+                 <ion-label>  
+                   {{attribute.label}}
+                 </ion-label>
+                 <div *ngIf="attribute.type == 'color'" (click)="openColors(attribute);" class="d-flex color-small">
+                    <div *ngIf="attribute.value && attribute.value.length > 0" class="label-color-small" [ngStyle]="{'background-color':attribute.value}">
+                    </div>
+					<ion-button [hidden]="attribute.value && attribute.value.length > 0" class="ml-4" (click)="attribute.value = null">Selecciona</ion-button>
+                    <span class="ml-4">{{attribute.value}}</span>
+                 </div>
+                 <ion-button *ngIf="attribute.type == 'color' && attribute.value && attribute.value.length > 0" class="ml-4" (click)="attribute.value = null">Limpiar</ion-button>
+                 
+                 <div [hidden]="attribute.type == 'color'">
+                   <input (change)="editSave = true" class="ml-auto" style="z-index: 10000; margin-right:10px" [type]="attribute.type" [(ngModel)]="attribute.value">
+                 </div>
+                 <select *ngIf="attribute.format && attribute.format.length > 0" [(ngModel)]="attribute.formatSelect" 
+                    (change)="attribute.value = attribute.formatSelect == '' ? '' : attribute.value;editSave = true">
+                   <option value=""></option>
+                   <option *ngFor="let format of attribute.format" value="{{format}}">{{format}}</option>
+                 </select>
+                 <ion-label [hidden]="attribute.format && attribute.format.length > 0" ></ion-label>
+                </ion-item>
+              </ion-list>
+          </ion-col> 
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item [hidden]="!errors">
+        <div class="alert alert-danger m-auto">
+         <a href="javascript:void(0)" class="close" (click)="errors=null" title="close">×</a>
+         <strong>Error!</strong> {{errors}}
+        </div>
+      </ion-item>
+
+      <ion-item [hidden]="!success">
+        <div class="alert alert-success m-auto">
+         <a href="javascript:void(0)" class="close" (click)="success=null" title="close">×</a>
+         <strong></strong> {{success}}
+        </div>
+      </ion-item>
+      
+      <ion-button class="mt-4" expand="block" [disabled]="!editSave" (click)="updateProductPrice()">
+        {{this.product.id? 'Guardar cambios':'Crear Producto'}}
+        <ion-icon slot="start" name="save"></ion-icon>
+      </ion-button>
+    
+    </ion-list>
+
+  <!--/form-->
+  <div *ngIf="showColor" class="panel-color">
+  <ion-backdrop class="block-window sc-ion-loading-md md backdrop-no-tappable hydrated" tabindex="-1" style=""></ion-backdrop>
+    <ion-card class="card-color">
+      <ion-card-header>
+        <ion-buttons>
+          <ion-card-subtitle  slot="start" >Selecciona la referencia del color</ion-card-subtitle>
+          <ion-button slot="end" (click)="showColor=false;" class="position-absolute r-0">
+            Cerrar <ion-icon slot="end" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col *ngFor="let color of colorList" class="label-color" [ngStyle]="{'background-color':color.value}"
+            (click)="setColor(color)">
+               <span>{{color.name}}</span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

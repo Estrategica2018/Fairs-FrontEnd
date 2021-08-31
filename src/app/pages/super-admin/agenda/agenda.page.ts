@@ -195,7 +195,7 @@ export class AgendaPage implements OnInit {
       const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: 'Borra agenda?',
-      subHeader: 'Confirmar para borrar la agenda',
+      subHeader: 'Confirma para borrar la agenda',
       buttons: [
         {
           text: 'Cancelar',
@@ -355,8 +355,8 @@ export class AgendaPage implements OnInit {
       });
       
     const actionSheet = await this.alertCtrl.create({
-      header: 'Precio por evento',
-      message: "Ingresa el precio del evento",
+      header: 'Precio del producto',
+      message: "Ingresa el precio del producto",
       inputs: [
         {
           name: 'price',

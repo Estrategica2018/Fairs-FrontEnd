@@ -1,0 +1,69 @@
+.attribute-group{
+  border-bottom: 1px solid gray;
+}
+
+.attribute-group::after {
+  content: '';
+  width: 242px;
+  left: 51px;
+  position: absolute;
+}
+
+.label-color-small {
+  width: 25px;
+  height: 25px;
+  border: 1px solid gray;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.label-color {
+  min-width: 75px;
+  height: 52px;
+  border: 1px solid gray;
+  border-radius: 3px;
+  margin: 10px;
+  cursor: pointer;
+}
+.panel-color {
+  position: absolute;
+  top: 100px;
+  left: 0px;
+  width: 444px;
+  height: 234px;
+  border: 1px solid gray;
+  border-radius: 3px;
+}
+
+.block-window {
+  position: absolute;
+  background: #f2f2f2;
+  opacity: 0.82;
+  width: 100vw;
+  height: 100vh;
+}
+
+.card-color {
+  z-index: 2;
+}
+
+.card-color ion-card-content {
+  overflow: auto;
+  height: 372px;
+}
+
+.color-small {
+
+}
+
+.color-small:hover {
+   background-color: gray;
+}
+
+
+.label-color span {
+  position: absolute;
+  bottom: -20px;
+}
+
+

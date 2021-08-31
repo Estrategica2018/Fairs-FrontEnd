@@ -82,8 +82,9 @@ export class PavilionPage implements OnInit {
           this.success = `Pabellón modificado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
           this.pavilion = pavilion;
+          //this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
+		  window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
       })
       .catch(error => {
         this.loading.dismiss();
@@ -99,7 +100,8 @@ export class PavilionPage implements OnInit {
           this.success = `Pabellón creado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
+          //this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
+		  window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
       })
       .catch(error => {
          this.loading.dismiss();
@@ -113,7 +115,7 @@ export class PavilionPage implements OnInit {
       const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: 'Borrar pabellón?',
-      subHeader: 'Confirmar para borrar el pabellón',
+      subHeader: 'Confirma para borrar el pabellón',
       buttons: [
         {
           text: 'Cancelar',

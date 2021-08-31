@@ -3,6 +3,13 @@
       <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
       <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
    </ion-button>
+   <ion-button color="light" class="goto-back-button" (click)="onToBackEditor(scene)">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+   </ion-button>
+   <ion-button color="light" class="goto-edit-button" (click)="onToMapEditor(scene)">
+      <ion-icon name="create-outline"></ion-icon>
+   </ion-button>
+
    <video 
    [ngStyle]="{'opacity': scene?.videoUrl ? 1 : 0, 'position': scene?.videoUrl ? 'block' : 'absolute'}"
    crossOrigin="anonymous"
@@ -37,15 +44,13 @@
    </div>
    </div>
    <!--Banner List-->
-   <div *ngFor="let banner of scene?.banners;let i = index" class="scene"
+   <div *ngFor="let banner of scene?.banners;let i = index" class="banner"
    [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}">
         
-       <div 
+       <div (wheel)="onMouseWheel($event)"
        [ngClass]="{'cube': !banner.line, 'arrow cursor-pointer':banner.line}" 
-       class="{{ banner.line ? (banner.line.style||'container-arrow--curve') : ''}}"
+       class="{{ banner.line ? (banner.line.style||'container-arrow--curve') :  banner.class}}"
        id="banner-drag-{{banner.id}}"
-       (mouseover)="startAnimation(banner); isHover = banner.id"
-       (mouseout)="isHover = null;"
        [ngStyle]="{
        'left': banner.position?.x + 'px',
        'top': banner.position?.y + 'px',
@@ -53,7 +58,7 @@
        'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
        }">
        <!--if banner is line-->
-        <div class="arrow__body" *ngIf="banner.line"
+        <div class="arrow__body {{banner.class}} " *ngIf="banner.line"
         [ngStyle]="{
         'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
         'border-style': banner?.line?.type,
@@ -63,10 +68,13 @@
         }"
         ></div>
         <!--if banner is banner-->
-       <div class="cube__face cube__face--right square {{banner.class}}" 
+       <div class="cube__face cube__face--right square " 
+       [ngClass]="{'selected': bannerSelectHover === banner, 'greyscale': banner.greyscale }" 
        [hidden]="banner.video_url || banner.line"
        id="obj-{{banner.id}}"
        (click)="goToInternalUrl(banner)"
+       (mouseover)="startAnimation(banner); bannerSelectHover = banner; "
+       (mouseout)="isHover = null; bannerSelectHover = null;"
        [ngStyle]="{
        'background-image': 'url('+banner.image_url+')',
        'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
@@ -81,18 +89,25 @@
        'border-style': banner.border?.style,
        'border-radius': banner.border?.radius + 'px',
        'border-width': banner.border?.width +'px',
-       'text-align': banner.textAlign
-       }"> {{ banner.text }}    
+       'text-align': banner.textAlign,
+       'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+       }">  
+         <div [ngClass]="{'selected': bannerSelectHover === banner}" 
+         [ngStyle]="{'line-height': banner?.lineHeight}">
+           <div class="innerHtml">
+           {{banner.text}}
+           </div>
+          </div>
        </div>
        <!--if banner is Video-->
-       <video width="320" height="240" controls *ngIf="banner.video_url" class="{{banner.class}}"
+       <video controls *ngIf="banner.video" class="{{banner.class}}"
        (click)="onBannerSelect(banner);"
        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-          <source src="{{banner.video_url}}"     type="video/mp4">
+          <source src="{{banner.video.url}}"     type="video/mp4">
            Your browser does not support the video tag.
        </video>
        <!--if banner is carousel-->
-       <app-carousel-template [banner]="banner" *ngIf="banner.carousel" 
+       <app-carousel-template [banner]="banner" *ngIf="banner.carousel" [fair]="fair" [pavilion]="pavilion" [stand]="stand"
        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
        </app-carousel-template>
      </div>

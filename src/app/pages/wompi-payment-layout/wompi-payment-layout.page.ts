@@ -45,8 +45,8 @@ export class WompiPaymentLayoutPage implements OnInit {
           this.user = userDataSession; 
           this.objPrice = fair;
           this.objPrice.resources.detailPayment = [{'name':'Conferencias Públicas','icon':'wifi'}, {'name':'Conferencias exclusivas', 'icon':'ribbon'}];
-		  this.loading.dismiss();
-		  this.showPaymentButton();
+          this.loading.dismiss();
+          this.showPaymentButton();
         },error => {
           this.errors = error;
           this.loading.dismiss();
@@ -82,23 +82,23 @@ export class WompiPaymentLayoutPage implements OnInit {
              const reference = dataReference.reference;
              const currency = dataReference.currency;
              this.success = "Creación exitosa de referencia de pago.";
-			 
-			//const script = document.createElement("script");
-			//script.src = 'https://checkout.wompi.co/widget.js';
-			//script.setAttribute("data-render", "button");
-			//
-			//script.setAttribute("data-public-key", publicKey);
-			//script.setAttribute("data-currency", currency);
-			//script.setAttribute("data-amount-in-cents", price);
-			//script.setAttribute("data-reference", reference);
-			//
-			//const _self = this;
-			//script.onload = function() {
-			//   _self.loading.dismiss();
-			//}
-			 
-			 //const content = document.querySelector('.payment-button');
-			 //content.appendChild(script);
+             
+            //const script = document.createElement("script");
+            //script.src = 'https://checkout.wompi.co/widget.js';
+            //script.setAttribute("data-render", "button");
+            //
+            //script.setAttribute("data-public-key", publicKey);
+            //script.setAttribute("data-currency", currency);
+            //script.setAttribute("data-amount-in-cents", price);
+            //script.setAttribute("data-reference", reference);
+            //
+            //const _self = this;
+            //script.onload = function() {
+            //   _self.loading.dismiss();
+            //}
+             
+             //const content = document.querySelector('.payment-button');
+             //content.appendChild(script);
 
             const url = `${this.url}/viewerZoom/wompi/pagos/eventos`;
             const checkout = new WidgetCheckout({
@@ -112,7 +112,7 @@ export class WompiPaymentLayoutPage implements OnInit {
                 consumption: 800
               }
             });
-		   
+           
             checkout.open(function ( result ) {
                const transaction = result.transaction;
                console.log('Transaction ID: ', transaction.id)

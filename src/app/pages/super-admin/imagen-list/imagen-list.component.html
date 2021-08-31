@@ -1,0 +1,39 @@
+<ion-card>
+  <ion-item>
+    <ion-icon name="pin" slot="start"></ion-icon>
+    <ion-label>Lista de ({{ parent[element]?.length}}) imágene(s)</ion-label>
+    <ion-button (click)="onCancel()" color="medium" fill="outline" slot="end">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item>
+    <ion-button (click)="onNew()" fill="outline" slot="end">Nueva</ion-button>
+  </ion-item>
+  <ion-card-content class="reorder d-flex card-reorder row">
+    <ion-reorder-group (ionItemReorder)="doReorderBanners($event)" disabled="false" class="col-9">
+      <ion-reorder *ngFor="let image of parent[element];let i = index" buttom="true" class="border-gray">
+       <ion-item class="reorder-banner" >
+          <ion-buttons slot="start">
+             <ion-card-subtitle> {{ image.title }}
+             </ion-card-subtitle>
+          </ion-buttons>
+          <ion-buttons slot="end">
+             <ion-card-subtitle>
+                <img [src]="image.url_image" class="slide-image" width="65"/>
+             </ion-card-subtitle>
+          </ion-buttons>
+       </ion-item>
+      </ion-reorder>
+    </ion-reorder-group>
+    <ion-list class=" mt--8 col-3">
+    <ion-item *ngFor="let image of parent[element];let i = index" buttom="true"  class="border-gray">
+      <ion-button size="small" color="light" (click)="onUpdate(i)">
+         <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button size="small" color="danger" (click)="onDelete(parent,'images',i)">
+         <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
