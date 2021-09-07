@@ -24,8 +24,8 @@
 </ion-header>
   <ion-split-pane contentId="main-content" when="lg">
 
-    <ion-menu [ngClass]="{'full-screen': fullScreen}" contentId="main-content" class="menu-main-content">
-      <ion-content>
+    <ion-menu class="scroll-container" [ngClass]="{'full-screen': fullScreen}" contentId="main-content" class="menu-main-content">
+      <ion-content class="scroll-container">
         <ion-list lines="none" class="border-botton">
           <ion-list-header class="md hydrated">Super Administrador </ion-list-header>
           <ion-menu-toggle autoHide="false">
@@ -44,7 +44,7 @@
             <div *ngFor="let scene of fair?.resources?.scenes;let i = index">
               <div *ngIf="scene.show">
                 <ion-item [routerLink]="'/map/fair'+(i+1)+'/'+i" routerLinkActive="selected" routerDirection="root" 
-                          (click)="showPavilionDetail = null">
+                          (click)="onClickFairScene(i)">
                   <ion-icon slot="start" [name]="scene.menuIcon"></ion-icon>
                   <ion-label class="ion-text-wrap">
                     {{scene.title}}
@@ -53,11 +53,9 @@
               </div>
             </div>
             <div *ngFor="let pavilion of fair?.pavilions;let i = index">
-              <ion-item 
-                      [routerLink]="'/map/pavilion'+(i+1)+'/'+pavilion.id+'/0'" routerLinkActive="selected" routerDirection="root" 
-                      (click)="showStandDetail = null;
-                               pavilion.showStandDetail = null;
-                               showPavilionDetail =  showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id"
+            <!-- (click)="onClickPavilion(pavilion)" -->
+              <ion-item [routerLink]="'/map/pavilion'+(i+1)+'/'+i+'/0'" routerLinkActive="selected" routerDirection="root" 
+                      (click)="onClickPavilion(pavilion)"
                       class="pavilions-menu"
                       button="true"
                       lines="none">
@@ -65,9 +63,17 @@
                 <ion-label class="menu-label ion-text-wrap">{{pavilion.name}}</ion-label>
                 <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionDetail !== 'pavilion_id_'+pavilion.id"></ion-icon>
                 <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionDetail === 'pavilion_id_'+pavilion.id"></ion-icon>
-              </ion-item>
-            
+              </ion-item> 
+            <!--[routerLink]="'/map/pavilion'+(i+1)+'/'+pavilion.id+'/'+k" routerLinkActive="selected" routerDirection="root" -->
               <div *ngIf="showPavilionDetail ==='pavilion_id_'+pavilion.id">
+                <ion-item *ngFor="let scene of pavilion.resources.scenes; let k = index;" 
+                          (click)="redirectTo('/map/pavilion'+(i+1)+'/'+pavilion.id+'/'+k)"
+                          lines="none"
+                          button="true"
+                          class="sub-menu">
+                  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+                  <ion-label class="menu-label"> {{ scene.title}} </ion-label>
+                </ion-item>
                 <ion-item *ngIf="pavilion.stands.length > 0" 
                           (click)="pavilion.showStandDetail =  pavilion.showStandDetail ==='pavilion_id_'+pavilion.id ? null : 'pavilion_id_'+pavilion.id"
                           lines="none"
@@ -76,7 +82,6 @@
                   <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
                   <ion-label class="menu-label">Locales comerciales </ion-label>
                 </ion-item>
-
                 <div *ngIf="pavilion.showStandDetail">
                     <ion-item *ngFor="let stand of pavilion.stands;let i_stand = index"
                               [routerLink]="'/map/stand'+(i_stand+1)+'/'+pavilion.id+'/'+stand.id+'/0'" routerLinkActive="selected" routerDirection="root" 

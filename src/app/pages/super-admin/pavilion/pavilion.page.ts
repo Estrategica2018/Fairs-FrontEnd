@@ -14,6 +14,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class PavilionPage implements OnInit {
 
   pavilion: any;
+  stands: any;
   errors: string = null;
   success: string = null;
   editSave = false;
@@ -44,6 +45,7 @@ export class PavilionPage implements OnInit {
           this.pavilionsService.get(pavilionId)
            .then((response) => {
               this.pavilion = response.pavilion;
+              this.stands = this.pavilion.stands;
               this.fair = response.fair;
               this.loading.dismiss();
           })
@@ -78,13 +80,14 @@ export class PavilionPage implements OnInit {
         this.adminPavilionsService.update(this.pavilion)
        .then((pavilion) => {
           this.loading.dismiss();
+          this.editSave = false;
           this.errors = null;
           this.success = `Pabellón modificado exitosamente`;
+          this.pavilion = pavilion;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          this.pavilion = pavilion;
           //this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
-		  window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
+          window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
       })
       .catch(error => {
         this.loading.dismiss();
@@ -97,11 +100,12 @@ export class PavilionPage implements OnInit {
        .then((pavilion) => {
           this.loading.dismiss();
           this.errors = null;
+          this.editSave = false;
           this.success = `Pabellón creado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
           //this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
-		  window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
+          window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
       })
       .catch(error => {
          this.loading.dismiss();

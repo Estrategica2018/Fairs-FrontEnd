@@ -8,6 +8,7 @@ import { PanelEditorComponent } from './panel-editor/panel-editor.component';
 import { DragAndDropModule } from 'angular-draggable-droppable';
 import { ComponentModule } from '../../../components.module';
 
+
 @NgModule({
   imports: [
     CommonModule,

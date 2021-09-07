@@ -74,29 +74,29 @@ export class StandPage implements OnInit {
                       .then((products) => {
                           this.loading.dismiss();
                           this.errors = null;
-						  
-						  //create product catalog list
-						  this.productCatalogList = [];
-						  products.forEach((product)=>{
-							  product.url_image = product.prices[0].resources.images[0].url_image;
-							  let hasCategory = false;
-							  let category = null;
-							  if(this.productCatalogList.length > 0) {
-							    this.productCatalogList.forEach((cat)=>{
-								  if(cat.name == product.category.name) {
-									 hasCategory = true;
-									 category = cat;
-								  }
-							    });
-							  }
-							  if(!hasCategory) {
-								category = {'id':product.category.id,'name':product.category.name, 'products': []};
-								this.productCatalogList.push(category);
-							  }
-							  product.url_image = product.prices && product.prices.length > 0 && product.prices[0].resources.images[0].url_image ? product.prices[0].resources.images[0].url_image : 'https://cdn.shopify.com/s/files/1/0259/1467/1186/products/001AAAA854034016_03_500x.jpg?v=1572573226';
-							  category.products.push(product);
-						  });
-						  
+                          
+                          //create product catalog list
+                          this.productCatalogList = [];
+                          products.forEach((product)=>{
+                              product.url_image = product.prices[0].resources.images[0].url_image;
+                              let hasCategory = false;
+                              let category = null;
+                              if(this.productCatalogList.length > 0) {
+                                this.productCatalogList.forEach((cat)=>{
+                                  if(cat.name == product.category.name) {
+                                     hasCategory = true;
+                                     category = cat;
+                                  }
+                                });
+                              }
+                              if(!hasCategory) {
+                                category = {'id':product.category.id,'name':product.category.name, 'products': []};
+                                this.productCatalogList.push(category);
+                              }
+                              product.url_image = product.prices && product.prices.length > 0 && product.prices[0].resources.images[0].url_image ? product.prices[0].resources.images[0].url_image : 'https://cdn.shopify.com/s/files/1/0259/1467/1186/products/001AAAA854034016_03_500x.jpg?v=1572573226';
+                              category.products.push(product);
+                          });
+                          
                       })
                       .catch(error => {
                          this.loading.dismiss();
@@ -140,11 +140,11 @@ export class StandPage implements OnInit {
           .then((stand) => {
              this.loading.dismiss();
              this.fairsService.refreshCurrentFair();
-			 this.pavilionsService.refreshCurrentPavilion();
+             this.pavilionsService.refreshCurrentPavilion();
              this.success = `Local comercial modificado exitosamente`;
              this.errors = null;
              this.stand = stand;
-			 window.location.href = `/#/super-admin/stand/${this.pavilion.id}/${stand.id}`;
+             window.location.href = `/#/super-admin/stand/${this.pavilion.id}/${stand.id}`;
           })
           .catch(error => {
             this.loading.dismiss();
@@ -162,7 +162,7 @@ export class StandPage implements OnInit {
              this.pavilionsService.refreshCurrentPavilion();
              this.success = `Local comercial creado exitosamente`;
              //this.onRouterLink(`/super-admin/stand/${this.pavilion.id}/${stand.id}`);
-			 window.location.href = `/#/super-admin/stand/${this.pavilion.id}/${stand.id}`;
+             window.location.href = `/#/super-admin/stand/${this.pavilion.id}/${stand.id}`;
           })
           .catch(error => {
             this.loading.dismiss();
@@ -189,15 +189,15 @@ export class StandPage implements OnInit {
           text: 'Confirmar',
           cssClass: 'danger',
           handler: (data) => {
-			  
+              
             this.adminStandsService.delete(this.stand)
               .then((response) => {
                    this.success = `Local comercial borrado exitosamente`;
                    this.fairsService.refreshCurrentFair();
                    this.pavilionsService.refreshCurrentPavilion();
                    //this.onRouterLink(`/super-admin/pavilion/${this.pavilion.id}`);
-				   
-				   window.location.href = `/#/super-admin/pavilion/${this.pavilion.id}`;
+                   
+                   window.location.href = `/#/super-admin/pavilion/${this.pavilion.id}`;
               },
               (error) => {
                   this.errors = error;

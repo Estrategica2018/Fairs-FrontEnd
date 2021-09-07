@@ -6,8 +6,8 @@
   
   .color-attributte {
      width: 10px;
-	 height: 10px;
-	 border-radius: 10px;
+     height: 10px;
+     border-radius: 10px;
   }
 }
 
@@ -20,4 +20,25 @@
   border: 1px solid gray;
   opacity: 0.8;
   border-radius: 5px;
+}
+
+/* width */
+.scroll-container::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+/* Track */
+.scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.scroll-container::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }

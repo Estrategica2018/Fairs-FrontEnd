@@ -13,10 +13,10 @@ import { AlertController, ModalController, IonRouterOutlet,ToastController } fro
 import { Router } from '@angular/router';
 import { Animation, AnimationController } from '@ionic/angular';
 import { processData } from '../../../providers/process-data';
+import { TabMenuScenesComponent } from '../../map/tab-menu-scenes/tab-menu-scenes.component';
 import { IonReorderGroup } from '@ionic/angular'; 
 import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
-
 
 declare var tinymce;
 
@@ -28,11 +28,12 @@ declare var tinymce;
 export class MapEditorPage implements OnInit {
 
   @ViewChild('videoMeeting', { static: true }) videoElement: ElementRef;
+  @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;
   errors = null;
   success = null;
   fixedBannerPanel = true;
-  
-    
+  moveMouseEvent: any;
+  tabMenuOver = false;
   fullScreen = false;
   showInputClipboard = false;
   tabMenuSelected = null;
@@ -63,7 +64,8 @@ export class MapEditorPage implements OnInit {
   hoverEffects = [ {"name":"GirarDerecha","isChecked":false},{"name":"GirarIzquierda","isChecked":false}];
   groupOfLinks = [];
   copyMultiFromList = [];
-  
+  lineHeightMili = null;
+  lineHeightUnit = null;
   productCatalogList = null;
   selectionElementList = null;
   
@@ -116,23 +118,9 @@ export class MapEditorPage implements OnInit {
   }
 
   ngOnInit() {
-    //this.initializeScreen();   
-     
+    //this.initializeScreen();
 
-	setTimeout(function(){
-     const div2 = document.querySelector<HTMLElement>('#obj-1630031143541');
-	 div2.addEventListener('scroll', this.logBannerScrolling);
-
-     document.querySelectorAll('.banner div').forEach((bannerDiv:HTMLElement) => {
-          bannerDiv.addEventListener('scroll', this.logBannerScrolling);
-     });
-	},600);
-  }
-  
-  onToogleItem() {
-    
-  }
-  
+  } 
   ngAfterViewInit() {
      this.initializeScreen();
   }
@@ -141,13 +129,10 @@ export class MapEditorPage implements OnInit {
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      main.style.top = top + 'px';
-	 const div = document.querySelector<HTMLElement>('.div-container');
+     const div = document.querySelector<HTMLElement>('.div-container');
      div.addEventListener('scroll', this.logScrolling);
      div.style.height = ( window.innerHeight - top )  + 'px';
-	 
-     const div2 = document.querySelector<HTMLElement>('#obj-1630031143541');
-	 if(div2)
-	 div2.addEventListener('scroll', this.logBannerScrolling);
+     
   }
    
    initializeScreen() {
@@ -246,11 +231,15 @@ export class MapEditorPage implements OnInit {
         
         this.scene.banners = this.scene.banners || [];
         setTimeout(() => {
-          this.initializeHtmlTexts(this.scene.banners);
-        }, 100);
+          
+          document.querySelectorAll('.banner div').forEach((bannerDiv:HTMLElement) => {
+           // bannerDiv.addEventListener('scroll', this.logBannerScrolling);
+          });
+        }, 50);
       
         this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
         this.resources.menuTabs = this.resources.menuTabs || {};
+        this.initializeHtmlTexts(this.scene.banners);
         
         if(this.scene.menuTabs.showMenuParent) {
            this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
@@ -271,16 +260,13 @@ export class MapEditorPage implements OnInit {
   
   initializeHtmlTexts(banners) {
       banners.forEach((banner)=>{
-          if(banner.text && banner.text.length > 0) {
-              const divHtmlText = document.querySelector<HTMLElement>('#obj-'+banner.id + ' .innerHtml');
-              divHtmlText.outerHTML = '<div class="innerHtml">'+banner.text+'</div>';
-          }
+          banner.textHtml = this.sanitizer.bypassSecurityTrustHtml(banner.text);
       });
-  }
+  }  
   
- // ngOnDestroy(): void {
- //    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
- // }
+  ngOnDestroy(): void {
+     window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
+  }
   
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));
@@ -300,6 +286,8 @@ export class MapEditorPage implements OnInit {
   
   @HostListener('window:resize', ['$event'])
   onResize() {
+      
+     if(!this.scene) return;
     
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
@@ -309,13 +297,6 @@ export class MapEditorPage implements OnInit {
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
-
-     if(newHeight==0 && newWidth==0){
-         setTimeout(() => {
-          this.onResize();
-      }, 300);
-      return;
-     };     
      
      if(newHeight < main.offsetHeight) {
          newHeight = window.innerHeight;
@@ -341,40 +322,21 @@ export class MapEditorPage implements OnInit {
         
      });
      
+     //Menu tab resize/render
+     this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
+
+     
+     //carrete of images resize/render
      window.dispatchEvent(new CustomEvent('carousel:refresh'));
      
   }
   
-  logBannerScrolling(e) {
-      alert(e);
-      let target = e.target;
-      //document.querySelector<HTMLElement>('.scene').style.top += 20;
-      
-      const scrollLeft = document.querySelector<HTMLElement>('.div-container').scrollLeft;
-      const scrollTop = document.querySelector<HTMLElement>('.div-container').scrollTop;
-      const oldScrollX = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-x'));
-      const oldScrollY = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-y'));
-      const deltaX = scrollLeft - oldScrollX;
-      const deltaY = scrollTop - oldScrollY;
-      
-      document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
-          banner.style.left = ( banner.offsetLeft - deltaX ) + 'px';  
-          banner.style.top  = ( banner.offsetTop - deltaY ) + 'px';
-      });
-      
-      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
-      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',scrollTop.toString());      
-  }
-  
   logScrolling(e) {
-      
       let target = e.target;
-      //document.querySelector<HTMLElement>('.scene').style.top += 20;
-      
-      const scrollLeft = document.querySelector<HTMLElement>('.div-container').scrollLeft;
-      const scrollTop = document.querySelector<HTMLElement>('.div-container').scrollTop;
-      const oldScrollX = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-x'));
-      const oldScrollY = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-y'));
+      const scrollLeft = target.scrollLeft;
+      const scrollTop = target.scrollTop;
+      const oldScrollX = Number(target.getAttribute('scroll-x'));
+      const oldScrollY = Number(target.getAttribute('scroll-y'));
       const deltaX = scrollLeft - oldScrollX;
       const deltaY = scrollTop - oldScrollY;
       
@@ -384,7 +346,7 @@ export class MapEditorPage implements OnInit {
       });
       
       document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
-      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',scrollTop.toString());      
+      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',scrollTop.toString());
   }
   
   onBannerSelect(bannerSelect) {
@@ -394,6 +356,9 @@ export class MapEditorPage implements OnInit {
          effect.isChecked = this.bannerSelect.hoverEffects.includes(effect.name);
       });
       this.showPanelTool = 'settingsBanner';
+      this.bannerSelect.lineHeight = this.bannerSelect.lineHeight || '1.0';
+      this.lineHeightUnit = Number.parseInt(this.bannerSelect.lineHeight);
+      this.lineHeightMili = this.bannerSelect.lineHeight.split('.')[1];
       this.isHover = bannerSelect.id; 
   }
   
@@ -504,7 +469,6 @@ export class MapEditorPage implements OnInit {
               this.tabMenuInstance.isNew = false;
               this.tabMenuInstance.tabId = this.resources.menuTabs.actions.length + 1;
               this.resources.menuTabs.actions.push(this.tabMenuInstance);
-              this.onChangeMenuTabs();
           }
           this.tabMenuObj = this.resources.menuTabs;
       }
@@ -514,10 +478,10 @@ export class MapEditorPage implements OnInit {
               this.tabMenuInstance.tabId = this.scene.menuTabs.actions.length + 1;
               this.scene.menuTabs.actions.push(this.tabMenuInstance);
               this.tabMenuObj = this.scene.menuTabs;
-              this.onChangeMenuTabs();
           }
       }
       this.editSave = true;
+      this.onChangeMenuTabs();
   }
   
   addArrowLineCurve() {
@@ -700,7 +664,7 @@ export class MapEditorPage implements OnInit {
     
     setTimeout(() => {
       this.initializeHtmlTexts(this.scene.banners);
-    }, 100);
+    }, 5);
     
     this.bannerCopy = [];
   }
@@ -962,8 +926,7 @@ export class MapEditorPage implements OnInit {
   doReorderBanners(ev: any) {
     // Before complete is called with the items they will remain in the
     // order before the drag
-    console.log('Before complete', this.scene.banners);
-
+    
     // Finish the reorder and position the item in the DOM based on
     // where the gesture ended. Update the items variable to the
     // new order of items
@@ -1012,6 +975,7 @@ export class MapEditorPage implements OnInit {
   onChangeMenuTabs() {
       this.editSave = true;
       this.editMenuTabSave = true;
+      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
   }
 
   setModifyTab(tab, i) {
@@ -1144,10 +1108,15 @@ export class MapEditorPage implements OnInit {
       this.showPanelTool = null;
       this.htmlEditor = {obj: obj, idType: idType};
       
-      //const divHtmlText = document.querySelector<HTMLElement>('#editorhtml');
-      //divHtmlText.outerHTML = '<textarea id="editorhtml">' + obj[idType] + '</textarea>';
+      let text ;
+      if(typeof obj[idType] != 'undefined' && obj[idType] ) {
+         text = '<textarea id="editorhtml">'+obj[idType]+'</textarea>';
+      }
+      else {
+         text = '<textarea id="editorhtml"></textarea>';
+      }
+      document.querySelector<HTMLElement>('#content-editorhtml').innerHTML = text;
       
-      document.querySelector<HTMLElement>('#editorhtml').innerHTML = obj[idType];
       
       (window as any).tinymce.init({
           selector: 'textarea#editorhtml',
@@ -1172,6 +1141,7 @@ export class MapEditorPage implements OnInit {
     this.showPanelTool = 'settingsBanner';
     this.htmlEditor.obj[this.htmlEditor.idType] = '';
     this.htmlEditor.obj.isHtml = false;
+    
   }
   
   onCloseHtml(){
@@ -1182,7 +1152,8 @@ export class MapEditorPage implements OnInit {
   onAcceptHtml() {
     const iframe = <HTMLIFrameElement> document.querySelector('#editorhtml_ifr');
     const newText = (<HTMLElement>iframe.contentWindow.document.body).innerHTML;
-    this.htmlEditor.obj[this.htmlEditor.idType] = (<any>this.sanitizer.bypassSecurityTrustHtml(newText)).changingThisBreaksApplicationSecurity;
+    //this.htmlEditor.obj[this.htmlEditor.idType] = (<any>this.sanitizer.bypassSecurityTrustHtml(newText)).changingThisBreaksApplicationSecurity;
+    this.htmlEditor.obj[this.htmlEditor.idType] = newText;
     this.showPanelTool = 'settingsBanner';
     this.showHtmlEditor = false;
     this.htmlEditor.obj.isHtml = true;
@@ -1221,13 +1192,29 @@ export class MapEditorPage implements OnInit {
   }
   
   onMouseWheel(evt) {
-      //console.log(evt);
-      //console.log(evt.deltaX, evt.deltaY);
-	  const div = document.querySelector<HTMLElement>('.div-container');
+      const div = document.querySelector<HTMLElement>('.div-container');
       const scrollLeft = div.scrollLeft + evt.deltaY;
-      const scrollTop = div.scrollTop + evt.deltaY;	
+      const scrollTop = div.scrollTop + evt.deltaY;    
       div.scrollLeft = scrollLeft;
       div.scrollTop = scrollTop;
   }
+  
+  onChangeItemTextLineHeight(event){
+      
 
+      const mili = Number.parseInt(this.bannerSelect.lineHeight);
+      const unit = Number.parseFloat(this.bannerSelect.lineHeight) | 0;
+      
+      if( this.lineHeightMili > 9 ) {
+           this.lineHeightMili = 0;
+           this.lineHeightUnit ++;
+      }
+      else if( this.lineHeightMili < 0 ) {
+           this.lineHeightMili = 9;
+           this.lineHeightUnit --;
+      }
+      
+      this.bannerSelect.lineHeight = this.lineHeightUnit + '.' + this.lineHeightMili;
+  }
+  
 }

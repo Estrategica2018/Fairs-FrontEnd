@@ -13,6 +13,7 @@ import { AlertController } from '@ionic/angular';
 import { Title } from '@angular/platform-browser';
 
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -46,7 +47,7 @@ export class AppComponent implements OnInit {
     private loading: LoadingService,
     private fairsService: FairsService,
     private pavilionsService: PavilionsService,
-	private titleService: Title
+    private titleService: Title
   ) {
     this.initializeApp();
     this.initializeFair();
@@ -56,7 +57,7 @@ export class AppComponent implements OnInit {
       this.fairsService.getCurrentFair().
       then( fair => {
         this.fair = fair;
-		this.titleService.setTitle(this.fair.description);
+        this.titleService.setTitle(this.fair.description);
       },error=> console.log(error));
   }
 
@@ -154,7 +155,7 @@ export class AppComponent implements OnInit {
          }
         ); 
     });
-    
+
   }
 
   openTutorial() {
@@ -169,14 +170,30 @@ export class AppComponent implements OnInit {
   
   onPavilionClick(pavilion,index) {
       this.showStandDetail = null;
-      this.showPavilionDetail =  this.showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id
+      this.showPavilionDetail =  this.showPavilionDetail === 'pavilion_id_' + pavilion.id ?  null : 'pavilion_id_' + pavilion.id
       
       this.router.navigateByUrl(`/maps/pavilion${index}/${pavilion.id}`,{
             skipLocationChange: true
         });
   }
 
-  
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
+  }
+
+  onClickFairScene(scene) {
+    this.showPavilionDetail = null
+    this.redirectTo('/map/fair/'+scene);
+  }
+
+  onClickPavilion(pavilion) {
+    this.showStandDetail = null;
+    pavilion.showStandDetail = null;
+    this.showPavilionDetail =  this.showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id
+    this.redirectTo('/map/pavilion/'+pavilion.id+'/0');
+  }
 }
 
 

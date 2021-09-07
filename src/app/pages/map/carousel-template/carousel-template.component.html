@@ -7,16 +7,12 @@
   </ul>
 </div-->
 
-<ion-button *ngIf="editorMode" color="light" class="refresh-button" (click)="onRefresh()">
-   <ion-icon name="refresh-outline"></ion-icon>
-</ion-button>
-
 <ion-slides id="ion-slides-{{banner.id}}" pager="true" [ngStyle]="{'width': banner.size.x + 'px'}">
   <ion-slide *ngFor="let product of banner.carousel.products"  [ngStyle]="{'height': banner.size.y + 'px'}" class="d-block">
     <img (click)="goToProduct(product)" src="{{product.prices[0].resources.images[0].url_image}}" alt="" [ngStyle]="{'height': banner.size.y + 'px'}">
-	<div class="position-absolute" style="top:0px; left: 0px;" [ngStyle]="{'color': banner.fontColor}">
-	   {{product.name}}
-	</div>
+    <div class="position-absolute" style="top:0px; left: 0px;" [ngStyle]="{'color': banner.fontColor}">
+       {{product.name}}
+    </div>
   </ion-slide>
   <ion-slide *ngFor="let image of banner.carousel.images"  [ngStyle]="{'height': banner.size.y + 'px'}" class="d-block">
     <img src="{{image.url}}" alt="" [ngStyle]="{'height': banner.size.y + 'px'}">

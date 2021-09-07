@@ -1,12 +1,24 @@
-<div *ngIf="position !== 'none'"  [ngClass]="{'bottom':position === 'bottom'}" 
-     class="tabs-menu" [ngStyle]="{'background-color': options.backgroundColor, '--color': options.color,'left': marginMenuTabs?.x, 'top': marginMenuTabs.y }">
-    <div class="head" *ngIf="!editor">
-       <img [src]="options.icon">
-    </div>
+<div class="tabs-menu {{position}}" 
+*ngIf="position !== 'none'"
+[ngStyle]="{
+   'background-color': menuTabs?.backgroundColor, 
+   '--color': menuTabs?.color,
+   'left': marginMenuTabs?.x,
+   'top': marginMenuTabs?.y }">
     
-    <ion-button [ngStyle]="{'margin-left': i === 0 && !editor ?  '115px' : '0px'  }" [fill]="tab.fill" [color]="tab.colorbtn" (click)="onRouterLink(tab.link)" *ngFor="let tab of options.actions;let i = index">
-      <ion-icon [slot]="tab.title !== '' ? 'start': 'icon-only'" [name]="tab.icon"></ion-icon>
-      {{tab.title}}
+    <ion-button
+    [fill]="tab.fill" 
+    [color]="tab.colorbtn" 
+    (click)="onRouterLink(tab.link)"
+    *ngFor="let tab of menuTabs?.actions;let i = index">
+      <ion-icon [slot]="tab?.title !== '' && ( position=='bottom' || position=='top' ) ? 'start': 'icon-only'" 
+      [name]="tab?.icon"></ion-icon>
+      <div *ngIf="position=='bottom' || position=='top'" >{{tab?.title}} </div>
     </ion-button>
 
+    <div class="head">
+       <img [src]="menuTabs?.icon">
+    </div>
+
   </div>
+

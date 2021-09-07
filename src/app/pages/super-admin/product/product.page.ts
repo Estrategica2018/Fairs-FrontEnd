@@ -73,7 +73,7 @@ export class ProductPage implements OnInit {
                 .then((products) => {
                     this.loading.dismiss();
                     this.product = products[0];
-					this.product.url_imagen = this.product.prices[0].resources.images[0].url_image;
+                    this.product.url_imagen = this.product.prices[0].resources.images[0].url_image;
                   })
                   .catch(error => {
                      this.loading.dismiss();

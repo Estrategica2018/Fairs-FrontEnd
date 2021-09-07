@@ -39,8 +39,8 @@ export class StandsService {
   }
   
   getProduct(fairId: string, pavilionId: string, standId: string, productId: string): any {
-	  return new Promise((resolve, reject) => {
-		    this.http.get(`/api/products/find_by/?fair_id=${fairId}&pavilion_id=${pavilionId}&stand_id=${standId}&product_id=${productId}`)
+      return new Promise((resolve, reject) => {
+            this.http.get(`/api/products/find_by/?fair_id=${fairId}&pavilion_id=${pavilionId}&stand_id=${standId}&product_id=${productId}`)
                 .pipe(
                   timeout(30000),
                   catchError(e => {
@@ -59,7 +59,7 @@ export class StandsService {
                 },error => {
                     reject(error)
                 });
-	  });
+      });
   }
   
 }

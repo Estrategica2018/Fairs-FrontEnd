@@ -32,8 +32,8 @@ import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
     }),
-	WompiPaymentLayoutPageModule,
-	ComponentModule
+    WompiPaymentLayoutPageModule,
+    ComponentModule
   ],
   declarations: [AppComponent],
   entryComponents: [],
@@ -43,15 +43,15 @@ import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi
     StatusBar, 
     DatePipe,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
-	Title,
-	//{provide: APP_BASE_HREF, useValue: 'http://'+window.location.hostname+'/Fair-website/'}
-	
+    Title,
+    //{provide: APP_BASE_HREF, useValue: 'http://'+window.location.hostname+'/Fair-website/'}
+    
   ],
   bootstrap: [AppComponent]
 })
 
 export class AppModule {
-	
+    
     constructor() {
     }
 }

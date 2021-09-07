@@ -57,6 +57,15 @@
   top: 0px;
   right: 51px;
   width: 391px;
+  z-index: 2;
+}
+
+.general-setting-panel {
+  position: absolute;
+  top: 0px;
+  right: 51px;
+  width: 391px;
+  z-index: 2;
 }
 
 .tabmenu-panel {  
@@ -64,14 +73,15 @@
   top: 0px;
   right: 51px;
   width: 391px;
+  z-index: 2;
 }
-
 
 .tool-panel {
   position: absolute;
   top: 0px;
   right: 51px;
   width: 385px;
+  z-index: 2;
 }
   
 .panel-scene-select {
@@ -79,6 +89,7 @@
   top: 0px;
   right: 52px;
   width: 425px;
+  z-index: 2;
 }
 
 .close {
@@ -190,9 +201,23 @@ ion-tab-button {
   z-index: 11;
 }
 
-.panel-show-item {
+.panel-video-preview {
   position: absolute;
   top: 122px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-show-item {
+  position: absolute;
+  top: 165px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-scene-plus {
+  position: absolute;
+  top: 205px;
   right: 0px;
   z-index: 11;
 }
@@ -232,12 +257,6 @@ ion-tab-button {
   cursor: pointer;
 }
 
-.panel-scene-plus {
-  position: absolute;
-  top: 165px;
-  right: 0px;
-  z-index: 11;
-}
 
 .card-content-panel {
    max-height: 495px;
@@ -331,4 +350,9 @@ ion-tab-button {
 .toolbar-styles-scroll {
   height: 413px;
   overflow: auto;
+}
+
+
+.line-height-mili {
+  width: 36px;
 }

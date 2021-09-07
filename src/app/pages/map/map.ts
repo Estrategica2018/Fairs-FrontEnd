@@ -1,18 +1,21 @@
-import { Component, OnInit, ViewChild, AfterViewInit} from '@angular/core';
+import { Component, ViewChild, OnInit} from '@angular/core';
 import { HostListener } from "@angular/core";
 import { FairsService } from './../../api/fairs.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { LoadingService } from './../../providers/loading.service';
 import { Animation, AnimationController } from '@ionic/angular';
+import { TabMenuScenesComponent } from '../map/tab-menu-scenes/tab-menu-scenes.component';
+import { DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'page-map',
   templateUrl: 'map.html',
   styleUrls: ['./map.scss']
 })
-export class MapPage implements AfterViewInit, OnInit {
-    
+export class MapPage implements OnInit {
+
+  @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;  
   fullScreen = false;
   scene: any;
   intro = false;
@@ -20,33 +23,46 @@ export class MapPage implements AfterViewInit, OnInit {
   fair = null;
   pavilion = null;
   stand = null;
-  
+  moveMouseEvent: any;
   isHover = null;
   tabMenuObj:any;
   resources = null;
   template = null;
   bannerSelectHover = null;
   
+  
   constructor(
     private fairsService: FairsService,
     private route: ActivatedRoute,
     private router: Router,
     private animationCtrl: AnimationController,
-    private loading: LoadingService) {
+    private loading: LoadingService,
+    private sanitizer: DomSanitizer) {
       this.listenForFullScreenEvents();
       
   }
   
   ngOnInit() {
-     //this.initializeScreen();
+    //this.initializeScreen();
+    setTimeout(function(){
+     document.querySelectorAll('.banner div').forEach((bannerDiv:HTMLElement) => {
+          //bannerDiv.addEventListener('scroll', this.logBannerScrolling);
+     });
+    },600);
+  } 
+  
+  ngOnDestroy(): void {
+     if(window.location.href.indexOf('/#/map/') < 0)
+     window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
   }
   
   ngAfterViewInit() {
      this.initializeScreen();
-     
   }
   
   ngDoCheck(){
+     //this.tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
+     
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      main.style.top = top + 'px';
@@ -105,7 +121,10 @@ export class MapPage implements AfterViewInit, OnInit {
         
         setTimeout(() => {
           this.initializeHtmlTexts(this.scene.banners);
-        }, 50);
+          this.loading.dismiss();
+          const target = document.querySelector('.div-container');      
+          target.scrollTo(0, 0);
+        }, 5);
         
         if(this.scene.menuTabs.showMenuParent) {
            this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
@@ -113,13 +132,13 @@ export class MapPage implements AfterViewInit, OnInit {
         else {
             this.tabMenuObj = this.scene.menuTabs;
         }
-        this.loading.dismiss();
+        
         this.onResize();
         
     }, error => {
         this.loading.dismiss();
         console.log(error);
-        this.errors = `Consultando el servicio del mapa general de la feria`;
+        this.errors = `Consultando el servicio del mapa general de la feria [${error}]`;
     });
 
   }
@@ -136,7 +155,9 @@ export class MapPage implements AfterViewInit, OnInit {
   
   @HostListener('window:resize', ['$event'])
   onResize() {
-
+     
+     if(!this.scene) return;
+     
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
@@ -146,13 +167,7 @@ export class MapPage implements AfterViewInit, OnInit {
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
      
-     if(newHeight==0 && newWidth==0){
-         setTimeout(() => {
-          this.onResize();
-      }, 300);
-      return;
-     };
-     
+    
      if(newHeight < main.offsetHeight) {
          newHeight = window.innerHeight;
          newWidth = newHeight * this.scene.container.w / this.scene.container.h;
@@ -175,17 +190,21 @@ export class MapPage implements AfterViewInit, OnInit {
         }
      });
      
+     //Menu tab resize/render
+     this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
+     
+     //carrete of images resize/render
+     window.dispatchEvent(new CustomEvent('carousel:refresh'));
+     
   }
   
 
   logScrolling(e) {
-      
       let target = e.target;
-      
-      const scrollLeft = document.querySelector<HTMLElement>('.div-container').scrollLeft;
-      const scrollTop = document.querySelector<HTMLElement>('.div-container').scrollTop;
-      const oldScrollX = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-x'));
-      const oldScrollY = Number(document.querySelector<HTMLElement>('.div-container').getAttribute('scroll-y'));
+      const scrollLeft = target.scrollLeft;
+      const scrollTop = target.scrollTop;
+      const oldScrollX = Number(target.getAttribute('scroll-x'));
+      const oldScrollY = Number(target.getAttribute('scroll-y'));
       const deltaX = scrollLeft - oldScrollX;
       const deltaY = scrollTop - oldScrollY;
       
@@ -255,10 +274,7 @@ export class MapPage implements AfterViewInit, OnInit {
 
   initializeHtmlTexts(banners) {
       banners.forEach((banner)=>{
-          if(banner.text && banner.text.length > 0) {
-              const divHtmlText = document.querySelector<HTMLElement>('#obj-'+banner.id + ' .innerHtml');
-              divHtmlText.outerHTML = '<div class="innerHtml">'+banner.text+'</div>';
-          }
+          banner.textHtml = this.sanitizer.bypassSecurityTrustHtml(banner.text);
       });
   }  
   
@@ -285,12 +301,73 @@ export class MapPage implements AfterViewInit, OnInit {
   }
 
   onMouseWheel(evt) {
-      //console.log(evt);
-      //console.log(evt.deltaX, evt.deltaY);
-	  const div = document.querySelector<HTMLElement>('.div-container');
+      const div = document.querySelector<HTMLElement>('.div-container');
       const scrollLeft = div.scrollLeft + evt.deltaY;
-      const scrollTop = div.scrollTop + evt.deltaY;	
+      const scrollTop = div.scrollTop + evt.deltaY;    
       div.scrollLeft = scrollLeft;
       div.scrollTop = scrollTop;
   }
+
+  mouseDownContainer(e,banner) {
+    if(!banner || !banner.internalUrl) {
+      this.moveMouseEvent = { 
+         "x": e.clientX || e.layerX || e.offsetX || e.pageX || e.screenX,
+         "y": e.clientY || e.layerY || e.offsetY || e.pageY || e.screenY
+      }
+    };
+
+  }
+  
+  mouseUpContainer(e) {
+    this.moveMouseEvent = null;
+  } 
+
+  mouseLeaveContainer(e) {
+     this.moveMouseEvent = null;
+  } 
+  
+  @HostListener('document:mousemove', ['$event'])     
+  onMouseMove(e) {
+    if(this.moveMouseEvent) {
+      const target = document.querySelector('.div-container');      
+
+      const scrollTop = target.scrollTop;
+      const scrollLeft = target.scrollLeft;
+      let x  = e.clientX || e.layerX || e.offsetX || e.pageX || e.screenX;
+      let y  =  e.clientY || e.layerY || e.offsetY || e.pageY || e.screenY;
+      const deltaX = x - this.moveMouseEvent.x;
+      const deltaY = y - this.moveMouseEvent.y;
+      
+     const newScrollX =  Number(scrollLeft) - deltaX;
+     if(newScrollX>=0) {
+       target.scrollTo(newScrollX, target.scrollTop);
+       const offsetLeft = target.scrollLeft;
+       
+       if( newScrollX >= offsetLeft ) {
+         document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
+         //  banner.style.left = ( banner.offsetLeft + deltaX ) + 'px';
+         });
+         }
+     } 
+     
+     
+     const newScrollY = Number(scrollTop) - deltaY;
+     target.scrollTo(newScrollX, newScrollY);
+     const offsetTop = target.scrollTop;
+     if(offsetTop != scrollTop )  { 
+       document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
+       //     banner.style.top  = ( banner.offsetTop + deltaY ) + 'px';
+       }); 
+     }
+     
+    
+    
+      //target.scrollTo(newScrollX, newScrollY);
+      this.moveMouseEvent.x = x;
+      this.moveMouseEvent.y = y;
+      //document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',newScrollX.toString());
+      //document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',newScrollY.toString());
+    }
+  }
+
 }

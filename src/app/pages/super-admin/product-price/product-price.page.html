@@ -55,7 +55,7 @@
                  <div *ngIf="attribute.type == 'color'" (click)="openColors(attribute);" class="d-flex color-small">
                     <div *ngIf="attribute.value && attribute.value.length > 0" class="label-color-small" [ngStyle]="{'background-color':attribute.value}">
                     </div>
-					<ion-button [hidden]="attribute.value && attribute.value.length > 0" class="ml-4" (click)="attribute.value = null">Selecciona</ion-button>
+                    <ion-button [hidden]="attribute.value && attribute.value.length > 0" class="ml-4" (click)="attribute.value = null">Selecciona</ion-button>
                     <span class="ml-4">{{attribute.value}}</span>
                  </div>
                  <ion-button *ngIf="attribute.type == 'color' && attribute.value && attribute.value.length > 0" class="ml-4" (click)="attribute.value = null">Limpiar</ion-button>

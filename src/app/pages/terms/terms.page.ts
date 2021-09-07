@@ -14,6 +14,6 @@ export class TermsPage implements OnInit {
   }
 
   closeTermsModalPage() {
-	  this.modalCtrl.dismiss();
+      this.modalCtrl.dismiss();
   }
 }

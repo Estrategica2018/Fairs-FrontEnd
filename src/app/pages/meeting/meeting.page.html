@@ -114,14 +114,14 @@
             'background-image': 'url(' + scene?.url_image + ')',
             'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
             'background-repeat': 'no-repeat',
-			'width':scene?.container?.w + 'px', 
-			'height': scene?.container?.h + 'px'
-	   }" (ionScroll)="logScrolling($event)"
+            'width':scene?.container?.w + 'px', 
+            'height': scene?.container?.h + 'px'
+       }" (ionScroll)="logScrolling($event)"
        *ngIf="scene && scene.url_image">
-	   </div>
+       </div>
        <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
        *ngIf="scene && scene.backgroundColor && !scene.url_image">
-	   </div>
+       </div>
    </div>
   
   <ion-img src="assets/icon/play_video.png" class="meetingFill" (click)="onViewerMeeting()"></ion-img> 

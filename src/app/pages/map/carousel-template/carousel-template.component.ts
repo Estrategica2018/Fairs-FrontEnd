@@ -34,17 +34,10 @@ export class CarouselTemplateComponent implements OnInit {
   
   onRefresh() {
       
-    if(this.banner && this.banner.carousel) {
-    
+    let slides = document.querySelector<any>('#ion-slides-'+this.banner.id);
+    if(slides && this.banner && this.banner.carousel) {
         this.initializeCarousel();
-        
-        let slides = document.querySelector<any>('#ion-slides-'+this.banner.id);
-        if(slides) {
-          slides.options = this.slideOptsHorizontal;
-          console.log(slides.options);
-        } else {
-            console.log('error',slides);
-        }
+        slides.options = this.slideOptsHorizontal;
     }
   }
   

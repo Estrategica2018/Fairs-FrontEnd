@@ -27,22 +27,35 @@
          <strong>Error!</strong> {{errors}}
       </div>
    </ion-item>
-   <!--Scene Background Image-->
    <div class="div-container"  scroll-x="0" scroll-y="0">
-      <div [ngStyle]="{
+       <!--Scene Background Image-->
+       <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
       'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
       'background-repeat': 'no-repeat',
-      'width':scene?.container?.w + 'px', 
-      'height': scene?.container?.h + 'px'
-      }" (ionScroll)="logScrolling($event)"
+      'width':scene?.container?.w + 'px','height': scene?.container?.h + 'px' }" 
+      [ngClass]=" { 'cursor-pointer':moveMouseEvent }"
+      (mousedown)="mouseDownContainer($event,null)"
       *ngIf="scene && scene.url_image">
+      </div>
+      <!--Scene Background Color-->
+      <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
+      (mousedown)="mouseDownContainer($event,null)"
+      [ngClass]=" { 'cursor-pointer':moveMouseEvent }"
+      *ngIf="scene && scene.backgroundColor && !scene.url_image">
+      </div>
    </div>
-   <!--Scene Background Color-->
-   <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
-   *ngIf="scene && scene.backgroundColor && !scene.url_image">
-   </div>
-   </div>
+   
+<div *ngIf="moveMouseEvent?.x"
+style="z-index: 1000; background-color: red; position:absolute; opacity: 0; cursor:pointer;"
+[ngStyle]="{
+'width':scene?.container?.w + 'px', 
+'height': scene?.container?.h + 'px'}"
+(mouseleave)="mouseLeaveContainer($event)"
+(mouseup)="mouseUpContainer($event)"
+>
+
+</div>
    <!--Banner List-->
    <div *ngFor="let banner of scene?.banners;let i = index" class="banner"
    [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}">
@@ -75,6 +88,8 @@
        (click)="goToInternalUrl(banner)"
        (mouseover)="startAnimation(banner); bannerSelectHover = banner; "
        (mouseout)="isHover = null; bannerSelectHover = null;"
+       (mouseup)="mouseUpContainer($event)"
+       (mousedown)="mouseDownContainer($event,banner)"
        [ngStyle]="{
        'background-image': 'url('+banner.image_url+')',
        'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
@@ -94,10 +109,13 @@
        }">  
          <div [ngClass]="{'selected': bannerSelectHover === banner}" 
          [ngStyle]="{'line-height': banner?.lineHeight}">
-           <div class="innerHtml">
-           {{banner.text}}
+           <div *ngIf="banner.isHtml">
+             <div [innerHTML]="banner.textHtml"></div>
            </div>
-          </div>
+           <div [hidden]="banner.isHtml">
+              {{ banner.text}}
+           </div>
+         </div> 
        </div>
        <!--if banner is Video-->
        <video controls *ngIf="banner.video" class="{{banner.class}}"
@@ -125,4 +143,4 @@
    </div>
 </ion-content>
 
-<app-tab-menu-scenes *ngIf="scene" [position]="scene.menuTabs.position"  [options]="tabMenuObj" ></app-tab-menu-scenes>
+<app-tab-menu-scenes #menuTabs [editor]="true" [menuTabs]="tabMenuObj" [position]="scene?.menuTabs?.position"  ></app-tab-menu-scenes>

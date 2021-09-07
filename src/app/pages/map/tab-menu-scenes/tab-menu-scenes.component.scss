@@ -1,6 +1,5 @@
 .tabs-menu {
   position: absolute;
-  z-index: 110;
 }
 
 @media (max-width: 478px) {
@@ -14,24 +13,27 @@
    background-color: transparent;
 }
 
-/***** init Bottom *****/
+/***** init menu tab position bottom *****/
 .tabs-menu.bottom {
-  
   border-top-left-radius: 26px;
   border-top-right-radius: 26px;
   padding-right: 18px;
+  min-width: 140px;
+  min-height: 43px;
+  ion-button:first-child {
+    margin-left: 128px;
+  }
 }
 
 .tabs-menu.bottom::before {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: -29px;
-    z-index: 1000;
-    height: 39px;
-    width: 21px;
-    border-top-left-radius: 21px;
-    box-shadow: 0 -17px 0 0 transparent;
+   content: "";
+   position: absolute;
+   bottom: -4px;
+   left: -29px;
+   height: 39px;
+   width: 21px;
+   border-top-left-radius: 21px;
+   box-shadow: 0 -17px 0 0 transparent;
    transform: rotateZ(270deg) rotateX(180deg);
 }
 
@@ -40,7 +42,6 @@
     position: absolute;
     bottom: -4px;
     right: -29px;
-    z-index: 1000;
     height: 39px;
     width: 21px;
     border-top-left-radius: 21px;
@@ -53,14 +54,12 @@
     top: 0px;
     left: 34px;
     width: 70px;
-    height: 73%;
-    z-index: 1001;
+    height: 85%;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 31px;
     img {
         width: 33px;
         margin-left: 8px;
-        z-index: 10155;
         position: absolute;
         left: 12px;
         height: 30px;
@@ -69,24 +68,257 @@
 .tabs-menu.bottom .head::before {
     content: "";
     position: absolute;
-    bottom: 4px;
+    bottom: 8px;
     left: -25px;
-    z-index: 1000;
     height: 39px;
     width: 19px;
     border-top-left-radius: 55px;
-    transform: rotateZ(270deg) rotateX(180deg) rotateY(205deg);
+    transform: rotateZ(270deg) rotateX(180deg) rotateY(180deg);
 }
 .tabs-menu.bottom .head::after {
     content: "";
     position: absolute;
-    bottom: 4px;
+    bottom: 8px;
     right: -25px;
-    z-index: 1000;
     height: 39px;
     width: 19px;
     border-top-left-radius: 55px;
-    transform: rotateZ(270deg) rotateX(0deg) rotateY(205deg);
+    transform: rotateZ(270deg) rotateX(0deg) rotateY(180deg);
+}
+/***** end menu tab position bottom *****/
+
+/***** init menu tab position top *****/
+.tabs-menu.top {
+  border-bottom-left-radius: 26px;
+  border-bottom-right-radius: 26px;
+  padding-right: 18px;
+  min-width: 140px;
+  min-height: 43px;
+  ion-button:first-child {
+    margin-left: 128px;
+  }
 }
 
-/***** End Bottom *****/
+.tabs-menu.top::before {
+    content: "";
+    position: absolute;
+    top: -14px;
+    left: -29px;
+    height: 39px;
+    width: 21px;
+    border-bottom-left-radius: 21px;
+    box-shadow: 0 -17px 0 0 transparent;
+    transform: rotateZ(90deg) rotateX(180deg);
+}
+
+.tabs-menu.top::after {
+    content: "";
+    position: absolute;
+    top: -14px;
+    right: -29px;
+    height: 39px;
+    width: 21px;
+    border-bottom-left-radius: 21px;
+    box-shadow: 0 -17px 0 0 transparent;
+    transform: rotateZ(90deg) rotateX(0deg);
+}
+
+.tabs-menu.top .head {
+    position: absolute;
+    bottom: 0px;
+    left: 34px;
+    width: 70px;
+    height: 85%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 31px;
+    img {
+        width: 33px;
+        margin-left: 8px;
+        position: absolute;
+        left: 12px;
+        height: 30px;
+    }
+}
+.tabs-menu.top .head::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: -25px;
+    height: 39px;
+    width: 19px;
+    border-bottom-left-radius: 55px;
+    transform: rotateZ(90deg) rotateX(180deg) rotateY(180deg);
+}
+.tabs-menu.top .head::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    right: -25px;
+    height: 39px;
+    width: 19px;
+    border-bottom-left-radius: 55px;
+    transform: rotateZ(90deg) rotateX(0deg) rotateY(180deg);
+}
+/***** end menu tab position bottom *****/
+
+/***** init menu tab position right *****/
+
+.tabs-menu.right {
+  border-bottom-left-radius: 26px;
+  border-top-left-radius: 26px;
+  width: 39px;
+  min-height: 140px;
+  padding-bottom: 18px;
+  ion-button:first-child {
+    margin-top: 128px;
+  }
+  ion-button  {
+    --padding-start: 6px;
+    --padding-end: 6px;
+  }
+}
+
+.tabs-menu.right::before {
+  content: "";
+  position: absolute;
+  right: 0px;
+  bottom: -39px;
+  height: 39px;
+  width: 21px;
+  border-bottom-right-radius: 21px;
+  box-shadow: 0 -17px 0 0 transparent;
+  transform: rotateZ(0deg) rotateX(180deg);
+}
+
+.tabs-menu.right::after {
+  content: "";
+  position: absolute;
+  top: -39px;
+  right: 0px;
+  height: 39px;
+  width: 21px;
+  border-bottom-right-radius: 21px;
+  box-shadow: 0 -17px 0 0 transparent;
+  transform: rotateZ(0deg) rotateX(0);
+}
+
+.tabs-menu.right .head {
+  position: absolute;
+  top: 35px;
+  left: 0px;
+  width: 85%;
+  height: 70px;
+  border-bottom-right-radius: 30px;
+  border-top-right-radius: 31px;
+  img {
+    width: 33px;
+    margin-top: 8px;
+    position: absolute;
+    top: 12px;
+    height: 30px;
+  }
+}
+.tabs-menu.right .head::before {
+  content: "";
+  position: absolute;
+  top: -35px;
+  right: 14px;
+  height: 39px;
+  width: 19px;
+  border-bottom-right-radius: 55px;
+  transform: rotateZ(0deg) rotateX(180deg) rotateZ(180deg);
+}
+.tabs-menu.right .head::after {
+  content: "";
+  position: absolute;
+  bottom: -35px;
+  right: 14px;
+  height: 39px;
+  width: 19px;
+  border-bottom-left-radius: 55px;
+  transform: rotateZ(0deg) rotateX(180deg) rotateY(0deg);
+}
+
+/***** end menu tab position right *****/
+
+
+/***** init menu tab position left *****/
+
+.tabs-menu.left {
+  border-bottom-right-radius: 26px;
+  border-top-right-radius: 26px;
+  width: 39px;
+  min-height: 140px;
+  padding-bottom: 18px;
+  ion-button:first-child {
+    margin-top: 128px;
+  }
+  ion-button  {
+    --padding-start: 6px;
+    --padding-end: 6px;
+  }
+}
+
+.tabs-menu.left::before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: -39px;
+  height: 39px;
+  width: 21px;
+  border-bottom-left-radius: 21px;
+  box-shadow: 0 -17px 0 0 transparent;
+  transform: rotateZ(0deg) rotateX(180deg);
+}
+
+.tabs-menu.left::after {
+  content: "";
+  position: absolute;
+  top: -39px;
+  left: 0px;
+  height: 39px;
+  width: 21px;
+  border-bottom-left-radius: 21px;
+  box-shadow: 0 -17px 0 0 transparent;
+  transform: rotateZ(0deg) rotateX(0);
+}
+
+.tabs-menu.left .head {
+  position: absolute;
+  top: 32px;
+  right: 0px;
+  width: 85%;
+  height: 70px;
+  border-bottom-left-radius: 30px;
+  border-top-left-radius: 31px;
+  img {
+    width: 33px;
+    position: absolute;
+    top: 21px;
+    height: 30px;
+    right: -4px;
+  }
+}
+.tabs-menu.left .head::before {
+  content: "";
+  position: absolute;
+  top: -35px;
+  right: 0px;
+  height: 39px;
+  width: 19px;
+  border-bottom-right-radius: 55px;
+  transform: rotateZ(180deg) rotateX(360deg) rotateZ(180deg);
+}
+
+.tabs-menu.left .head::after {
+  content: "";
+  position: absolute;
+  bottom: -35px;
+  right: 0px;
+  height: 39px;
+  width: 19px;
+  border-bottom-left-radius: 55px;
+  transform: rotateZ(180deg) rotateX(0deg) rotateY(0deg);
+}
+/***** end menu tab position left *****/
+

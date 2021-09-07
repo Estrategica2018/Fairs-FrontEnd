@@ -94,19 +94,19 @@ export class ProductPricePage implements OnInit {
                       this.product.prices.forEach((price)=>{
                         if(Number(price.id) === Number(this.productPriceId)) {
                             this.productPrice = price;
-							
-							if(this.productPrice.resources.attributes) {
-							  this.attributeList.forEach((group)=>{
-							   group.values.forEach((attr)=>{
-								  if(this.productPrice.resources.attributes &&
-								     this.productPrice.resources.attributes[attr.name]
-								  ) {
-									attr.value = this.productPrice.resources.attributes[attr.name].value;
-									attr.formatSelect = this.productPrice.resources.attributes[attr.name].formatSelect;
-								  }
-							   });
-							  });
-							}
+                            
+                            if(this.productPrice.resources.attributes) {
+                              this.attributeList.forEach((group)=>{
+                               group.values.forEach((attr)=>{
+                                  if(this.productPrice.resources.attributes &&
+                                     this.productPrice.resources.attributes[attr.name]
+                                  ) {
+                                    attr.value = this.productPrice.resources.attributes[attr.name].value;
+                                    attr.formatSelect = this.productPrice.resources.attributes[attr.name].formatSelect;
+                                  }
+                               });
+                              });
+                            }
                         }
                       });
                     }
@@ -152,7 +152,7 @@ export class ProductPricePage implements OnInit {
     else {
       const list = {};
       
-	  this.attributeList.forEach((group)=>{
+      this.attributeList.forEach((group)=>{
             group.values.forEach((attr:any)=>{
                 if(attr.value && attr.value.length > 0 ){
                     list[attr.name] = {'value':attr.value,'formatSelect':attr.formatSelect,'type':attr.type};
@@ -160,7 +160,7 @@ export class ProductPricePage implements OnInit {
             });
       });
       this.productPrice.resources.attributes = list;
-	  this.adminProductPricesService.createPrice(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id,'product_id':this.product.id},this.productPrice))
+      this.adminProductPricesService.createPrice(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id,'product_id':this.product.id},this.productPrice))
        .then((productPrice) => {
           this.loading.dismiss();
           this.errors = null;
@@ -261,13 +261,13 @@ export class ProductPricePage implements OnInit {
   }
   
   openColors (attribute){
-	  this.attributeSel = attribute;
-	  this.showColor = true;
+      this.attributeSel = attribute;
+      this.showColor = true;
   }
   setColor (color){
-	  this.attributeSel.value = color.value;
-	  this.showColor = false;
-	  this.editSave = true;
+      this.attributeSel.value = color.value;
+      this.showColor = false;
+      this.editSave = true;
   }
 
 }
