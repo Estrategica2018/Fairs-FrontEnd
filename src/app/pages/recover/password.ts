@@ -99,7 +99,7 @@ export class PasswordPage  implements OnInit {
     if (changePasswordForm.valid && (this.changePassword.newPassrword === this.changePassword.confirNewPassrword)) {
         this.loading.present({ message: 'Cargando...'});
         const username = this.login.username;
-        this.usersService.restPassword(
+        this.usersService.resetPassword(
           {"email": this.changePassword.username,"password": this.changePassword.newPassrword,"password_confirmation": this.changePassword.confirNewPassrword,"token": this.route.snapshot.paramMap.get('token')}
         )
           .then( data => {

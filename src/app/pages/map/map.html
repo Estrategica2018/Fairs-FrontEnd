@@ -47,7 +47,7 @@
    </div>
    
 <div *ngIf="moveMouseEvent?.x"
-style="z-index: 1000; background-color: red; position:absolute; opacity: 0; cursor:pointer;"
+style="z-index: 1000; background-color: red; position:absolute; opacity: 0.4; cursor:pointer;"
 [ngStyle]="{
 'width':scene?.container?.w + 'px', 
 'height': scene?.container?.h + 'px'}"
@@ -83,7 +83,7 @@ style="z-index: 1000; background-color: red; position:absolute; opacity: 0; curs
         <!--if banner is banner-->
        <div class="cube__face cube__face--right square " 
        [ngClass]="{'selected': bannerSelectHover === banner, 'greyscale': banner.greyscale }" 
-       [hidden]="banner.video_url || banner.line"
+       [hidden]=" ( banner.video && banner.video.url ) || banner.line"
        id="obj-{{banner.id}}"
        (click)="goToInternalUrl(banner)"
        (mouseover)="startAnimation(banner); bannerSelectHover = banner; "
@@ -121,7 +121,7 @@ style="z-index: 1000; background-color: red; position:absolute; opacity: 0; curs
        <video controls *ngIf="banner.video" class="{{banner.class}}"
        (click)="onBannerSelect(banner);"
        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-          <source src="{{banner.video.url}}"     type="video/mp4">
+          <source [src]="banner.video.url" type="video/mp4">
            Your browser does not support the video tag.
        </video>
        <!--if banner is carousel-->

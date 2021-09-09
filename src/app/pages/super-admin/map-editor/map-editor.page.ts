@@ -231,12 +231,16 @@ export class MapEditorPage implements OnInit {
         
         this.scene.banners = this.scene.banners || [];
         setTimeout(() => {
-          
           document.querySelectorAll('.banner div').forEach((bannerDiv:HTMLElement) => {
            // bannerDiv.addEventListener('scroll', this.logBannerScrolling);
+		   
           });
         }, 50);
-      
+        this.scene.banners.forEach((banner)=>{
+            if(banner.video)
+            banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+		});
+		
         this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
         this.resources.menuTabs = this.resources.menuTabs || {};
         this.initializeHtmlTexts(this.scene.banners);
@@ -539,7 +543,7 @@ export class MapEditorPage implements OnInit {
          banner = {"position":this.getNewPosition({"x":16,"y":145}),"size":{"x":668,"y":120},"carousel": { "options":{slidesPerView: 3,rotate: 0,stretch: 50,depth: 100,slideShadows: false,modifier: 1},"style":"horizontal","products": productList}};
       break;
       case 'Video':
-          banner = {"size":{"x":114,"y":105},"video": { "video_url":"https://player.vimeo.com/video/286898202"}};
+          banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
       break;
       default:
           banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
@@ -1216,5 +1220,21 @@ export class MapEditorPage implements OnInit {
       
       this.bannerSelect.lineHeight = this.lineHeightUnit + '.' + this.lineHeightMili;
   }
+  
+  onChangeVideoUrl() {
+    //const video = document.querySelector<HTMLElement>('#video-id-'+this.bannerSelect.id);
+    //video.innerHTML = '<video controls><source src="'+this.bannerSelect.video.url+'" type="video/mp4"></video>';
+    this.editSave = true;
+	this.bannerSelect.video.sanitizer =  this.sanitizer.bypassSecurityTrustResourceUrl(this.bannerSelect.video.url);
+	
+    //var player = document.querySelector<HTMLElement>('#video-id-'+this.bannerSelect.id +' video');
+    //var mp4Vid = document.querySelector<HTMLElement>('#video-id-'+this.bannerSelect.id +' video source');
+
+//    mp4Vid.src = this.bannerSelect.video.url;
+    //player.load();
+    //player.play();
+  }
+  
+  
   
 }

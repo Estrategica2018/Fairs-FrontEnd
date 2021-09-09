@@ -59,7 +59,7 @@
    <!--if banner is banner-->
    <div class="cube__face cube__face--right square {{banner.class}}"
    [ngClass]="{'selected': bannerSelectHover === banner, 'greyscale': banner.greyscale }"
-   [hidden]="banner.video_url || banner.line"
+   [hidden]=" ( banner.video && banner.video.url ) || banner.line"
    id="obj-{{banner.id}}"
    (click)="onBannerSelect(banner);"
    (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
@@ -92,14 +92,19 @@
    </div>      
    </div>
    <!--if banner is Video-->
-   <video controls *ngIf="banner.video" class="{{banner.class}}"
+   <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.video" >
+   <ion-icon name="create-outline"></ion-icon>
+   </ion-button>
+   <iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
+   frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
+   id="video-id-{{banner.id}}"
+   class="{{banner.class}}"
    (click)="onBannerSelect(banner);"
    [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-   <source src="{{banner.video.url}}"     type="video/mp4">
-   Your browser does not support the video tag.
-   </video>
+   </iframe>
+   
    <!--if banner is carousel-->
-   <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.carousel" >
+   <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.carousel || banner.video" >
    <ion-icon name="create-outline"></ion-icon>
    </ion-button>
    <app-carousel-template [banner]="banner" *ngIf="banner.carousel" editorMode="true">
@@ -602,10 +607,10 @@
          </ion-buttons>
       </ion-toolbar>
    </ion-card-content>
-   <ion-card-content *ngIf="tabSelect == 'video'">
+   <ion-card-content *ngIf="tabSelect == 'video' && bannerSelect.video">
       <ion-toolbar>
          <ion-card-subtitle slot="start"> Url de video </ion-card-subtitle>
-         <input slot="end" class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.video.video_url"/> 
+         <input slot="end" class="mt-2 ml-2" type="text" (change)="onChangeVideoUrl()" [(ngModel)]="bannerSelect.video.url"/> 
       </ion-toolbar>
    </ion-card-content>
    <ion-card-content *ngIf="tabSelect == 'carousel'" style="overflow: auto;height: 421px;">

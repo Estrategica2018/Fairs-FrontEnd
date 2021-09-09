@@ -59,6 +59,7 @@ export class UsersService {
 
   signup(userData: any): Promise<any> {
     return new Promise((resolve, reject) => {
+		userData.origin = window.location.origin;
         this.http.post(`${this.url}/api/user/create`,userData)
        .pipe(
           timeout(2000),
@@ -206,7 +207,7 @@ export class UsersService {
     });
   }
 
-  restPassword(data): Promise<any> {
+  resetPassword(data): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http.post(`${this.url}/api/password/reset`,data)
         .pipe(

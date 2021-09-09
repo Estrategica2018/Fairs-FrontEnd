@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
 import { processDataToString } from '../../providers/process-data';
 import { processData } from '../../providers/process-data';
+import { UsersService } from '../users.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ import { processData } from '../../providers/process-data';
 export class AdminFairsService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private usersService: UsersService
   ) { }
 
   create(agenda): Promise<any> {
@@ -49,17 +51,20 @@ export class AdminFairsService {
   
   update(fair: any): any {
     return new Promise((resolve, reject) => {
+        this.usersService.getUser().then((userDataSession: any)=>{
+            const httpOptions = {
+              headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };
+
             const newFair = processDataToString(fair);
-            this.http.post(`/api/fair/update/${fair.id}`,newFair)
+            this.http.post(`/api/fair/update/${fair.id}`,newFair,httpOptions)
             .pipe(
               timeout(30000),
               catchError(e => {
-                if(e.status && e.statusText) {
-                  throw new Error(`Ejecutando el servicio para modificar la feria: ${e.status} - ${e.statusText}`);    
-                }
-                else {
-                  throw new Error(`Ejecutando el servicio para modificar la feria`);
-                }
+				const msg = (e.error && e.error.message) ? e.error.message : e.status + ' - ' + e.statusText;
+				throw new Error(`${msg}`);
               })
             )
             .subscribe((data : any )=> {
@@ -73,6 +78,7 @@ export class AdminFairsService {
                 reject(error)
             });
         });
+    });
   }
   
   delete(agenda: any): any {
