@@ -20,9 +20,15 @@ export class AdminFairsService {
 
   create(agenda): Promise<any> {
 
-        return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+        this.usersService.getUser().then((userDataSession: any)=>{ 
+            const httpOptions = {
+              headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };
 
-            this.http.post(`/api/meetings`,processDataToString(agenda))
+            this.http.post(`/api/meetings`,processDataToString(agenda),httpOptions)
             .pipe(
               timeout(30000),
               catchError(e => {
@@ -47,6 +53,7 @@ export class AdminFairsService {
                 reject(error)
             });
         });
+    });
   }
   
   update(fair: any): any {
@@ -57,14 +64,13 @@ export class AdminFairsService {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };
-
             const newFair = processDataToString(fair);
             this.http.post(`/api/fair/update/${fair.id}`,newFair,httpOptions)
             .pipe(
               timeout(30000),
               catchError(e => {
-				const msg = (e.error && e.error.message) ? e.error.message : e.status + ' - ' + e.statusText;
-				throw new Error(`${msg}`);
+                const msg = (e.error && e.error.message) ? e.error.message : e.status + ' - ' + e.statusText;
+                throw new Error(`${msg}`);
               })
             )
             .subscribe((data : any )=> {
@@ -83,8 +89,13 @@ export class AdminFairsService {
   
   delete(agenda: any): any {
     return new Promise((resolve, reject) => {
-
-            this.http.delete(`/api/meetings/${agenda.zoom_code}`)
+         this.usersService.getUser().then((userDataSession: any)=>{
+            const httpOptions = {
+              headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };
+            this.http.delete(`/api/meetings/${agenda.zoom_code}`,httpOptions)
             .pipe(
               timeout(30000),
               catchError(e => {
@@ -108,6 +119,7 @@ export class AdminFairsService {
                 reject(error)
             });
         });
+    });
   }
   
 }

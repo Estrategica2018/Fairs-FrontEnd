@@ -68,7 +68,7 @@ export class MapEditorPage implements OnInit {
   lineHeightUnit = null;
   productCatalogList = null;
   selectionElementList = null;
-  
+  showlogScrolling = false;
   
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
   toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow right","value":"arrow--4"},
@@ -118,7 +118,13 @@ export class MapEditorPage implements OnInit {
   }
 
   ngOnInit() {
-    //this.initializeScreen();
+    const div = document.querySelector<HTMLElement>('.div-container');
+    //div.addEventListener('scroll', this.logScrolling);
+  } 
+  
+  ngOnDestroy(): void {
+     if(window.location.href.indexOf('/#/super-admin/map-editor/') < 0)
+     window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
 
   } 
   ngAfterViewInit() {
@@ -130,9 +136,7 @@ export class MapEditorPage implements OnInit {
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      main.style.top = top + 'px';
      const div = document.querySelector<HTMLElement>('.div-container');
-     div.addEventListener('scroll', this.logScrolling);
      div.style.height = ( window.innerHeight - top )  + 'px';
-     
   }
    
    initializeScreen() {
@@ -228,22 +232,23 @@ export class MapEditorPage implements OnInit {
               }
           });
         }
-        
+                
+        this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
+        this.resources.menuTabs = this.resources.menuTabs || {};
+
         this.scene.banners = this.scene.banners || [];
-        setTimeout(() => {
-          document.querySelectorAll('.banner div').forEach((bannerDiv:HTMLElement) => {
-           // bannerDiv.addEventListener('scroll', this.logBannerScrolling);
-		   
-          });
-        }, 50);
         this.scene.banners.forEach((banner)=>{
             if(banner.video)
             banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
-		});
-		
-        this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
-        this.resources.menuTabs = this.resources.menuTabs || {};
+        });
+
         this.initializeHtmlTexts(this.scene.banners);
+
+        setTimeout(() => {
+          this.loading.dismiss();
+          //const target = document.querySelector('.div-container');      
+          //target.scrollTo(0, 0);
+        }, 5);
         
         if(this.scene.menuTabs.showMenuParent) {
            this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
@@ -251,9 +256,9 @@ export class MapEditorPage implements OnInit {
         else {
             this.tabMenuObj = this.scene.menuTabs;
         }
-        this.loading.dismiss();
-        this.onResize();  
         
+        this.onResize();
+
      }, error => {
         this.loading.dismiss();
         console.log(error);     
@@ -267,10 +272,6 @@ export class MapEditorPage implements OnInit {
           banner.textHtml = this.sanitizer.bypassSecurityTrustHtml(banner.text);
       });
   }  
-  
-  ngOnDestroy(): void {
-     window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
-  }
   
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));
@@ -294,15 +295,18 @@ export class MapEditorPage implements OnInit {
      if(!this.scene) return;
     
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
+     const menu = document.querySelector < HTMLElement > ('.menu-main-content');
+     const offsetWidth = window.innerWidth - menu.offsetWidth;
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
     
-     let newWidth = main.offsetWidth;
+     let newWidth = offsetWidth;//main.offsetWidth;
+     const offsetHeight = window.innerHeight - top;
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
      
-     if(newHeight < main.offsetHeight) {
+     if(newHeight < offsetHeight) {
          newHeight = window.innerHeight;
          newWidth = newHeight * this.scene.container.w / this.scene.container.h;
          deltaW =  this.scene.container.w / newWidth;
@@ -329,12 +333,14 @@ export class MapEditorPage implements OnInit {
      //Menu tab resize/render
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
 
-     
      //carrete of images resize/render
      window.dispatchEvent(new CustomEvent('carousel:refresh'));
      
   }
-  
+/*
+logScrollStart() {this.showlogScrolling = true;}
+logScrollEnd() {this.showlogScrolling = false;}
+
   logScrolling(e) {
       let target = e.target;
       const scrollLeft = target.scrollLeft;
@@ -352,7 +358,7 @@ export class MapEditorPage implements OnInit {
       document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
       document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',scrollTop.toString());
   }
-  
+ */ 
   onBannerSelect(bannerSelect) {
       this.bannerSelect = bannerSelect;
       this.bannerSelect.hoverEffects = this.bannerSelect.hoverEffects || '';
@@ -544,6 +550,7 @@ export class MapEditorPage implements OnInit {
       break;
       case 'Video':
           banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
+          banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
       break;
       default:
           banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
@@ -1225,8 +1232,8 @@ export class MapEditorPage implements OnInit {
     //const video = document.querySelector<HTMLElement>('#video-id-'+this.bannerSelect.id);
     //video.innerHTML = '<video controls><source src="'+this.bannerSelect.video.url+'" type="video/mp4"></video>';
     this.editSave = true;
-	this.bannerSelect.video.sanitizer =  this.sanitizer.bypassSecurityTrustResourceUrl(this.bannerSelect.video.url);
-	
+    this.bannerSelect.video.sanitizer =  this.sanitizer.bypassSecurityTrustResourceUrl(this.bannerSelect.video.url);
+    
     //var player = document.querySelector<HTMLElement>('#video-id-'+this.bannerSelect.id +' video');
     //var mp4Vid = document.querySelector<HTMLElement>('#video-id-'+this.bannerSelect.id +' video source');
 

@@ -7,6 +7,7 @@ import { LoadingService } from './../../providers/loading.service';
 import { Animation, AnimationController } from '@ionic/angular';
 import { TabMenuScenesComponent } from '../map/tab-menu-scenes/tab-menu-scenes.component';
 import { DomSanitizer} from '@angular/platform-browser';
+import { UsersService } from '../../api/users.service';
 
 @Component({
   selector: 'page-map',
@@ -29,7 +30,8 @@ export class MapPage implements OnInit {
   resources = null;
   template = null;
   bannerSelectHover = null;
-  
+  showlogScrolling = false;
+  perfilRole:any;
   
   constructor(
     private fairsService: FairsService,
@@ -37,18 +39,25 @@ export class MapPage implements OnInit {
     private router: Router,
     private animationCtrl: AnimationController,
     private loading: LoadingService,
-    private sanitizer: DomSanitizer) {
+    private sanitizer: DomSanitizer,
+    private usersService: UsersService) {
       this.listenForFullScreenEvents();
-      
+      this.usersService.getUser().then((userDataSession: any)=>{
+          if(userDataSession && userDataSession.user_roles_fair)  {
+            this.perfilRole = {};
+            userDataSession.user_roles_fair.forEach((role)=>{
+                if(role.id == 1) { //"super_administrador"
+                   this.perfilRole.admin = true;
+                }
+             });
+             
+          }
+      });
   }
   
   ngOnInit() {
-    //this.initializeScreen();
-    setTimeout(function(){
-     document.querySelectorAll('.banner div').forEach((bannerDiv:HTMLElement) => {
-          //bannerDiv.addEventListener('scroll', this.logBannerScrolling);
-     });
-    },600);
+    const div = document.querySelector<HTMLElement>('.div-container');
+    //div.addEventListener('scroll', this.logScrolling);
   } 
   
   ngOnDestroy(): void {
@@ -61,15 +70,10 @@ export class MapPage implements OnInit {
   }
   
   ngDoCheck(){
-     //this.tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
-     
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      main.style.top = top + 'px';
-
      const div = document.querySelector<HTMLElement>('.div-container');
-     div.addEventListener('scroll', this.logScrolling);
-     
      div.style.height = ( window.innerHeight - top )  + 'px';
   }
   
@@ -118,12 +122,17 @@ export class MapPage implements OnInit {
         }
         
         this.scene.banners = this.scene.banners || [];
-        
+        this.scene.banners.forEach((banner)=>{
+            if(banner.video)
+            banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+        });
+
+        this.initializeHtmlTexts(this.scene.banners);
+
         setTimeout(() => {
-          this.initializeHtmlTexts(this.scene.banners);
           this.loading.dismiss();
           const target = document.querySelector('.div-container');      
-          target.scrollTo(0, 0);
+          //target.scrollTo(0, 0);
         }, 5);
         
         if(this.scene.menuTabs.showMenuParent) {
@@ -159,16 +168,18 @@ export class MapPage implements OnInit {
      if(!this.scene) return;
      
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
+     const menu = document.querySelector < HTMLElement > ('.menu-main-content');
+     const offsetWidth = window.innerWidth - menu.offsetWidth;
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
    
-     let newWidth = main.offsetWidth;
+     let newWidth = offsetWidth;//main.offsetWidth;
+     const offsetHeight = window.innerHeight - top;
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
-     
     
-     if(newHeight < main.offsetHeight) {
+     if(newHeight < offsetHeight) {
          newHeight = window.innerHeight;
          newWidth = newHeight * this.scene.container.w / this.scene.container.h;
          deltaW =  this.scene.container.w / newWidth;
@@ -197,7 +208,9 @@ export class MapPage implements OnInit {
      window.dispatchEvent(new CustomEvent('carousel:refresh'));
      
   }
-  
+/*
+logScrollStart() {this.showlogScrolling = true;}
+logScrollEnd() {this.showlogScrolling = false;}
 
   logScrolling(e) {
       let target = e.target;
@@ -213,9 +226,10 @@ export class MapPage implements OnInit {
           banner.style.top  = ( banner.offsetTop - deltaY ) + 'px';
       });
       
-      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
-      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',scrollTop.toString());      
+      target.setAttribute('scroll-x',scrollLeft.toString());
+      target.setAttribute('scroll-y',scrollTop.toString());      
   }
+*/
 
   listenForFullScreenEvents() {
     

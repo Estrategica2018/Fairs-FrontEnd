@@ -1,15 +1,15 @@
-<ion-content id="ionContent">
-   <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
-      <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
-      <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
-   </ion-button>
-   <ion-button color="light" class="goto-back-button" (click)="onToBackEditor(scene)">
-      <ion-icon name="arrow-back-outline"></ion-icon>
-   </ion-button>
-   <ion-button color="light" class="goto-edit-button" (click)="onToMapEditor(scene)">
-      <ion-icon name="create-outline"></ion-icon>
-   </ion-button>
+<ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
+  <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
+  <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
+</ion-button>
+<ion-button *ngIf="(perfilRole && perfilRole.admin)" color="light" class="goto-back-button" (click)="onToBackEditor(scene)">
+  <ion-icon name="arrow-back-outline"></ion-icon>
+</ion-button>
+<ion-button *ngIf="(perfilRole && perfilRole.admin)" color="light" class="goto-edit-button" (click)="onToMapEditor(scene)">
+  <ion-icon name="create-outline"></ion-icon>
+</ion-button>
 
+<ion-content id="ionContent" [scrollEvents]="true" scroll-x="0" scroll-y="0" scrollX="true">
    <video 
    [ngStyle]="{'opacity': scene?.videoUrl ? 1 : 0, 'position': scene?.videoUrl ? 'block' : 'absolute'}"
    crossOrigin="anonymous"
@@ -27,13 +27,13 @@
          <strong>Error!</strong> {{errors}}
       </div>
    </ion-item>
-   <div class="div-container"  scroll-x="0" scroll-y="0">
+   <div class="div-container"  
+   [ngStyle]="{'width':scene?.container?.w + 'px','height': scene?.container?.h + 'px' }">
        <!--Scene Background Image-->
        <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
       'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
-      'background-repeat': 'no-repeat',
-      'width':scene?.container?.w + 'px','height': scene?.container?.h + 'px' }" 
+      'background-repeat': 'no-repeat'}" 
       [ngClass]=" { 'cursor-pointer':moveMouseEvent }"
       (mousedown)="mouseDownContainer($event,null)"
       *ngIf="scene && scene.url_image">
@@ -46,16 +46,19 @@
       </div>
    </div>
    
-<div *ngIf="moveMouseEvent?.x"
-style="z-index: 1000; background-color: red; position:absolute; opacity: 0.4; cursor:pointer;"
-[ngStyle]="{
-'width':scene?.container?.w + 'px', 
-'height': scene?.container?.h + 'px'}"
-(mouseleave)="mouseLeaveContainer($event)"
-(mouseup)="mouseUpContainer($event)"
->
+   <!--Detect mouse or scroll moving-->
+   <div *ngIf="moveMouseEvent?.x"
+   style="z-index: 1000; background-color: red; position:absolute; opacity: 0.4; cursor:pointer;"
+   [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}"
+   (mouseleave)="mouseLeaveContainer($event)"
+   (mouseup)="mouseUpContainer($event)"
+   ></div>
 
-</div>
+   <div *ngIf="showlogScrolling"
+   style="z-index: 1000; background-color: green; position:absolute; opacity: 0.4; cursor:pointer;"
+   [ngStyle]="{ 'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}"
+   ></div>
+
    <!--Banner List-->
    <div *ngFor="let banner of scene?.banners;let i = index" class="banner"
    [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}">
@@ -118,12 +121,13 @@ style="z-index: 1000; background-color: red; position:absolute; opacity: 0.4; cu
          </div> 
        </div>
        <!--if banner is Video-->
-       <video controls *ngIf="banner.video" class="{{banner.class}}"
-       (click)="onBannerSelect(banner);"
-       [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-          <source [src]="banner.video.url" type="video/mp4">
-           Your browser does not support the video tag.
-       </video>
+        <iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
+        frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
+        id="video-id-{{banner.id}}"
+        class="{{banner.class}}"
+        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+        </iframe>
+
        <!--if banner is carousel-->
        <app-carousel-template [banner]="banner" *ngIf="banner.carousel" [fair]="fair" [pavilion]="pavilion" [stand]="stand"
        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">

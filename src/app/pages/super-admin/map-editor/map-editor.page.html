@@ -1,15 +1,19 @@
-<ion-content id="ionContent" cdkDropList class="content-boundary">
-   <ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
-      <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
-      <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
-   </ion-button>
-   <ion-button color="light" class="goto-back-button" (click)="onToBackEditor(scene)">
-      <ion-icon name="arrow-back-outline"></ion-icon>
-   </ion-button>
-   <ion-button *ngIf="this.bannerCopy.length > 0" color="warning" class="paste-button" (click)="onPasteBannerBtn()">
-   Pegar
-   <ion-icon name="clipboard-outline"></ion-icon>
-   </ion-button>
+<ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
+  <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
+  <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
+</ion-button>
+<ion-button color="light" class="goto-back-button" (click)="onToBackEditor(scene)">
+  <ion-icon name="arrow-back-outline"></ion-icon>
+</ion-button>
+<ion-button *ngIf="this.bannerCopy.length > 0" color="warning" class="paste-button" (click)="onPasteBannerBtn()">
+Pegar
+<ion-icon name="clipboard-outline"></ion-icon>
+</ion-button>
+
+<ion-content id="ionContent" [scrollEvents]="true" 
+ scroll-x="0" scroll-y="0" scrollX="true" 
+ cdkDropList class="content-boundary">
+
    <ion-item [hidden]="!errors">
       <div class="alert alert-danger alert-dismissible">
          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
@@ -32,6 +36,20 @@
    *ngIf="scene && scene.backgroundColor && !scene.url_image">
    </div>
    </div>
+
+   <!--Detect mouse or scroll moving-->
+   <div *ngIf="moveMouseEvent?.x"
+   style="z-index: 1000; background-color: red; position:absolute; opacity: 0.4; cursor:pointer;"
+   [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}"
+   (mouseleave)="mouseLeaveContainer($event)"
+   (mouseup)="mouseUpContainer($event)"
+   ></div>
+
+   <div *ngIf="showlogScrolling"
+   style="z-index: 1000; background-color: green; position:absolute; opacity: 0.4; cursor:pointer;"
+   [ngStyle]="{ 'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}"
+   ></div>
+
    <!--Banner List-->
    <div *ngFor="let banner of scene?.banners;let i = index" class="banner">
       <div  (wheel)="onMouseWheel($event)"
@@ -234,7 +252,7 @@
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input type="number" [(ngModel)]="scene.container.w"  (change)="onChangeItem()" /> 
+                  <input type="number" [(ngModel)]="scene.container.w"  (change)="onChangeItem(); this.onResize();" /> 
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -244,7 +262,7 @@
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input type="number" [(ngModel)]="scene.container.h" (change)="onChangeItem()"/> 
+                  <input type="number" [(ngModel)]="scene.container.h" (change)="onChangeItem(); this.onResize();"/> 
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
