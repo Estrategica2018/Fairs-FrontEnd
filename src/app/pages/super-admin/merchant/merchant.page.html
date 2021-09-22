@@ -1,48 +1,72 @@
 <ion-content fullscreen="true">
   <ion-header class="mt-5">
     <ion-toolbar>
-      <ion-buttons slot="end" >
-        <ion-button color="danger">
-          <ion-icon slot="start" name="trash-outline"></ion-icon>
-          Borrar
-        </ion-button>
-      </ion-buttons>
-      <ion-title>Nuevo Comercio</ion-title>
+      <ion-title *ngIf="merchant.id">Modificar Comercio</ion-title>
+      <ion-title [hidden]="merchant.id">Nuevo Comercio</ion-title>
     </ion-toolbar>
   </ion-header>
 
-
-  <ion-list-header >
+  <ion-list-header [hidden]="!errors">
     <div class="alert alert-danger fade show alert-dismissible">
-      <a href="javascript:void(0)" class="close" aria-label="close"  title="close">×</a>
-      <strong>Error!</strong>
+      <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+      <strong>Error!</strong> {{errors}}
+    </div>
+  </ion-list-header>
+
+  <ion-list-header [hidden]="!success">
+    <div class="alert alert-danger fade show alert-dismissible">
+      <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+      <strong></strong> {{success}}
     </div>
   </ion-list-header>
 
 
   <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
-  <ion-list lines=""  class="padding-container">
-    <ion-item button="true" [ngClass]="{'mt-4': 1}">
-      <ion-label> Nick </ion-label>
-      <ion-input class="ml-auto" class="text-right" name="name"></ion-input>
-    </ion-item>
+  <ion-list lines="" *ngIf="merchant" class="padding-container">
+
     <ion-item button="true">
       <ion-label> Nombre </ion-label>
-      <ion-input class="ml-auto" class="text-right" name="description"></ion-input>
+      <ion-input class="ml-auto" class="text-right" [(ngModel)]="merchant.name" name="name"></ion-input>
     </ion-item>
     <ion-item button="true">
-      <ion-label> Recursos </ion-label>
-      <ion-input class="ml-auto" class="text-right" name="description"></ion-input>
+      <ion-label> Imagen </ion-label>
+      <ion-input class="ml-auto" class="text-right" [(ngModel)]="merchant.resources.url_image" name="resources"></ion-input>
+    </ion-item>
+    <ion-item button="true" (click)="presentActionIcons()">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="d-flex">
+            <ion-label class="label-icon"> Medios de comunicación </ion-label>
+          </ion-col>
+          <ion-col class="d-flex">
+            <img *ngIf="merchant.social_media.url_facebook" src="assets/icon/facebook.png" class=" ml-auto icon" width="15%" height="70%">
+            <img *ngIf="merchant.social_media.url_facebook" [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
+            <img [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
+            <img [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
+            <img [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+    </ion-item>
+    <ion-item button="true" [ngClass]="{'mt-4': 1}">
+      <ion-label> Nombre de contacto</ion-label>
+      <ion-input class="ml-auto" class="text-right" [(ngModel)]="merchant.name_contact" name="name_contact"></ion-input>
     </ion-item>
     <ion-item button="true">
-      <ion-label> Medios de comunicación </ion-label>
-      <ion-input class="ml-auto" class="text-right" name="description"></ion-input>
+      <ion-label> Correo electrónico contacto </ion-label>
+      <ion-input class="ml-auto" class="text-right" [(ngModel)]="merchant.email_contact" name="email_contact"></ion-input>
     </ion-item>
-    <ion-item button="true">
-      <ion-label> Localización </ion-label>
-      <ion-input class="ml-auto" class="text-right" name="description"></ion-input>
-    </ion-item>
+    <div class="ion-padding mt-2">
+      <ion-button size="small" (click)="store()">
+        <ion-label > Guardar </ion-label>
+        <ion-icon slot="end" name="save-outline"></ion-icon>
+      </ion-button>
+
+    </div>
   </ion-list>
+
+
 
 
   <!--/form-->

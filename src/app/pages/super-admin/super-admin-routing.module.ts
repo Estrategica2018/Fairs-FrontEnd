@@ -39,7 +39,7 @@ const routes: Routes = [
   {
     path: 'map-editor/fair/:sceneId',
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
-  },  
+  },
   {
     path: 'map-editor/pavilion/:pavilionId',
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
@@ -58,6 +58,10 @@ const routes: Routes = [
   },
   {
     path: 'merchant',
+    loadChildren: () => import('./merchant/merchant.module').then( m => m.MerchantPageModule)
+  },
+  {
+    path: 'merchant/update/:merchantId',
     loadChildren: () => import('./merchant/merchant.module').then( m => m.MerchantPageModule)
   },
   {
