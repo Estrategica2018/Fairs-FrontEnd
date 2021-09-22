@@ -63,7 +63,6 @@ export class SchedulePage implements OnInit {
   
   ngDoCheck(){
      document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
-///     console.log(document.querySelector<HTMLElement>('ion-router-outlet'));
   }
   
   ionViewWillEnter () {

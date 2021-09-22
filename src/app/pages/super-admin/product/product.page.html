@@ -16,11 +16,28 @@
 <ion-content fullscreen="true">
 
     <ion-list *ngIf="product" class="padding-container">
+
+       <ion-item lines="none" *ngIf="product.id" [ngClass]="{'mt-4': product.id}">
+          <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
+           <div class="d-flex ml-auto scroll-container" style="overflow-x: scroll;">
+              <ion-item  *ngFor="let scene of product?.resources?.scenes;let i = index" class="scene-icon-mini"
+              button="true" routerLink="/super-admin/map-editor/product/{{pavilion.id}}/{{stand.id}}/{{product.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+               <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
+               <h2 [hidden]="scene && scene.url_image" style="width: 82px; height: 41px;"><small>{{scene.title}}</small></h2>
+              </ion-item>    
+            </div>
+
+         <ion-buttons slot="end">
+            <ion-button routerLink="/super-admin/map-editor/product/{{pavilion.id}}/{{stand.id}}/{{product.id}}">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+       </ion-item>
     
       <ion-item button="true" [ngClass]="{'mt-4': !product.id}">
         <ion-label> Categoría </ion-label>
         <select [(ngModel)]="product.category_id">
-           <option value="{{category.value}}" *ngFor="let category of categories"> {{category.label}}</option>
+           <option value="{{category.id}}" *ngFor="let category of categories"> {{category.name}}</option>
         </select>
       </ion-item>    
       <ion-item button="true">

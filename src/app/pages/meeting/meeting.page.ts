@@ -252,14 +252,14 @@ export class MeetingPage implements OnInit {
       document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',oldScrollY.toString());
       
       
-      switch (target.id) {
+      /*switch (target.id) {
         case 'btnScrollLeft':
             console.log('logScrolling  - btnScrollLeft');  
           break;
         case 'btnScrollTop':
           console.log('logScrolling - btnScrollTop');
         break;
-      } 
+      } */
   }
   
   ngOnDestroy(): void {

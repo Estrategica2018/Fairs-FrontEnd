@@ -30,8 +30,7 @@ ion-col:not(:last-of-type) .speaker-card {
 }
 
 .speaker-card ion-card-content {
-  flex: 1 1 auto;
-
+  flex: 1 1 auto; 
   padding: 0;
 }
 
@@ -40,12 +39,149 @@ ion-col:not(:last-of-type) .speaker-card {
 }
 
 .md ion-list {
-  border-top: 1px solid var(--ion-color-step-150, #d7d8da);
-
+  border-top: 1px solid var(--ion-color-step-150, #d7d8da); 
   padding: 0;
 }
 
-ion-avatar {
-    width: 65px;
-    height: 65px;
+
+.name {
+  margin: 12px 25px;
+}
+
+
+.rounded-withradius {
+  --ion-grid-column-padding: 10px;
+  border: 7px solid transparent;
+  margin: 3px;
+  border-radius: 10px;
+  background-image: linear-gradient(#EEF2EF, white), linear-gradient(to top right, #BEBEBE, #FEFEFE);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+
+.rounded-withradius:hover {
+  background-image: linear-gradient(#109BE0, #109BE0), linear-gradient(to top right, #BEBEBE, #FEFEFE);
+  color: white;
+}
+
+
+$width: 341px;
+$height: 218px;
+
+.grid {
+   position: absolute;
+   margin: 18px;
+   .card {
+	  position: absolute;
+      width: #{$width};
+      height: #{$height};	  
+	  cursor: pointer;
+	  div .div-avatar {
+	    width: #{$width};
+		height: #{$height};	
+		background-size: calc( #{$width} / 2 ) calc( #{$height} - 7px );
+		background-repeat: no-repeat;
+	  }
+	  
+	  div .name {
+	     position: absolute;
+	     right: 0px;
+		 text-align: right;
+		 border-right: 10px;
+		 padding-right: 10px;
+	     width: calc( #{$width} / 2 - 7px ) !important;
+	  }
+	  
+	  div .last-name {
+	     position: absolute;
+	     top: 32px;
+		 text-align: right;
+         right: 5px;
+		 padding-right: 4px;
+		 border-right: 10px;
+	     width: calc( #{$width} / 2 - 7px ) !important;
+	  }
+	  
+	  div img {
+	      width: 74px;
+	      height: 67px;
+	      position: absolute;
+	      left: 40%;
+		  top: 18px;
+	  }
+	  
+	  div .description {
+	     margin-left: 20px;
+         position: absolute;
+         width: 41%;
+         right: 10px;
+          top: 96px;
+	  }
+   }
+}
+
+.grid .card.item-1,
+.grid .card.item-4,
+.grid .card.item-7,
+.grid .card.item-10,
+.grid .card.item-13,
+.grid .card.item-16,
+.grid .card.item-19,
+.grid .card.item-22,
+.grid .card.item-25,
+.grid .card.item-28,
+.grid .card.item-31,
+ {
+  left: 0;
+}
+
+.grid .card.item-2,
+.grid .card.item-5,
+.grid .card.item-8,
+.grid .card.item-11,
+.grid .card.item-14,
+.grid .card.item-17,
+.grid .card.item-20,
+.grid .card.item-23,
+.grid .card.item-26,
+.grid .card.item-29,
+ {
+  left: calc( #{$width} + 10px);
+}
+
+.grid .card.item-3,
+.grid .card.item-6,
+.grid .card.item-9,
+.grid .card.item-12,
+.grid .card.item-15,
+.grid .card.item-18,
+.grid .card.item-21,
+.grid .card.item-24,
+.grid .card.item-27,
+.grid .card.item-30,
+ {
+  left: calc( ( #{$width} ) * 2 + 20px);
+}
+
+
+
+:root {
+  --border-radius: 29px;
+}
+
+.speaker-modal {
+   min-height: 538px;
+  .modal-wrapper {
+    width:90%;
+  }
+}
+
+.agenda {
+  .title {
+     color: #006BCC;
+  }
+}
+
+.min-height {
+  min-height: 538px;
 }

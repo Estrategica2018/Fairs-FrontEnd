@@ -221,6 +221,26 @@ ion-router-outlet {
 }
 
 
+.scroll-light::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+/* Track */
+.scroll-light::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.scroll-light::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+.scroll-light::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
 .r-0 {
  right: 0px;
 }

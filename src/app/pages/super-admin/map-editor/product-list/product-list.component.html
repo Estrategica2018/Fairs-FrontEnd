@@ -1,0 +1,66 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title [hidden]="showOnlyOne || category"><small>Selecciona la Lista de productos</small></ion-card-title>
+    <ion-buttons *ngIf="!showOnlyOne && category">
+      <ion-label slot="start" >Confirma la Lista de productos</ion-label>
+      <ion-button slot="end" (click)="dismissModal()">
+         Cancelar
+      </ion-button>
+      <ion-button slot="end" (click)="acceptModal()">
+         Aceptar
+      </ion-button>
+    </ion-buttons>
+    <ion-card-title *ngIf="showOnlyOne"><small>Selecciona el producto</small></ion-card-title>
+  </ion-card-header>
+   
+  <ion-card-content [hidden]="category">
+    <ion-list>
+      <div *ngFor="let pavilion of catalogList">
+        <ion-label>Pabellón {{pavilion.name}}</ion-label>
+        <ion-list>
+          <div *ngFor="let stand of pavilion.stands">
+            <ion-grid>
+               <ion-row>
+                  <ion-col class="col-4">
+                    Local comercial {{stand.merchant.name}}
+                  </ion-col>
+                  <ion-col class="col-8">
+                   <ion-list>
+                     <ion-item button="true" *ngFor="let category of stand.categories" (click)="openProducts(category, stand, pavilion)">
+                       <ion-label><small>Categoría {{category.name}}</small></ion-label>
+                     </ion-item>
+                     <ion-item button="true"  (click)="openProducts(null, stand, pavilion)">
+                       <ion-label><small>Todas las categorías </small></ion-label>
+                     </ion-item>
+                   </ion-list>
+                  </ion-col>
+                </ion-row>
+            </ion-grid>
+          </div>
+        </ion-list>
+       </div>
+    </ion-list>
+    <ion-item *ngIf="showProducts">
+        
+    </ion-item>
+  </ion-card-content>
+
+  <ion-card-content *ngIf="category">
+    <ion-list>
+      <ion-button *ngIf="category" color="light" class="goto-back-button" (click)="category = null">
+         <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+      <ion-label> {{ category.name == 'Todas las categorias' ? 'Todas las categorias' : 'Categoría ' + category.name }} </ion-label>
+      <ion-list>
+        <ion-grid>
+          <ion-row>
+            <ion-col *ngFor="let product of products" class="product-mini"> 
+               <ion-img [src]="product.url_image" ></ion-img>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-list>
+    </ion-list>
+  </ion-card-content>
+  
+</ion-card>

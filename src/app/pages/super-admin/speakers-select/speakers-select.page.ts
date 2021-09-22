@@ -23,6 +23,11 @@ export class SpeakersSelectPage implements OnInit {
   ) { }
 
   ngOnInit() {
+
+      this.speakers.forEach((speaker, index, array)=>{
+          speaker.isChecked = false;
+      });
+	  
       this.speakers.forEach((speaker, index, array)=>{
           if(this.invited_speakers) {
             this.invited_speakers.forEach((invited, index, array)=>{

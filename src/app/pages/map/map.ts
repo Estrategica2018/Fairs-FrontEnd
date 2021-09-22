@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit} from '@angular/core';
+import { Component, ElementRef,QueryList, ViewChild, ViewChildren, OnInit} from '@angular/core';
 import { HostListener } from "@angular/core";
 import { FairsService } from './../../api/fairs.service';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +16,11 @@ import { UsersService } from '../../api/users.service';
 })
 export class MapPage implements OnInit {
 
+  url: any;
   @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;  
+  @ViewChildren('carrousel') carrousels: any;
+  @ViewChildren('productCatalog') productCatalogs: any;    
+
   fullScreen = false;
   scene: any;
   intro = false;
@@ -31,7 +35,7 @@ export class MapPage implements OnInit {
   template = null;
   bannerSelectHover = null;
   showlogScrolling = false;
-  perfilRole:any;
+  profileRole:any;
   
   constructor(
     private fairsService: FairsService,
@@ -41,13 +45,14 @@ export class MapPage implements OnInit {
     private loading: LoadingService,
     private sanitizer: DomSanitizer,
     private usersService: UsersService) {
+      this.url = window.location.origin;
       this.listenForFullScreenEvents();
       this.usersService.getUser().then((userDataSession: any)=>{
           if(userDataSession && userDataSession.user_roles_fair)  {
-            this.perfilRole = {};
+            this.profileRole = {};
             userDataSession.user_roles_fair.forEach((role)=>{
                 if(role.id == 1) { //"super_administrador"
-                   this.perfilRole.admin = true;
+                   this.profileRole.admin = true;
                 }
              });
              
@@ -130,9 +135,12 @@ export class MapPage implements OnInit {
         this.initializeHtmlTexts(this.scene.banners);
 
         setTimeout(() => {
-          this.loading.dismiss();
-          const target = document.querySelector('.div-container');      
-          //target.scrollTo(0, 0);
+          this.initializeCarousels();
+		  this.initializeProductCatalogs();
+          if(this.carrousels._results && this.carrousels._results.length> 0)  {
+              setTimeout(() => {this.loading.dismiss(); },500 * this.carrousels._results.length);
+          }
+          else { this.loading.dismiss(); } 
         }, 5);
         
         if(this.scene.menuTabs.showMenuParent) {
@@ -156,6 +164,12 @@ export class MapPage implements OnInit {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));    
   }
     
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
+  }
+  
   onRouterLink(tab) {
     this.fullScreen = false;
     window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
@@ -205,7 +219,7 @@ export class MapPage implements OnInit {
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
      
      //carrete of images resize/render
-     window.dispatchEvent(new CustomEvent('carousel:refresh'));
+     this.onResizeCarousels();
      
   }
 /*
@@ -283,7 +297,7 @@ logScrollEnd() {this.showlogScrolling = false;}
   }
   
   goToInternalUrl(banner){
-    this.onRouterLink(banner.internalUrl);
+     this.redirectTo(banner.internalUrl);
   }
 
   initializeHtmlTexts(banners) {
@@ -292,6 +306,32 @@ logScrollEnd() {this.showlogScrolling = false;}
       });
   }  
   
+  initializeCarousels() {
+    if(this.carrousels && this.carrousels._results ) {
+        this.carrousels._results.forEach((elm)=>{
+            elm.initialize();
+        });
+    }    
+  }  
+
+  initializeProductCatalogs() {
+    if(this.productCatalogs && this.productCatalogs._results ) {
+        this.productCatalogs._results.forEach((elm)=>{
+            elm.initialize();
+			elm.onResize();
+        });
+    }    
+  }
+
+
+  onResizeCarousels() {
+    if(this.carrousels && this.carrousels._results ) {
+        this.carrousels._results.forEach((elm)=>{
+            elm.onResize();
+        });
+    }    
+  }  
+
   onToMapEditor(scene){
     const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
     const standId = this.route.snapshot.paramMap.get('standId');

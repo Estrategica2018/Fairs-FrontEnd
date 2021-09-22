@@ -2,10 +2,10 @@
   <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
   <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
 </ion-button>
-<ion-button *ngIf="(perfilRole && perfilRole.admin)" color="light" class="goto-back-button" (click)="onToBackEditor(scene)">
+<ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-back-button" (click)="onToBackEditor(scene)">
   <ion-icon name="arrow-back-outline"></ion-icon>
 </ion-button>
-<ion-button *ngIf="(perfilRole && perfilRole.admin)" color="light" class="goto-edit-button" (click)="onToMapEditor(scene)">
+<ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-edit-button" (click)="onToMapEditor(scene)">
   <ion-icon name="create-outline"></ion-icon>
 </ion-button>
 
@@ -27,37 +27,23 @@
          <strong>Error!</strong> {{errors}}
       </div>
    </ion-item>
-   <div class="div-container"  
-   [ngStyle]="{'width':scene?.container?.w + 'px','height': scene?.container?.h + 'px' }">
-       <!--Scene Background Image-->
-       <div [ngStyle]="{
+
+   <!--Scene Background Image-->
+   <div class="div-container"  >
+      <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
       'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
-      'background-repeat': 'no-repeat'}" 
-      [ngClass]=" { 'cursor-pointer':moveMouseEvent }"
-      (mousedown)="mouseDownContainer($event,null)"
+      'background-repeat': 'no-repeat',
+      'width':scene?.container?.w + 'px', 
+      'height': scene?.container?.h + 'px'
+      }" (ionScroll)="logScrolling($event)"
       *ngIf="scene && scene.url_image">
-      </div>
-      <!--Scene Background Color-->
-      <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
-      (mousedown)="mouseDownContainer($event,null)"
-      [ngClass]=" { 'cursor-pointer':moveMouseEvent }"
-      *ngIf="scene && scene.backgroundColor && !scene.url_image">
-      </div>
    </div>
-   
-   <!--Detect mouse or scroll moving-->
-   <div *ngIf="moveMouseEvent?.x"
-   style="z-index: 1000; background-color: red; position:absolute; opacity: 0.4; cursor:pointer;"
-   [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}"
-   (mouseleave)="mouseLeaveContainer($event)"
-   (mouseup)="mouseUpContainer($event)"
-   ></div>
-
-   <div *ngIf="showlogScrolling"
-   style="z-index: 1000; background-color: green; position:absolute; opacity: 0.4; cursor:pointer;"
-   [ngStyle]="{ 'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px'}"
-   ></div>
+   <!--Scene Background Color-->
+   <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
+   *ngIf="scene && scene.backgroundColor && !scene.url_image">
+   </div>
+   </div>
 
    <!--Banner List-->
    <div *ngFor="let banner of scene?.banners;let i = index" class="banner"
@@ -85,7 +71,7 @@
         ></div>
         <!--if banner is banner-->
        <div class="cube__face cube__face--right square " 
-       [ngClass]="{'selected': bannerSelectHover === banner, 'greyscale': banner.greyscale }" 
+       [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }" 
        [hidden]=" ( banner.video && banner.video.url ) || banner.line"
        id="obj-{{banner.id}}"
        (click)="goToInternalUrl(banner)"
@@ -129,9 +115,18 @@
         </iframe>
 
        <!--if banner is carousel-->
-       <app-carousel-template [banner]="banner" *ngIf="banner.carousel" [fair]="fair" [pavilion]="pavilion" [stand]="stand"
+       <app-carousel-template #carrousel [banner]="banner" *ngIf="banner.carousel" 
+       [fair]="fair" [pavilion]="pavilion" [stand]="stand"
        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
        </app-carousel-template>
+	   
+	   <!--if banner is product-catalog -->
+	   <app-product-catalog #productCatalog [banner]="banner" *ngIf="banner.productCatalog" 
+	   id="product-catalog-id-{{banner.id}}"
+	   [fair]="fair" [pavilion]="pavilion" [stand]="stand" 
+	   [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+	   </app-product-catalog>   
+
      </div>
     <!--Tooltip-->
     <span class="tooltip-label" *ngIf="banner.tooltipText && isHover == banner.id"

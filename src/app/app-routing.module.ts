@@ -154,10 +154,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/wompi-payment-layout/wompi-payment-layout.module').then( m => m.WompiPaymentLayoutPageModule)
   },
   {
-    path: 'product-catalog',
-    loadChildren: () => import('./pages/product-catalog/product-catalog.module').then( m => m.ProductCatalogPageModule)
-  },
-  {
     path: 'product-detail/:pavilionId/:standId/:productId',
     loadChildren: () => import('./pages/product-detail/product-detail.module').then( m => m.ProductDetailPageModule)
   },

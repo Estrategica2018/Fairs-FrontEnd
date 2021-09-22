@@ -76,7 +76,7 @@ Pegar
    </div>
    <!--if banner is banner-->
    <div class="cube__face cube__face--right square {{banner.class}}"
-   [ngClass]="{'selected': bannerSelectHover === banner, 'greyscale': banner.greyscale }"
+   [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }"
    [hidden]=" ( banner.video && banner.video.url ) || banner.line"
    id="obj-{{banner.id}}"
    (click)="onBannerSelect(banner);"
@@ -123,10 +123,24 @@ Pegar
    
    <!--if banner is carousel-->
    <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.carousel || banner.video" >
-   <ion-icon name="create-outline"></ion-icon>
+     <ion-icon name="create-outline"></ion-icon>
    </ion-button>
-   <app-carousel-template [banner]="banner" *ngIf="banner.carousel" editorMode="true">
+   <app-carousel-template #carrousel [banner]="banner" *ngIf="banner.carousel" editorMode="true"
+   [fair]="fair" [pavilion]="pavilion" [stand]="stand"
+   [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
    </app-carousel-template>
+   
+   
+   <!--if banner is product-catalog -->
+   <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.productCatalog" >
+     <ion-icon name="create-outline"></ion-icon>
+   </ion-button>
+   <app-product-catalog #productCatalog [banner]="banner" *ngIf="banner.productCatalog" 
+   id="product-catalog-id-{{banner.id}}"
+   [fair]="fair" [pavilion]="pavilion" [stand]="stand" 
+   [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+   </app-product-catalog>   
+   
    </div>
    <!--Tooltip-->
    <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
@@ -355,14 +369,29 @@ Pegar
             </div>
          </div>
       </ion-card-content>
-      <ion-card-header *ngIf="productCatalogList">
-         <ion-card-title><small>Agregar Productos</small></ion-card-title>
+      <ion-card-header>
+         <ion-card-title><small>Agregar Producto</small></ion-card-title>
       </ion-card-header>
-      <ion-card-content *ngIf="productCatalogList">
+      <ion-card-content>
          <div class="d-flex">
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('CarreteProducts');">
-               Carrete
-               <ion-icon style="font-size: 24px" name="albums-outline"></ion-icon>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('ProductCatalog');">
+               Catálogo
+               <ion-icon style="font-size: 24px" name="grid-outline"></ion-icon>
+            </div>
+			
+            <div class="icon-panel-scene ml-2" (click)="addArrowLineRect();">
+               <div class="container-arrow--rect" >
+                  <div class="arrow line-arrow-button">
+                     <div class="arrow__body"></div>
+                  </div>
+               </div>
+            </div>
+            <div class="icon-panel-scene ml-2" (click)="addArrowLineLine();">
+               <div class="container-arrow--line" >
+                  <div class="arrow line-arrow-button">
+                     <div class="arrow__body"></div>
+                  </div>
+               </div>
             </div>
          </div>
       </ion-card-content>
@@ -632,30 +661,7 @@ Pegar
       </ion-toolbar>
    </ion-card-content>
    <ion-card-content *ngIf="tabSelect == 'carousel'" style="overflow: auto;height: 421px;">
-      <ion-toolbar *ngIf="bannerSelect.type == 'CarreteProducts'">
-         <ion-buttons slot="start">
-            <ion-card-subtitle> Tipo de Carrete </ion-card-subtitle>
-         </ion-buttons>
-         <ion-buttons slot="end">
-            <ion-card-subtitle>
-               <select [(ngModel)]="bannerSelect.carousel.type" (change)="onChangeCarousel()">
-               <option *ngFor="let type of typeCarouselList" value="{{type.value}}">{{type.label}}</option>
-               </select>
-            </ion-card-subtitle>
-         </ion-buttons>
-      </ion-toolbar>
-      <ion-toolbar>
-         <ion-buttons slot="start">
-            <ion-card-subtitle> Tipo de Carrete </ion-card-subtitle>
-         </ion-buttons>
-         <ion-buttons slot="end">
-            <ion-card-subtitle>
-               <select [(ngModel)]="bannerSelect.carousel.type"  (change)="onChangeCarousel()">
-               <option *ngFor="let type of typeCarouselList" value="{{type.value}}">{{type.label}}</option>
-               </select>
-            </ion-card-subtitle>
-         </ion-buttons>
-      </ion-toolbar>
+     
       <ion-toolbar *ngFor="let option of carouselOptionList">
          <ion-buttons slot="start">
             <ion-card-subtitle> {{option}} </ion-card-subtitle>
@@ -670,14 +676,8 @@ Pegar
          </ion-buttons>
       </ion-toolbar>
       <ion-toolbar>
-         <ion-card-subtitle slot="start"> Lista de Productos </ion-card-subtitle>
-         <select [(ngModel)]="bannerSelect.carousel.productCatalog" (change)="onChangeMenuTabs()">
-         <option *ngFor="let category of productCatalogList" value="{{category.id}}"> {{category.name}}</option>
-         </select>
-      </ion-toolbar>
-      <ion-toolbar>
          <ion-card-subtitle slot="start"> Lista de {{bannerSelect.carousel.images?.length}} Imágene(s)</ion-card-subtitle>
-         <ion-button  slot="end" size="small" (click)="presentPopoverNewCarouselImage(bannerSelect.carousel,'images')">
+         <ion-button  slot="end" size="small" (click)="presentActionAddCarrousel()">
             <ion-icon name="add-outline"></ion-icon>
          </ion-button>
       </ion-toolbar>
@@ -966,7 +966,7 @@ Pegar
          <ion-list>
             <ion-item>
                <ion-card-subtitle>Iniciar en EscalaGris</ion-card-subtitle>
-               <ion-checkbox slot="end" [(ngModel)]="bannerSelect.greyscale" (click)="onChangeEffect(effect)"></ion-checkbox>
+               <ion-checkbox slot="end" [(ngModel)]="bannerSelect.grayscale" (click)="onChangeEffect(effect)"></ion-checkbox>
             </ion-item>
             <ion-item *ngFor="let effect of hoverEffects">
                <ion-card-subtitle>{{effect.name}}</ion-card-subtitle>

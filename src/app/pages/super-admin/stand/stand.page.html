@@ -61,13 +61,14 @@
             </ion-label>
         </div>
       </ion-item>
+      <ion-button routerLink="/super-admin/product/{{pavilion.id}}/{{stand.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+        <ion-icon slot="end" name="add-circle-outline"></ion-icon>
+      </ion-button>
       <div *ngIf="productCatalogList">
         <div *ngFor="let group of productCatalogList">
           <ion-list-header>
              Catálogo de productos {{ group.name }}
-             <ion-button routerLink="/super-admin/product/{{pavilion.id}}/{{stand.id}}" routerLinkActive="active" routerDirection="root" detail="false">
-               <ion-icon slot="end" name="add-circle-outline"></ion-icon>
-             </ion-button>
+             
           </ion-list-header>
 
           <ion-item lines="none" class="mt-3">

@@ -38,6 +38,7 @@ export class SpeakerDetailPage {
       .then((data) => {
           this.loading.dismiss();
           this.speaker = data;
+		  console.log(data);
       })
       .catch(error => {
         this.loading.dismiss();
@@ -60,9 +61,7 @@ export class SpeakerDetailPage {
         {
           text: 'Copy Link',
           handler: () => {
-            console.log(
-              'Copy link clicked on https://twitter.com/' + speaker.twitter
-            );
+            
             if (
               (window as any).cordova &&
               (window as any).cordova.plugins.clipboard

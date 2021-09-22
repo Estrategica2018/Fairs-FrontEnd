@@ -4,26 +4,27 @@
   </ion-toolbar>
 </ion-header>
   
-<ion-content fullscreen="true">
-
-  <ion-grid fixed>
-    <ion-row *ngIf="speakers">
-      <ion-col size="12" size-md="6" *ngFor="let speaker of speakers">
-        <ion-card class="speaker-card">
-          <ion-card-header>
-            <ion-item detail="false" lines="none" class="speaker-item" routerLink="/speakers/speaker-details/{{speaker.id}}">
-              <ion-avatar slot="start">
-                <img [src]="speaker?.resources?.url_image" [alt]="speaker.name + ' profile picture'">
-              </ion-avatar>
-              <ion-label>
-                <h2 class="white-space">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
-                <p class="white-space">{{speaker.title}}</p>
+<ion-content fullscreen="true" scrollX="true">
+  
+  <!--routerLink="/speakers/speaker-details/{{speaker.id}}"-->
+    <div class="grid">
+      <div class="card item-{{(i+1)}} rounded-withradius grayscale" 
+	  *ngFor="let speaker of speakers;let i = index;" 
+	  (click)="presenterSpeakerModal(speaker)">
+	      <div class="d-flex" >
+              <div class="div-avatar" [ngStyle]="{ 'background-image': 'url('+speaker.resources.url_image+')'}">
+			  </div>
+              <h2 class="name">{{speaker.user.name}}</h2>
+			  <img src="https://res.cloudinary.com/dfxkgtknu/image/upload/v1631769965/samples/ico_ovvfue.png">
+			  <h3 class="last-name">{{speaker.user.last_name}}</h3>
+              <ion-label class="description">
+                <h5 class="white-space">{{speaker.title}}</h5>
                 <h3 class="white-space">{{speaker.description}}</h3>
               </ion-label>
-            </ion-item>
-          </ion-card-header>
+          </div>
+      </div>
 
-          <ion-card-content>
+          <!--ion-card-content>
             <ion-list lines="none">
               <ion-item>
                 <ion-label>
@@ -45,10 +46,9 @@
     
             </ion-list>
           </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        </ion-card--> 
+      
+    </div>
     <ion-list-header *ngIf="speakers && speakers.length === 0" class="not-found">
     No se encontraron conferencistas
   </ion-list-header>

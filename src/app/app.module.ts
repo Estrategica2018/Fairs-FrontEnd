@@ -19,7 +19,6 @@ import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi
 //import { APP_BASE_HREF } from '@angular/common';
 
 
-
 @NgModule({
   imports: [
     BrowserModule,

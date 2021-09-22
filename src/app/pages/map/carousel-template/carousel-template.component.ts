@@ -1,12 +1,14 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ViewChild } from '@angular/core';
 import {Output, EventEmitter} from '@angular/core';
+import { ProductsService } from '../../../api/products.service';
+import { IonSlides } from "@ionic/angular";
 
 @Component({
   selector: 'app-carousel-template',
   templateUrl: './carousel-template.component.html',
   styleUrls: ['./carousel-template.component.scss'],
 })
-export class CarouselTemplateComponent implements OnInit {
+export class CarouselTemplateComponent {
   
   @Input() banner: any;
   @Input() editorMode: any;
@@ -14,41 +16,70 @@ export class CarouselTemplateComponent implements OnInit {
   @Input() pavilion: any;
   @Input() stand: any;
   @Input() product: any;
+  @ViewChild(IonSlides, { static: true }) ionSlides: IonSlides;
   
-  slideOptsHorizontal: any;
+  slideOpts: any;
+  items: any;
   
-  constructor() { }
+  constructor(private productsService: ProductsService) { }
 
-  ngOnInit() {
-    window.addEventListener('carousel:refresh', (e:any) => {
-        setTimeout(() => {
-            this.onRefresh();
-        }, 60);
-
-    });
-    setTimeout(() => {
-            this.onRefresh();
-    }, 60);
+  initialize() {
+	  
+	this.ionSlides.update();
+    this.items = [];
     
+    if(this.banner.carousel.images) {
+        this.banner.carousel.images.forEach((image)=>{
+            if(image.list) {
+              let str = image.list.split(';')[0];    
+              const pavilion = str.split(':')[1];
+              str = image.list.split(';')[1];
+              const stand = str.split(':')[1];
+              str = image.list.split(';').length==3 ? image.list.split(';')[2] : null;
+              const category = str ? str.split(':')[1] : '';
+              
+              this.productsService.get(this.fair.id,pavilion,stand,null)
+              .then((products) => {
+                if(products.length > 0) {
+                    products.forEach((product)=>{
+                        if(category == 'all' || product.category_id == category ){
+                            product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
+                            this.items.push({'product': product});                            
+                        }
+                    });
+                }
+              })
+              .catch(error => {
+                 
+              });
+            }
+            else {
+                this.items.push({'image':true, 'url': image.url});
+            }
+        })
+        
+        this.onResize();
+    }
   }
   
-  onRefresh() {
-      
+  onResize() {
     let slides = document.querySelector<any>('#ion-slides-'+this.banner.id);
+    this.getSlideOpts();
     if(slides && this.banner && this.banner.carousel) {
-        this.initializeCarousel();
-        slides.options = this.slideOptsHorizontal;
+        this.getSlideOpts();
+        slides.options = this.slideOpts;
     }
   }
   
   goToProduct(product) {
+
       if( typeof this.editorMode === 'undefined' || !this.editorMode ) {
-         window.location.href= '/#/product-detail/'+this.pavilion.id+'/'+this.stand.id+'/'+product.id;
+         window.location.href= '/#/product-detail/'+this.pavilion.id+'/'+product.stand_id+'/'+product.id;
       }
   }
 
-  initializeCarousel() {
-      this.slideOptsHorizontal = {
+  getSlideOpts() {
+	  this.slideOpts = {
             slidesPerView: this.banner.carousel.options.slidesPerView,
             coverflowEffect: {
               rotate: this.banner.carousel.options.rotate,
@@ -136,6 +167,7 @@ export class CarouselTemplateComponent implements OnInit {
               }
             }
         };
+      this.ionSlides.options = this.slideOpts;
   }
   
 }

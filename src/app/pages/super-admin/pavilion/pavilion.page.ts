@@ -45,8 +45,14 @@ export class PavilionPage implements OnInit {
           this.pavilionsService.get(pavilionId)
            .then((response) => {
               this.pavilion = response.pavilion;
-              this.stands = this.pavilion.stands;
+              this.stands = [];
+			  this.pavilion.stands.forEach((stand)=>{
+				this.stands.push(Object.assign({},stand)); 
+			  });
+			  
+			  console.log(this.stands);
               this.fair = response.fair;
+			  
               this.loading.dismiss();
           })
           .catch(error => {
@@ -75,10 +81,12 @@ export class PavilionPage implements OnInit {
   }
   
   updatePavilion(){
+	  console.log(this.stands);
     this.loading.present({message:'Cargando...'});
     if(this.pavilion.id) {
         this.adminPavilionsService.update(this.pavilion)
        .then((pavilion) => {
+		   console.log(this.stands);
           this.loading.dismiss();
           this.editSave = false;
           this.errors = null;
@@ -86,8 +94,22 @@ export class PavilionPage implements OnInit {
           this.pavilion = pavilion;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          //this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
-          window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
+          //this.redirectTo(`/super-admin/pavilion/${pavilion.id}`);
+		  this.pavilionsService.get(pavilion.id)
+           .then((response) => {
+              this.pavilion = response.pavilion;
+              this.stands = this.pavilion.stands;
+			  console.log(this.stands);
+              this.fair = response.fair;
+			  
+              this.loading.dismiss();
+          })
+          .catch(error => {
+             this.loading.dismiss();
+             this.errors = error;
+          });
+		  
+          //window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
       })
       .catch(error => {
         this.loading.dismiss();
@@ -104,8 +126,8 @@ export class PavilionPage implements OnInit {
           this.success = `Pabellón creado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          //this.onRouterLink(`/super-admin/pavilion/${pavilion.id}`);
-          window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
+          this.redirectTo(`/super-admin/pavilion/${pavilion.id}`);
+          //window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
       })
       .catch(error => {
          this.loading.dismiss();
@@ -142,7 +164,7 @@ export class PavilionPage implements OnInit {
                    });
                     
                    const tab = `/super-admin/fair`;
-                   this.onRouterLink(tab);
+                   this.redirectTo(tab);
                 
               },
               (error) => {
@@ -158,10 +180,11 @@ export class PavilionPage implements OnInit {
     });
     await alert.present();
   }
-  
-  onRouterLink(tab) {
-    this.router.navigate([tab]);
+   
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
   }
-
 
 }

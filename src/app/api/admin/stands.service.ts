@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
 import { processDataToString } from '../../providers/process-data';
 import { processData } from '../../providers/process-data';
+import { UsersService } from '../users.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,21 @@ export class AdminStandsService {
   pavilions = {};
   
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private usersService: UsersService
+
   ) { }
 
   create(data): Promise<any> {
 
         return new Promise((resolve, reject) => {
-
-            this.http.post(`/api/stand/create`,processDataToString(data))
+          this.usersService.getUser().then((userDataSession: any)=>{
+            const httpOptions = {
+              headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };
+            this.http.post(`/api/stand/create`,processDataToString(data), httpOptions)
             .pipe(
               timeout(30000),
               catchError(e => {
@@ -46,13 +54,19 @@ export class AdminStandsService {
             },error => {
                 reject(error)
             });
+           });
         });
   }
   
   update(stand: any): any {
     return new Promise((resolve, reject) => {
-
-            this.http.post(`/api/stand/update/${stand.id}`,processDataToString(stand))
+        this.usersService.getUser().then((userDataSession: any)=>{
+            const httpOptions = {
+              headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };
+            this.http.post(`/api/stand/update/${stand.id}`,processDataToString(stand), httpOptions)
             .pipe(
               timeout(30000),
               catchError(e => {
@@ -75,12 +89,18 @@ export class AdminStandsService {
                 reject(error)
             });
         });
+    });
   }
   
   delete(stand: any): any {
     return new Promise((resolve, reject) => {
-
-            this.http.post(`/api/stand/delete/${stand.id}`, stand)
+        this.usersService.getUser().then((userDataSession: any)=>{
+            const httpOptions = {
+              headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };
+            this.http.post(`/api/stand/delete/${stand.id}`, stand, httpOptions)
             .pipe(
               timeout(30000),
               catchError(e => {
@@ -104,5 +124,6 @@ export class AdminStandsService {
                 reject(error)
             });
         });
+    });
   }
 }

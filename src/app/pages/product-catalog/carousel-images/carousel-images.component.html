@@ -1,0 +1,12 @@
+<ion-slides pager="true" [options]="slideOpts" class="container-carousel">
+  <ion-slide *ngFor="let image of imagesArray">
+   <div class="container-img" [ngStyle]="{'background-image': 'url('+image.url_image+')'}">
+   </div>
+  </ion-slide>
+  <div class="swiper-cube-shadow" style="height: 800px; transform: translate3d(0px, 420px, -400px) rotateX(90deg) rotateZ(0deg) scale(0.94);"></div>
+</ion-slides> 
+
+<div class="color-container" *ngIf="colors.length >= 1">
+ <div class="color-attr" *ngFor="let color of colors" [ngStyle]="{'background-color': color.value}">
+ </div>
+</div>

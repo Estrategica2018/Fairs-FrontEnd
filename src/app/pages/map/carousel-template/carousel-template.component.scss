@@ -77,3 +77,14 @@
   top: 0px;
   z-index: 11;
 }
+
+
+.product {
+  cursor: pointer;
+}
+
+.product:hover {
+  border: 1px solid gray;
+  --background: var(--primary, #36454f);
+  background-color: var(--primary, #36454f);
+}

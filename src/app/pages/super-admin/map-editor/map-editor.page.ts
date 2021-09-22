@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnInit} from '@angular/core';
+import { Component, ElementRef,QueryList, ViewChild, ViewChildren, OnInit} from '@angular/core';
 import { HostListener } from "@angular/core";
 import { FairsService } from './../../../api/fairs.service';
 import { PavilionsService } from './../../../api/pavilions.service';
@@ -6,6 +6,7 @@ import { ProductsService } from './../../../api/products.service';
 import { AdminFairsService } from './../../../api/admin/fairs.service';
 import { AdminPavilionsService } from './../../../api/admin/pavilions.service';
 import { AdminStandsService } from './../../../api/admin/stands.service';
+import { AdminProductsService } from './../../../api/admin/products.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from './../../../providers/loading.service';
 import { PanelEditorComponent } from './panel-editor/panel-editor.component';
@@ -16,7 +17,9 @@ import { processData } from '../../../providers/process-data';
 import { TabMenuScenesComponent } from '../../map/tab-menu-scenes/tab-menu-scenes.component';
 import { IonReorderGroup } from '@ionic/angular'; 
 import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, ActionSheetController  } from '@ionic/angular';
+import { environment, SERVER_URL } from '../../../../environments/environment';
+import { ProductListComponent } from '../../super-admin/map-editor/product-list/product-list.component';
 
 declare var tinymce;
 
@@ -27,7 +30,10 @@ declare var tinymce;
 })
 export class MapEditorPage implements OnInit {
 
+  url: string;
   @ViewChild('videoMeeting', { static: true }) videoElement: ElementRef;
+  @ViewChildren('carrousel') carrousels: any;    
+  @ViewChildren('productCatalog') productCatalogs: any;    
   @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;
   errors = null;
   success = null;
@@ -40,6 +46,7 @@ export class MapEditorPage implements OnInit {
   fair = null;
   pavilion = null;
   stand = null;
+  product = null;
   bannerSelect = null;
   showTools = null;
   editSave = false;
@@ -66,7 +73,6 @@ export class MapEditorPage implements OnInit {
   copyMultiFromList = [];
   lineHeightMili = null;
   lineHeightUnit = null;
-  productCatalogList = null;
   selectionElementList = null;
   showlogScrolling = false;
   
@@ -108,18 +114,21 @@ export class MapEditorPage implements OnInit {
     private adminFairsService: AdminFairsService,
     private adminPavilionsService: AdminPavilionsService,
     private adminStandsService: AdminStandsService,
+    private adminProductsService: AdminProductsService,
     private toastController: ToastController,
     private sanitizer: DomSanitizer,
     private productsService: ProductsService,
-    private popoverCtrl: PopoverController) { 
+    private popoverCtrl: PopoverController,
+    private actionSheetController: ActionSheetController) { 
       
       this.listenForFullScreenEvents();
       this.initializePanel();
+      //this.url = SERVER_URL;
+      this.url = window.location.origin;
   }
 
   ngOnInit() {
     const div = document.querySelector<HTMLElement>('.div-container');
-    //div.addEventListener('scroll', this.logScrolling);
   } 
   
   ngOnDestroy(): void {
@@ -145,39 +154,40 @@ export class MapEditorPage implements OnInit {
      const url = window.location.href;
      this.template = url.indexOf('super-admin/map-editor/fair')  >= 0 ? 'fair' : 
      url.indexOf('super-admin/map-editor/pavilion')  >= 0 ? 'pavilion' :
-     url.indexOf('super-admin/map-editor/stand')  >= 0 ? 'stand' : '';
+     url.indexOf('super-admin/map-editor/stand')  >= 0 ? 'stand' : 
+	 url.indexOf('super-admin/map-editor/product')  >= 0 ? 'product' : 
+	 '';
      
      const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
      const standId = this.route.snapshot.paramMap.get('standId');
+	 const productId = this.route.snapshot.paramMap.get('productId');
      this.sceneId = this.route.snapshot.paramMap.get('sceneId');
      
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
-
      main.style.top = top + 'px';
-     
      const btnSave = document.querySelector<HTMLElement>('.panel-scene-save');
      const panelPosX = ( main.offsetWidth - btnSave.offsetWidth - 600 ) + 'px';
      this.panelPos = { x: panelPosX + 'px', y: '0px' };
      
-
      this.fairsService.getCurrentFair().then((fair)=>{
-        this.fair = fair;
         
-        this.initializeInternalUrl();
-        
-        this.initializeGroupOfLinks();
+		this.fair = fair;
 
         if(this.template === 'fair') {
+			
           this.resources = fair.resources;
           this.scene = this.sceneId ? fair.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+		  this.initializeScene();
         }
         else if(this.template === 'pavilion') {
+			
           this.fair.pavilions.forEach((pavilion)=>{
               if(pavilion.id == pavilionId) {
                 this.pavilion = pavilion;
                 this.resources = pavilion.resources;
                 this.scene = this.sceneId ? this.pavilion.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+		        this.initializeScene();
               }
           });
         }
@@ -189,82 +199,73 @@ export class MapEditorPage implements OnInit {
                 pavilion.stands.forEach((standEl)=>{
                    if(standEl.id == standId) {
                       this.stand = standEl;
-                      
                       this.resources = this.stand.resources;
                       this.scene = this.sceneId ? this.stand.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
-                      
-                      this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id,null)
-                      .then((products) => {
-                          if(products.length>0) {
-                              this.errors = null;
-                              
-                              //create product catalog list
-                              this.productCatalogList = [];
-                              products.forEach((product)=>{
-                                  product.url_image = product.prices[0].resources.images[0].url_image;
-                                  let hasCategory = false;
-                                  let category = null;
-                                  
-                                  if(this.productCatalogList.length > 0) {
-                                    this.productCatalogList.forEach((cat)=>{
-                                      if(cat.name == product.category.name) {
-                                         hasCategory = true;
-                                         category = cat;
-                                      }
-                                    });
-                                  }
-                                  if(!hasCategory) {
-                                    category = {'id':product.category.id,'name':product.category.name, 'products': []};
-                                    this.productCatalogList.push(category);
-                                  }
-                                  category.products.push(product);
-                              });
-                          }
-                      })
-                      .catch(error => {
-                         this.loading.dismiss();
-                         this.errors = error;
-                      });
-                      
-                      
+		              this.initializeScene();
                    }
                 });
               }
           });
         }
-                
-        this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
-        this.resources.menuTabs = this.resources.menuTabs || {};
-
-        this.scene.banners = this.scene.banners || [];
-        this.scene.banners.forEach((banner)=>{
-            if(banner.video)
-            banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
-        });
-
-        this.initializeHtmlTexts(this.scene.banners);
-
-        setTimeout(() => {
-          this.loading.dismiss();
-          //const target = document.querySelector('.div-container');      
-          //target.scrollTo(0, 0);
-        }, 5);
-        
-        if(this.scene.menuTabs.showMenuParent) {
-           this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
+		else if(this.template === 'product') {
+          
+          this.fair.pavilions.forEach((pavilion)=>{
+              if(pavilion.id == pavilionId) {
+                this.pavilion = pavilion;
+                pavilion.stands.forEach((standEl)=>{
+                   if(standEl.id == standId) {
+                      this.stand = standEl;
+                      this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id,productId)
+					  .then((products) => {
+						if(products.length > 0) {
+						   this.product = products[0];
+						}
+						this.resources = this.product.resources || { 'scenes': []};
+                        this.scene = this.sceneId ? this.product.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+		                this.initializeScene();
+					  })
+					  .catch(error => {
+						this.errors = error;
+					  });
+                   }
+                });
+              }
+          });
         }
-        else {
-            this.tabMenuObj = this.scene.menuTabs;
-        }
-        
-        this.onResize();
-
      }, error => {
         this.loading.dismiss();
-        console.log(error);     
-        this.errors = `Consultando el servicio del mapa general de la feria`;
+        this.errors = `Consultando el servicio del mapa general de la feria ${error}`;
      });
+        
+  }
+  
+  initializeScene(){
+	this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
+	this.resources.menuTabs = this.resources.menuTabs || {};
 
+	this.scene.banners = this.scene.banners || [];
+	this.scene.banners.forEach((banner)=>{
+		if(banner.video)
+		banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+	});
+
+	this.initializeHtmlTexts(this.scene.banners);
+	this.initializeInternalUrl();
+    this.initializeGroupOfLinks();
+
+	setTimeout(() => {
+	  this.loading.dismiss();
+	  this.initializeCarousels();
+	  this.initializeProductCatalogs();
+	}, 5);
+	
+	if(this.scene.menuTabs.showMenuParent) {
+	   this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
+	}
+	else {
+		this.tabMenuObj = this.scene.menuTabs;
+	}
+	this.onResize();
   }
   
   initializeHtmlTexts(banners) {
@@ -272,6 +273,32 @@ export class MapEditorPage implements OnInit {
           banner.textHtml = this.sanitizer.bypassSecurityTrustHtml(banner.text);
       });
   }  
+
+  initializeCarousels() {
+    if(this.carrousels && this.carrousels._results ) {
+        this.carrousels._results.forEach((elm)=>{
+            elm.initialize();
+			elm.onResize();
+        });
+    }    
+  }  
+
+  initializeProductCatalogs() {
+    if(this.productCatalogs && this.productCatalogs._results ) {
+        this.productCatalogs._results.forEach((elm)=>{
+            elm.initialize();
+			elm.onResize();
+        });
+    }    
+  }
+  
+  onResizeCarousels() {
+    if(this.carrousels && this.carrousels._results ) {
+        this.carrousels._results.forEach((elm)=>{
+            elm.onResize();
+        });
+    }    
+  }
   
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));
@@ -286,8 +313,7 @@ export class MapEditorPage implements OnInit {
     this.fullScreen = false;
     window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
     this.router.navigate([tab]);
-  }
-    
+  } 
   
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -334,7 +360,7 @@ export class MapEditorPage implements OnInit {
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
 
      //carrete of images resize/render
-     window.dispatchEvent(new CustomEvent('carousel:refresh'));
+     this.onResizeCarousels();
      
   }
 /*
@@ -411,7 +437,7 @@ logScrollEnd() {this.showlogScrolling = false;}
                   this.editSave = null;
                   this.showPanelTool = false
                   this.bannerSelect = null;
-                  window.location.replace(`/#/super-admin/map-editor/fair/${this.sceneId}`);
+                  window.location.replace(`${this.url}/#/super-admin/map-editor/fair/${this.sceneId}`);
               }
               this.ngOnInit();
               this.errors = null;
@@ -437,7 +463,7 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.editSave = null;
               this.showPanelTool = false
               this.bannerSelect = null;
-              window.location.replace(`/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+              window.location.replace(`${this.url}/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
            })
            .catch(error => {
@@ -460,13 +486,33 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.editSave = null;
               this.showPanelTool = false
               this.bannerSelect = null;
-              
-              window.location.replace(`/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+              window.location.replace(`${this.url}/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
            })
            .catch(error => {
                this.loading.dismiss(); 
                this.errors = `Consultando el servicio para actualizar local comercial ${error}`;
+           });
+      }
+	  else if(this.template === 'product') {
+          this.product.resources = this.resources;
+		  this.adminProductsService.update(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id},this.product))
+          .then((product) => {
+              this.loading.dismiss();
+              if(!this.sceneId) {
+                  this.sceneId = this.resources.scenes.length - 1;
+              }
+              this.errors = null;
+              this.editMenuTabSave = null;
+              this.editSave = null;
+              this.showPanelTool = false
+              this.bannerSelect = null;
+              window.location.replace(`${this.url}/#/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
+              //this.router.navigateByUrl(`/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
+           })
+           .catch(error => {
+               this.loading.dismiss(); 
+               this.errors = `Consultando el servicio para actualizar producto ${error}`;
            });
       }
   }
@@ -537,20 +583,13 @@ logScrollEnd() {this.showlogScrolling = false;}
           ];
           banner = {"size":{"x":1156,"y":236},"carousel": { "options":{slidesPerView: 3,rotate: 0,stretch: 50,depth: 100,slideShadows: false,modifier: 1},"style":"horizontal","images": allImages}};
       break;
-      case 'CarreteProducts':
-         let productList = [];
-         if(this.productCatalogList && this.productCatalogList.length > 0) {
-           this.productCatalogList.forEach((group)=>{
-               group.products.forEach((product)=>{
-                productList.push(product);
-              });   
-           });
-         }
-         banner = {"position":this.getNewPosition({"x":16,"y":145}),"size":{"x":668,"y":120},"carousel": { "options":{slidesPerView: 3,rotate: 0,stretch: 50,depth: 100,slideShadows: false,modifier: 1},"style":"horizontal","products": productList}};
-      break;
       case 'Video':
           banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
           banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+      break;
+	  case 'ProductCatalog':
+          banner = {"size":{"x":114,"y":105},"productCatalog": {  }};
+		  this.presentNewProductListCatalog(banner);
       break;
       default:
           banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
@@ -565,6 +604,23 @@ logScrollEnd() {this.showlogScrolling = false;}
     this.editSave = true;
     this.showPanelTool = 'settingsBanner'; 
   }
+  
+  async presentNewProductListCatalog(banner) {
+    
+    const modal = await this.modalCtrl.create({
+      component: ProductListComponent,
+      swipeToClose: true, 
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion }
+    });
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+        banner.productCatalog.list = data;
+		this.initializeProductCatalogs();
+    }
+  } 
   
   getNewPosition(pos) {
       this.scene.banners.forEach((banner)=>{
@@ -758,7 +814,7 @@ logScrollEnd() {this.showlogScrolling = false;}
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       window.location.replace(`/#/super-admin/fair`);
+                       window.location.replace(`${this.url}/#/super-admin/fair`);
                        //this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
@@ -773,7 +829,7 @@ logScrollEnd() {this.showlogScrolling = false;}
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
                        this.pavilionsService.refreshCurrentPavilion();
-                       window.location.replace(`/#/super-admin/pavilion/${this.pavilion.id}`);
+                       window.location.replace(`${this.url}/#/super-admin/pavilion/${this.pavilion.id}`);
                        //this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
                    })
                    .catch(error => {
@@ -788,7 +844,7 @@ logScrollEnd() {this.showlogScrolling = false;}
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
                        //this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
-                       window.location.replace(`/#/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                       window.location.replace(`${this.url}/#/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -1025,7 +1081,7 @@ logScrollEnd() {this.showlogScrolling = false;}
     }catch(e) {}
   }
 
-  async onAddImg(list,index){
+  async onAddImgCarousel(){
     
     const actionAlert = await this.alertCtrl.create({
       message: "Ingresa la ruta de la imágen",
@@ -1048,7 +1104,8 @@ logScrollEnd() {this.showlogScrolling = false;}
          role: 'destructive', 
          handler: (data) => {
           this.editSave = true;
-          list[index].push({'url':data.url,'title':data.title});
+          this.bannerSelect.carousel.images = this.bannerSelect.carousel.images || [];
+          this.bannerSelect.carousel.images.push({'url':data.url,'title':data.title});
          }
         }]
     });
@@ -1056,6 +1113,24 @@ logScrollEnd() {this.showlogScrolling = false;}
 
   }  
   
+  async presentProductListCarousel() {
+    
+    const modal = await this.modalCtrl.create({
+      component: ProductListComponent,
+      swipeToClose: true, 
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion }
+    });
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+        this.bannerSelect.carousel.images = this.bannerSelect.carousel.images || []
+        this.bannerSelect.carousel.images.push({'list':data});
+    }
+  } 
+
+
   async onOpenChangeImg(image,list,index){
     
     const actionAlert = await this.alertCtrl.create({
@@ -1087,7 +1162,7 @@ logScrollEnd() {this.showlogScrolling = false;}
   async onDeleteCarretImg(image,list,type,index){
     
     const actionAlert = await this.alertCtrl.create({
-      message: "Confirma para eliminar la imágen",
+      message: "Confirma para eliminar la "+(image.url ? "imágen":"lista de productos"),
       buttons: [{
           text: 'Cancel',
           role: 'cancel'
@@ -1100,6 +1175,8 @@ logScrollEnd() {this.showlogScrolling = false;}
           list[type] = list[type].filter((img,key)=>{
               return key != index;
           });
+          
+          this.initializeCarousels();
          }
         }]
     });
@@ -1177,7 +1254,7 @@ logScrollEnd() {this.showlogScrolling = false;}
   
   onChangeCarousel() {
     this.editSave = true;
-    window.dispatchEvent(new CustomEvent('carousel:refresh'));
+    this.onResizeCarousels();
   }
   
   toogleSelection() {
@@ -1241,7 +1318,35 @@ logScrollEnd() {this.showlogScrolling = false;}
     //player.load();
     //player.play();
   }
-  
-  
-  
+
+  async presentActionAddCarrousel() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Tipo de elemento a agregar',
+      cssClass: 'my-custom-class',
+      buttons: [{
+        text: 'Imagen',
+        role: 'destructive',
+        icon: 'image-outline',
+        handler: () => {
+          this.onAddImgCarousel();
+        }
+      }, {
+        text: 'Lista de productos',
+        icon: 'albums-outline',
+        handler: () => {
+          this.presentProductListCarousel();
+        }
+      }, {
+        text: 'Producto',
+        icon: 'browsers-outline',
+        handler: () => {
+          //console.log('Play clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
+
+    const { role } = await actionSheet.onDidDismiss();
+    
+  }
 }

@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
   showStandDetail: string = null;
   showSearchbar: any;
   _toolbarHeight = 56;
+  profileRole:any;
   
   constructor(
     private alertCtrl: AlertController,
@@ -66,7 +67,18 @@ export class AppComponent implements OnInit {
     this.listenForLoginEvents();
     this.listenForFullScreenEvents();
     this._toolbarHeight = document.querySelector('ion-toolbar').offsetHeight;
-    
+	
+    this.usersService.getUser().then((userDataSession: any)=>{
+	  if(userDataSession && userDataSession.user_roles_fair)  {
+		this.profileRole = {};
+		userDataSession.user_roles_fair.forEach((role)=>{
+			if(role.id == 1) { //"super_administrador"
+			   this.profileRole.admin = true;
+			}
+		 });
+		 
+	  }
+    });
   }
 
   initializeApp() {

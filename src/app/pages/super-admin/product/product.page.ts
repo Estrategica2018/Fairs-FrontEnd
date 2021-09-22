@@ -3,6 +3,7 @@ import { LoadingService } from './../../../providers/loading.service';
 import { FairsService } from './../../../api/fairs.service';
 import { ProductsService } from './../../../api/products.service';
 import { PavilionsService } from './../../../api/pavilions.service';
+import { CategoryService } from './../../../api/category.service';
 import { StandsService } from './../../../api/stands.service';
 import { AdminProductsService } from './../../../api/admin/products.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -40,6 +41,7 @@ export class ProductPage implements OnInit {
     private pavilionsService: PavilionsService,
     private standsService: StandsService,
     private productsService: ProductsService,
+    private categoryService: CategoryService,
     private router: Router
     ) { }
 
@@ -57,7 +59,10 @@ export class ProductPage implements OnInit {
     this.fairsService.getCurrentFair()
       .then((fair) => {
             this.fair = fair;
-            this.fair.pavilions.forEach((pavilion)=>{
+            this.categoryService.list('ProductCategory',this.fair)
+            .then(({data}) => {
+              this.categories = data;
+              this.fair.pavilions.forEach((pavilion)=>{
                 if(pavilion.id == pavilionId ) {
                     this.pavilion = pavilion;
                     for(let stand of this.pavilion.stands) {
@@ -67,8 +72,8 @@ export class ProductPage implements OnInit {
                       }
                     }
                 }
-            });
-            if(this.productId) {
+              });
+              if(this.productId) {
                 this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id, this.productId)
                 .then((products) => {
                     this.loading.dismiss();
@@ -79,8 +84,8 @@ export class ProductPage implements OnInit {
                      this.loading.dismiss();
                      this.errors = error;
                   });
-             }
-             else {
+               }
+               else {
                  this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id, this.productId)
                 .then((products) => {
                     let id = products && products.length ? products.length + 1 : 1;
@@ -92,8 +97,12 @@ export class ProductPage implements OnInit {
                      this.loading.dismiss();
                      this.errors = error;
                   });
-                
-             }
+               }
+            })
+            .catch(error => {
+               this.loading.dismiss();
+               this.errors = error;
+            });
       });
   }
   

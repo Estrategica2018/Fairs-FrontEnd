@@ -1,0 +1,147 @@
+$width: 421px;
+$height: 218px;
+$delta-height: 12px;
+$blue-light-color: #F5F6FF;
+$blue-color: #004782;
+
+.grid {
+   position: absolute;
+   margin: 18px;
+   .card {
+	  position: absolute;
+      width: #{$width};
+      height: #{$height};	  
+	  cursor: pointer;
+	  background-color: #{$blue-light-color};
+	  border-radius: 19px;
+	  div.name {
+	     position: absolute;
+		 color: #{$blue-color};
+	     left: 129px;
+	     font-size: 24px;
+		 width: 64%;
+         text-align: center;
+	  }
+	  div.carousel {
+	      width: 74px;
+	      height: 67px;
+	      position: absolute;
+		  left: 2%;
+		  top: 31px;
+	  }
+	  div.description {
+	     margin-left: 20px;
+         position: absolute;
+         left: 133px;
+		 font-size: 14px;
+         top: 48px;
+	  }
+   }
+}
+
+.grid .card.item-1,
+.grid .card.item-4,
+.grid .card.item-7,
+.grid .card.item-10,
+.grid .card.item-13,
+.grid .card.item-16,
+.grid .card.item-19,
+.grid .card.item-22,
+.grid .card.item-25,
+.grid .card.item-28,
+.grid .card.item-31,
+ {
+  left: 0;
+}
+
+.grid .card.item-2,
+.grid .card.item-5,
+.grid .card.item-8,
+.grid .card.item-11,
+.grid .card.item-14,
+.grid .card.item-17,
+.grid .card.item-20,
+.grid .card.item-23,
+.grid .card.item-26,
+.grid .card.item-29,
+ {
+  left: calc( #{$width} + 10px);
+}
+
+.grid .card.item-3,
+.grid .card.item-6,
+.grid .card.item-9,
+.grid .card.item-12,
+.grid .card.item-15,
+.grid .card.item-18,
+.grid .card.item-21,
+.grid .card.item-24,
+.grid .card.item-27,
+.grid .card.item-30,
+ {
+  left: calc( ( #{$width} ) * 2 + 20px);
+}
+
+.grid .card.item-4,
+.grid .card.item-5,
+.grid .card.item-6
+{
+  top: calc( #{$height} + #{$delta-height} );
+}
+
+.grid .card.item-7,
+.grid .card.item-8,
+.grid .card.item-9
+{
+  top: calc( ( #{$height} + #{$delta-height} ) * 2 );
+}
+
+.grid .card.item-10,
+.grid .card.item-11,
+.grid .card.item-12
+{
+  top: calc( #{$height} * 3 + ( #{$delta-height} * 3 ) );
+}
+
+
+.grid .card.item-13,
+.grid .card.item-14,
+.grid .card.item-15
+{
+  top: calc( #{$height} * 4 + ( #{$delta-height} * 4 ) );
+}
+
+.grid .card.item-16,
+.grid .card.item-17,
+.grid .card.item-18
+{
+  top: calc( #{$height} * 5 + ( #{$delta-height} * 5 ) );
+}
+
+.grid .card.item-19,
+.grid .card.item-20,
+.grid .card.item-21
+{
+  top: calc( #{$height} * 6 + ( #{$delta-height} * 6 ) );
+}
+
+.grid .card.item-22,
+.grid .card.item-23,
+.grid .card.item-24
+{
+  top: calc( #{$height} * 7 + ( #{$delta-height} * 7 ) );
+}
+
+.grid .card.item-25,
+.grid .card.item-26,
+.grid .card.item-27
+{
+  top: calc( #{$height} * 8 + ( #{$delta-height} * 8 ) );
+}
+
+.grid .card.item-28,
+.grid .card.item-29,
+.grid .card.item-30
+{
+  top: calc( #{$height} * 9 + ( #{$delta-height} * 9 ) );
+}

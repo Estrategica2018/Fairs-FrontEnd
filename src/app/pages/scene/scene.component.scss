@@ -1,0 +1,70 @@
+.banner {
+  position: absolute;
+}
+
+.cube {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.cube__face {
+  position: absolute;
+  border: 2px solid black;
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
+.link.cube__face--right:hover {
+  cursor: pointer;
+}
+
+
+.full-screen-button {
+  position: absolute;
+  top: 0px;
+  z-index: 11;
+}
+
+.goto-edit-button {
+  position: absolute;
+  top: 0px;
+  left: 118px;
+  z-index: 11;
+}
+
+.goto-back-button {
+  position: absolute;
+  top: 0px;
+  left: 58px;
+  z-index: 11;
+}
+
+.tooltip-label {
+  position: absolute;
+  left: -150px;
+  top: 7px;
+  background-color: black;
+  padding: 8px;
+  border-radius: 11px;
+  color: #fff;
+}
+
+
+.tabs-menu {
+  position: absolute;
+  z-index: 110;
+}
+
+@media (max-width: 478px) {
+  .tabs-menu ion-button ion-label {
+    font-size: 10px;
+  }
+}
+
+.div-container {
+  width: 100%;
+  position: absolute;
+}

@@ -83,7 +83,7 @@ export class StandPage implements OnInit {
                               let category = null;
                               if(this.productCatalogList.length > 0) {
                                 this.productCatalogList.forEach((cat)=>{
-                                  if(cat.name == product.category.name) {
+                                  if(cat.id == product.category.id) {
                                      hasCategory = true;
                                      category = cat;
                                   }
@@ -263,7 +263,7 @@ export class StandPage implements OnInit {
     await actionSheet.present();
 
     const { role } = await actionSheet.onDidDismiss();
-    console.log('onDidDismiss resolved with role', role);
+    
   }
   
   

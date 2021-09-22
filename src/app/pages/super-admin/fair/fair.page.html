@@ -102,10 +102,10 @@
        <ion-item lines="">
           <ion-label style="max-width: 75px;" slot="start">Pabellones</ion-label>
           <div class="d-flex ml-auto scroll-container" style="overflow-x: scroll;">
-              <ion-item  *ngFor="let pavilion of pavilions;let i = index" class="scene-icon-pavilion" 
+              <ion-item *ngFor="let pavilion of pavilions;let i = index" class="scene-icon-pavilion customSceneCSSClassP-{{pavilion.id}}{{i}}"  
               button="true" routerLink="/super-admin/pavilion/{{pavilion.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                 <ion-avatar class="mr-3">
-                  <img [src]="pavilion?.resources.scenes[0]?.url_image">
+                  <img *ngIf="pavilion.resources && pavilion?.resources.scenes[0] && pavilion?.resources.scenes[0].url_image" [src]="pavilion.resources.scenes[0].url_image">                  
                 </ion-avatar>
                 <ion-label>
                   <h2>{{pavilion.name}}</h2>

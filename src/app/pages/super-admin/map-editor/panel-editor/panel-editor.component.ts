@@ -13,7 +13,6 @@ export class PanelEditorComponent implements OnInit {
 
   ngOnInit() {
       this.sceneSelect = this.scene;
-      console.log(this.sceneSelect);
   }
 
 }

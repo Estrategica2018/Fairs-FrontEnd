@@ -21,17 +21,17 @@ export class AdminPavilionsService {
   constructor(
     private http: HttpClient,
     private fairsService: FairsService,
-	private usersService: UsersService
+    private usersService: UsersService
   ) { }
 
   create(data: any): any {
-    return new Promise((resolve, reject) => {		
+    return new Promise((resolve, reject) => {        
       this.usersService.getUser().then((userDataSession: any)=>{
-		const httpOptions = {
-		  headers: new HttpHeaders({
-			  'Authorization':  'Bearer ' + userDataSession.token
-		  })
-		};
+        const httpOptions = {
+          headers: new HttpHeaders({
+              'Authorization':  'Bearer ' + userDataSession.token
+          })
+        };
         this.http.post(`/api/pavilion/create2`, processDataToString(data),httpOptions)
         .pipe(
           timeout(30000),
@@ -64,11 +64,11 @@ export class AdminPavilionsService {
   update(pavilion: any): any {
     return new Promise((resolve, reject) => {
       this.usersService.getUser().then((userDataSession: any)=>{
-		const httpOptions = {
-		  headers: new HttpHeaders({
-			  'Authorization':  'Bearer ' + userDataSession.token
-		  })
-		};
+        const httpOptions = {
+          headers: new HttpHeaders({
+              'Authorization':  'Bearer ' + userDataSession.token
+          })
+        };
 
         this.http.post(`/api/pavilion/update/${pavilion.id}`, processDataToString(pavilion),httpOptions)
         .pipe(
@@ -101,11 +101,11 @@ export class AdminPavilionsService {
   delete(pavilion: any): any {
     return new Promise((resolve, reject) => {
       this.usersService.getUser().then((userDataSession: any)=>{
-		const httpOptions = {
-		  headers: new HttpHeaders({
-			  'Authorization':  'Bearer ' + userDataSession.token
-		  })
-		};
+        const httpOptions = {
+          headers: new HttpHeaders({
+              'Authorization':  'Bearer ' + userDataSession.token
+          })
+        };
         this.http.post(`/api/pavilion/delete/${pavilion.id}`, {pavilion_id: pavilion.id},httpOptions)
         .pipe(
           timeout(30000),

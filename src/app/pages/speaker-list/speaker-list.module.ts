@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { SpeakerListPage } from './speaker-list';
 import { SpeakerListPageRoutingModule } from './speaker-list-routing.module';
+import { SpeakerDetailComponent } from './speaker-detail/speaker-detail.component';
 
 @NgModule({
   imports: [
@@ -11,6 +12,9 @@ import { SpeakerListPageRoutingModule } from './speaker-list-routing.module';
     IonicModule,
     SpeakerListPageRoutingModule
   ],
-  declarations: [SpeakerListPage],
+  declarations: [SpeakerListPage,SpeakerDetailComponent],
+  entryComponents: [
+    SpeakerDetailComponent
+  ]
 })
 export class SpeakerListModule {}

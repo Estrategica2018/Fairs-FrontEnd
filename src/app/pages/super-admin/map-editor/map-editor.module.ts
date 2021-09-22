@@ -7,6 +7,7 @@ import { MapEditorPage } from './map-editor.page';
 import { PanelEditorComponent } from './panel-editor/panel-editor.component';
 import { DragAndDropModule } from 'angular-draggable-droppable';
 import { ComponentModule } from '../../../components.module';
+import { ProductListComponent } from '../../super-admin/map-editor/product-list/product-list.component';
 
 
 @NgModule({
@@ -18,7 +19,7 @@ import { ComponentModule } from '../../../components.module';
     MapEditorPageRoutingModule,
     ComponentModule
   ],
-  declarations: [MapEditorPage, PanelEditorComponent], 
-  entryComponents: [PanelEditorComponent]
+  declarations: [MapEditorPage, PanelEditorComponent,ProductListComponent], 
+  entryComponents: [PanelEditorComponent,ProductListComponent]
 })
 export class MapEditorPageModule {}

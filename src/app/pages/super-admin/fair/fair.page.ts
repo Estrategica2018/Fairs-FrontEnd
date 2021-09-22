@@ -86,6 +86,7 @@ export class FairPage implements OnInit {
         this.fair = fair;
         this.setBackground();
         this.pavilions = fair.pavilions;
+        this.setPavilionBackground();
         this.showPrice = fair.price > 0;
         
         this.agendasService.list()
@@ -233,4 +234,17 @@ export class FairPage implements OnInit {
       });
   }
 
+  setPavilionBackground() {
+      let i=0;
+      this.pavilions.forEach((pavilion)=>{
+        if(pavilion.scenes)
+        pavilion.scenes.forEach((scene)=>{
+           let style = document.createElement('style');
+           style.type = 'text/css';
+           style.innerHTML = '.customSceneCSSClassP-'+pavilion.id + i + '{--ion-item-background: '+scene.backgroundColor+'}';
+           document.getElementsByTagName('head')[0].appendChild(style);
+           i++;
+        });
+      });
+  }
 } 

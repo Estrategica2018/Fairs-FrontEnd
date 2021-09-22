@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/super-admin/fair"></ion-back-button>
+    </ion-buttons>
     <ion-buttons slot="end" *ngIf="action==='update'">
       <ion-button color="danger" (click)="onDeleteAgenda()">
         <ion-icon slot="start" name="trash-outline"></ion-icon>
@@ -28,7 +31,7 @@
       </ion-item>
       <ion-item>
         <ion-label>Fecha de inicio</ion-label>
-        <ion-datetime (ionChange)="onChangeStartTime()" display-format="DD/MM/YYYY HH:mm" picker-format="DD/MM/YYYY HH:mm" [(ngModel)]="agenda.start_at_str"></ion-datetime>
+        <ion-datetime min="2019" max="2025" (ionChange)="onChangeStartTime()" display-format="DD/MM/YYYY HH:mm" picker-format="DD/MM/YYYY HH:mm" [(ngModel)]="agenda.start_at_str"></ion-datetime>
       </ion-item>
       <ion-item>
         <ion-label> Zona horaria </ion-label>
@@ -133,11 +136,11 @@
       <ion-item *ngIf="action==='update'">
         <ion-grid>
           <ion-row>
-            <ion-col *ngFor="let invited_speaker of agenda.invited_speakers" 
+            <ion-col *ngFor="let invited_speaker of invited_speakers" 
               class="d-flex pavilion-button" button="true" 
               routerLink="/super-admin/agenda/{{agenda.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                 <ion-avatar class="mr-3">
-                  <img [src]="invited_speaker.speaker.user.url_image">
+                  <img [src]="invited_speaker.speaker?.resources?.url_image">
                 </ion-avatar>
                 <ion-label>
                   <h2>{{invited_speaker.speaker.user.name + ' ' + invited_speaker.speaker.user.last_name}}</h2>

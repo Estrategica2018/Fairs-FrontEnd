@@ -244,7 +244,7 @@ export class ProductPricePage implements OnInit {
         {
           text: 'Cancel',
           handler: data => {
-            console.log('Cancel clicked');
+            //console.log('Cancel clicked');
           }
         },
         {

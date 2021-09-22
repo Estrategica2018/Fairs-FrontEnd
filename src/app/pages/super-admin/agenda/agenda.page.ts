@@ -21,7 +21,7 @@ import { AudienceSelectPage } from '../audience-select/audience-select.page';
 export class AgendaPage implements OnInit {
 
   agenda: any;
-  errors: string = null;
+  errors: any = null;
   success: string = null;
   fair: any;
   action: string;
@@ -30,6 +30,7 @@ export class AgendaPage implements OnInit {
   emails: any = [];
   editSave = null;
   invited_emails: any = [];
+  invited_speakers: any = [];
   
   
   constructor(
@@ -54,14 +55,16 @@ export class AgendaPage implements OnInit {
   }
 
   ngOnInit() {
-      
+  }
+  
+  ionViewWillEnter() {
+    this.invited_speakers = [];
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
         
         const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
         if(agendaId!=null) {
-            this.agendasService.
-            getEmails(this.fair.id, agendaId).then((response)=>{
+            this.adminAgendasService.getEmails(this.fair.id, agendaId).then((response)=>{
               this.emails = response.data.audience;
               this.invited_emails = this.emails.filter((audience)=>{
                  return audience.check == 1; 
@@ -71,7 +74,6 @@ export class AgendaPage implements OnInit {
                 this.errors = error;
             });
         }
-        
         this.categoryService.list('AgendaType',this.fair).then((response)=>{
             if(response.success == 201) {
                 this.categories = response.data;
@@ -82,11 +84,17 @@ export class AgendaPage implements OnInit {
                   this.agendasService.get(agendaId)
                    .then((agenda) => {
                       this.loading.dismiss();
+					  this.invited_speakers = [];
+					  agenda.invited_speakers.forEach((speaker)=>{
+						 this.invited_speakers.push(Object.assign({},speaker));
+					  });
+					  agenda.invited_speakers = null;
                       this.errors = null;
                       this.agenda = agenda;
                       this.agenda.duration_time = this.agenda.duration_time.toString();
                       if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
-                      this.agenda.start_at_str = moment(this.agenda.start_at).format('DD/MM/YYYY HH:mm');
+                      this.agenda.start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
+		              this.agenda.start_at_str = this.agenda.start_time;
                   })
                   .catch(error => {
                      this.loading.dismiss();
@@ -154,8 +162,11 @@ export class AgendaPage implements OnInit {
         this.loading.dismiss();
             this.agenda = response.agenda;    
             this.fairsService.refreshCurrentFair();
+            this.agendasService.refreshCurrentAgenda();
             this.success = `Agenda creada exitosamente`;
-            this.onRouterLink(`/super-admin/agenda/${this.agenda.id}`);
+            this.redirectTo(`/super-admin/agenda/${this.agenda.id}`);
+			
+
       },
       (error) => {
           this.loading.dismiss();
@@ -175,10 +186,22 @@ export class AgendaPage implements OnInit {
     
     this.adminAgendasService.update(data)
       .then((response) => {
-        this.fairsService.refreshCurrentFair();
-        this.success = `Agenda modificada exitosamente`;
-        this.onRouterLink(`/super-admin/agenda/${this.agenda.id}`);
-        this.loading.dismiss();
+        this.agendasService.refreshCurrentAgenda();
+		this.agendasService.get(this.agenda.id)
+		.then((agenda) => {
+		   this.agenda = agenda;
+		   
+		   this.agenda.duration_time = this.agenda.duration_time.toString();
+		   if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
+		   this.agenda.start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
+		   this.agenda.start_at_str = this.agenda.start_time;
+           this.success = `Agenda modificada exitosamente`;
+           this.loading.dismiss();
+		})
+		.catch(error => {
+		   this.loading.dismiss();
+		   this.errors = error;
+		});
       },
       (error) => {
          this.errors = error;
@@ -212,7 +235,7 @@ export class AgendaPage implements OnInit {
               .then((response) => {
                 this.success = `Agenda borrada exitosamente`;
                 this.fairsService.refreshCurrentFair();
-                this.onRouterLink(`/super-admin/fair`);
+                this.redirectTo(`/super-admin/fair`);
               },
               (error) => {
                   this.errors = error;
@@ -230,7 +253,7 @@ export class AgendaPage implements OnInit {
   }
   
   onChangeStartTime(){
-    this.agenda.start_time = this.agenda.start_at_str;
+	this.agenda.start_time = this.agenda.start_at_str;
   }
   
   async onChangeImage() {
@@ -266,8 +289,10 @@ export class AgendaPage implements OnInit {
     await alert.present();
   }
   
-  onRouterLink(tab) {
-    this.router.navigate([tab]);
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+	  this.router.navigate([uri])
+	});
   }
   
   async presentSpeakers() {
@@ -276,7 +301,7 @@ export class AgendaPage implements OnInit {
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
-          'invited_speakers': this.agenda.invited_speakers,
+          'invited_speakers': this.invited_speakers,
           'speakers': this.speakers,
           'fair_id': this.fair.id,
           'meeting_id': this.agenda.id,
@@ -289,9 +314,30 @@ export class AgendaPage implements OnInit {
     const { data } = await modal.onWillDismiss();
     
     if (data) {
-      this.agendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
-        .then((invited_speakers)=>{
-            this.success = `Conferencistas asociados exitosamente`;
+	  this.loading.present({message:'Cargando...'});
+      this.adminAgendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
+        .then((response)=>{
+			if(response.success == 201) {
+			  
+			  this.agendasService.refreshCurrentAgenda();
+			  this.agendasService.get(this.agenda.id)
+			   .then((agenda) => {
+				  this.invited_speakers = [];
+				  agenda.invited_speakers.forEach((speaker)=>{
+				     this.invited_speakers.push(Object.assign({},speaker));
+				  });
+				  this.success = `Conferencistas asociados exitosamente`;
+				  this.loading.dismiss();
+			  })
+			  .catch(error => {
+				 this.loading.dismiss();
+				 this.errors = error;
+			  });
+			}
+			else {
+				this.loading.dismiss();
+				this.errors = `Error modificando los conferencistas en la feria`;
+			}
         })
         .catch(error => {
             this.errors = error;
@@ -326,7 +372,7 @@ export class AgendaPage implements OnInit {
          return audience.check == 1; 
       });
       
-      this.agendasService.updateAudience(this.fair.id,this.agenda.id, { 'audience': data })
+      this.adminAgendasService.updateAudience(this.fair.id,this.agenda.id, { 'audience': data })
         .then((invited_emails)=>{
             this.success = `Lista de correos modificada exitósamente`;
         })
@@ -368,7 +414,7 @@ export class AgendaPage implements OnInit {
         {
           text: 'Cancel',
           handler: data => {
-            console.log('Cancel clicked');
+            //console.log('Cancel clicked');
           }
         },
         {

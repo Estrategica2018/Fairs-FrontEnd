@@ -26,7 +26,7 @@
 
     <ion-menu class="scroll-container" [ngClass]="{'full-screen': fullScreen}" contentId="main-content" class="menu-main-content">
       <ion-content class="scroll-container">
-        <ion-list lines="none" class="border-botton">
+        <ion-list lines="none" class="border-botton" *ngIf="profileRole && profileRole.admin">
           <ion-list-header class="md hydrated">Super Administrador </ion-list-header>
           <ion-menu-toggle autoHide="false">
             <ion-item routerLink="/super-admin/fair" routerLinkActive="active" routerDirection="root" detail="false">
@@ -37,8 +37,6 @@
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
-
-
         <ion-list lines="none">
           <ion-menu-toggle autoHide="false">
             <div *ngFor="let scene of fair?.resources?.scenes;let i = index">
@@ -66,14 +64,16 @@
               </ion-item> 
             <!--[routerLink]="'/map/pavilion'+(i+1)+'/'+pavilion.id+'/'+k" routerLinkActive="selected" routerDirection="root" -->
               <div *ngIf="showPavilionDetail ==='pavilion_id_'+pavilion.id">
-                <ion-item *ngFor="let scene of pavilion.resources.scenes; let k = index;" 
+                <div *ngFor="let scene of pavilion.resources.scenes; let k = index;" >
+                  <ion-item *ngIf="scene.show"
                           (click)="redirectTo('/map/pavilion'+(i+1)+'/'+pavilion.id+'/'+k)"
                           lines="none"
                           button="true"
                           class="sub-menu">
-                  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                  <ion-label class="menu-label"> {{ scene.title}} </ion-label>
-                </ion-item>
+                    <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+                    <ion-label class="menu-label"> {{ scene.title}} </ion-label>
+                  </ion-item>
+                </div>
                 <ion-item *ngIf="pavilion.stands.length > 0" 
                           (click)="pavilion.showStandDetail =  pavilion.showStandDetail ==='pavilion_id_'+pavilion.id ? null : 'pavilion_id_'+pavilion.id"
                           lines="none"
