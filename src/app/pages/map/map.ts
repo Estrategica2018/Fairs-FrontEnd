@@ -136,7 +136,7 @@ export class MapPage implements OnInit {
 
         setTimeout(() => {
           this.initializeCarousels();
-		  this.initializeProductCatalogs();
+          this.initializeProductCatalogs();
           if(this.carrousels._results && this.carrousels._results.length> 0)  {
               setTimeout(() => {this.loading.dismiss(); },500 * this.carrousels._results.length);
           }
@@ -318,7 +318,7 @@ logScrollEnd() {this.showlogScrolling = false;}
     if(this.productCatalogs && this.productCatalogs._results ) {
         this.productCatalogs._results.forEach((elm)=>{
             elm.initialize();
-			elm.onResize();
+            elm.onResize();
         });
     }    
   }

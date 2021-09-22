@@ -21,10 +21,10 @@ export class SpeakerDetailComponent implements OnInit {
   
   ionViewWillEnter() {
     this.speaker = this.navParams.get('speaker');
-	if(this.speaker.agenda)
-	this.speaker.agenda.forEach((agenda)=>{
-		const time : any = agenda.start_at * 1000;
-		agenda.str_start_time = this.months[<any>moment(time).format('MM') - 1] + ' ' + moment(time).format('DD') + ' ' + moment(time).format('YYYY');
-	});
+    if(this.speaker.agenda)
+    this.speaker.agenda.forEach((agenda)=>{
+        const time : any = agenda.start_at * 1000;
+        agenda.str_start_time = this.months[<any>moment(time).format('MM') - 1] + ' ' + moment(time).format('DD') + ' ' + moment(time).format('YYYY');
+    });
   }
 }

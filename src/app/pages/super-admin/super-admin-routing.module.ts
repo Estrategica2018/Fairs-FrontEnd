@@ -57,6 +57,14 @@ const routes: Routes = [
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
   },
   {
+    path: 'map-editor/product/:pavilionId/:standId/:productId',
+    loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
+  },
+  {
+    path: 'map-editor/product/:pavilionId/:standId/:product/:sceneId',
+    loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
+  },
+  {
     path: 'merchant',
     loadChildren: () => import('./merchant/merchant.module').then( m => m.MerchantPageModule)
   },

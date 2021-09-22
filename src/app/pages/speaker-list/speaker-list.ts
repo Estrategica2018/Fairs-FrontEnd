@@ -29,9 +29,9 @@ export class SpeakerListPage {
  }
  
   ionViewDidEnter() {
-	  
-	  
-	this.loading.present({message:'Cargando...'});
+      
+      
+    this.loading.present({message:'Cargando...'});
     this.speakersService.list()
      .then((data) => {
         this.loading.dismiss();
@@ -50,7 +50,7 @@ export class SpeakerListPage {
     
     this.modalSpeaker = await this.modalCtrl.create({
       component: SpeakerDetailComponent,
-	  cssClass: 'speaker-modal',
+      cssClass: 'speaker-modal',
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { speaker: speaker }

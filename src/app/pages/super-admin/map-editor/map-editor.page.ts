@@ -75,7 +75,8 @@ export class MapEditorPage implements OnInit {
   lineHeightUnit = null;
   selectionElementList = null;
   showlogScrolling = false;
-  
+    
+    
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
   toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow right","value":"arrow--4"},
                         {"label":"Arrow Up Inside","value":"arrow--5"},{"label":"Array left Inside","value":"arrow--6"},{"label":"Arrow Down Inside","value":"arrow--7"},{"label":"Arrow right Inside","value":"arrow--8"}];
@@ -155,12 +156,12 @@ export class MapEditorPage implements OnInit {
      this.template = url.indexOf('super-admin/map-editor/fair')  >= 0 ? 'fair' : 
      url.indexOf('super-admin/map-editor/pavilion')  >= 0 ? 'pavilion' :
      url.indexOf('super-admin/map-editor/stand')  >= 0 ? 'stand' : 
-	 url.indexOf('super-admin/map-editor/product')  >= 0 ? 'product' : 
-	 '';
+     url.indexOf('super-admin/map-editor/product')  >= 0 ? 'product' : 
+     '';
      
      const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
      const standId = this.route.snapshot.paramMap.get('standId');
-	 const productId = this.route.snapshot.paramMap.get('productId');
+     const productId = this.route.snapshot.paramMap.get('productId');
      this.sceneId = this.route.snapshot.paramMap.get('sceneId');
      
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
@@ -172,22 +173,22 @@ export class MapEditorPage implements OnInit {
      
      this.fairsService.getCurrentFair().then((fair)=>{
         
-		this.fair = fair;
+        this.fair = fair;
 
         if(this.template === 'fair') {
-			
+            
           this.resources = fair.resources;
           this.scene = this.sceneId ? fair.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
-		  this.initializeScene();
+          this.initializeScene();
         }
         else if(this.template === 'pavilion') {
-			
+            
           this.fair.pavilions.forEach((pavilion)=>{
               if(pavilion.id == pavilionId) {
                 this.pavilion = pavilion;
                 this.resources = pavilion.resources;
                 this.scene = this.sceneId ? this.pavilion.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
-		        this.initializeScene();
+                this.initializeScene();
               }
           });
         }
@@ -201,13 +202,13 @@ export class MapEditorPage implements OnInit {
                       this.stand = standEl;
                       this.resources = this.stand.resources;
                       this.scene = this.sceneId ? this.stand.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
-		              this.initializeScene();
+                      this.initializeScene();
                    }
                 });
               }
           });
         }
-		else if(this.template === 'product') {
+        else if(this.template === 'product') {
           
           this.fair.pavilions.forEach((pavilion)=>{
               if(pavilion.id == pavilionId) {
@@ -216,17 +217,17 @@ export class MapEditorPage implements OnInit {
                    if(standEl.id == standId) {
                       this.stand = standEl;
                       this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id,productId)
-					  .then((products) => {
-						if(products.length > 0) {
-						   this.product = products[0];
-						}
-						this.resources = this.product.resources || { 'scenes': []};
+                      .then((products) => {
+                        if(products.length > 0) {
+                           this.product = products[0];
+                        }
+                        this.resources = this.product.resources || { 'scenes': []};
                         this.scene = this.sceneId ? this.product.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
-		                this.initializeScene();
-					  })
-					  .catch(error => {
-						this.errors = error;
-					  });
+                        this.initializeScene();
+                      })
+                      .catch(error => {
+                        this.errors = error;
+                      });
                    }
                 });
               }
@@ -240,32 +241,32 @@ export class MapEditorPage implements OnInit {
   }
   
   initializeScene(){
-	this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
-	this.resources.menuTabs = this.resources.menuTabs || {};
+    this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
+    this.resources.menuTabs = this.resources.menuTabs || {};
 
-	this.scene.banners = this.scene.banners || [];
-	this.scene.banners.forEach((banner)=>{
-		if(banner.video)
-		banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
-	});
+    this.scene.banners = this.scene.banners || [];
+    this.scene.banners.forEach((banner)=>{
+        if(banner.video)
+        banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+    });
 
-	this.initializeHtmlTexts(this.scene.banners);
-	this.initializeInternalUrl();
+    this.initializeHtmlTexts(this.scene.banners);
+    this.initializeInternalUrl();
     this.initializeGroupOfLinks();
 
-	setTimeout(() => {
-	  this.loading.dismiss();
-	  this.initializeCarousels();
-	  this.initializeProductCatalogs();
-	}, 5);
-	
-	if(this.scene.menuTabs.showMenuParent) {
-	   this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
-	}
-	else {
-		this.tabMenuObj = this.scene.menuTabs;
-	}
-	this.onResize();
+    setTimeout(() => {
+      this.loading.dismiss();
+      this.initializeCarousels();
+      this.initializeProductCatalogs();
+    }, 5);
+    
+    if(this.scene.menuTabs.showMenuParent) {
+       this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
+    }
+    else {
+        this.tabMenuObj = this.scene.menuTabs;
+    }
+    this.onResize();
   }
   
   initializeHtmlTexts(banners) {
@@ -278,7 +279,7 @@ export class MapEditorPage implements OnInit {
     if(this.carrousels && this.carrousels._results ) {
         this.carrousels._results.forEach((elm)=>{
             elm.initialize();
-			elm.onResize();
+            elm.onResize();
         });
     }    
   }  
@@ -287,7 +288,7 @@ export class MapEditorPage implements OnInit {
     if(this.productCatalogs && this.productCatalogs._results ) {
         this.productCatalogs._results.forEach((elm)=>{
             elm.initialize();
-			elm.onResize();
+            elm.onResize();
         });
     }    
   }
@@ -494,9 +495,9 @@ logScrollEnd() {this.showlogScrolling = false;}
                this.errors = `Consultando el servicio para actualizar local comercial ${error}`;
            });
       }
-	  else if(this.template === 'product') {
+      else if(this.template === 'product') {
           this.product.resources = this.resources;
-		  this.adminProductsService.update(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id},this.product))
+          this.adminProductsService.update(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id},this.product))
           .then((product) => {
               this.loading.dismiss();
               if(!this.sceneId) {
@@ -587,9 +588,9 @@ logScrollEnd() {this.showlogScrolling = false;}
           banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
           banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
       break;
-	  case 'ProductCatalog':
+      case 'ProductCatalog':
           banner = {"size":{"x":114,"y":105},"productCatalog": {  }};
-		  this.presentNewProductListCatalog(banner);
+          this.presentNewProductListCatalog(banner);
       break;
       default:
           banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
@@ -618,7 +619,7 @@ logScrollEnd() {this.showlogScrolling = false;}
     const { data } = await modal.onWillDismiss();
     if (data) {
         banner.productCatalog.list = data;
-		this.initializeProductCatalogs();
+        this.initializeProductCatalogs();
     }
   } 
   

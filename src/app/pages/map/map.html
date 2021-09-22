@@ -119,13 +119,13 @@
        [fair]="fair" [pavilion]="pavilion" [stand]="stand"
        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
        </app-carousel-template>
-	   
-	   <!--if banner is product-catalog -->
-	   <app-product-catalog #productCatalog [banner]="banner" *ngIf="banner.productCatalog" 
-	   id="product-catalog-id-{{banner.id}}"
-	   [fair]="fair" [pavilion]="pavilion" [stand]="stand" 
-	   [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-	   </app-product-catalog>   
+       
+       <!--if banner is product-catalog -->
+       <app-product-catalog #productCatalog [banner]="banner" *ngIf="banner.productCatalog" 
+       id="product-catalog-id-{{banner.id}}"
+       [fair]="fair" [pavilion]="pavilion" [stand]="stand" 
+       [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+       </app-product-catalog>   
 
      </div>
     <!--Tooltip-->

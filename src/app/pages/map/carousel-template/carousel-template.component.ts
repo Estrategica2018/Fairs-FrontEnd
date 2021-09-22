@@ -24,8 +24,8 @@ export class CarouselTemplateComponent {
   constructor(private productsService: ProductsService) { }
 
   initialize() {
-	  
-	this.ionSlides.update();
+      
+    this.ionSlides.update();
     this.items = [];
     
     if(this.banner.carousel.images) {
@@ -79,7 +79,7 @@ export class CarouselTemplateComponent {
   }
 
   getSlideOpts() {
-	  this.slideOpts = {
+      this.slideOpts = {
             slidesPerView: this.banner.carousel.options.slidesPerView,
             coverflowEffect: {
               rotate: this.banner.carousel.options.rotate,

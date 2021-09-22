@@ -15,17 +15,17 @@ import { CarouselImagesComponent } from './pages/product-catalog/carousel-images
   ],
   declarations: [
     TabMenuScenesComponent,
-	CarouselTemplateComponent,
-	SceneComponent,
-	ProductCatalogComponent,
-	CarouselImagesComponent
+    CarouselTemplateComponent,
+    SceneComponent,
+    ProductCatalogComponent,
+    CarouselImagesComponent
   ],
   exports: [
     TabMenuScenesComponent,
-	CarouselTemplateComponent,
-	SceneComponent,
-	ProductCatalogComponent,
-	CarouselImagesComponent
+    CarouselTemplateComponent,
+    SceneComponent,
+    ProductCatalogComponent,
+    CarouselImagesComponent
   ]
   
 })

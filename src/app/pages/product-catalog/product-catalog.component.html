@@ -1,11 +1,11 @@
 <div class="grid">
   <div class="card item-{{(i+1)}}" *ngFor="let product of products; let i = index;">
       <div class="name" (click)="goToProduct(product)" > {{product.name}}</div>
-	  <div class="description" (click)="goToProduct(product)"> {{product.description}}</div>
-	  <div class="carousel">
-	    <app-carousel-images [product]="product">
-	    </app-carousel-images>
-	  </div>
+      <div class="description" (click)="goToProduct(product)"> {{product.description}}</div>
+      <div class="carousel">
+        <app-carousel-images [product]="product">
+        </app-carousel-images>
+      </div>
   </div>
 </div>
 

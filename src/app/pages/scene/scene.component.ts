@@ -25,7 +25,7 @@ export class SceneComponent implements OnInit {
      if(!this.scene) return;
      
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
-	 
+     
      const menu = document.querySelector < HTMLElement > ('.menu-main-content');
      const offsetWidth = window.innerWidth - menu.offsetWidth;
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;

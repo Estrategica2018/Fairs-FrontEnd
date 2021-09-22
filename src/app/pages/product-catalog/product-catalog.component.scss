@@ -8,34 +8,34 @@ $blue-color: #004782;
    position: absolute;
    margin: 18px;
    .card {
-	  position: absolute;
+      position: absolute;
       width: #{$width};
-      height: #{$height};	  
-	  cursor: pointer;
-	  background-color: #{$blue-light-color};
-	  border-radius: 19px;
-	  div.name {
-	     position: absolute;
-		 color: #{$blue-color};
-	     left: 129px;
-	     font-size: 24px;
-		 width: 64%;
+      height: #{$height};      
+      cursor: pointer;
+      background-color: #{$blue-light-color};
+      border-radius: 19px;
+      div.name {
+         position: absolute;
+         color: #{$blue-color};
+         left: 129px;
+         font-size: 24px;
+         width: 64%;
          text-align: center;
-	  }
-	  div.carousel {
-	      width: 74px;
-	      height: 67px;
-	      position: absolute;
-		  left: 2%;
-		  top: 31px;
-	  }
-	  div.description {
-	     margin-left: 20px;
+      }
+      div.carousel {
+          width: 74px;
+          height: 67px;
+          position: absolute;
+          left: 2%;
+          top: 31px;
+      }
+      div.description {
+         margin-left: 20px;
          position: absolute;
          left: 133px;
-		 font-size: 14px;
+         font-size: 14px;
          top: 48px;
-	  }
+      }
    }
 }
 

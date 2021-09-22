@@ -18,7 +18,7 @@
 <!--Banner List-->
 <div *ngFor="let banner of scene?.banners;let i = index" class="banner"
 [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}">
-	
+    
    <div (wheel)="onMouseWheel($event)"
    [ngClass]="{'cube': !banner.line, 'arrow cursor-pointer':banner.line}" 
    class="{{ banner.line ? (banner.line.style||'container-arrow--curve') :  banner.class}}"
@@ -30,16 +30,16 @@
    'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
    }">
    <!--if banner is line-->
-	<div class="arrow__body {{banner.class}} " *ngIf="banner.line"
-	[ngStyle]="{
-	'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
-	'border-style': banner?.line?.type,
-	'border-color': banner?.line?.color,
-	'width': banner.size.x + 'px', 
-	'height': banner.size.y + 'px'
-	}"
-	></div>
-	<!--if banner is banner-->
+    <div class="arrow__body {{banner.class}} " *ngIf="banner.line"
+    [ngStyle]="{
+    'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
+    'border-style': banner?.line?.type,
+    'border-color': banner?.line?.color,
+    'width': banner.size.x + 'px', 
+    'height': banner.size.y + 'px'
+    }"
+    ></div>
+    <!--if banner is banner-->
    <div class="cube__face cube__face--right square " 
    [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }" 
    [hidden]=" ( banner.video && banner.video.url ) || banner.line"
@@ -66,23 +66,23 @@
    'text-align': banner.textAlign,
    'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
    }">  
-	 <div [ngClass]="{'selected': bannerSelectHover === banner}" 
-	 [ngStyle]="{'line-height': banner?.lineHeight}">
-	   <div *ngIf="banner.isHtml">
-		 <div [innerHTML]="banner.textHtml"></div>
-	   </div>
-	   <div [hidden]="banner.isHtml">
-		  {{ banner.text}}
-	   </div>
-	 </div> 
+     <div [ngClass]="{'selected': bannerSelectHover === banner}" 
+     [ngStyle]="{'line-height': banner?.lineHeight}">
+       <div *ngIf="banner.isHtml">
+         <div [innerHTML]="banner.textHtml"></div>
+       </div>
+       <div [hidden]="banner.isHtml">
+          {{ banner.text}}
+       </div>
+     </div> 
    </div>
    <!--if banner is Video-->
-	<iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
-	frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
-	id="video-id-{{banner.id}}"
-	class="{{banner.class}}"
-	[ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-	</iframe>
+    <iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
+    frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
+    id="video-id-{{banner.id}}"
+    class="{{banner.class}}"
+    [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+    </iframe>
 
    <!--if banner is carousel-->
    <app-carousel-template #carrousel [banner]="banner" *ngIf="banner.carousel" 

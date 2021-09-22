@@ -24,35 +24,35 @@ export class ProductCatalogComponent implements OnInit {
   } 
   
   initialize() {
-	  
-	this.products = [];
-	
+      
+    this.products = [];
+    
     if(this.banner.productCatalog) {
-		
+        
       let str = this.banner.productCatalog.list.split(';')[0];    
       const pavilion = str.split(':')[1];
       str = this.banner.productCatalog.list.split(';')[1];
       const stand = str.split(':')[1];
       str = this.banner.productCatalog.list.split(';').length==3 ? this.banner.productCatalog.list.split(';')[2] : null;
       const category = str ? str.split(':')[1] : '';
-	
-	  this.productsService.get(this.fair.id,pavilion,stand,null)
-	  .then((products) => {
-		if(products.length > 0) {
-			products.forEach((product)=>{
-				if(category == 'all' || product.category_id == category ){
-					product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
-					this.renderPrice(product);
-					this.products.push(product);
-				}
-			});
-		}
-	  })
-	  .catch(error => {
-		
-	  });   
-	}
-	this.onResize();
+    
+      this.productsService.get(this.fair.id,pavilion,stand,null)
+      .then((products) => {
+        if(products.length > 0) {
+            products.forEach((product)=>{
+                if(category == 'all' || product.category_id == category ){
+                    product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
+                    this.renderPrice(product);
+                    this.products.push(product);
+                }
+            });
+        }
+      })
+      .catch(error => {
+        
+      });   
+    }
+    this.onResize();
 
   }
   
@@ -69,7 +69,7 @@ export class ProductCatalogComponent implements OnInit {
   }
   
   renderPrice(product) {
-	  
+      
   }
   
 }

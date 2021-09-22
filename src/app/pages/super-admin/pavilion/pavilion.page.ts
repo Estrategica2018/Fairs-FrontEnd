@@ -46,13 +46,13 @@ export class PavilionPage implements OnInit {
            .then((response) => {
               this.pavilion = response.pavilion;
               this.stands = [];
-			  this.pavilion.stands.forEach((stand)=>{
-				this.stands.push(Object.assign({},stand)); 
-			  });
-			  
-			  console.log(this.stands);
+              this.pavilion.stands.forEach((stand)=>{
+                this.stands.push(Object.assign({},stand)); 
+              });
+              
+              console.log(this.stands);
               this.fair = response.fair;
-			  
+              
               this.loading.dismiss();
           })
           .catch(error => {
@@ -81,12 +81,12 @@ export class PavilionPage implements OnInit {
   }
   
   updatePavilion(){
-	  console.log(this.stands);
+      console.log(this.stands);
     this.loading.present({message:'Cargando...'});
     if(this.pavilion.id) {
         this.adminPavilionsService.update(this.pavilion)
        .then((pavilion) => {
-		   console.log(this.stands);
+           console.log(this.stands);
           this.loading.dismiss();
           this.editSave = false;
           this.errors = null;
@@ -95,20 +95,20 @@ export class PavilionPage implements OnInit {
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
           //this.redirectTo(`/super-admin/pavilion/${pavilion.id}`);
-		  this.pavilionsService.get(pavilion.id)
+          this.pavilionsService.get(pavilion.id)
            .then((response) => {
               this.pavilion = response.pavilion;
               this.stands = this.pavilion.stands;
-			  console.log(this.stands);
+              console.log(this.stands);
               this.fair = response.fair;
-			  
+              
               this.loading.dismiss();
           })
           .catch(error => {
              this.loading.dismiss();
              this.errors = error;
           });
-		  
+          
           //window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
       })
       .catch(error => {

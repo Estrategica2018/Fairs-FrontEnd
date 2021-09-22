@@ -9,14 +9,14 @@
   <!--routerLink="/speakers/speaker-details/{{speaker.id}}"-->
     <div class="grid">
       <div class="card item-{{(i+1)}} rounded-withradius grayscale" 
-	  *ngFor="let speaker of speakers;let i = index;" 
-	  (click)="presenterSpeakerModal(speaker)">
-	      <div class="d-flex" >
+      *ngFor="let speaker of speakers;let i = index;" 
+      (click)="presenterSpeakerModal(speaker)">
+          <div class="d-flex" >
               <div class="div-avatar" [ngStyle]="{ 'background-image': 'url('+speaker.resources.url_image+')'}">
-			  </div>
+              </div>
               <h2 class="name">{{speaker.user.name}}</h2>
-			  <img src="https://res.cloudinary.com/dfxkgtknu/image/upload/v1631769965/samples/ico_ovvfue.png">
-			  <h3 class="last-name">{{speaker.user.last_name}}</h3>
+              <img src="https://res.cloudinary.com/dfxkgtknu/image/upload/v1631769965/samples/ico_ovvfue.png">
+              <h3 class="last-name">{{speaker.user.last_name}}</h3>
               <ion-label class="description">
                 <h5 class="white-space">{{speaker.title}}</h5>
                 <h3 class="white-space">{{speaker.description}}</h3>

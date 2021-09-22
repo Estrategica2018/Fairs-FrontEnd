@@ -84,17 +84,17 @@ export class AgendaPage implements OnInit {
                   this.agendasService.get(agendaId)
                    .then((agenda) => {
                       this.loading.dismiss();
-					  this.invited_speakers = [];
-					  agenda.invited_speakers.forEach((speaker)=>{
-						 this.invited_speakers.push(Object.assign({},speaker));
-					  });
-					  agenda.invited_speakers = null;
+                      this.invited_speakers = [];
+                      agenda.invited_speakers.forEach((speaker)=>{
+                         this.invited_speakers.push(Object.assign({},speaker));
+                      });
+                      agenda.invited_speakers = null;
                       this.errors = null;
                       this.agenda = agenda;
                       this.agenda.duration_time = this.agenda.duration_time.toString();
                       if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
                       this.agenda.start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
-		              this.agenda.start_at_str = this.agenda.start_time;
+                      this.agenda.start_at_str = this.agenda.start_time;
                   })
                   .catch(error => {
                      this.loading.dismiss();
@@ -165,7 +165,7 @@ export class AgendaPage implements OnInit {
             this.agendasService.refreshCurrentAgenda();
             this.success = `Agenda creada exitosamente`;
             this.redirectTo(`/super-admin/agenda/${this.agenda.id}`);
-			
+            
 
       },
       (error) => {
@@ -187,21 +187,21 @@ export class AgendaPage implements OnInit {
     this.adminAgendasService.update(data)
       .then((response) => {
         this.agendasService.refreshCurrentAgenda();
-		this.agendasService.get(this.agenda.id)
-		.then((agenda) => {
-		   this.agenda = agenda;
-		   
-		   this.agenda.duration_time = this.agenda.duration_time.toString();
-		   if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
-		   this.agenda.start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
-		   this.agenda.start_at_str = this.agenda.start_time;
+        this.agendasService.get(this.agenda.id)
+        .then((agenda) => {
+           this.agenda = agenda;
+           
+           this.agenda.duration_time = this.agenda.duration_time.toString();
+           if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
+           this.agenda.start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
+           this.agenda.start_at_str = this.agenda.start_time;
            this.success = `Agenda modificada exitosamente`;
            this.loading.dismiss();
-		})
-		.catch(error => {
-		   this.loading.dismiss();
-		   this.errors = error;
-		});
+        })
+        .catch(error => {
+           this.loading.dismiss();
+           this.errors = error;
+        });
       },
       (error) => {
          this.errors = error;
@@ -253,7 +253,7 @@ export class AgendaPage implements OnInit {
   }
   
   onChangeStartTime(){
-	this.agenda.start_time = this.agenda.start_at_str;
+    this.agenda.start_time = this.agenda.start_at_str;
   }
   
   async onChangeImage() {
@@ -291,8 +291,8 @@ export class AgendaPage implements OnInit {
   
   redirectTo(uri:string){
     this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
-	  this.router.navigate([uri])
-	});
+      this.router.navigate([uri])
+    });
   }
   
   async presentSpeakers() {
@@ -314,30 +314,30 @@ export class AgendaPage implements OnInit {
     const { data } = await modal.onWillDismiss();
     
     if (data) {
-	  this.loading.present({message:'Cargando...'});
+      this.loading.present({message:'Cargando...'});
       this.adminAgendasService.updateSpeakers(this.fair.id,this.agenda.id, { 'invited_speakers': data })
         .then((response)=>{
-			if(response.success == 201) {
-			  
-			  this.agendasService.refreshCurrentAgenda();
-			  this.agendasService.get(this.agenda.id)
-			   .then((agenda) => {
-				  this.invited_speakers = [];
-				  agenda.invited_speakers.forEach((speaker)=>{
-				     this.invited_speakers.push(Object.assign({},speaker));
-				  });
-				  this.success = `Conferencistas asociados exitosamente`;
-				  this.loading.dismiss();
-			  })
-			  .catch(error => {
-				 this.loading.dismiss();
-				 this.errors = error;
-			  });
-			}
-			else {
-				this.loading.dismiss();
-				this.errors = `Error modificando los conferencistas en la feria`;
-			}
+            if(response.success == 201) {
+              
+              this.agendasService.refreshCurrentAgenda();
+              this.agendasService.get(this.agenda.id)
+               .then((agenda) => {
+                  this.invited_speakers = [];
+                  agenda.invited_speakers.forEach((speaker)=>{
+                     this.invited_speakers.push(Object.assign({},speaker));
+                  });
+                  this.success = `Conferencistas asociados exitosamente`;
+                  this.loading.dismiss();
+              })
+              .catch(error => {
+                 this.loading.dismiss();
+                 this.errors = error;
+              });
+            }
+            else {
+                this.loading.dismiss();
+                this.errors = `Error modificando los conferencistas en la feria`;
+            }
         })
         .catch(error => {
             this.errors = error;

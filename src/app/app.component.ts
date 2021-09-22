@@ -67,17 +67,17 @@ export class AppComponent implements OnInit {
     this.listenForLoginEvents();
     this.listenForFullScreenEvents();
     this._toolbarHeight = document.querySelector('ion-toolbar').offsetHeight;
-	
+    
     this.usersService.getUser().then((userDataSession: any)=>{
-	  if(userDataSession && userDataSession.user_roles_fair)  {
-		this.profileRole = {};
-		userDataSession.user_roles_fair.forEach((role)=>{
-			if(role.id == 1) { //"super_administrador"
-			   this.profileRole.admin = true;
-			}
-		 });
-		 
-	  }
+      if(userDataSession && userDataSession.user_roles_fair)  {
+        this.profileRole = {};
+        userDataSession.user_roles_fair.forEach((role)=>{
+            if(role.id == 1) { //"super_administrador"
+               this.profileRole.admin = true;
+            }
+         });
+         
+      }
     });
   }
 

@@ -38,7 +38,7 @@ export class SpeakerDetailPage {
       .then((data) => {
           this.loading.dismiss();
           this.speaker = data;
-		  console.log(data);
+          console.log(data);
       })
       .catch(error => {
         this.loading.dismiss();

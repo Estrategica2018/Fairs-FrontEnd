@@ -2,22 +2,22 @@
   <div class="div-avatar" [ngStyle]="{ 'background-image': 'url('+speaker.resources.url_image+')'}"></div>
   <div class="content">
     <h2 class="name text">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
-	<h5 class="text">{{speaker.title}}</h5>
+    <h5 class="text">{{speaker.title}}</h5>
     <div class="ion-text-center">
-	  <img class="ico" src="https://res.cloudinary.com/dfxkgtknu/image/upload/v1631819733/image_v82ldh.png"/>
-	</div> 
+      <img class="ico" src="https://res.cloudinary.com/dfxkgtknu/image/upload/v1631819733/image_v82ldh.png"/>
+    </div> 
   </div>  
-  	 
+       
   <div class="agenda"> 
     <ion-list class="panel-agenda">
       <div class="panel-border"></div>
-	  <h4 class="title">Agenda</h4>
-	  <div class="container scroll-light">
-	    <div class="item" *ngFor="let agenda of speaker.agenda">
-		  <h5 class="title m-0"> {{agenda.title}}</h5>
-		  <h6 class="date"> {{agenda.str_start_time}}</h6>
-	    </div>
-	   </div>		
+      <h4 class="title">Agenda</h4>
+      <div class="container scroll-light">
+        <div class="item" *ngFor="let agenda of speaker.agenda">
+          <h5 class="title m-0"> {{agenda.title}}</h5>
+          <h6 class="date"> {{agenda.str_start_time}}</h6>
+        </div>
+       </div>        
     </ion-list>
   </div>
 </div>

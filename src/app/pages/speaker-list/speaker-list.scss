@@ -72,51 +72,51 @@ $height: 218px;
    position: absolute;
    margin: 18px;
    .card {
-	  position: absolute;
+      position: absolute;
       width: #{$width};
-      height: #{$height};	  
-	  cursor: pointer;
-	  div .div-avatar {
-	    width: #{$width};
-		height: #{$height};	
-		background-size: calc( #{$width} / 2 ) calc( #{$height} - 7px );
-		background-repeat: no-repeat;
-	  }
-	  
-	  div .name {
-	     position: absolute;
-	     right: 0px;
-		 text-align: right;
-		 border-right: 10px;
-		 padding-right: 10px;
-	     width: calc( #{$width} / 2 - 7px ) !important;
-	  }
-	  
-	  div .last-name {
-	     position: absolute;
-	     top: 32px;
-		 text-align: right;
+      height: #{$height};      
+      cursor: pointer;
+      div .div-avatar {
+        width: #{$width};
+        height: #{$height};    
+        background-size: calc( #{$width} / 2 ) calc( #{$height} - 7px );
+        background-repeat: no-repeat;
+      }
+      
+      div .name {
+         position: absolute;
+         right: 0px;
+         text-align: right;
+         border-right: 10px;
+         padding-right: 10px;
+         width: calc( #{$width} / 2 - 7px ) !important;
+      }
+      
+      div .last-name {
+         position: absolute;
+         top: 32px;
+         text-align: right;
          right: 5px;
-		 padding-right: 4px;
-		 border-right: 10px;
-	     width: calc( #{$width} / 2 - 7px ) !important;
-	  }
-	  
-	  div img {
-	      width: 74px;
-	      height: 67px;
-	      position: absolute;
-	      left: 40%;
-		  top: 18px;
-	  }
-	  
-	  div .description {
-	     margin-left: 20px;
+         padding-right: 4px;
+         border-right: 10px;
+         width: calc( #{$width} / 2 - 7px ) !important;
+      }
+      
+      div img {
+          width: 74px;
+          height: 67px;
+          position: absolute;
+          left: 40%;
+          top: 18px;
+      }
+      
+      div .description {
+         margin-left: 20px;
          position: absolute;
          width: 41%;
          right: 10px;
           top: 96px;
-	  }
+      }
    }
 }
 
