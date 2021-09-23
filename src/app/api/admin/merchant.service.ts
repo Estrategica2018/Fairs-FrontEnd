@@ -50,7 +50,6 @@ export class AdminMerchantsService {
   get(data): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      console.log('datos proces', processDataToString(data), 'sin process', data);
       this.http.post(`/api/merchant/get_merchant`, processDataToString(data))
         .pipe(
           timeout(30000),
@@ -60,6 +59,32 @@ export class AdminMerchantsService {
               throw new Error(`Consultando el servicio para obtener comercio : ${e.status} - ${statusText}`);
             } else {
               throw new Error(`Consultando el servicio para obtener comercio`);
+            }
+          })
+        )
+        .subscribe(( data: any ) => {
+          if (data.success) {
+            resolve(processData(data.data));
+          } else {
+            reject(JSON.stringify(data));
+          }
+        },error => {
+          reject(error)
+        });
+    });
+  }
+  update(data): Promise<any> {
+
+    return new Promise((resolve, reject) => {
+      this.http.post(`/api/merchant/update`, processDataToString(data))
+        .pipe(
+          timeout(30000),
+          catchError(e => {
+            if (e.status && e.statusText) {
+              const statusText = e.statusText + (e.error ? e.error.message : '');
+              throw new Error(`Consultando el servicio para modificar comercio : ${e.status} - ${statusText}`);
+            } else {
+              throw new Error(`Consultando el servicio para modificar comercio`);
             }
           })
         )

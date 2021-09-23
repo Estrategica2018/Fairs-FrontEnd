@@ -32,7 +32,6 @@ export class MerchantPage implements OnInit {
     };
     const merchantId = this.route.snapshot.paramMap.get('merchantId');
     if ( merchantId != null ) {
-      console.log(merchantId, 'id comercio')
       this.loading.present({message: 'Cargando...'});
       this.adminMerchantsService.get( {id: merchantId} )
         .then((merchant) => {
@@ -43,9 +42,6 @@ export class MerchantPage implements OnInit {
           this.loading.dismiss();
           this.errors = error;
         });
-      console.log(merchantId);
-    } else {
-      console.log('comercio nuevo');
     }
   }
   store() {
@@ -66,6 +62,22 @@ export class MerchantPage implements OnInit {
 
   }
 
+  update() {
+
+    this.loading.present({message: 'Cargando...'});
+    this.adminMerchantsService.update(this.merchant)
+      .then((merchant) => {
+        this.loading.dismiss();
+        this.success = `Comercio modificado exitosamente`;
+        this.errors = null;
+        this.merchant = merchant;
+      })
+      .catch(error => {
+        this.loading.dismiss();
+        this.errors = error;
+      });
+
+  }
   async presentActionIcons() {
     const actionAlert = await this.alertCtrl.create({
       header: 'Redes sociales del comercio',
@@ -84,6 +96,16 @@ export class MerchantPage implements OnInit {
         name: 'url_youtube',
         label: 'Url Youtube',
         value: this.merchant.social_media.url_youtube,
+        placeholder: ''
+      }, {
+        name: 'url_whatsapp',
+        label: 'Url Whatsapp',
+        value: this.merchant.social_media.url_whatsapp,
+        placeholder: ''
+      }, {
+        name: 'url_twitter',
+        label: 'Url Twitter',
+        value: this.merchant.social_media.url_twitter,
         placeholder: ''
       }],
       buttons: [{

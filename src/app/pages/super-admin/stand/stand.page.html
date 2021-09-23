@@ -28,14 +28,14 @@
       <strong></strong> {{success}}
     </div>
   </ion-list-header>
-      
+
   <!--form #submitForm="ngForm" novalidate (ngSubmit)="submit(submitForm)" class="padding-container"-->
     <ion-list lines="" *ngIf="stand" class="padding-container">
-      
+
       <ion-item lines="none"  *ngIf="stand.id" [ngClass]="{'mt-4': stand.id}">
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
            <div class="d-flex ml-auto scroll-container" style="overflow-x: scroll;">
-              <ion-item style=" min-width: 163px; " *ngFor="let scene of stand?.resources.scenes;let i = index" class="scene-icon-mini" 
+              <ion-item style=" min-width: 163px; " *ngFor="let scene of stand?.resources.scenes;let i = index" class="scene-icon-mini"
                  button="true" routerLink="/super-admin/map-editor/stand/{{pavilion?.id}}/{{stand?.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
                <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
                <h2 [hidden]="scene && scene.url_image" style="width: 82px; height: 41px;"><small>{{scene.title}}</small></h2>
@@ -48,7 +48,7 @@
             </ion-button>
          </ion-buttons>
        </ion-item>
-       
+
       <ion-item button="true" class="mt-3" (click)="presentActionMerchant()">
         <ion-label> Comercio asociado </ion-label>
         <div class="d-flex" *ngIf="merchant">
@@ -68,7 +68,7 @@
         <div *ngFor="let group of productCatalogList">
           <ion-list-header>
              Catálogo de productos {{ group.name }}
-             
+
           </ion-list-header>
 
           <ion-item lines="none" class="mt-3">
@@ -78,7 +78,7 @@
                 <ion-toolbar button="true" routerLink="/super-admin/product/{{pavilion.id}}/{{stand.id}}/{{prod.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                   <ion-avatar slot="start">
                     <ion-img [src]="prod.url_image"></ion-img>
-                    
+
                   </ion-avatar>
                   <ion-label class="ml-2">
                     <h2>{{prod?.name}}</h2>
@@ -96,19 +96,24 @@
             </ion-grid>
          </ion-item>
         </div>
-      </div>        
+      </div>
      <div class="ion-padding mt-2">
       <ion-button size="small" [disabled]="!editSave" (click)="updateStand()">
         <ion-label > Guardar </ion-label>
         <ion-icon slot="end" name="save-outline"></ion-icon>
       </ion-button>
-      <ion-button size="small" color="success" 
+      <ion-button size="small" color="success"
                   routerLink="/super-admin/merchant" routerLinkActive="active" routerDirection="root" detail="false">
         <ion-label > Nuevo Comercio </ion-label>
         <ion-icon slot="end" name="add-outline"></ion-icon>
       </ion-button>
+       <ion-button size="small" color="warning"
+                   routerLink="/super-admin/merchant/update/{{merchant.id}}" routerLinkActive="active" routerDirection="root" detail="false" *ngIf="merchant">
+         <ion-label > Editar Comercio </ion-label>
+         <ion-icon slot="end" name="add-outline"></ion-icon>
+       </ion-button>
     </div>
-    
+
     </ion-list>
 
 

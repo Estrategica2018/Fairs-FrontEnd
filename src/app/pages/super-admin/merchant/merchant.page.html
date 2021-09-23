@@ -14,7 +14,7 @@
   </ion-list-header>
 
   <ion-list-header [hidden]="!success">
-    <div class="alert alert-danger fade show alert-dismissible">
+    <div class="alert alert-success fade show alert-dismissible">
       <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
       <strong></strong> {{success}}
     </div>
@@ -40,10 +40,10 @@
           </ion-col>
           <ion-col class="d-flex">
             <img *ngIf="merchant.social_media.url_facebook" src="assets/icon/facebook.png" class=" ml-auto icon" width="15%" height="70%">
-            <img *ngIf="merchant.social_media.url_facebook" [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
-            <img [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
-            <img [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
-            <img [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
+            <img *ngIf="merchant.social_media.url_instagram" [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
+            <img *ngIf="merchant.social_media.url_youtube" src="assets/icon/facebook.png" class=" ml-auto icon" width="15%" height="70%">
+            <img *ngIf="merchant.social_media.url_whatsapp" src="assets/icon/facebook.png" class=" ml-auto icon" width="15%" height="70%">
+            <img *ngIf="merchant.social_media.url_twitter" src="assets/icon/facebook.png" class=" ml-auto icon" width="15%" height="70%">
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -57,12 +57,18 @@
       <ion-label> Correo electrónico contacto </ion-label>
       <ion-input class="ml-auto" class="text-right" [(ngModel)]="merchant.email_contact" name="email_contact"></ion-input>
     </ion-item>
+
     <div class="ion-padding mt-2">
-      <ion-button size="small" (click)="store()">
+      <ion-button *ngIf="merchant.id" size="small" (click)="update()">
+        <ion-label > Modificar </ion-label>
+        <ion-icon slot="end" name="save-outline"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="ion-padding mt-2">
+      <ion-button [hidden]="merchant.id" size="small" (click)="store()">
         <ion-label > Guardar </ion-label>
         <ion-icon slot="end" name="save-outline"></ion-icon>
       </ion-button>
-
     </div>
   </ion-list>
 
