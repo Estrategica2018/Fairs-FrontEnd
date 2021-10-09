@@ -1,0 +1,55 @@
+<ion-header class="mt-5">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+
+    </ion-buttons>
+
+    <ion-title>Conferencista</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-list lines=""  class="padding-container">
+  <ion-item button="true">
+    <ion-label> Nombre </ion-label>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.name" name="name"></ion-input>
+  </ion-item>
+  <ion-item button="true">
+    <ion-label> Apellido </ion-label>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.name" name="name"></ion-input>
+  </ion-item>
+  <ion-item button="true">
+    <ion-label> Imagen de perfil </ion-label>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.profile_picture" name="profile_picture"></ion-input>
+  </ion-item>
+  <ion-item button="true">
+    <ion-label> Logo de empresa </ion-label>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.company_logo" name="company_logo"></ion-input>
+  </ion-item>
+  <ion-item button="true" [ngClass]="{'mt-4': 1}">
+    <ion-label> Descripción 1</ion-label>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.description_one" name="description_one"></ion-input>
+  </ion-item>
+  <ion-item button="true" [ngClass]="{'mt-4': 1}">
+    <ion-label> Descripción 2</ion-label>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.description_two" name="description_two"></ion-input>
+  </ion-item>
+  <ion-item button="true">
+    <ion-label> Cargo </ion-label>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.position" name="position"></ion-input>
+  </ion-item>
+  <ion-item button="true">
+    <ion-label> Profesión </ion-label>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.profession" name="profession"></ion-input>
+  </ion-item>
+  <ion-item button="true">
+    <ion-label> Correo electrónico </ion-label>
+    <ion-input class="ml-auto" class="text-right" [(ngModel)]="speaker.email" name="email"></ion-input>
+  </ion-item>
+
+  <div class="ion-padding mt-2">
+    <ion-button  size="small" >
+      <ion-label > Guardar </ion-label>
+      <ion-icon slot="end" name="save-outline"></ion-icon>
+    </ion-button>
+  </div>
+</ion-list>
+

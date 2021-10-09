@@ -29,6 +29,10 @@ const routes: Routes = [
     loadChildren: () => import('./agenda/agenda.module').then( m => m.AgendaPageModule)
   },
   {
+    path: 'speaker',
+    loadChildren: () => import('./speaker/speaker.module').then( m => m.SpeakerPageModule)
+  },
+  {
     path: 'agenda/:agendaId',
     loadChildren: () => import('./agenda/agenda.module').then( m => m.AgendaPageModule)
   },
