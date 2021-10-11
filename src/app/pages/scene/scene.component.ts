@@ -9,11 +9,14 @@ import { HostListener } from "@angular/core";
 export class SceneComponent implements OnInit {
 
   @Input() scene: any;
+  @Input() product: any;
+  @Input() mainContainer: any;
   
   constructor() {
   }
   
   ngOnInit() {
+	setTimeout(()=>{this.onResize()},30);
   } 
   
   ngAfterViewInit() {
@@ -22,23 +25,24 @@ export class SceneComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
      
-     if(!this.scene) return;
-     
-     const main = document.querySelector<HTMLElement>('ion-router-outlet');
-     
-     const menu = document.querySelector < HTMLElement > ('.menu-main-content');
-     const offsetWidth = window.innerWidth - menu.offsetWidth;
-     const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
-     main.style.top = top + 'px';
+     const main = document.querySelector<HTMLElement>(this.mainContainer);
+     if(!this.scene || !main) return;
+	 //const menu = document.querySelector < HTMLElement > ('.menu-main-content');
+     //const offsetWidth = window.innerWidth - menu.offsetWidth;
+     const offsetWidth = main.offsetHeight;
+     //const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
    
      let newWidth = offsetWidth;//main.offsetWidth;
-     const offsetHeight = window.innerHeight - top;
+     //const offsetHeight = window.innerHeight - top;
+     const offsetHeight = main.offsetHeight;
+     //const offsetHeight = main.offsetHeight - top;
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
     
      if(newHeight < offsetHeight) {
-         newHeight = window.innerHeight;
+         //newHeight = window.innerHeight;
+         newHeight = main.offsetHeight;
          newWidth = newHeight * this.scene.container.w / this.scene.container.h;
          deltaW =  this.scene.container.w / newWidth;
          deltaH = this.scene.container.h / newHeight;
@@ -56,7 +60,10 @@ export class SceneComponent implements OnInit {
         }
         if(banner.fontSize > 0 ) {
            banner.fontSize /= deltaW;
-        }
+        }				
+		if(banner.border && banner.border.radius > 0){
+			banner.border.radius /= deltaH;
+		}
      });
      
      //Menu tab resize/render

@@ -17,9 +17,9 @@
 
     <ion-list *ngIf="product" class="padding-container">
 
-       <ion-item lines="none" *ngIf="product.id" [ngClass]="{'mt-4': product.id}">
+       <!--ion-item lines="none" *ngIf="product.id" [ngClass]="{'mt-4': product.id}">
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
-           <div class="d-flex ml-auto scroll-container" style="overflow-x: scroll;">
+           <div class="d-flex ml-auto scroll-container scroll-light" style="overflow-x: scroll;">
               <ion-item  *ngFor="let scene of product?.resources?.scenes;let i = index" class="scene-icon-mini"
               button="true" routerLink="/super-admin/map-editor/product/{{pavilion.id}}/{{stand.id}}/{{product.id}}/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
                <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
@@ -32,11 +32,11 @@
               <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
             </ion-button>
          </ion-buttons>
-       </ion-item>
+       </ion-item-->
     
       <ion-item button="true" [ngClass]="{'mt-4': !product.id}">
         <ion-label> Categoría </ion-label>
-        <select [(ngModel)]="product.category_id">
+        <select [(ngModel)]="product.category_id" (change)="editSave = true;">
            <option value="{{category.id}}" *ngFor="let category of categories"> {{category.name}}</option>
         </select>
       </ion-item>    
@@ -45,17 +45,17 @@
         <ion-input class="ml-auto" class="text-right" [(ngModel)]="product.name" (ionChange)="editSave=true" name="name"></ion-input>
       </ion-item>
       <ion-item button="true">
-        <ion-label> Descripción </ion-label>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="product.description" (ionChange)="editSave=true" name="description"></ion-input>
+		<ion-label position="stacked">Descripción</ion-label>
+        <ion-textarea autoGrow="true" rows="6" cols="20" [(ngModel)]="product.description" (ionChange)="editSave=true" name="description"></ion-textarea>
       </ion-item>
-      
-      <ion-item lines="" *ngIf="product.id">
+	  
+      <ion-item class="mb-4" lines="" *ngIf="product.id">
           <ion-label style="max-width: 153px;" slot="start">Lista de precios </ion-label>
-          <div class="d-flex ml-auto" style="overflow-x: scroll; ">
+          <div class="d-flex ml-auto scroll-light" style="overflow-x: scroll; ">
               <ion-item  *ngFor="let price of product?.prices;let i = index" class="scene-icon-mini"  style="min-width: 184px"
               button="true" routerLink="/super-admin/product-price/{{pavilion.id}}/{{stand.id}}/{{product.id}}/{{price.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                 <ion-avatar class="mr-3">
-                  <img [src]="price.resources?.images[0].url_image">
+                  <img [src]="price.resources?.images[0]?.url_image">
                 </ion-avatar>
                 <ion-label style="white-space: initial;">
                   <h2>{{ price.price | currency: 'COP $ ':'symbol':'1.2-2' }}</h2>
@@ -68,11 +68,159 @@
             </ion-button>
          </ion-buttons>
        </ion-item>
-      
+
+	  <div class="container-attr mb-4" *ngIf="product.id && product.resources && product.resources.attributes">
+      <ion-item lines="none" *ngIf="product.id" [ngClass]="{'mt-4': product.id}">
+         <ion-label class="ion-text-wrap" slot="start">Atributos Físicos</ion-label>
+         <ion-buttons slot="end">
+            <ion-button (click)="newAttr={'key':'','value':''}">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+      </ion-item>
+	  
+	  <ion-item-sliding #slidingItem *ngFor="let attr of product.resources.attributes; let i = index;">
+		<ion-item>
+		  <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.key }} </ion-label>
+          <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.value }} </ion-label>
+		  <ion-grid *ngIf="indexEditAttr == i">
+			<ion-row>
+			  <ion-col size="5">
+				<input class="attribute-key fs-1" [(ngModel)]="attr.key">
+			  </ion-col>
+			  <ion-col size="5">
+				<input class="attribute-value fs-1" [(ngModel)]="attr.value">	    
+			  </ion-col>
+			  <ion-col size="2">
+				<ion-button (click)="modifyAttr(i)">
+				Modificar
+				</ion-button>
+			  </ion-col>
+			</ion-row>
+		  </ion-grid>
+		</ion-item>
+		<ion-item-options side="end">
+		  <ion-item-option color="danger" (click)="deleteAttr(i, slidingItem)">
+			<ion-icon slot="icon-only" name="trash"></ion-icon>
+		  </ion-item-option>
+		  <ion-item-option  (click)="showModifyAttr(i,slidingItem)">
+			<ion-icon slot="icon-only" name="create-outline"></ion-icon>
+		  </ion-item-option>
+		</ion-item-options>
+	  </ion-item-sliding>
+	  <ion-grid class="attribute" button="true" *ngIf="newAttr">
+	    <ion-row>
+	      <ion-col size="5">
+            <input class="attribute-key" [(ngModel)]="newAttr.key">
+	      </ion-col>
+	      <ion-col size="5">
+	        <input class="attribute-value" [(ngModel)]="newAttr.value">	    
+	      </ion-col>
+	      <ion-col size="2">
+	        <ion-button (click)="addAttribute()">
+			Agregar
+	        </ion-button>
+	      </ion-col>
+	    </ion-row>
+	  </ion-grid>
+	  </div>
+	  
+	  <div class="container-attr mb-4" *ngIf="product.id && product.resources && product.resources.attributes">
+      <ion-item lines="none" *ngIf="product.id" [ngClass]="{'mt-4': product.id}">
+         <ion-label class="ion-text-wrap" slot="start">Atributos Físicos</ion-label>
+         <ion-buttons slot="end">
+            <ion-button (click)="newAttribute()">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+      </ion-item>
+	  <ion-list style="max-width: 420px;" class="mt-md-6">
+		<ion-item button="true" *ngFor="let attribute of attributes" class="pr-2 attribute-group">
+		 <ion-label>  
+		   {{attribute.label}}
+		 </ion-label>
+		 <div *ngIf="attribute.type == 'color'" (click)="openColors(attribute);" class="d-flex color-small">
+			<div *ngIf="attribute.value && attribute.value.length > 0" class="label-color-small" [ngStyle]="{'background-color':attribute.value}">
+			</div>
+			<ion-button [hidden]="attribute.value && attribute.value.length > 0" class="ml-4" (click)="attribute.value = null">Selecciona</ion-button>
+			<span class="ml-4">{{attribute.value}}</span>
+		 </div>
+		 <ion-button *ngIf="attribute.type == 'color' && attribute.value && attribute.value.length > 0" class="ml-4" (click)="attribute.value = null">Limpiar</ion-button>
+		 
+		 <div [hidden]="attribute.type == 'color'">
+		   <input (change)="editSave = true" class="ml-auto" style="z-index: 10000; margin-right:10px" [type]="attribute.type" [(ngModel)]="attribute.value">
+		 </div>
+		 <select *ngIf="attribute.format && attribute.format.length > 0" [(ngModel)]="attribute.formatSelect" 
+			(change)="attribute.value = attribute.formatSelect == '' ? '' : attribute.value;editSave = true">
+		   <option value=""></option>
+		   <option *ngFor="let format of attribute.format" value="{{format}}">{{format}}</option>
+		 </select>
+		 <ion-label [hidden]="attribute.format && attribute.format.length > 0" ></ion-label>
+		</ion-item>
+	  </ion-list>
+	  
+	  
+	  <ion-item-sliding #slidingItem *ngFor="let attr of product.resources.attributes; let i = index;">
+		<ion-item>
+		  <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.key }} </ion-label>
+          <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.value }} </ion-label>
+		  <ion-grid *ngIf="indexEditAttr == i">
+			<ion-row>
+			  <ion-col size="5">
+				<input class="attribute-key fs-1" [(ngModel)]="attr.key">
+			  </ion-col>
+			  <ion-col size="5">
+				<input class="attribute-value fs-1" [(ngModel)]="attr.value">	    
+			  </ion-col>
+			  <ion-col size="2">
+				<ion-button (click)="modifyAttr(i)">
+				Modificar
+				</ion-button>
+			  </ion-col>
+			</ion-row>
+		  </ion-grid>
+		</ion-item>
+		<ion-item-options side="end">
+		  <ion-item-option color="danger" (click)="deleteAttr(i, slidingItem)">
+			<ion-icon slot="icon-only" name="trash"></ion-icon>
+		  </ion-item-option>
+		  <ion-item-option  (click)="showModifyAttr(i,slidingItem)">
+			<ion-icon slot="icon-only" name="create-outline"></ion-icon>
+		  </ion-item-option>
+		</ion-item-options>
+	  </ion-item-sliding>
+      </div>
+	  <div class="container-attr" *ngIf="product.id && product.resources && product.resources.keywords">
+      <ion-item lines="none" *ngIf="product.id" [ngClass]="{'mt-4': product.id}">
+         <ion-label class="ion-text-wrap" slot="start">Palabras Clave</ion-label>
+         <ion-buttons slot="end">
+            <ion-button (click)="newKeyWord = { 'value': ''}">
+              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+      </ion-item>
+	  <ion-item button="true" *ngFor="let keyword of product.resources.keywords" clas>
+        <ion-input class="ml-auto" class="text-right" [(ngModel)]="keyword" (ionChange)="editSave=true" name="keyword"></ion-input>
+      </ion-item>
+	  <ion-grid class="attribute" button="true" *ngIf="newKeyWord">
+	    <ion-row>
+	      <ion-col>
+            <input class="attribute-key" [(ngModel)]="newKeyWord.value">
+	      </ion-col>
+	      <ion-col size="2">
+	        <ion-button (click)="addKeyWord()">
+			Agregar
+	        </ion-button>
+	      </ion-col>
+	    </ion-row>
+	  </ion-grid>
+	  </div>
+
+
       <ion-item [hidden]="!errors">
         <div class="alert alert-danger m-auto">
          <a href="javascript:void(0)" class="close" (click)="errors=null" title="close">×</a>
-         <strong>Error!</strong> {{errors}}
+         <strong></strong> {{errors}}
         </div>
       </ion-item>
 
@@ -91,5 +239,29 @@
     </ion-list>
 
   <!--/form-->
+
+  <div *ngIf="showColor" class="panel-color">
+  <ion-backdrop class="block-window sc-ion-loading-md md backdrop-no-tappable hydrated" tabindex="-1" style=""></ion-backdrop>
+    <ion-card class="card-color">
+      <ion-card-header>
+        <ion-buttons>
+          <ion-card-subtitle  slot="start" >Selecciona la referencia del color</ion-card-subtitle>
+          <ion-button slot="end" (click)="showColor=false;" class="position-absolute r-0">
+            Cerrar <ion-icon slot="end" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col *ngFor="let color of colorList" class="label-color" [ngStyle]="{'background-color':color.value}"
+            (click)="setColor(color)">
+               <span>{{color.name}}</span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
 
 </ion-content>

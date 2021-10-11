@@ -1,0 +1,23 @@
+.facebook {
+}
+
+.facebook::before {
+    position: relative;
+    top: 145px;
+    content: "Facebook";
+}
+
+.twitter {
+}
+
+.twitter::before {
+    position: relative;
+    top: 145px;
+    content: "Twitter";
+}
+
+.whatssapp::before {
+    position: relative;
+    top: 145px;
+    content: "whatssapp";
+}

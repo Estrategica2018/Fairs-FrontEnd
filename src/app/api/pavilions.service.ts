@@ -33,7 +33,7 @@ export class PavilionsService {
                 this.http.get(`/api/pavilion/find_by_fair/?fair_id=${fair.id}`)
                 .pipe(
                   timeout(30000),
-                  catchError(e => {
+                  catchError((e: any) => {
                     console.log(e);
                     if(e.status && e.statusText) {
                       throw new Error(`Ejecutando el servicio para consulta de pabellones: ${e.status} - ${e.statusText}`);    

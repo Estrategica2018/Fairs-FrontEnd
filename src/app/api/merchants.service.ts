@@ -29,7 +29,7 @@ export class MerchantsService {
                     this.http.get(`/api/merchant/to_list/${fair.id}`)
                    .pipe(
                       timeout(30000),
-                      catchError(e => {
+                      catchError((e: any) => {
                         if(e.status && e.statusText) {
                           throw new Error(`Ejecutando el servicio consulta de comercios: ${e.status} - ${e.statusText}`);    
                         }

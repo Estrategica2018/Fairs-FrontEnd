@@ -35,7 +35,7 @@ export class AdminPavilionsService {
         this.http.post(`/api/pavilion/create2`, processDataToString(data),httpOptions)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio para crear el pabellón: ${e.status} - ${e.statusText}`);    
@@ -73,7 +73,7 @@ export class AdminPavilionsService {
         this.http.post(`/api/pavilion/update/${pavilion.id}`, processDataToString(pavilion),httpOptions)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio para actualizar el pabellón: ${e.status} - ${e.statusText}`);    
@@ -109,7 +109,7 @@ export class AdminPavilionsService {
         this.http.post(`/api/pavilion/delete/${pavilion.id}`, {pavilion_id: pavilion.id},httpOptions)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio para borrar el pabellón: ${e.status} - ${e.statusText}`);    

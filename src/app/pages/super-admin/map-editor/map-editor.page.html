@@ -17,11 +17,11 @@ Pegar
    <ion-item [hidden]="!errors">
       <div class="alert alert-danger alert-dismissible">
          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-         <strong>Error!</strong> {{errors}}
+         <strong></strong> {{errors}}
       </div>
    </ion-item>
    <!--Scene Background Image-->
-   <div class="div-container"  scroll-x="0" scroll-y="0">
+   <div class="div-container">
       <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
       'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
@@ -94,19 +94,32 @@ Pegar
    'color': banner.fontColor,
    'border-color': banner.border?.color,
    'border-style': banner.border?.style,
+   'font-weight': banner.fontWeight,
    'border-radius': banner.border?.radius + 'px',
    'border-width': banner.border?.width +'px',
-   'text-align': banner.textAlign,
+   'text-align': banner.textAlign,	
    'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
    }">  
    <div [ngClass]="{'selected': bannerSelectHover === banner}" 
-   [ngStyle]="{'line-height': banner?.lineHeight}">
-   <div *ngIf="banner.isHtml">
+   [ngStyle]="{'line-height': banner?.lineHeight, 'font-weight': banner.fontWeight }">
+   <div *ngIf="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
       <div [innerHTML]="banner.textHtml"></div>
    </div>
-   <div [hidden]="banner.isHtml">
+   <div [hidden]="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
       {{ banner.text}}
    </div>
+   <!--if object is product ->
+   <div *ngIf="product && banner.type=='ProductDescription'">
+       {{product.name}}
+   </div>
+   <div *ngIf="product && banner.type=='ProductName'">
+       {{product.description}}
+   </div>
+   <div *ngIf="product && banner.type=='ProductCarousel'">
+       <app-carousel-images [product]="product">
+       </app-carousel-images>
+   </div>
+   <!--if object is product -->
    </div>      
    </div>
    <!--if banner is Video-->
@@ -139,7 +152,9 @@ Pegar
    id="product-catalog-id-{{banner.id}}"
    [fair]="fair" [pavilion]="pavilion" [stand]="stand" 
    [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-   </app-product-catalog>   
+   </app-product-catalog> 
+
+   
    
    </div>
    <!--Tooltip-->
@@ -266,7 +281,7 @@ Pegar
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input type="number" [(ngModel)]="scene.container.w"  (change)="onChangeItem(); this.onResize();" /> 
+                  <input type="number" [(ngModel)]="scene.container.w"  (change)="onChangeItem();" /> 
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -276,7 +291,7 @@ Pegar
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input type="number" [(ngModel)]="scene.container.h" (change)="onChangeItem(); this.onResize();"/> 
+                  <input type="number" [(ngModel)]="scene.container.h" (change)="onChangeItem();"/> 
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -370,29 +385,20 @@ Pegar
          </div>
       </ion-card-content>
       <ion-card-header>
-         <ion-card-title><small>Agregar Producto</small></ion-card-title>
+         <ion-card-title><small>Agregar Elemento</small></ion-card-title>
       </ion-card-header>
       <ion-card-content>
          <div class="d-flex">
             <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('ProductCatalog');">
-               Catálogo
+               <small>Productos</small>
                <ion-icon style="font-size: 24px" name="grid-outline"></ion-icon>
             </div>
-            
-            <div class="icon-panel-scene ml-2" (click)="addArrowLineRect();">
-               <div class="container-arrow--rect" >
-                  <div class="arrow line-arrow-button">
-                     <div class="arrow__body"></div>
-                  </div>
-               </div>
-            </div>
-            <div class="icon-panel-scene ml-2" (click)="addArrowLineLine();">
-               <div class="container-arrow--line" >
-                  <div class="arrow line-arrow-button">
-                     <div class="arrow__body"></div>
-                  </div>
-               </div>
-            </div>
+            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('Contact');">
+               <small>Contáctenos</small>
+               <ion-icon style="font-size: 24px" name="list-outline"></ion-icon>
+            </div>            
+
+
          </div>
       </ion-card-content>
    </ion-card>
@@ -508,7 +514,7 @@ Pegar
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.y"/>
+               <input class="mt-2 ml-2 input-form"  (change)="onResize()"  type="number" [(ngModel)]="bannerSelect.position.y"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -519,7 +525,7 @@ Pegar
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.position.x"/>
+               <input class="mt-2 ml-2 input-form"  (change)="onResize()"  type="number" [(ngModel)]="bannerSelect.position.x"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -530,7 +536,7 @@ Pegar
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.size.x"/>
+               <input class="mt-2 ml-2 input-form" type="number" (change)="onResize()" [(ngModel)]="bannerSelect.size.x"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -541,7 +547,7 @@ Pegar
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 input-form"  type="number" [(ngModel)]="bannerSelect.size.y"/>
+               <input class="mt-2 ml-2 input-form"  (change)="onResize()"   type="number" [(ngModel)]="bannerSelect.size.y"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -632,7 +638,7 @@ Pegar
    <ion-card-content *ngIf="tabSelect == 'background'">
       <ion-toolbar>
          <ion-card-subtitle slot="start"> Imagen de Fondo </ion-card-subtitle>
-         <input slot="end" class="mt-2 ml-2" type="text" [(ngModel)]="bannerSelect.image_url"/> 
+         <input slot="end" class="mt-2 ml-2" type="text" (change)="onChangeImage()" [(ngModel)]="bannerSelect.image_url"/> 
       </ion-toolbar>
       <ion-toolbar>
          <ion-card-subtitle slot="start"> Color de Fondo</ion-card-subtitle>
@@ -757,6 +763,19 @@ Pegar
             <ion-card-subtitle>
                <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.fontSize"/> 
                px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Grosor de letra
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <select [(ngModel)]="bannerSelect.fontWeight" (change)="onChangeItem()" >
+                 <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+               </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>

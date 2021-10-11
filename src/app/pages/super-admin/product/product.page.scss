@@ -1,0 +1,59 @@
+.container-attr {
+  border-radius: 10px;
+  border: 1px solid gray;
+  padding: 0.5em;
+}
+
+.attribute-key {
+    width: 100%;
+    height: 37px;
+	font-size: 1.5em;
+}
+
+.attribute-value {
+    width: 100%;
+    height: 37px;
+	font-size: 1.5em;
+}
+
+
+.fs-1 {
+  font-size: 1em;
+}
+
+
+ion-item-options {
+    height: 81%;
+    margin-top: .1em;
+}
+
+select {
+  height: 2.5rem;
+}
+
+
+.label-color-small {
+  width: 25px;
+  height: 25px;
+  border: 1px solid gray;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.label-color {
+  min-width: 75px;
+  height: 52px;
+  border: 1px solid gray;
+  border-radius: 3px;
+  margin: 10px;
+  cursor: pointer;
+}
+.panel-color {
+  position: absolute;
+  top: 100px;
+  left: 0px;
+  width: 444px;
+  height: 234px;
+  border: 1px solid gray;
+  border-radius: 3px;
+}

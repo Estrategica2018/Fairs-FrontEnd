@@ -6,7 +6,7 @@ import { MapEditorPageRoutingModule } from './map-editor-routing.module';
 import { MapEditorPage } from './map-editor.page';
 import { PanelEditorComponent } from './panel-editor/panel-editor.component';
 import { DragAndDropModule } from 'angular-draggable-droppable';
-import { ComponentModule } from '../../../components.module';
+import { ComponentsModule } from '../../../components.module';
 import { ProductListComponent } from '../../super-admin/map-editor/product-list/product-list.component';
 
 
@@ -17,7 +17,7 @@ import { ProductListComponent } from '../../super-admin/map-editor/product-list/
     IonicModule,
     DragAndDropModule,
     MapEditorPageRoutingModule,
-    ComponentModule
+    ComponentsModule
   ],
   declarations: [MapEditorPage, PanelEditorComponent,ProductListComponent], 
   entryComponents: [PanelEditorComponent,ProductListComponent]

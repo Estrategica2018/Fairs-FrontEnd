@@ -34,7 +34,7 @@ export class AdminProductPricesService {
         this.http.post(`/api/product-price/create`, processDataToString(dataProduct),httpOptions)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             if(e.status && e.statusText) {
               const statusText = e.statusText + (e.error ? e.error.message : '');
               throw new Error(`Consultando el servicio para crear el precio del producto: ${e.status} - ${statusText}`);    
@@ -70,7 +70,7 @@ export class AdminProductPricesService {
         this.http.post(`/api/product-price/update/${productPrice.id}`,processDataToString(productPrice),httpOptions)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             if(e.status && e.statusText) {
               throw new Error(`Ejecutando el servicio para modificar el precio del producto: ${e.status} - ${e.statusText}`);    
             }
@@ -105,7 +105,7 @@ export class AdminProductPricesService {
         this.http.post(`/api/product-price/delete/${productPrice.id}`, productPrice,httpOptions)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio para borrar el precio del producto: ${e.status} - ${e.statusText}`);    

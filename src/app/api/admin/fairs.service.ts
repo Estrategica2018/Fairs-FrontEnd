@@ -31,7 +31,7 @@ export class AdminFairsService {
             this.http.post(`/api/meetings`,processDataToString(agenda),httpOptions)
             .pipe(
               timeout(30000),
-              catchError(e => {
+              catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
                   const statusText = e.statusText + (e.error ? e.error.message : '');
@@ -68,7 +68,7 @@ export class AdminFairsService {
             this.http.post(`/api/fair/update/${fair.id}`,newFair,httpOptions)
             .pipe(
               timeout(30000),
-              catchError(e => {
+              catchError((e: any) => {
                 const msg = (e.error && e.error.message) ? e.error.message : e.status + ' - ' + e.statusText;
                 throw new Error(`${msg}`);
               })
@@ -98,7 +98,7 @@ export class AdminFairsService {
             this.http.delete(`/api/meetings/${agenda.zoom_code}`,httpOptions)
             .pipe(
               timeout(30000),
-              catchError(e => {
+              catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para modificar agenda: ${e.status} - ${e.statusText}`);    

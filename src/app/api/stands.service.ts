@@ -43,7 +43,7 @@ export class StandsService {
             this.http.get(`/api/products/find_by/?fair_id=${fairId}&pavilion_id=${pavilionId}&stand_id=${standId}&product_id=${productId}`)
                 .pipe(
                   timeout(30000),
-                  catchError(e => {
+                  catchError((e: any) => {
                     console.log(e);
                     if(e.status && e.statusText) {
                       throw new Error(`Ejecutando el servicio para consulta de productos: ${e.status} - ${e.statusText}`);    

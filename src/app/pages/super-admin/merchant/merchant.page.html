@@ -9,7 +9,7 @@
   <ion-list-header [hidden]="!errors">
     <div class="alert alert-danger fade show alert-dismissible">
       <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-      <strong>Error!</strong> {{errors}}
+      <strong></strong> {{errors}}
     </div>
   </ion-list-header>
 
@@ -38,7 +38,7 @@
           <ion-col class="d-flex">
             <ion-label class="label-icon"> Medios de comunicación </ion-label>
           </ion-col>
-          <ion-col class="d-flex">
+          <ion-col class="d-flex twitter">
             <img *ngIf="merchant.social_media.url_facebook" src="assets/icon/facebook.png" class=" ml-auto icon" width="15%" height="70%">
             <img *ngIf="merchant.social_media.url_instagram" [src]="'assets/icon/facebook.png'" class=" ml-auto icon" width="15%" height="70%">
             <img *ngIf="merchant.social_media.url_youtube" src="assets/icon/facebook.png" class=" ml-auto icon" width="15%" height="70%">

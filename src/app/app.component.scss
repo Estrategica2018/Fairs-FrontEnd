@@ -326,3 +326,21 @@ body.backdrop-no-scroll {
   margin-left: auto;
 }
 
+
+.product-modal {
+}
+
+.product-modal .modal-wrapper {
+    --border-radius: 15px !important;
+    --height: 47em;
+    --width: 60em;
+}
+
+/* pass "app-success-alert" in cssClass for the ion-toast component */
+.app-success-alert .popover-content {
+  background: #222;
+}
+
+.app-error-alert .popover-content {
+  background: red;
+}

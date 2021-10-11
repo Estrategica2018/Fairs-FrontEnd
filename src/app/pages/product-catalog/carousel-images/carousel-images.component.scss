@@ -4,69 +4,41 @@
 }
  
 $width: 100px;
-$height: 60px;
+$height: 16em;
  
 .container-carousel {
-   position: absolute;
-   top: 0px;
+   width: 100%;
+   height: 16em;
+}
+
+
+.color-container .color-attr:first-child {
+  margin-left: auto !important;
+}
+
+.color-container .color-attr:last-child {
+  margin-right: auto !important;
 }
 
 .color-attr {
   border-radius: 50%;
-  margin: 0px 7px;
+  cursor: pointer;
+  margin-left: 11px;
   border: 1px solid gray;
-  min-width: 20px;
-  min-height: 20px;
+  min-width: 14px;
+  min-height: 14px;
 }
 
 .container-img {
   background-repeat: no-repeat;
-  background-size: 100px 100px;
-  width: 100px;
-  height: 100px;
+  background-size: 100%;
+  width: 70%;
+  height: 100%;
+  margin: auto;
 }
   
 .color-container {
   display: flex;
-  position: absolute;
-  top: 143px;
 }
 
-
- 
-.swiper {
-  width: 100%;
-  height: 100%;
-}
-
-.swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: #fff;
-
-  /* Center slide text vertically */
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  -webkit-align-items: center;
-  align-items: center;
-}
-
-.swiper-slide img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-
-ion-slide { 
-  max-width: 149px;
-}
+  

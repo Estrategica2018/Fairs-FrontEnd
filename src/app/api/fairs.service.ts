@@ -25,7 +25,7 @@ export class FairsService {
         this.http.get(`/api/fair/to_list`)
        .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText && e.statusText.indexOf('Gateway Timeout') >= 0) {
                 throw new Error(`No está conectado a internet`);
@@ -117,7 +117,7 @@ export class FairsService {
             this.http.post(`/api/contactsupport/notification`,messageData)
             .pipe(
               timeout(30000),
-              catchError(e => {
+              catchError((e: any) => {
                 console.log(e);
                 if(e.status == 422) {
                    const error = JSON.stringify(e.error);
@@ -159,7 +159,7 @@ export class FairsService {
         this.http.get(`/api/category/to_list/${type}`)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
@@ -187,7 +187,7 @@ export class FairsService {
         this.http.post(`/api/category/create/`,category)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
@@ -215,7 +215,7 @@ export class FairsService {
             this.http.post(`/api/category/create/`,category)
             .pipe(
               timeout(30000),
-              catchError(e => {
+              catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);

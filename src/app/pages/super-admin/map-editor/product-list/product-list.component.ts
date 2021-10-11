@@ -46,8 +46,7 @@ export class ProductListComponent implements OnInit {
              this.loading.dismiss();
           });
       }
-      
-      if(this.template == 'pavilion') {
+      else if(this.template == 'pavilion') {
           const pavilion = { 'id': this.pavilion.id, 'name': this.pavilion.name, 'stands': []};
           this.pavilion.stands.forEach((st)=>{
               const stand = { id: st.id, merchant: st.merchant };
@@ -58,6 +57,34 @@ export class ProductListComponent implements OnInit {
           
           
           this.productsService.get(this.fair.id,this.pavilion.id,null,null)
+          .then((products) => {
+              if(products.length>0) {
+                  products.forEach((product)=>{                       
+                      const category = this.getCategory(product);
+                      category.products = category.products || [];
+                      product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
+                      category.products.push(product);
+                  });
+              }
+              this.loading.dismiss();
+          })
+          .catch(error => {
+             this.loading.dismiss();
+          });
+      }
+      else if(this.template == 'stand') {
+          const pavilion = { 'id': this.pavilion.id, 'name': this.pavilion.name, 'stands': []};
+          this.pavilion.stands.forEach((st)=>{
+			  if(this.stand.id==st.id) {
+                const stand = { id: st.id, merchant: st.merchant };
+                pavilion.stands.push(Object.assign({},stand));
+			  }
+          });
+          this.catalogList = [];
+          this.catalogList.push(pavilion);
+          
+          
+          this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id,null)
           .then((products) => {
               if(products.length>0) {
                   products.forEach((product)=>{                       

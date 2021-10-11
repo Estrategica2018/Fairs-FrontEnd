@@ -20,12 +20,13 @@ export class CarouselTemplateComponent {
   
   slideOpts: any;
   items: any;
+  finalHeight: any;
   
   constructor(private productsService: ProductsService) { }
 
   initialize() {
       
-    this.ionSlides.update();
+    if(this.ionSlides) this.ionSlides.update();
     this.items = [];
     
     if(this.banner.carousel.images) {
@@ -167,7 +168,7 @@ export class CarouselTemplateComponent {
               }
             }
         };
-      this.ionSlides.options = this.slideOpts;
+      if(this.ionSlides) this.ionSlides.options = this.slideOpts;
   }
   
 }

@@ -95,6 +95,9 @@ export class MapEditorPage implements OnInit {
     {'label':'Gill Sans', 'value': '"Gill Sans", serif'},
     {'label':'Helvetica Narrow', 'value': '"Helvetica Narrow", sans-serif'}
   ];
+  
+  fontWeightList = ['100','200','300','400','500','600','700','800','900','bold','bolder','inherit','initial','lighter','normal','revert','unset'];
+  
   menuIcons = ["accessibility-outline","add-outline","add-circle-outline","airplane-outline","alarm-outline","albums-outline","alert-outline","alert-circle-outline","american-football-outline","analytics-outline","aperture-outline","apps-outline","archive-outline","arrow-back-outline","arrow-back-circle-outline","arrow-down-outline","arrow-down-circle-outline","arrow-forward-outline","arrow-forward-circle-outline","arrow-redo-outline","arrow-redo-circle-outline","arrow-undo-outline","arrow-undo-circle-outline","arrow-up-outline","arrow-up-circle-outline","at-outline","at-circle-outline","attach-outline","backspace-outline","bag-outline","bag-add-outline","bag-check-outline","bag-handle-outline","bag-remove-outline","balloon-outline","ban-outline","bandage-outline","bar-chart-outline","barbell-outline","barcode-outline","baseball-outline","basket-outline","basketball-outline","battery-charging-outline","battery-dead-outline","battery-full-outline","battery-half-outline","beaker-outline","bed-outline","beer-outline","bicycle-outline","bluetooth-outline","boat-outline","body-outline","bonfire-outline","book-outline","bookmark-outline","bookmarks-outline","bowling-ball-outline","briefcase-outline","browsers-outline","brush-outline","bug-outline","build-outline","bulb-outline","bus-outline","business-outline","cafe-outline","calculator-outline","calendar-outline","calendar-clear-outline","calendar-number-outline","call-outline","camera-outline","camera-reverse-outline","car-outline","car-sport-outline","card-outline","caret-back-outline","caret-back-circle-outline","caret-down-outline","caret-down-circle-outline","caret-forward-outline","caret-forward-circle-outline","caret-up-outline","caret-up-circle-outline","cart-outline","cash-outline","cellular-outline","chatbox-outline","chatbox-ellipses-outline","chatbubble-outline","chatbubble-ellipses-outline","chatbubbles-outline","checkbox-outline","checkmark-outline","checkmark-circle-outline","checkmark-done-outline","checkmark-done-circle-outline","chevron-back-outline","chevron-back-circle-outline","chevron-down-outline","chevron-down-circle-outline","chevron-forward-outline","chevron-forward-circle-outline","chevron-up-outline","chevron-up-circle-outline","clipboard-outline","close-outline","close-circle-outline","cloud-outline","cloud-circle-outline","cloud-done-outline","cloud-download-outline","cloud-offline-outline","cloud-upload-outline","cloudy-outline","cloudy-night-outline","code-outline","code-download-outline","code-slash-outline","code-working-outline","cog-outline","color-fill-outline","color-filter-outline","color-palette-outline","color-wand-outline","compass-outline","construct-outline","contract-outline","contrast-outline","copy-outline","create-outline","crop-outline","cube-outline","cut-outline","desktop-outline","diamond-outline","dice-outline","disc-outline","document-outline","document-attach-outline","document-lock-outline","document-text-outline","documents-outline","download-outline","duplicate-outline","ear-outline","earth-outline","easel-outline","egg-outline","ellipse-outline","ellipsis-horizontal-outline","ellipsis-horizontal-circle-outline","ellipsis-vertical-outline","ellipsis-vertical-circle-outline","enter-outline","exit-outline","expand-outline","extension-puzzle-outline","eye-outline","eye-off-outline","eyedrop-outline","fast-food-outline","female-outline","file-tray-outline","file-tray-full-outline","file-tray-stacked-outline","film-outline","filter-outline","filter-circle-outline","finger-print-outline","fish-outline","fitness-outline","flag-outline","flame-outline","flash-outline","flash-off-outline","flashlight-outline","flask-outline","flower-outline","folder-outline","folder-open-outline","football-outline","footsteps-outline","funnel-outline","game-controller-outline","gift-outline","git-branch-outline","git-commit-outline","git-compare-outline","git-merge-outline","git-network-outline","git-pull-request-outline","glasses-outline","globe-outline","golf-outline","grid-outline","hammer-outline","hand-left-outline","hand-right-outline","happy-outline","hardware-chip-outline","headset-outline","heart-outline","heart-circle-outline","heart-dislike-outline","heart-dislike-circle-outline","heart-half-outline","help-outline","help-buoy-outline","help-circle-outline","home-outline","hourglass-outline","ice-cream-outline","id-card-outline","image-outline","images-outline","infinite-outline","information-outline","information-circle-outline","invert-mode-outline","journal-outline","key-outline","keypad-outline","language-outline","laptop-outline","layers-outline","leaf-outline","library-outline","link-outline","list-outline","list-circle-outline","locate-outline","location-outline","lock-closed-outline","lock-open-outline","log-in-outline","log-out-outline","magnet-outline","mail-outline","mail-open-outline","mail-unread-outline","male-outline","male-female-outline","man-outline","map-outline","medal-outline","medical-outline","medkit-outline","megaphone-outline","menu-outline","mic-outline","mic-circle-outline","mic-off-outline","mic-off-circle-outline","moon-outline","move-outline","musical-note-outline","musical-notes-outline","navigate-outline","navigate-circle-outline","newspaper-outline","notifications-outline","notifications-circle-outline","notifications-off-outline","notifications-off-circle-outline","nuclear-outline","nutrition-outline","open-outline","options-outline","paper-plane-outline","partly-sunny-outline","pause-outline","pause-circle-outline","paw-outline","pencil-outline","people-outline","people-circle-outline","person-outline","person-add-outline","person-circle-outline","person-remove-outline","phone-landscape-outline","phone-portrait-outline","pie-chart-outline","pin-outline","pint-outline","pizza-outline","planet-outline","play-outline","play-back-outline","play-back-circle-outline","play-circle-outline","play-forward-outline","play-forward-circle-outline","play-skip-back-outline","play-skip-back-circle-outline","play-skip-forward-outline","play-skip-forward-circle-outline","podium-outline","power-outline","pricetag-outline","pricetags-outline","print-outline","prism-outline","pulse-outline","push-outline","qr-code-outline","radio-outline","radio-button-off-outline","radio-button-on-outline","rainy-outline","reader-outline","receipt-outline","recording-outline","refresh-outline","refresh-circle-outline","reload-outline","reload-circle-outline","remove-outline","remove-circle-outline","reorder-four-outline","reorder-three-outline","reorder-two-outline","repeat-outline","resize-outline","restaurant-outline","return-down-back-outline","return-down-forward-outline","return-up-back-outline","return-up-forward-outline","ribbon-outline","rocket-outline","rose-outline","sad-outline","save-outline","scale-outline","scan-outline","scan-circle-outline","school-outline","search-outline","search-circle-outline","send-outline","server-outline","settings-outline","shapes-outline","share-outline","share-social-outline","shield-outline","shield-checkmark-outline","shield-half-outline","shirt-outline","shuffle-outline","skull-outline","snow-outline","sparkles-outline","speedometer-outline","square-outline","star-outline","star-half-outline","stats-chart-outline","stop-outline","stop-circle-outline","stopwatch-outline","storefront-outline","subway-outline","sunny-outline","swap-horizontal-outline","swap-vertical-outline","sync-outline","sync-circle-outline","tablet-landscape-outline","tablet-portrait-outline","telescope-outline","tennisball-outline","terminal-outline","text-outline","thermometer-outline","thumbs-down-outline","thumbs-up-outline","thunderstorm-outline","ticket-outline","time-outline","timer-outline","today-outline","toggle-outline","trail-sign-outline","train-outline","transgender-outline","trash-outline","trash-bin-outline","trending-down-outline","trending-up-outline","triangle-outline","trophy-outline","tv-outline","umbrella-outline","unlink-outline","videocam-outline","videocam-off-outline","volume-high-outline","volume-low-outline","volume-medium-outline","volume-mute-outline","volume-off-outline","walk-outline","wallet-outline","warning-outline","watch-outline","water-outline","wifi-outline","wine-outline","woman-outline","logo-alipay","logo-amazon","logo-amplify","logo-android","logo-angular","logo-apple","logo-apple-appstore","logo-apple-ar","logo-behance","logo-bitbucket","logo-bitcoin","logo-buffer","logo-capacitor","logo-chrome","logo-closed-captioning","logo-codepen","logo-css3","logo-designernews","logo-deviantart","logo-discord","logo-docker","logo-dribbble","logo-dropbox","logo-edge","logo-electron","logo-euro","logo-facebook","logo-figma","logo-firebase","logo-firefox","logo-flickr","logo-foursquare","logo-github","logo-gitlab","logo-google","logo-google-playstore","logo-hackernews","logo-html5","logo-instagram","logo-ionic","logo-ionitron","logo-javascript","logo-laravel","logo-linkedin","logo-markdown","logo-mastodon","logo-medium","logo-microsoft","logo-no-smoking","logo-nodejs","logo-npm","logo-octocat","logo-paypal","logo-pinterest","logo-playstation","logo-pwa","logo-python","logo-react","logo-reddit","logo-rss","logo-sass","logo-skype","logo-slack","logo-snapchat","logo-soundcloud","logo-stackoverflow","logo-steam","logo-stencil","logo-tableau","logo-tiktok","logo-tumblr","logo-tux","logo-twitch","logo-twitter","logo-usd","logo-venmo","logo-vercel","logo-vimeo","logo-vk","logo-vue","logo-web-component","logo-wechat","logo-whatsapp","logo-windows","logo-wordpress","logo-xbox","logo-xing","logo-yahoo","logo-yen"];
   textAligns = [{"value":"center","label":"Centrado"},{"value":"justify","label":"Justificado"},{"value":"right","label":"Derecha"},{"value":"left","label":"Izquierda"}];
   lineTypes = [{"value":"dashed","label":"Cortada"},{"value":"solid","label":"Sólida"},{"value":"dotted","label":"Punteada"},{"value":"double","label":"Doble"},{"value":"groove","label":"Sombreada"},{"value":"hidden","label":"Oculta"},]
@@ -221,8 +224,14 @@ export class MapEditorPage implements OnInit {
                         if(products.length > 0) {
                            this.product = products[0];
                         }
-                        this.resources = this.product.resources || { 'scenes': []};
-                        this.scene = this.sceneId ? this.product.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+						this.resources = this.product.resources || { 'scenes': []};
+					    this.scene = this.sceneId ? this.product.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+						if(!this.scene.banners || this.scene.banners.length == 0) {
+							this.addBanner('ProductName');
+							this.addBanner('ProductDescription');
+							this.addBanner('ProductCarousel');
+						}
+						//this.scene.container = {}
                         this.initializeScene();
                       })
                       .catch(error => {
@@ -282,7 +291,15 @@ export class MapEditorPage implements OnInit {
             elm.onResize();
         });
     }    
-  }  
+  } 
+  
+  onResizeCarousels() {
+    if(this.carrousels && this.carrousels._results ) {
+        this.carrousels._results.forEach((elm)=>{
+            elm.onResize();
+        });
+    }    
+  }
 
   initializeProductCatalogs() {
     if(this.productCatalogs && this.productCatalogs._results ) {
@@ -293,13 +310,14 @@ export class MapEditorPage implements OnInit {
     }    
   }
   
-  onResizeCarousels() {
-    if(this.carrousels && this.carrousels._results ) {
-        this.carrousels._results.forEach((elm)=>{
-            elm.onResize();
+  onRenderProductCatalogs(deltaW,deltaH) {
+    if(this.productCatalogs && this.productCatalogs._results ) {
+        this.productCatalogs._results.forEach((elm)=>{
+            elm.onRender(deltaW,deltaH);
         });
     }    
   }
+
   
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));
@@ -354,14 +372,18 @@ export class MapEditorPage implements OnInit {
         if(banner.fontSize > 0 ) {
            banner.fontSize /= deltaW;
         }
+		if(banner.border && banner.border.radius > 0){
+			banner.border.radius /= deltaH;
+		}
         
      });
      
      //Menu tab resize/render
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
 
-     //carrete of images resize/render
+     //product catalog and carrete of images resize/render 
      this.onResizeCarousels();
+	 this.onRenderProductCatalogs(deltaW,deltaH);
      
   }
 /*
@@ -438,7 +460,8 @@ logScrollEnd() {this.showlogScrolling = false;}
                   this.editSave = null;
                   this.showPanelTool = false
                   this.bannerSelect = null;
-                  window.location.replace(`${this.url}/#/super-admin/map-editor/fair/${this.sceneId}`);
+				  console.log(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${this.sceneId}`);
+				  //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${this.sceneId}`);
               }
               this.ngOnInit();
               this.errors = null;
@@ -464,7 +487,7 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.editSave = null;
               this.showPanelTool = false
               this.bannerSelect = null;
-              window.location.replace(`${this.url}/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+			  window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
            })
            .catch(error => {
@@ -487,7 +510,7 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.editSave = null;
               this.showPanelTool = false
               this.bannerSelect = null;
-              window.location.replace(`${this.url}/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+			  window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
            })
            .catch(error => {
@@ -508,7 +531,7 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.editSave = null;
               this.showPanelTool = false
               this.bannerSelect = null;
-              window.location.replace(`${this.url}/#/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
+			  window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
            })
            .catch(error => {
@@ -566,7 +589,7 @@ logScrollEnd() {this.showlogScrolling = false;}
   addBanner(type) {
     const id = new Date().valueOf();
     let banner: any;
-    const _defaultBanner = {id:id,type:type,rotation:{"x":0,"y":0,"z":0},position: this.getNewPosition({"x":156,"y":195}),border:{"style":"none"},fontSize:16};
+    const _defaultBanner = {id:id,type:type,rotation:{"x":0,"y":0,"z":0},"position": this.getNewPosition({"x":156,"y":195}),border:{"style":"none"},fontSize:16};
     switch(type) { 
       case 'Text':
           banner = {"textAlign":"left","fontColor":"#000000","text":"Texto aquí","size":{"x":100,"y":20}};
@@ -589,8 +612,20 @@ logScrollEnd() {this.showlogScrolling = false;}
           banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
       break;
       case 'ProductCatalog':
-          banner = {"size":{"x":114,"y":105},"productCatalog": {  }};
+          banner = {"size":{"x":384,"y":105},"productCatalog": {  }};
           this.presentNewProductListCatalog(banner);
+      break;
+      case 'Contact':
+          banner = {"size":{"x":384,"y":105},"contact": {  }};
+      break;
+      case 'ProductName':
+          banner = {"size":{"x":300,"y":33},"position": this.getNewPosition({"x":532,"y":41}),"fontColor":"#F5F6FF","fontSize":"25"};
+      break;
+      case 'ProductDescription':
+          banner = {"size":{"x":530,"y":205},"position": this.getNewPosition({"x":359,"y":115}),"textAlign":"justify","fontColor":"#000","fontSize":"16"};
+      break;      
+	  case 'ProductCarousel':
+          banner = {"size":{"x":304,"y":291},"position": this.getNewPosition({"x":117,"y":141})};
       break;
       default:
           banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
@@ -612,7 +647,7 @@ logScrollEnd() {this.showlogScrolling = false;}
       component: ProductListComponent,
       swipeToClose: true, 
       presentingElement: this.routerOutlet.nativeEl,
-      componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion }
+      componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion, 'stand': this.stand }
     });
     await modal.present();
 
@@ -699,7 +734,7 @@ logScrollEnd() {this.showlogScrolling = false;}
     let id = new Date().valueOf();
     this.bannerCopy = [];
     itemList.forEach((banner)=>{        
-       const newBanner = Object.assign({},banner);
+       const newBanner = this.clone(banner);
        newBanner.id = id;
        newBanner.position = this.getNewPosition(banner.position);
        this.bannerCopy.push(newBanner);
@@ -815,7 +850,7 @@ logScrollEnd() {this.showlogScrolling = false;}
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       window.location.replace(`${this.url}/#/super-admin/fair`);
+					   window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
                        //this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
@@ -830,7 +865,7 @@ logScrollEnd() {this.showlogScrolling = false;}
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
                        this.pavilionsService.refreshCurrentPavilion();
-                       window.location.replace(`${this.url}/#/super-admin/pavilion/${this.pavilion.id}`);
+                       window.location.replace(`${this.url}/Fair-website/#/super-admin/pavilion/${this.pavilion.id}`);
                        //this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
                    })
                    .catch(error => {
@@ -845,7 +880,7 @@ logScrollEnd() {this.showlogScrolling = false;}
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
                        //this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
-                       window.location.replace(`${this.url}/#/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                       window.location.replace(`${this.url}/Fair-website/#/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -896,9 +931,10 @@ logScrollEnd() {this.showlogScrolling = false;}
         }
         for(let j=0; j<pavilion.stands.length; j++) {
             stand = pavilion.stands[j];
-            for(let j=0; j<stand.resources.scenes.length; j++) {
-                scene = stand.resources.scenes[j];
-                this.internalUrlList.stands.push({'label':'Local '+ stand.id + '. Escena - ' + (j+1), 'value':`/map/stand/${pavilion.id}/${stand.id}/${j}`});
+			console.log(stand)
+            for(let k=0; k<stand.resources.scenes.length; k++) {
+                scene = stand.resources.scenes[k];
+                this.internalUrlList.stands.push({'label':'Local '+ stand.merchant.name + '. Escena - ' + (k+1), 'value':`/map/stand/${pavilion.id}/${stand.id}/${k}`});
             }
         }
     }
@@ -1120,7 +1156,7 @@ logScrollEnd() {this.showlogScrolling = false;}
       component: ProductListComponent,
       swipeToClose: true, 
       presentingElement: this.routerOutlet.nativeEl,
-      componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion }
+      componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion, 'stand': this.stand }
     });
     await modal.present();
 
@@ -1325,7 +1361,7 @@ logScrollEnd() {this.showlogScrolling = false;}
       header: 'Tipo de elemento a agregar',
       cssClass: 'my-custom-class',
       buttons: [{
-        text: 'Imagen',
+        text: 'Imágen',
         role: 'destructive',
         icon: 'image-outline',
         handler: () => {
@@ -1350,4 +1386,33 @@ logScrollEnd() {this.showlogScrolling = false;}
     const { role } = await actionSheet.onDidDismiss();
     
   }
+  
+  onChangeImage() {
+	  let img = new Image();
+	  const _self = this;
+	  img.onload = function() {
+         const _selfImg : any = this;  
+		_self.bannerSelect.size.x = _selfImg.width;
+		_self.bannerSelect.size.y = _selfImg.height;
+	  }
+	  img.src = this.bannerSelect.image_url;
+  }
+  
+  clone(obj){
+	
+	if(typeof obj == 'object') {
+	    let objNew =  Object.assign({},obj);
+		for (let key of Object.keys(obj)) {
+		   if(obj[key]) {
+			  objNew[key] = this.clone(obj[key]);
+		   }
+		}
+		
+		return objNew;
+	}
+	else {
+		return obj;
+	}
+  }
+
 }

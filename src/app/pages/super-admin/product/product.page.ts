@@ -25,12 +25,20 @@ export class ProductPage implements OnInit {
   success: string = null;
   editSave = false;
   productPriceSel = null;
-  categories = [
-  {'value':'1','label':'Hogar'},
-  {'value':'2','label':'Casa'},
-  {'value':'3','label':'Juguete'},
-  ]
-  
+  categories: any;
+  newAttr = null;
+  newKeyWord = null;
+  indexEditAttr = null;
+  attributeSel = null;
+  showColor = null;
+   
+  attributes = [
+    {'type':'color','name':'color','label':'Color','format':''},
+    {'type':'number','name':'width','label':'Ancho','format':['cm','mtrs','pulg']},
+    {'type':'number','name':'height','label':'Alto','format':['cm','mtrs','pulg']},
+    {'type':'text','name':'material','label':'Material','format':['madera','vidrio','poliester', 'fibra de vidrio']},
+    {'type':'text','name':'weigth','label':'Peso','format':['gramos','kilogramos','litros','mililitros']},
+  ];
   
   constructor(
     private adminProductsService: AdminProductsService,
@@ -62,6 +70,7 @@ export class ProductPage implements OnInit {
             this.categoryService.list('ProductCategory',this.fair)
             .then(({data}) => {
               this.categories = data;
+			  
               this.fair.pavilions.forEach((pavilion)=>{
                 if(pavilion.id == pavilionId ) {
                     this.pavilion = pavilion;
@@ -78,7 +87,10 @@ export class ProductPage implements OnInit {
                 .then((products) => {
                     this.loading.dismiss();
                     this.product = products[0];
-                    this.product.url_imagen = this.product.prices[0].resources.images[0].url_image;
+					this.product.url_imagen = this.product.prices[0].resources.images[0].url_image;
+					this.product.resources = this.product.resources || {};
+			        this.product.resources.attributes = this.product.resources.attributes || [];
+			        this.product.resources.keywords = this.product.resources.keywords || [];
                   })
                   .catch(error => {
                      this.loading.dismiss();
@@ -89,7 +101,8 @@ export class ProductPage implements OnInit {
                  this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id, this.productId)
                 .then((products) => {
                     let id = products && products.length ? products.length + 1 : 1;
-                    this.product = { 'name': 'Producto #' + id , 'description':  'Descripción producto #' + id }
+                    this.product = { 'name': 'Producto #' + id , 'description':  'Descripción producto #' + id}
+                    this.product.resources = { 'attributes': [], 'keywords':[] };
                     this.editSave = true;
                     this.loading.dismiss();
                   })
@@ -98,6 +111,7 @@ export class ProductPage implements OnInit {
                      this.errors = error;
                   });
                }
+			   
             })
             .catch(error => {
                this.loading.dismiss();
@@ -116,7 +130,7 @@ export class ProductPage implements OnInit {
           this.success = `Producto modificado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          this.onRouterLink(`/super-admin/product/${this.pavilion.id}/${this.stand.id}/${product.id}`);
+          this.redirectTo(`/super-admin/product/${this.pavilion.id}/${this.stand.id}/${product.id}`);
       })
       .catch(error => {
         this.loading.dismiss();
@@ -132,7 +146,7 @@ export class ProductPage implements OnInit {
           this.success = `Producto creado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          this.onRouterLink(`/super-admin/product/${this.pavilion.id}/${this.stand.id}/${product.id}`);
+          this.redirectTo(`/super-admin/product/${this.pavilion.id}/${this.stand.id}/${product.id}`);
       })
       .catch(error => {
          this.loading.dismiss();
@@ -161,8 +175,7 @@ export class ProductPage implements OnInit {
             this.adminProductsService.delete(this.product)
               .then((response) => {
                    this.success = `Producto borrado exitosamente`;
-                   const tab = `/super-admin/stand/${this.pavilion.id}/${this.stand.id}`;
-                   this.onRouterLink(tab);
+                   this.redirectTo(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
                 
               },
               (error) => {
@@ -179,8 +192,53 @@ export class ProductPage implements OnInit {
     await alert.present();
   }
   
-  onRouterLink(tab) {
-    this.router.navigate([tab]);
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
+  }
+  
+  addAttribute(){
+    if(this.newAttr.key.length > 0 && this.newAttr.value.length > 0) {
+	  this.product.resources.attributes.push(this.newAttr);
+      this.newAttr = null;
+	  this.editSave = true;
+    }
+  }
+  
+  deleteAttr(index, slidingItem) {
+	this.product.resources.attributes = this.product.resources.attributes.filter((attr, ind)=>{
+		return ind != index;
+	});
+	this.editSave = true;
+	slidingItem.close();
+  }
+  
+  showModifyAttr(i, slidingItem) {
+	slidingItem.close();
+	this.indexEditAttr = i;
+  }
+  
+  modifyAttr(i,slidingItem) {
+	this.indexEditAttr = null;
+  }
+  
+
+  addKeyWord(){
+   if(this.newKeyWord.value.length > 0 ) {
+     this.product.resources.keywords.push(this.newKeyWord.value);
+     this.newKeyWord = null;
+     this.editSave = true;
+   }
   }
 
+  openColors (attribute){
+      this.attributeSel = attribute;
+      this.showColor = true;
+  }
+  setColor (color){
+      this.attributeSel.value = color.value;
+      this.showColor = false;
+      this.editSave = true;
+  }  
 }

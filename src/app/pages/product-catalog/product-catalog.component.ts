@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ViewChild } from '@angular/core';
-import {Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ProductsService } from '../../api/products.service';
-
+import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { AlertController, ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-product-catalog',
@@ -16,9 +16,14 @@ export class ProductCatalogComponent implements OnInit {
   @Input() pavilion: any;
   @Input() stand: any;
   @Input() product: any;
+  @Output() onShowProduct = new EventEmitter<any>();
   products: any;
   
-  constructor(private productsService: ProductsService) { }
+  constructor(
+    private productsService: ProductsService,
+    private modalCtrl: ModalController,
+    private routerOutlet: IonRouterOutlet
+  ) { }
 
   ngOnInit() {
   } 
@@ -58,8 +63,23 @@ export class ProductCatalogComponent implements OnInit {
   
   
   onResize() {
-    
+    const el = document.querySelector<HTMLElement>('#grid-'+this.banner.id);
+	el.style.setProperty('--width', this.banner.size.x + 'px' );
+	el.style.setProperty('--height', this.banner.size.y + 'px' );
+	//el.style.setProperty('font-size', this.banner.fontSize + 'px' );
   }
+  
+  onRender(deltaW,deltaH) {
+    const el = document.querySelector<HTMLElement>('#grid-'+this.banner.id);
+	const nW: any = el.style.getPropertyValue('--width').replace('px','');
+	const nH: any = el.style.getPropertyValue('--height').replace('px','');
+	el.style.setProperty('--width', (nW / deltaW) + 'px' );
+    el.style.setProperty('--height', (nH / deltaH) + 'px' );
+	const elname = document.querySelector<HTMLElement>('#grid-col-'+this.banner.id + ' h2');
+	const fs: any = elname.style.getPropertyValue('font-size').replace('px','');
+	elname.style.setProperty('font-size', (fs / deltaW)  + 'px' );
+  }
+
   
   goToProduct(product) {
 
@@ -69,7 +89,15 @@ export class ProductCatalogComponent implements OnInit {
   }
   
   renderPrice(product) {
-      
+	let minValue = 0;
+	let maxValue = 0;
+    product.prices.forEach((price)=>{
+		
+	})
   }
   
+  onShowProductEl(product) {
+	product.pavilion = this.pavilion
+	this.onShowProduct.emit(product);
+  }
 }

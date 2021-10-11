@@ -24,16 +24,36 @@ export class UsersService {
     return this.http.post(`${this.url}/api/login`, {email: email, password: password, fair_id: fair_id})
    .pipe(
       timeout(2000),
-      catchError(e => {
-        if(e.status == 422) {
-          throw new Error(`Usuario o contraseña incorrectos`);
-        }
-        else {
-            console.log(e);
-            throw new Error(`Consultando el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
-        }
+      catchError((e: any) => {
+        if(e.status === 422) {
+           throw new Error(`Usuario o contraseña incorrectos`);
+		}
+		else if(e.message){
+		   throw new Error(`Consultando el servicio para cerrar sesión: ${e.name} - ${e.message}`);
+	    }
+		else {
+			throw new Error(`Consultando el servicio para cerrar sesión: ${e.status} - ${e.statusText}`);
+		}
+        
+        return of(null);
       })
     )
+   /*.pipe(
+      timeout(5000),
+      catchError((e: any) => {
+       if(e.status == 422) {
+         throw new Error(`Usuario o contraseña incorrectos`);
+       }
+       else {
+           if(e.status){
+             throw new Error(`Consultando el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
+			}
+			else if(e.message){
+             throw new Error(`Consultando el servicio para el inicio de sesión: ${e.name} - ${e.message}`);
+			}
+       }
+      })
+    )*/
   }
 
   logout(userDataSession): Observable<any> {
@@ -47,10 +67,14 @@ export class UsersService {
     return this.http.post(`${this.url}/api/logout`,{},httpOptions)
    .pipe(
       timeout(2000),
-      catchError(e => {
+      catchError((e: any) => {
         if(e.status !== 401) {
-           console.log(e);
-           throw new Error(`Consultando el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
+           if(e.status){
+			 throw new Error(`Consultando el servicio para cerrar sesión: ${e.status} - ${e.statusText}`);
+		   }
+           if(e.message){
+			 throw new Error(`Consultando el servicio para cerrar sesión: ${e.name} - ${e.message}`);
+		   }
         }
         return of(null);
       })
@@ -63,7 +87,7 @@ export class UsersService {
         this.http.post(`${this.url}/api/user/create`,userData)
        .pipe(
           timeout(2000),
-          catchError(e => {
+          catchError((e: any) => {
             if(e.status == 401) {
                throw new Error(`Usuario ya existe`);
             }
@@ -118,7 +142,7 @@ export class UsersService {
     return this.http.post(`${this.url}/api/user/update`,userData, httpOptions)
    .pipe(
       timeout(2000),
-      catchError(e => {
+      catchError((e: any) => {
         if(e.status == 401) {
            throw new Error(`Usuario ya existe`);
         }
@@ -139,7 +163,7 @@ export class UsersService {
       this.http.post(`${this.url}/api/password/create`,data)
        .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             if(e.status == 422) {
               const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
               throw new Error(`Consultando el servicio para recuperación de clave: ${message}`);
@@ -177,7 +201,7 @@ export class UsersService {
       this.http.get(`${this.url}/api/password/find/${token}`)
        .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             if(e.status == 422) {
               const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
               throw new Error(`Consultando el servicio para recuperación de clave: ${message}`);
@@ -212,7 +236,7 @@ export class UsersService {
       this.http.post(`${this.url}/api/password/reset`,data)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             if(e.status == 422) {
               const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
               throw new Error(`Consultando el servicio para recuperación de clave: ${message}`);
@@ -253,7 +277,7 @@ export class UsersService {
         this.http.post(`/api/payment/user/fair`,data,httpOptions)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de pagos realizados: ${e.status} - ${e.statusText}`);    
@@ -282,7 +306,7 @@ export class UsersService {
         this.http.post(`/api/payment/generate`,data,httpOptions)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de pagos realizados: ${e.status} - ${e.statusText}`);    

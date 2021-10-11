@@ -1,4 +1,4 @@
-  <ion-slides #slides pager="true" [options]="slideOpts" [ngStyle]="{'width': banner.size.x + 'px'}">
+  <!--ion-slides #slides pager="true" [options]="slideOpts" [ngStyle]="{'width': banner.size.x + 'px'}">
     <ion-slide *ngFor="let item of items" [ngStyle]="{'height': banner.size.y + 'px'}">
       <img *ngIf="item.url" src="{{item.url}}" alt="" [ngStyle]="{'height': banner.size.y + 'px'}"/>
       <div *ngIf="item.product" class="product" (click)="goToProduct(item.product)" >
@@ -8,7 +8,7 @@
          </div>
       </div>
     </ion-slide>
-   </ion-slides>
+   </ion-slides-->
 
 <!--product list--
 <ion-slides  [options]="slideOpts" id="ion-slides-{{banner.id}}" pager="true" [ngStyle]="{'width': banner.size.x + 'px'}">
@@ -25,3 +25,29 @@
   </div>
 </ion-slides>
 <!--product list-->
+
+
+<!--div class="dsc-carousel" [ngStyle]="{'min-height': finalHeight}"-->
+<div class="dsc-carousel">
+    <div class="dsc-carousel__btns">
+        <!--i class="fa fa-chevron-circle-left" (click)="setBack()"></i>
+        <i class="fa fa-chevron-circle-right" (click)="setNext()"></i-->
+    </div>
+    <div class="dsc-carousel__content">
+        <ng-container *ngFor="let section of items; let i = index;">
+            <div [hidden]="section.product" class="dsc-carousel__content-item" [ngStyle]="{'background-image': 'url(' + section.url + ')', 'margin-left': section.marginLeft + '%' }">
+                <h1> {{section.title}}</h1>
+            </div>
+            <div *ngIf="section.product" class="dsc-carousel__content-item" [ngStyle]="{'background-image': 'url(' + section.url + ')', 'margin-left': section.marginLeft + '%' }">
+                <h1> {{section.title}}</h1>
+            </div>
+        </ng-container>
+    </div>
+    <div class="dsc-carousel__steps">
+        <div 
+            class="dsc-carousel__steps-step 
+            dsc-carousel__steps-step-{{currentPosition === item.id ? 'active': ''}}" 
+            *ngFor="let item of items" (click)="setCurrentPosition(item.id)">
+        </div>
+    </div>
+</div>

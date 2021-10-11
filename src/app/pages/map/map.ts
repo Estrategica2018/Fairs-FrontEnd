@@ -6,8 +6,10 @@ import { Router } from '@angular/router';
 import { LoadingService } from './../../providers/loading.service';
 import { Animation, AnimationController } from '@ionic/angular';
 import { TabMenuScenesComponent } from '../map/tab-menu-scenes/tab-menu-scenes.component';
+import { ProductDetailComponent } from '../product-catalog/product-detail/product-detail.component';
 import { DomSanitizer} from '@angular/platform-browser';
 import { UsersService } from '../../api/users.service';
+import { AlertController, ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'page-map',
@@ -44,7 +46,10 @@ export class MapPage implements OnInit {
     private animationCtrl: AnimationController,
     private loading: LoadingService,
     private sanitizer: DomSanitizer,
-    private usersService: UsersService) {
+    private usersService: UsersService,
+	private modalCtrl: ModalController,
+    private routerOutlet: IonRouterOutlet) {
+		
       this.url = window.location.origin;
       this.listenForFullScreenEvents();
       this.usersService.getUser().then((userDataSession: any)=>{
@@ -138,7 +143,7 @@ export class MapPage implements OnInit {
           this.initializeCarousels();
           this.initializeProductCatalogs();
           if(this.carrousels._results && this.carrousels._results.length> 0)  {
-              setTimeout(() => {this.loading.dismiss(); },500 * this.carrousels._results.length);
+              setTimeout(() => {this.loading.dismiss(); },500 * ( this.carrousels._results.length + this.productCatalogs._results.length ));
           }
           else { this.loading.dismiss(); } 
         }, 5);
@@ -194,10 +199,10 @@ export class MapPage implements OnInit {
      let deltaH = this.scene.container.h / newHeight;
     
      if(newHeight < offsetHeight) {
-         newHeight = window.innerHeight;
-         newWidth = newHeight * this.scene.container.w / this.scene.container.h;
-         deltaW =  this.scene.container.w / newWidth;
-         deltaH = this.scene.container.h / newHeight;
+        newHeight = window.innerHeight;
+        newWidth = newHeight * this.scene.container.w / this.scene.container.h;
+        deltaW =  this.scene.container.w / newWidth;
+        deltaH = this.scene.container.h / newHeight;
      }
      this.scene.container.w = newWidth;
      this.scene.container.h = newHeight;
@@ -212,14 +217,18 @@ export class MapPage implements OnInit {
         }
         if(banner.fontSize > 0 ) {
            banner.fontSize /= deltaW;
-        }
+        }		
+		if(banner.border && banner.border.radius > 0){
+			banner.border.radius /= deltaH;
+		}
      });
      
      //Menu tab resize/render
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
      
-     //carrete of images resize/render
+     //product catalog and carrete of images resize/render 
      this.onResizeCarousels();
+	 this.onRenderProductCatalogs(deltaW,deltaH);
      
   }
 /*
@@ -310,9 +319,18 @@ logScrollEnd() {this.showlogScrolling = false;}
     if(this.carrousels && this.carrousels._results ) {
         this.carrousels._results.forEach((elm)=>{
             elm.initialize();
+            elm.onResize();
         });
     }    
-  }  
+  } 
+  
+  onResizeCarousels() {
+    if(this.carrousels && this.carrousels._results ) {
+        this.carrousels._results.forEach((elm)=>{
+            elm.onResize();
+        });
+    }    
+  }
 
   initializeProductCatalogs() {
     if(this.productCatalogs && this.productCatalogs._results ) {
@@ -322,15 +340,14 @@ logScrollEnd() {this.showlogScrolling = false;}
         });
     }    
   }
-
-
-  onResizeCarousels() {
-    if(this.carrousels && this.carrousels._results ) {
-        this.carrousels._results.forEach((elm)=>{
-            elm.onResize();
+  
+  onRenderProductCatalogs(deltaW,deltaH) {
+    if(this.productCatalogs && this.productCatalogs._results ) {
+        this.productCatalogs._results.forEach((elm)=>{
+            elm.onRender(deltaW,deltaH);
         });
     }    
-  }  
+  }
 
   onToMapEditor(scene){
     const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
@@ -383,7 +400,7 @@ logScrollEnd() {this.showlogScrolling = false;}
   @HostListener('document:mousemove', ['$event'])     
   onMouseMove(e) {
     if(this.moveMouseEvent) {
-      const target = document.querySelector('.div-container');      
+      const target = document.querySelector<HTMLElement>('.div-container');      
 
       const scrollTop = target.scrollTop;
       const scrollLeft = target.scrollLeft;
@@ -423,5 +440,22 @@ logScrollEnd() {this.showlogScrolling = false;}
       //document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',newScrollY.toString());
     }
   }
+  
+  async onShowProduct(product) {
+    const modal = await this.modalCtrl.create({
+      component: ProductDetailComponent,
+      swipeToClose: false, 
+	  cssClass: 'product-modal',
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { 'fair': this.fair, 'pavilion': product.pavilion, 'standId': product.stand_id, 'product': product }
+    });
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+        
+    }
+  }
+
 
 }

@@ -68,3 +68,12 @@
   width: 100%;
   position: absolute;
 }
+
+
+.product-modal {
+  --border-radius: 100px;
+}
+
+.product-modal .modal-wrapper {
+  --border-radius: 2px;
+}

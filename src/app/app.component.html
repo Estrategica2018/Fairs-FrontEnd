@@ -2,13 +2,12 @@
 <ion-app>
 <ion-header translucent="true">
   <ion-toolbar color="light" [ngClass]="{'full-screen': fullScreen}" class="app-toolbar-header">
-    <ion-buttons *ngIf="!showSearchbar" slot="start">
+    <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-buttons class="d-flex w-100">
-      <ion-img slot="start" *ngIf="!dark" class="icon-logo" [src]="fair?.social_media?.icon"></ion-img>
-      <ion-img slot="start" *ngIf="dark" class="icon-logo" [src]="fair?.social_media?.iconNight"></ion-img>
-      <ion-label  *ngIf="!showSearchbar" class="fair-title"> {{fair?.description}} </ion-label>
+      <ion-img slot="start" class="icon-logo" [src]="fair?.social_media?.icon"></ion-img>
+      <ion-label class="fair-title"> {{fair?.description}} </ion-label>
     </ion-buttons>
     <ion-buttons slot="end" class="d-none d-md-block">
       <ion-button color="secondary" routerLink="/login/" routerLinkActive="selected" routerDirection="root" *ngIf="!loggedIn" fill="outline" shape="round" class="end-menu-button">
@@ -40,9 +39,8 @@
         <ion-list lines="none">
           <ion-menu-toggle autoHide="false">
             <div *ngFor="let scene of fair?.resources?.scenes;let i = index">
-              <div *ngIf="scene.show">
-                <ion-item [routerLink]="'/map/fair'+(i+1)+'/'+i" routerLinkActive="selected" routerDirection="root" 
-                          (click)="onClickFairScene(i)">
+              <div *ngIf="scene.show || (profileRole && profileRole.admin)">
+                <ion-item (click)="onClickFairScene(i)" button="true">
                   <ion-icon slot="start" [name]="scene.menuIcon"></ion-icon>
                   <ion-label class="ion-text-wrap">
                     {{scene.title}}
@@ -52,8 +50,7 @@
             </div>
             <div *ngFor="let pavilion of fair?.pavilions;let i = index">
             <!-- (click)="onClickPavilion(pavilion)" -->
-              <ion-item [routerLink]="'/map/pavilion'+(i+1)+'/'+i+'/0'" routerLinkActive="selected" routerDirection="root" 
-                      (click)="onClickPavilion(pavilion)"
+              <ion-item (click)="onClickPavilion(pavilion)"
                       class="pavilions-menu"
                       button="true"
                       lines="none">
@@ -65,30 +62,43 @@
             <!--[routerLink]="'/map/pavilion'+(i+1)+'/'+pavilion.id+'/'+k" routerLinkActive="selected" routerDirection="root" -->
               <div *ngIf="showPavilionDetail ==='pavilion_id_'+pavilion.id">
                 <div *ngFor="let scene of pavilion.resources.scenes; let k = index;" >
-                  <ion-item *ngIf="scene.show"
-                          (click)="redirectTo('/map/pavilion'+(i+1)+'/'+pavilion.id+'/'+k)"
+                  <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
+                          (click)="onClickPavilionScene(pavilion,k)"
                           lines="none"
                           button="true"
                           class="sub-menu">
-                    <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                    <ion-label class="menu-label"> {{ scene.title}} </ion-label>
+                    <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
+                    <ion-label class="menu-label ml-4 ion-text-wrap"> {{ scene.title}} </ion-label>
                   </ion-item>
                 </div>
-                <ion-item *ngIf="pavilion.stands.length > 0" 
-                          (click)="pavilion.showStandDetail =  pavilion.showStandDetail ==='pavilion_id_'+pavilion.id ? null : 'pavilion_id_'+pavilion.id"
-                          lines="none"
+                <ion-item (click)="onClickPavilionLocal(pavilion)"
+				          lines="none"
                           button="true"
-                          class="sub-menu">
-                  <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                  <ion-label class="menu-label">Locales comerciales </ion-label>
+                          class="sub-menu"
+						  *ngIf="pavilion.stands.length > 0" >
+                  <ion-label class="menu-label ml-4">Locales comerciales </ion-label>
+				  <ion-icon slot="end" name="chevron-down-outline" size="small" [hidden]="pavilion.showStandDetail"></ion-icon>
+                  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="pavilion.showStandDetail"></ion-icon>
                 </ion-item>
                 <div *ngIf="pavilion.showStandDetail">
-                    <ion-item *ngFor="let stand of pavilion.stands;let i_stand = index"
-                              [routerLink]="'/map/stand'+(i_stand+1)+'/'+pavilion.id+'/'+stand.id+'/0'" routerLinkActive="selected" routerDirection="root" 
-                              lines="none" class="sub-menu-stand">
-                      <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                      <ion-label class="menu-label ion-text-wrap">{{stand.merchant.name}}</ion-label>
-                    </ion-item>
+                    <div *ngFor="let stand of pavilion.stands;let i_stand = index">
+					  <ion-item (click)="onClickPavilionStand(pavilion,stand)"
+                              button="true" lines="none" class="sub-menu-stand">
+                        <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
+                        <ion-label class="menu-label ml-6 ion-text-wrap" style="margin-left: 2em;">{{stand.merchant.name}}</ion-label>
+                      </ion-item>
+				      <div *ngIf="stand.standShowSelect && stand.resources.scenes.length > 1">
+					    <div *ngFor="let scene of stand.resources.scenes;let i_scene = index">
+                          <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
+                              (click)="onClickPavilionStandScene(pavilion,stand,i_scene)"
+                              button="true"
+							  lines="none" class="sub-menu-stand">
+                            <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+                            <ion-label class="menu-label ion-text-wrap" style="margin-left: 2em;">{{scene.title || 'Escena #' + ( i_scene + 1 ) }}</ion-label>
+                          </ion-item>
+                         </div>
+                       </div>
+                    </div>
                 </div>
              </div>
           </div>

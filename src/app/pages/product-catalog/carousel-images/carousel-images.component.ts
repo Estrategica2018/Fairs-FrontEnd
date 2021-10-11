@@ -1,5 +1,4 @@
-
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-carousel-images',
@@ -9,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class CarouselImagesComponent implements OnInit {
 
   @Input() product: any;
+  @Output() changePrice = new EventEmitter<string>();
   colors = [];
   imagesArray = [];
   imageSelected = null;
@@ -32,8 +32,7 @@ export class CarouselImagesComponent implements OnInit {
      }
      else {
         this.imageSelected = 0;
-        this.imagesArray = this.product.prices[0].resources.images;
-        console.log(this.imagesArray);
+        this.imagesArray = this.product.prices[0].resources.images; 
      }
      
     //this.coverflowSlideOpts();
@@ -358,5 +357,12 @@ export class CarouselImagesComponent implements OnInit {
           }
       }
     }
+	
+  onChangeColor(index) {
+	 this.imageSelected = index;
+     this.imagesArray = this.product.prices[index].resources.images; 
+	 if(this.changePrice)
+	 this.changePrice.emit(this.product.prices[index]);
+  }	
 
 }

@@ -1,0 +1,64 @@
+$blue-color: #004782;
+$blue-light-color: #F5F6FF;
+
+.card { 
+ .info {
+    position: absolute;
+    background-color: var(--white);
+    width: 4.6em;
+    height: 4.6em;
+    border-bottom-right-radius: 3em;
+    top: -1px;
+    left: -1px;
+    z-index: 58;
+    -webkit-box-shadow: 0px 2px 9px -1px rgb(0 0 0 / 37%);
+	ion-icon {
+	   font-size: 3.2em;
+       margin: 0.14em;
+	   --ion-color-base: #004782 !important;
+    }
+  }
+ 
+}
+
+.name {
+  color: #{$blue-color};
+}
+
+.description small {
+    color: black;
+    font-weight: 500;
+}
+
+.col-max {
+  overflow: auto;
+  height: 40em;
+}
+
+.thumbnail {
+  --size: 1;
+}
+
+.item-add .delete {
+  position: relative;
+  top: -186px;
+  left: 17px;
+}
+
+.item-add .delete.video {
+  position: relative;
+  top: -86px;
+  left: 17px;
+}
+
+
+.item-add .delete.paragraph {
+  position: relative;
+  top: -54px;
+  left: -3px;
+}
+
+.select-amount {
+  height: 3em;
+  width: 13em;
+}

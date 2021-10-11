@@ -8,7 +8,7 @@
   'height': scene?.container?.h + 'px'
   }" (ionScroll)="logScrolling($event)"
   *ngIf="scene && scene.url_image">
-</div>
+ </div>
 <!--Scene Background Color-->
 <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
 *ngIf="scene && scene.backgroundColor && !scene.url_image">
@@ -74,6 +74,17 @@
        <div [hidden]="banner.isHtml">
           {{ banner.text}}
        </div>
+      <!--if object is product -->
+	   <div *ngIf="product && banner.type=='ProductDescription'">
+		   {{product.name}}
+	   </div>
+	   <div *ngIf="product && banner.type=='ProductName'">
+		   {{product.description}}
+	   </div>
+	   <div *ngIf="product && banner.type=='ProductCarousel'">
+		   <app-carousel-images [product]="product">
+		   </app-carousel-images>
+	   </div>
      </div> 
    </div>
    <!--if banner is Video-->

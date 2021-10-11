@@ -24,7 +24,7 @@ export class CategoryService {
         this.http.get(`/api/category/to_list/${fair.id}/${type}`)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
@@ -53,7 +53,7 @@ export class CategoryService {
         this.http.post(`/api/category/create/`,category)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
@@ -82,7 +82,7 @@ export class CategoryService {
         this.http.post(`/api/category/create/`,category)
         .pipe(
           timeout(30000),
-          catchError(e => {
+          catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
               throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);

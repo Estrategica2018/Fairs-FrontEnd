@@ -86,27 +86,27 @@ export class MerchantPage implements OnInit {
         name: 'url_facebook',
         label: 'Url Facebook',
         value: this.merchant.social_media.url_facebook,
-        placeholder: ''
+        placeholder: 'facebook'
       }, {
         name: 'url_instagram',
         label: 'Url Instagram',
         value: this.merchant.social_media.url_instagram,
-        placeholder: ''
+        placeholder: 'Instagram'
       }, {
         name: 'url_youtube',
         label: 'Url Youtube',
         value: this.merchant.social_media.url_youtube,
-        placeholder: ''
+        placeholder: 'Youtube'
       }, {
         name: 'url_whatsapp',
         label: 'Url Whatsapp',
         value: this.merchant.social_media.url_whatsapp,
-        placeholder: ''
+        placeholder: 'Whatsapp'
       }, {
         name: 'url_twitter',
         label: 'Url Twitter',
         value: this.merchant.social_media.url_twitter,
-        placeholder: ''
+        placeholder: 'Twitter'
       }],
       buttons: [{
         text: 'Cancel',
@@ -119,6 +119,8 @@ export class MerchantPage implements OnInit {
           this.merchant.social_media.url_facebook = data.url_facebook;
           this.merchant.social_media.url_instagram = data.url_instagram;
           this.merchant.social_media.url_youtube = data.url_youtube;
+          this.merchant.social_media.url_whatsapp = data.url_whatsapp;
+          this.merchant.social_media.url_twitter = data.url_twitter;
 
         }
       }]

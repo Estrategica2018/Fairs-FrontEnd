@@ -30,7 +30,7 @@ export class SpeakersService {
                     this.http.get(`/api/speakers/meetings?fair_id=${fair.id}`)
                    .pipe(
                       timeout(30000),
-                      catchError(e => {
+                      catchError((e: any) => {
                         if(e.status && e.statusText) {
                           throw new Error(`Consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);    
                         }

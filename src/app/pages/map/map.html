@@ -24,7 +24,7 @@
    <ion-item [hidden]="!errors">
       <div class="alert alert-danger alert-dismissible">
          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-         <strong>Error!</strong> {{errors}}
+         <strong></strong> {{errors}}
       </div>
    </ion-item>
 
@@ -91,6 +91,7 @@
        'color': banner.fontColor,
        'border-color': banner.border?.color,
        'border-style': banner.border?.style,
+       'font-weight': banner.fontWeight,
        'border-radius': banner.border?.radius + 'px',
        'border-width': banner.border?.width +'px',
        'text-align': banner.textAlign,
@@ -101,7 +102,7 @@
            <div *ngIf="banner.isHtml">
              <div [innerHTML]="banner.textHtml"></div>
            </div>
-           <div [hidden]="banner.isHtml">
+           <div [hidden]="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
               {{ banner.text}}
            </div>
          </div> 
@@ -123,6 +124,7 @@
        <!--if banner is product-catalog -->
        <app-product-catalog #productCatalog [banner]="banner" *ngIf="banner.productCatalog" 
        id="product-catalog-id-{{banner.id}}"
+	   (onShowProduct)="onShowProduct($event)"
        [fair]="fair" [pavilion]="pavilion" [stand]="stand" 
        [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
        </app-product-catalog>   

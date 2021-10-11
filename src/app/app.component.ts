@@ -12,8 +12,6 @@ import { PavilionsService } from './api/pavilions.service';
 import { AlertController } from '@ionic/angular';
 import { Title } from '@angular/platform-browser';
 
-
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -30,7 +28,6 @@ export class AppComponent implements OnInit {
   fullScreen = false;
   showPavilionDetail: string = null;
   showStandDetail: string = null;
-  showSearchbar: any;
   _toolbarHeight = 56;
   profileRole:any;
   
@@ -48,7 +45,8 @@ export class AppComponent implements OnInit {
     private loading: LoadingService,
     private fairsService: FairsService,
     private pavilionsService: PavilionsService,
-    private titleService: Title
+    private titleService: Title,
+	private menuCtrl: MenuController
   ) {
     this.initializeApp();
     this.initializeFair();
@@ -131,13 +129,13 @@ export class AppComponent implements OnInit {
 
   async presentLogout() {
     const alert = await this.alertCtrl.create({
-      header: 'Confirma para cerrar la sesión',
+      subHeader: 'Confirma para cerrar la sesión',
       buttons: [
         { text: 'Cancelar',
           role: 'cancel'
         },
         {
-          text: 'Aceptar',
+          text: 'Cerrar Sesión',
           handler: (data: any) => {
              this.logout();
           }
@@ -206,6 +204,24 @@ export class AppComponent implements OnInit {
     this.showPavilionDetail =  this.showPavilionDetail === 'pavilion_id_'+pavilion.id ?  null : 'pavilion_id_'+pavilion.id
     this.redirectTo('/map/pavilion/'+pavilion.id+'/0');
   }
+  
+  onClickPavilionScene(pavilion,index) {
+	  this.redirectTo('/map/pavilion/'+pavilion.id+'/'+index);
+  }
+  
+  async onClickPavilionLocal(pavilion){
+	  if(pavilion)
+       pavilion.showStandDetail =  pavilion.showStandDetail ==='pavilion_id_'+pavilion.id ? null : 'pavilion_id_'+pavilion.id;
+	   await this.menuCtrl.open('end');
+  }
+  
+  onClickPavilionStand(pavilion,stand) {
+    stand.standShowSelect = stand.standShowSelect ? false : true;
+	this.redirectTo('/map/stand/'+pavilion.id+'/'+stand.id+'/0');
+  }
+  
+  onClickPavilionStandScene(pavilion,stand,index){
+	  this.redirectTo('/map/stand/'+pavilion.id+'/'+stand.id+'/'+index);
+  }
+  
 }
-
-

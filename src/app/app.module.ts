@@ -8,7 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { AppRoutingModule } from './app-routing.module';
-import { ComponentModule } from './components.module';
+import { ComponentsModule } from './components.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -32,7 +32,7 @@ import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi
       enabled: environment.production
     }),
     WompiPaymentLayoutPageModule,
-    ComponentModule
+    ComponentsModule
   ],
   declarations: [AppComponent],
   entryComponents: [],
