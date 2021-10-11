@@ -7,6 +7,19 @@
     <ion-title>Conferencista</ion-title>
   </ion-toolbar>
 </ion-header>
+<ion-list-header [hidden]="!errors">
+  <div class="alert alert-danger fade show alert-dismissible">
+    <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+    <strong>Error!</strong> {{errors}}
+  </div>
+</ion-list-header>
+
+<ion-list-header [hidden]="!success">
+  <div class="alert alert-success fade show alert-dismissible">
+    <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+    <strong></strong> {{success}}
+  </div>
+</ion-list-header>
 <ion-list lines=""  class="padding-container">
   <ion-item button="true">
     <ion-label> Nombre </ion-label>
@@ -14,7 +27,7 @@
   </ion-item>
   <ion-item button="true">
     <ion-label> Apellido </ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.name" name="name"></ion-input>
+    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.last_name" name="last_name"></ion-input>
   </ion-item>
   <ion-item button="true">
     <ion-label> Imagen de perfil </ion-label>
@@ -46,7 +59,7 @@
   </ion-item>
 
   <div class="ion-padding mt-2">
-    <ion-button  size="small" >
+    <ion-button  size="small" (click)="store()" >
       <ion-label > Guardar </ion-label>
       <ion-icon slot="end" name="save-outline"></ion-icon>
     </ion-button>
