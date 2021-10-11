@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
 import { processDataToString } from '../../providers/process-data';
 import { processData } from '../../providers/process-data';
+import { UsersService } from '../users.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +18,22 @@ export class AdminSpeakersService {
   pavilions = {};
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+	private usersService: UsersService
   ) { }
 
   create(data): Promise<any> {
 
     return new Promise((resolve, reject) => {
+      
+ 	  this.usersService.getUser().then((userDataSession: any)=>{
+		const httpOptions = {
+		  headers: new HttpHeaders({
+			  'Authorization':  'Bearer ' + userDataSession.token
+		  })
+	  };
 
-      this.http.post(`/api/speaker/create`, processDataToString(data))
+	  this.http.post(`/api/speakers/create`, processDataToString(data),httpOptions)
         .pipe(
           timeout(30000),
           catchError(e => {
@@ -44,6 +54,7 @@ export class AdminSpeakersService {
         },error => {
           reject( error )
         });
+      });
     });
   }
 

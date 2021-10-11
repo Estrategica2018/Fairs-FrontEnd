@@ -3,17 +3,22 @@ import {LoadingService} from '../../../providers/loading.service';
 import {AdminSpeakersService} from './../../../api/admin/speaker.service';
 import { AlertController, ActionSheetController } from '@ionic/angular';
 import { Router, ActivatedRoute} from '@angular/router';
+import { FairsService } from './../../../api/fairs.service';
+
 @Component({
   selector: 'app-speaker',
   templateUrl: './speaker.page.html',
   styleUrls: ['./speaker.page.scss'],
 })
 export class SpeakerPage implements OnInit {
+  
   speaker: any;
   errors: string = null;
   success: string = null;
+  
   constructor( private adminSpeakersService: AdminSpeakersService, private loading: LoadingService,
-               private alertCtrl: AlertController, private router: Router, private route: ActivatedRoute
+               private alertCtrl: AlertController, private router: Router, private route: ActivatedRoute,
+               private fairsService: FairsService,
   ) { }
   ngOnInit() {
     this.speaker =  {
@@ -31,18 +36,24 @@ export class SpeakerPage implements OnInit {
   store() {
 
     this.loading.present({message: 'Cargando...'});
-    this.adminSpeakersService.create(this.speaker)
-      .then((merchant) => {
-        this.loading.dismiss();
-        this.success = `Conferencista creado exitosamente`;
-        this.errors = null;
-        this.speaker = merchant;
-        console.log(merchant, 'creación');
-      })
-      .catch(error => {
-        this.loading.dismiss();
-        this.errors = error;
-      });
-
+    this.fairsService.getCurrentFair()
+      .then((fair) => {
+		
+		this.speaker.fair_id = fair.id;  
+		this.speaker.origin = window.location.origin;
+		
+		this.adminSpeakersService.create(this.speaker)
+		  .then((merchant) => {
+			this.loading.dismiss();
+			this.success = `Conferencista creado exitosamente`;
+			this.errors = null;
+			this.speaker = merchant;
+			console.log(merchant, 'creación');
+		  })
+		  .catch(error => {
+			this.loading.dismiss();
+			this.errors = error;
+		  });
+	  });
   }
 }
