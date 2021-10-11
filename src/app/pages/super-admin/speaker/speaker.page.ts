@@ -11,11 +11,11 @@ import { FairsService } from './../../../api/fairs.service';
   styleUrls: ['./speaker.page.scss'],
 })
 export class SpeakerPage implements OnInit {
-  
+
   speaker: any;
   errors: string = null;
   success: string = null;
-  
+
   constructor( private adminSpeakersService: AdminSpeakersService, private loading: LoadingService,
                private alertCtrl: AlertController, private router: Router, private route: ActivatedRoute,
                private fairsService: FairsService,
@@ -24,6 +24,8 @@ export class SpeakerPage implements OnInit {
     this.speaker =  {
       id: null ,
       name: '',
+      user_name: '',
+      last_name: '',
       profile_picture: '',
       company_logo: '',
       description_one: '',
@@ -36,19 +38,20 @@ export class SpeakerPage implements OnInit {
   store() {
 
     this.loading.present({message: 'Cargando...'});
+    this.speaker.user_name = this.speaker.name.replace(' ', '' ) + '_' + Date.now(),
     this.fairsService.getCurrentFair()
       .then((fair) => {
-		
-		this.speaker.fair_id = fair.id;  
+
+		this.speaker.fair_id = fair.id;
 		this.speaker.origin = window.location.origin;
-		
+
 		this.adminSpeakersService.create(this.speaker)
-		  .then((merchant) => {
+		  .then((speaker) => {
 			this.loading.dismiss();
 			this.success = `Conferencista creado exitosamente`;
 			this.errors = null;
-			this.speaker = merchant;
-			console.log(merchant, 'creación');
+			this.speaker = speaker;
+			console.log(speaker, 'creación');
 		  })
 		  .catch(error => {
 			this.loading.dismiss();
