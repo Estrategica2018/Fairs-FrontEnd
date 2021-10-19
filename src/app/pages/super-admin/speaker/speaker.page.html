@@ -7,6 +7,7 @@
     <ion-title>Conferencista</ion-title>
   </ion-toolbar>
 </ion-header>
+
 <ion-list-header [hidden]="!errors">
   <div class="alert alert-danger fade show alert-dismissible">
     <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
@@ -20,7 +21,69 @@
     <strong></strong> {{success}}
   </div>
 </ion-list-header>
+<ion-content fullscreen="true">
 <ion-list lines=""  class="padding-container">
+  <ion-grid class="ion-text-center">
+    <ion-row class="ion-margin">
+      <ion-col>
+        <ion-title>
+          <ion-text color="default">
+            Lista conferencistas
+          </ion-text>
+        </ion-title>
+      </ion-col>
+    </ion-row>
+    <ion-row class="header-row">
+      <ion-col>
+        <ion-text>Nombre</ion-text>
+      </ion-col>
+
+      <ion-col>
+        <ion-text>Cargo</ion-text>
+      </ion-col>
+
+      <ion-col>
+        <ion-text>Profesión</ion-text>
+      </ion-col>
+
+      <ion-col>
+        <ion-text>Correo</ion-text>
+      </ion-col>
+      <ion-col>
+        <ion-text>Acción</ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let speaker of speakers;let i = index">
+      <ion-col>
+        <ion-text>
+          {{speaker.user.name+' '+speaker.user.last_name}}
+        </ion-text>
+      </ion-col>
+
+      <ion-col>
+        <ion-text>
+          {{speaker.position}}
+        </ion-text>
+      </ion-col>
+
+      <ion-col>
+        <ion-text>
+          {{speaker.profession}}
+        </ion-text>
+      </ion-col>
+      <ion-col>
+        <ion-text>
+          {{speaker.user.email}}
+        </ion-text>
+      </ion-col>
+      <ion-col>
+        <ion-text>
+          <button ion-button (click)="get(speaker.id)">Editar</button>
+        </ion-text>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
   <ion-item button="true">
     <ion-label> Nombre </ion-label>
     <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.name" name="name"></ion-input>
@@ -59,10 +122,15 @@
   </ion-item>
 
   <div class="ion-padding mt-2">
-    <ion-button  size="small" (click)="store()" >
+    <ion-button  size="small" (click)="store()" [hidden]="speaker.id">
       <ion-label > Guardar </ion-label>
       <ion-icon slot="end" name="save-outline"></ion-icon>
     </ion-button>
+    <ion-button  color="warning" size="small" (click)="update()" *ngIf="speaker.id">
+      <ion-label > Editar </ion-label>
+      <ion-icon slot="end" name="pencil-outline"></ion-icon>
+    </ion-button>
   </div>
 </ion-list>
+</ion-content>
 

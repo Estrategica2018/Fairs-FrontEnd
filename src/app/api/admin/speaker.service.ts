@@ -19,13 +19,13 @@ export class AdminSpeakersService {
 
   constructor(
     private http: HttpClient,
-	private usersService: UsersService
+    private usersService: UsersService
   ) { }
 
   create(data): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      
+
  	  this.usersService.getUser().then((userDataSession: any)=>{
 		const httpOptions = {
 		  headers: new HttpHeaders({
@@ -58,6 +58,37 @@ export class AdminSpeakersService {
     });
   }
 
-
-
+  update(data): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.usersService.getUser().then((userDataSession: any) => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            Authorization:  'Bearer ' + userDataSession.token
+          })
+        };
+        this.http.post(`/api/speakers/update`, processDataToString(data), httpOptions)
+          .pipe(
+            timeout(30000),
+            catchError(e => {
+              if (e.status && e.statusText) {
+                const statusText = e.statusText + (e.error ? e.error.message : '');
+                throw new Error(`Consultando el servicio para actualizar conferencista : ${e.status} - ${statusText}`);
+              } else {
+                throw new Error(`Consultando el servicio para actualizar conferencista`);
+              }
+            })
+          )
+          .subscribe(( data : any ) => {
+            if (data.success) {
+              resolve(processData(data.data));
+            } else {
+              reject(JSON.stringify(data));
+            }
+          }, error => {
+            reject( error );
+          });
+      });
+    });
+  }
 }
+
