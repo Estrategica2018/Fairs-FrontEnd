@@ -16,14 +16,15 @@ export class SpeakersService {
   url = '';
   refresTime = null;
   speakers = null;
-  
+
   constructor(
     private http: HttpClient,
     private fairsService: FairsService
   ) { }
 
   list(): any {
-    if(this.speakers === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
+    //if(this.speakers === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
+    if (true) {
         return new Promise((resolve, reject) => {
             this.fairsService.getCurrentFair().
               then( fair => {
@@ -32,14 +33,14 @@ export class SpeakersService {
                       timeout(30000),
                       catchError((e: any) => {
                         if(e.status && e.statusText) {
-                          throw new Error(`Consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);    
+                          throw new Error(`Consultando el servicio de conferencistas: ${e.status} - ${e.statusText}`);
                         }
                         else {
-                          throw new Error(`Consultando el servicio de conferencistas`);    
+                          throw new Error(`Consultando el servicio de conferencistas`);
                         }
                       })
                     )
-                    .subscribe( (data: any) => { 
+                    .subscribe( (data: any) => {
                         this.refresTime = moment();
                         this.speakers = data.data;
                         for(let i=0; i < this.speakers.length; i++ ) {
@@ -54,7 +55,7 @@ export class SpeakersService {
         return new Promise((resolve, reject) => resolve(this.speakers));
     }
   }
-  
+
   get(speaker_id: string): any {
     return new Promise((resolve, reject) => {
         this.list()
@@ -68,8 +69,8 @@ export class SpeakersService {
           })
         .catch(error => {
             reject(error)
-         });    
+         });
     });
   }
-  
+
 }

@@ -70,13 +70,15 @@ export class SpeakerPage implements OnInit {
   }
   get(speakerId) {
     console.log('id conferencista', speakerId);
+    this.loading.present({message: 'Cargando...'});
     this.speakersService.get(speakerId).then((speaker) => {
       this.speaker = speaker;
       this.speaker.id = speaker.id;
       this.speaker.name = speaker.user.name;
       this.speaker.last_name = speaker.user.last_name;
       this.speaker.email = speaker.user.email;
-      console.log('conferencista', speaker);
+      this.loading.dismiss();
+      this.success = `Conferencista consultado`;
     } ).catch(error => {
       this.loading.dismiss();
       this.errors = error;
@@ -84,6 +86,7 @@ export class SpeakerPage implements OnInit {
   }
   update() {
     console.log(1);
+    this.loading.present({message: 'Cargando...'});
     this.adminSpeakersService.update(this.speaker)
       .then((speaker) => {
         this.speakersService.list().then((speakers) => {
