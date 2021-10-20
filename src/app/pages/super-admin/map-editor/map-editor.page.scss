@@ -25,6 +25,10 @@
   z-index: 11;
 }
 
+.full-screen-button:hover {
+  z-index: 18;
+}
+
 .tabs-menu {
   position: absolute;
   bottom: 20px;
@@ -195,9 +199,13 @@ ion-tab-button {
 
 .panel-tab-menu {
   position: absolute;
-  top: 82px;
+  top: 80px;
   right: 0px;
   z-index: 11;
+}
+
+.panel-tab-menu:hover {
+  z-index: 19;
 }
 
 .panel-video-preview {
@@ -207,11 +215,19 @@ ion-tab-button {
   z-index: 11;
 }
 
+.panel-video-preview:hover {
+  z-index: 19;
+}
+
 .panel-show-item {
   position: absolute;
-  top: 165px;
+  top: 163px;
   right: 0px;
   z-index: 11;
+}
+
+.panel-show-item:hover {
+  z-index: 19;
 }
 
 .panel-scene-plus {
@@ -219,6 +235,10 @@ ion-tab-button {
   top: 205px;
   right: 0px;
   z-index: 11;
+}
+
+.panel-scene-plus:hover {
+  z-index: 19;
 }
 
 .icon-panel-scene {
@@ -241,6 +261,10 @@ ion-tab-button {
   z-index: 11;
 }
 
+.panel-scene-save:hover {
+  z-index: 19;
+}
+
 .panel-scene-settings {
   position: absolute;
   top: 40px;
@@ -248,6 +272,9 @@ ion-tab-button {
   z-index: 11;
 }
 
+.panel-scene-settings:hover {
+  z-index: 19;
+}
 
 .icon-panel-scene-label {
   position: absolute;
@@ -256,6 +283,9 @@ ion-tab-button {
   cursor: pointer;
 }
 
+.icon-panel-scene-label:hover {
+  z-index: 19;
+}
 
 .card-content-panel {
    max-height: 495px;
@@ -305,23 +335,29 @@ ion-tab-button {
 .clean-html-button {
   position: absolute;
   top: 0px;
-  right: 186px;
+  right: 14em;
   z-index: 10;
 }
 .close-html-button {
   position: absolute;
   top: 0px;
-  right: 97px;
+  right: 8em;
   z-index: 10;
 }
 .accept-html-button {
   position: absolute;
   top: 0px;
-  right: 7px;
+  right: 1.6em;
   z-index: 10;
 }
 
 .edit-carousel-button {
+  top: 48px;
+  position: absolute;
+  z-index: 2;
+}
+
+.edit-contact-button {
   top: 48px;
   position: absolute;
   z-index: 2;
@@ -332,6 +368,32 @@ ion-tab-button {
   top: 0px;
   left: 58px;
   z-index: 11;
+}
+
+.goto-back-button:hover {
+  z-index: 19;
+}
+
+.goto-back-history-button {
+  position: absolute;
+  top: 0px;
+  left: 144px;
+  z-index: 11;
+}
+
+.goto-back-history-button:hover {
+  z-index: 19;
+}
+
+.goto-next-history-button {
+  position: absolute;
+  top: 0px;
+  left: 204px;
+  z-index: 11;
+}
+
+.goto-next-history-button:hover {
+  z-index: 19;
 }
 
 .max-height {
@@ -354,4 +416,107 @@ ion-tab-button {
 
 .line-height-mili {
   width: 36px;
+}
+
+.content-scroll {
+    height: 417px;
+    overflow: auto;
+}
+
+.separator-text {
+  border-bottom: 1px solid var(--cyan);
+  width: 95%;
+  cursor: pointer;
+  ion-buttons { 
+    ion-card-subtitle {
+      color: var(--cyan);
+      margin: auto;
+          padding-left: 9em;
+    } 
+  }
+}
+
+.tool-selected {
+  --color: var(--ion-color-primary);
+  --background: var(--ion-color-light);
+}
+
+.tool-special {
+  display: flex
+}
+
+.tool-special::before {
+  color: red;
+  content: "*";
+  opacity: 0.5;
+  padding: 2px;
+}
+
+.edit-mode-backdrop {
+  opacity: 0.3;
+  z-index: 1001;
+}
+
+.edit-mode-backdrop-text {
+    color: white;
+    margin: auto;
+    z-index: 1000;
+    position: absolute;
+    left: 23em;
+    top: 12em;
+    width: 31em;
+    height: 9em;
+    opacity: 0.9;
+    border-radius: 12px;
+    --background: var(--light);
+    ion-item {
+       margin-top: 2em;
+    }
+}
+
+.tool-tip {
+  z-index: 10;
+}
+
+.tooltip-text {
+  display: none;
+  position: absolute;
+  left: 58px;
+  top: 7px;
+  background-color: black;
+  padding: 8px;
+  border-radius: 11px;
+  color: #fff;
+  width: 8em;
+  z-index: 19;
+  font-size: 1.3em;
+}
+
+.tooltip-text.arrow--2 {
+  left: -160px;
+  width: 11em;
+}
+
+.tool-tip:hover {
+  z-index: 19;
+}
+
+.tool-tip:hover~.tooltip-text{
+  display: block;
+}
+
+
+
+.contact-line { 
+  position: absolute; 
+  width: 100%; 
+  height: 0px;
+  border-color: rgb(40, 189, 215); 
+  border-style: solid; 
+  border-radius: 0px; 
+  border-width: 1px;
+}
+
+.contact-text-area {
+  border: 1px solid rgb(40, 189, 215);
 }

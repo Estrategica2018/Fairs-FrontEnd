@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-carousel-images',
@@ -7,7 +8,12 @@ import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angu
 })
 export class CarouselImagesComponent implements OnInit {
 
+  @ViewChild('slides', { static: true }) slides: IonSlides;
+  
   @Input() product: any;
+  @Input() imagesPriceWidth: any;
+  @Input() imageWidth: any;
+  @Input() imageHeight: any;
   @Output() changePrice = new EventEmitter<string>();
   colors = [];
   imagesArray = [];
@@ -15,6 +21,8 @@ export class CarouselImagesComponent implements OnInit {
   colorSelected = null;
   slideOpts : any;
   constructor() { }
+  isBeginning = true;
+  isEnd = false;
 
   ngOnInit() {
      'use strict';
@@ -24,19 +32,21 @@ export class CarouselImagesComponent implements OnInit {
            
          }
      }); 
-     if(this.colors.length >= 1) {
-        this.imageSelected = 0;
-        this.colorSelected = 0;
-        this.imagesArray = this.colors[0].image;
-         
-     }
-     else {
-        this.imageSelected = 0;
-        this.imagesArray = this.product.prices[0].resources.images; 
-     }
+     setTimeout(()=>{
+         if(this.colors.length >= 1) {
+            this.onChangeColor(1);
+            this.onChangeColor(0);
+            this.simpleSlideOpts();
+         }
+         else {
+            this.onChangeColor(0)
+            this.simpleSlideOpts();
+         }
+     },50);
+     
      
     //this.coverflowSlideOpts();
-    this.simpleSlideOpts();
+    
      //this.cubeSlideOpts();
      //this.fadeSlideOpts();
   }
@@ -44,7 +54,8 @@ export class CarouselImagesComponent implements OnInit {
   simpleSlideOpts() {
      this.slideOpts = {
         initialSlide: 0,
-        speed: 400
+        speed: 400,
+        navigation: true
      };
   }
   
@@ -357,12 +368,32 @@ export class CarouselImagesComponent implements OnInit {
           }
       }
     }
-	
+    
   onChangeColor(index) {
-	 this.imageSelected = index;
+     this.imageSelected = index;
      this.imagesArray = this.product.prices[index].resources.images; 
-	 if(this.changePrice)
-	 this.changePrice.emit(this.product.prices[index]);
-  }	
+     if(this.changePrice) {
+       this.product.priceSelected = this.product.prices[index]
+       this.changePrice.emit(this.product);
+     }
+  }    
+
+  slidePrev() {
+    this.slides.slidePrev();
+  }
+  
+  slideNext() {
+    this.slides.slideNext();
+  }
+
+  ionSlideChange(eve) {
+    this.slides.isBeginning().then((isbeg)=>{
+        this.isBeginning = isbeg;
+    });
+    this.slides.isEnd().then((isE)=>{
+        this.isEnd = isE;
+    });
+  }
 
 }
+

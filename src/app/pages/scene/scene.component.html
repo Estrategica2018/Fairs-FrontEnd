@@ -75,16 +75,16 @@
           {{ banner.text}}
        </div>
       <!--if object is product -->
-	   <div *ngIf="product && banner.type=='ProductDescription'">
-		   {{product.name}}
-	   </div>
-	   <div *ngIf="product && banner.type=='ProductName'">
-		   {{product.description}}
-	   </div>
-	   <div *ngIf="product && banner.type=='ProductCarousel'">
-		   <app-carousel-images [product]="product">
-		   </app-carousel-images>
-	   </div>
+       <div *ngIf="product && banner.type=='ProductDescription'">
+           {{product.name}}
+       </div>
+       <div *ngIf="product && banner.type=='ProductName'">
+           {{product.description}}
+       </div>
+       <div *ngIf="product && banner.type=='ProductCarousel'">
+           <app-carousel-images [product]="product">
+           </app-carousel-images>
+       </div>
      </div> 
    </div>
    <!--if banner is Video-->
@@ -103,10 +103,7 @@
    
    
    <!--if banner is product-catalog -->
-   <app-product-catalog [banner]="banner" *ngIf="banner.productCatalog" 
-   [fair]="fair" [pavilion]="pavilion" [stand]="stand" 
-   [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-   </app-product-catalog>
+   
 
  </div>
 <!--Tooltip-->

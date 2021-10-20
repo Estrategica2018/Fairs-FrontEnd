@@ -75,10 +75,10 @@ export class ProductListComponent implements OnInit {
       else if(this.template == 'stand') {
           const pavilion = { 'id': this.pavilion.id, 'name': this.pavilion.name, 'stands': []};
           this.pavilion.stands.forEach((st)=>{
-			  if(this.stand.id==st.id) {
+              if(this.stand.id==st.id) {
                 const stand = { id: st.id, merchant: st.merchant };
                 pavilion.stands.push(Object.assign({},stand));
-			  }
+              }
           });
           this.catalogList = [];
           this.catalogList.push(pavilion);
@@ -178,7 +178,7 @@ export class ProductListComponent implements OnInit {
   }
 
   acceptModal() {
-     this.modalCtrl.dismiss(this.categorySelected);
+     this.modalCtrl.dismiss( { "categorySelected":this.categorySelected, "products":this.products } );
   }
 
 }

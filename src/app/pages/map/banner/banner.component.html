@@ -1,0 +1,189 @@
+<div [ngClass]="{'cube': !banner.line, 'arrow cursor-pointer':banner.line}" 
+  mwlDraggable (dragEnd)="dragBannerEnd($event,banner)"
+  class="{{ banner.line ? (banner.line.style||'container-arrow--curve') : ''}}"
+  id="banner-drag-{{banner.id}}"
+  [ngStyle]="{
+  'left': banner.position?.x + 'px',
+  'top': banner.position?.y + 'px',
+  'opacity': bannerSelectHover ? ( bannerSelectHover.id !== banner.id ?  ( banner.opacity || 1 ) * 0.6  : 1  ) : banner.opacity,
+  'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
+  }">
+      <!--if banner is line-->
+      <div class="arrow__body" *ngIf="banner.line"
+      [ngStyle]="{
+      'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
+      'border-style': banner?.line?.type,
+      'border-color': banner?.line?.color,
+      'width': banner.size.x + 'px', 
+      'height': banner.size.y + 'px'}"></div>
+      
+      <!--if banner is banner-->
+      <div class="cube__face cube__face--right square {{banner.class}}"
+      [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }"
+      [hidden]=" ( banner.video && banner.video.url ) || banner.line || banner.productCatalog "
+      id="obj-{{banner.id}}"
+      (click)="onBannerSelect(banner);"
+      (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
+      (mouseout)="isHover = null; bannerSelectHover = null;"
+      [ngStyle]="{
+      'background-image': 'url('+banner.image_url+')',
+      'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+      'background-repeat': 'no-repeat',
+      'background-color': banner.backgroundColor,
+      'width': banner.size.x + 'px', 
+      'height': banner.size.y + 'px',
+      'font-size': banner.fontSize + 'px',
+      'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansMedium' ),
+      'color': banner.fontColor,
+      'border-color': banner.border?.color,
+      'border-style': banner.border?.style,
+      'font-weight': banner.fontWeight,
+      'border-radius': banner.border?.radius + 'px',
+      'border-width': banner.border?.width +'px',
+      'text-align': banner.textAlign,    
+      'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+      }">  
+          <div [ngClass]="{'selected': bannerSelectHover === banner}" 
+          [ngStyle]="{'line-height': banner?.lineHeight, 'font-weight': banner.fontWeight }">
+              <div *ngIf="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                <div [innerHTML]="banner.textHtml"></div>
+              </div>
+              <div [hidden]="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                {{ banner.text}}
+              </div>
+          </div>      
+      </div>
+      <!--if banner is Video-->
+      <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.video" >
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+      <iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
+      frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
+      id="video-id-{{banner.id}}"
+      class="{{banner.class}}"
+      (click)="onBannerSelect(banner);"
+      [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+      </iframe>
+      
+      <!--if banner is carousel-->
+      <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.carousel || banner.video" >
+      <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+      <app-carousel-template #carrousel [banner]="banner" *ngIf="banner.carousel" editorMode="true"
+      [fair]="fair" [pavilion]="pavilion" [stand]="stand"
+      [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+      </app-carousel-template>
+      
+      <!--if banner is product-catalog -->
+      <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.productCatalog" >
+      <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+      <div class="grid" *ngIf="banner.productCatalog"  id="grid-{{banner.id}}" 
+      [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+        <div class="card item-{{(i+1)}}" *ngFor="let product of banner.__catalog?.products; let i = index;" 
+          [ngStyle]="{
+           'position': 'absolute',
+           'top': (( number.parseInt( i / 3 ) * banner.size.y) + (banner.size.y * number.parseInt( i / 3 ) * 0.03) ) + 'px',
+           'left': ( i % 3 >= 2 ?  banner.size.x * 2.06 : ( i % 3 ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+           'width': banner.size.x + 'px', 
+           'height': banner.size.y + 'px',
+           'background-image': 'url('+banner.image_url+')',
+           'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+           'background-repeat': 'no-repeat',
+           'background-color': banner.backgroundColor,
+           'border-color': banner.border.color,
+           'border-style': banner.border.style,
+           'border-radius': banner.border.radius + 'px',
+           'border-width': banner.border.width +'px'
+          }">
+           <ion-grid class=" w-100">
+            <ion-row>
+                <div class="position-absolute"
+                  [ngStyle]="{
+                      'top': banner.productCatalog.imagesTop + 'px',
+                      'left': banner.productCatalog.imagesLeft + 'px',
+                      'width': banner.productCatalog.imagesWidth + 'px',
+                      'height': banner.productCatalog.imagesHeight + 'px'
+                     }">
+                      <app-carousel-images [imageHeight]="banner.productCatalog.imagesHeight" [imageWidth]="banner.productCatalog.imagesWidth" [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth" 
+                      [product]="product" (changePrice)="changePriceProductCatalog($event)">
+                      </app-carousel-images>
+                      <!--ion-slides pager="true" [options]="slideOpts"-->
+                </div>
+              
+                 <div class="ion-text-center m-0 p-0 position-absolute w-100"
+                 [ngStyle]="{
+                  'font-size': banner.productCatalog.titleFontSize + 'px',
+                  'font-family': ( banner.productCatalog.titleFontFamily ? banner.productCatalog.titleFontFamily : 'YoutubeSansMedium' ),
+                  'color': banner.productCatalog.titleFontColor,
+                  'font-weight':  banner.productCatalog.titleFontWeight,
+                  'top': banner.productCatalog.titleTop + 'px',
+                  'left': banner.productCatalog.titleLeft + 'px'
+                 }" >{{product.name}}</div>
+                 <div  class="position-absolute"
+                 [ngStyle]="{
+                  'font-size': banner.productCatalog.descFontSize + 'px',
+                  'font-family': ( banner.productCatalog.descFontFamily ? banner.productCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                  'color': banner.productCatalog.descFontColor,
+                  'top': banner.productCatalog.descTop + 'px',
+                  'left': banner.productCatalog.descLeft + 'px',
+                  'width': banner.productCatalog.descWidth + 'px',
+                  'font-weight':  banner.productCatalog.descFontWeight,
+                  'line-height': banner.productCatalog.lineHeight,
+                  'text-align': banner.productCatalog.descTextAlign
+                 }">{{product.description}}
+                 <br>
+                 <div ><div  class="position-absolute"
+                 [ngStyle]="{
+                  'font-size': banner.productCatalog.priceFontSize + 'px',
+                  'font-family': ( banner.productCatalog.priceFontFamily ? banner.productCatalog.priceFontFamily : 'YoutubeSansMedium' ),
+                  'color': banner.productCatalog.priceFontColor,
+                  'top': banner.productCatalog.priceTop + 'px',
+                  'left': banner.productCatalog.priceLeft + 'px',
+                  'font-weight':  banner.productCatalog.priceFontWeight
+                 }">{{product.priceSelected?.price | currency: 'COP $ ':'symbol':'1.2-2' }}</div>
+                 </div></div> 
+            </ion-row>
+           </ion-grid>
+           <ion-button class="position-absolute" color="primary" size="small" (click)="goToEditProduct(product)"
+            [ngStyle]="{
+              'width': banner.productCatalog.buttonWidth + 'px', 
+              'height': banner.productCatalog.buttonHeight + 'px',
+              '--background': banner.productCatalog.buttonBackgroundColor,
+              'font-size': banner.productCatalog.buttonFontSize + 'px',
+              'font-family': ( banner.productCatalog.buttonFontFamily ? banner.productCatalog.buttonFontFamily : 'YoutubeSansMedium' ),
+              'font-weight': banner.productCatalog.buttonFontWeight,
+              'color': banner.productCatalog.buttonFontColor,
+              'right': banner.productCatalog.buttonRight + 'px',
+              'bottom': banner.productCatalog.buttonBottom + 'px'
+           }">
+             <div > {{banner.productCatalog.buttonLabel}}
+             </div>
+           </ion-button>
+        </div>
+      </div>
+      
+      <!--if banner is Contact-->
+      <div class="arrow__body" *ngIf="banner.contact"
+      [ngStyle]="{
+      'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
+      'border-style': banner?.line?.type,
+      'border-color': banner?.line?.color,
+      'width': banner.size.x + 'px', 
+      'height': banner.size.y + 'px'}">
+      
+      
+      </div>
+
+    
+</div>
+<!--Tooltip-->
+<span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
+[ngClass]="banner.toolTipArrow"
+[ngStyle]="{ 
+'width': banner.toolPositionWidth+ 'px',
+'height': banner.toolPosition+ 'px',
+'top': (banner.position?.y + banner.toolPositionTop) + 'px',
+'left': (banner.position?.x + banner.toolPositionLeft) + 'px'}">
+{{banner.tooltipText}}
+</span>

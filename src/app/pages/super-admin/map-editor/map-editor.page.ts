@@ -13,7 +13,7 @@ import { PanelEditorComponent } from './panel-editor/panel-editor.component';
 import { AlertController, ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Animation, AnimationController } from '@ionic/angular';
-import { processData } from '../../../providers/process-data';
+import { processData, clone } from '../../../providers/process-data';
 import { TabMenuScenesComponent } from '../../map/tab-menu-scenes/tab-menu-scenes.component';
 import { IonReorderGroup } from '@ionic/angular'; 
 import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
@@ -33,8 +33,9 @@ export class MapEditorPage implements OnInit {
   url: string;
   @ViewChild('videoMeeting', { static: true }) videoElement: ElementRef;
   @ViewChildren('carrousel') carrousels: any;    
-  @ViewChildren('productCatalog') productCatalogs: any;    
+  
   @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;
+  number = Number;
   errors = null;
   success = null;
   fixedBannerPanel = true;
@@ -71,11 +72,12 @@ export class MapEditorPage implements OnInit {
   hoverEffects = [ {"name":"GirarDerecha","isChecked":false},{"name":"GirarIzquierda","isChecked":false}];
   groupOfLinks = [];
   copyMultiFromList = [];
-  lineHeightMili = null;
-  lineHeightUnit = null;
   selectionElementList = null;
   showlogScrolling = false;
-    
+  showProductCatalogActions = '';
+  historyList = null;
+  historySel = -1;
+  editModeBackdrop = false;
     
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
   toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow right","value":"arrow--4"},
@@ -211,7 +213,7 @@ export class MapEditorPage implements OnInit {
               }
           });
         }
-        else if(this.template === 'product') {
+        /*else if(this.template === 'product') {
           
           this.fair.pavilions.forEach((pavilion)=>{
               if(pavilion.id == pavilionId) {
@@ -224,14 +226,14 @@ export class MapEditorPage implements OnInit {
                         if(products.length > 0) {
                            this.product = products[0];
                         }
-						this.resources = this.product.resources || { 'scenes': []};
-					    this.scene = this.sceneId ? this.product.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
-						if(!this.scene.banners || this.scene.banners.length == 0) {
-							this.addBanner('ProductName');
-							this.addBanner('ProductDescription');
-							this.addBanner('ProductCarousel');
-						}
-						//this.scene.container = {}
+                        this.resources = this.product.resources || { 'scenes': []};
+                        this.scene = this.sceneId ? this.product.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
+                        if(!this.scene.banners || this.scene.banners.length == 0) {
+                            this.addBanner('ProductName');
+                            this.addBanner('ProductDescription');
+                            this.addBanner('ProductCarousel');
+                        }
+                        //this.scene.container = {}
                         this.initializeScene();
                       })
                       .catch(error => {
@@ -241,7 +243,7 @@ export class MapEditorPage implements OnInit {
                 });
               }
           });
-        }
+        }*/
      }, error => {
         this.loading.dismiss();
         this.errors = `Consultando el servicio del mapa general de la feria ${error}`;
@@ -259,14 +261,19 @@ export class MapEditorPage implements OnInit {
         banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
     });
 
-    this.initializeHtmlTexts(this.scene.banners);
     this.initializeInternalUrl();
     this.initializeGroupOfLinks();
-
+    
+    this.scene.banners.forEach((banner)=>{
+      if(banner.productCatalog) {
+        this.initializeProductCatalogs(banner);
+      }
+    });
+    
     setTimeout(() => {
-      this.loading.dismiss();
+      this.initializeHtmlTexts(this.scene.banners);
       this.initializeCarousels();
-      this.initializeProductCatalogs();
+      this.loading.dismiss();
     }, 5);
     
     if(this.scene.menuTabs.showMenuParent) {
@@ -301,24 +308,6 @@ export class MapEditorPage implements OnInit {
     }    
   }
 
-  initializeProductCatalogs() {
-    if(this.productCatalogs && this.productCatalogs._results ) {
-        this.productCatalogs._results.forEach((elm)=>{
-            elm.initialize();
-            elm.onResize();
-        });
-    }    
-  }
-  
-  onRenderProductCatalogs(deltaW,deltaH) {
-    if(this.productCatalogs && this.productCatalogs._results ) {
-        this.productCatalogs._results.forEach((elm)=>{
-            elm.onRender(deltaW,deltaH);
-        });
-    }    
-  }
-
-  
   onToogleFullScreen() {
     window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));
   }
@@ -361,53 +350,49 @@ export class MapEditorPage implements OnInit {
      this.scene.container.h = newHeight;
      
      this.scene.banners.forEach((banner)=>{
-        if(banner.size) { 
-           banner.size.x /= deltaW;
-           banner.size.y /= deltaH;
+        if(banner.size) banner.size.x /= deltaW;
+        if(banner.size) banner.size.y /= deltaH;
+        if(banner.position) banner.position.x /= deltaW;
+        if(banner.position) banner.position.y /= deltaH;
+        if(banner.fontSize > 0 ) banner.fontSize /= deltaW;
+        if(banner.border && banner.border.radius > 0) banner.border.radius /= deltaH;
+        if(banner.productCatalog ) {
+           if(banner.productCatalog.buttonWidth > 0) banner.productCatalog.buttonWidth /= deltaW;
+           if(banner.productCatalog.buttonHeight > 0) banner.productCatalog.buttonHeight /= deltaW;
+           if(banner.productCatalog.buttonFontSize > 0) banner.productCatalog.buttonFontSize /= deltaW;
+           if(banner.productCatalog.buttonFontWeight > 0) banner.productCatalog.buttonFontWeight /= deltaW;
+           if(banner.productCatalog.buttonRight > 0) banner.productCatalog.buttonRight /= deltaW;
+           if(banner.productCatalog.buttonBottom > 0) banner.productCatalog.buttonBottom /= deltaW;
+           
+           if(banner.productCatalog.titleFontSize > 0) banner.productCatalog.titleFontSize /= deltaW;
+           if(banner.productCatalog.titleFontWeight > 0) banner.productCatalog.titleFontWeight /= deltaW;
+           if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
+           if(banner.productCatalog.titleTop > 0) banner.productCatalog.titleTop /= deltaW;
+           if(banner.productCatalog.descTop > 0) banner.productCatalog.descTop /= deltaW;
+           if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
+           if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
+           if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
+           //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
+           
+           if(banner.productCatalog.priceTop > 0) banner.productCatalog.priceTop /= deltaW;
+           if(banner.productCatalog.priceLeft > 0) banner.productCatalog.priceLeft /= deltaW;
+           if(banner.productCatalog.priceFontSize > 0) banner.productCatalog.priceFontSize /= deltaW;
+           if(banner.productCatalog.imageTop > 0) banner.productCatalog.imageTop /= deltaW;
+           if(banner.productCatalog.imageLeft > 0) banner.productCatalog.imageLeft /= deltaW;
+           if(banner.productCatalog.imagesWidth > 0) banner.productCatalog.imagesWidth /= deltaW;
+           if(banner.productCatalog.imagesHeight > 0) banner.productCatalog.imagesHeight /= deltaW;
+           if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
         }
-        if(banner.position) { 
-           banner.position.x /= deltaW;
-           banner.position.y /= deltaH;
-        }
-        if(banner.fontSize > 0 ) {
-           banner.fontSize /= deltaW;
-        }
-		if(banner.border && banner.border.radius > 0){
-			banner.border.radius /= deltaH;
-		}
-        
-     });
+     });     
      
      //Menu tab resize/render
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
 
      //product catalog and carrete of images resize/render 
      this.onResizeCarousels();
-	 this.onRenderProductCatalogs(deltaW,deltaH);
      
   }
-/*
-logScrollStart() {this.showlogScrolling = true;}
-logScrollEnd() {this.showlogScrolling = false;}
 
-  logScrolling(e) {
-      let target = e.target;
-      const scrollLeft = target.scrollLeft;
-      const scrollTop = target.scrollTop;
-      const oldScrollX = Number(target.getAttribute('scroll-x'));
-      const oldScrollY = Number(target.getAttribute('scroll-y'));
-      const deltaX = scrollLeft - oldScrollX;
-      const deltaY = scrollTop - oldScrollY;
-      
-      document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
-          banner.style.left = ( banner.offsetLeft - deltaX ) + 'px';  
-          banner.style.top  = ( banner.offsetTop - deltaY ) + 'px';
-      });
-      
-      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',scrollLeft.toString());
-      document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',scrollTop.toString());
-  }
- */ 
   onBannerSelect(bannerSelect) {
       this.bannerSelect = bannerSelect;
       this.bannerSelect.hoverEffects = this.bannerSelect.hoverEffects || '';
@@ -416,13 +401,18 @@ logScrollEnd() {this.showlogScrolling = false;}
       });
       this.showPanelTool = 'settingsBanner';
       this.bannerSelect.lineHeight = this.bannerSelect.lineHeight || '1.0';
-      this.lineHeightUnit = Number.parseInt(this.bannerSelect.lineHeight);
-      this.lineHeightMili = this.bannerSelect.lineHeight.split('.')[1];
+      this.bannerSelect.lineHeightUnit = Number.parseInt(this.bannerSelect.lineHeight);
+      this.bannerSelect.lineHeightMili = this.bannerSelect.lineHeight.split('.')[1];
       this.isHover = bannerSelect.id; 
   }
   
   onChangeItem() {
       this.editSave = true;
+      this.historyList = this.historyList.filter((scene,indx)=>{
+          return indx <= this.historySel;
+      });
+      this.historyList.push(clone(this.scene));
+      this.historySel ++;
   }
   
   initializePanel() {
@@ -460,8 +450,8 @@ logScrollEnd() {this.showlogScrolling = false;}
                   this.editSave = null;
                   this.showPanelTool = false
                   this.bannerSelect = null;
-				  console.log(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${this.sceneId}`);
-				  //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${this.sceneId}`);
+                  this.redirectTo('/super-admin/map-editor/fair/'+this.sceneId);
+                  //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${this.sceneId}`);
               }
               this.ngOnInit();
               this.errors = null;
@@ -487,8 +477,9 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.editSave = null;
               this.showPanelTool = false
               this.bannerSelect = null;
-			  window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+              //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+              this.redirectTo('/super-admin/map-editor/pavilion/' + this.pavilion.id + '/' + this.sceneId);
            })
            .catch(error => {
                this.loading.dismiss();
@@ -510,7 +501,8 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.editSave = null;
               this.showPanelTool = false
               this.bannerSelect = null;
-			  window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+              this.redirectTo('/super-admin/map-editor/stand/' + this.pavilion.id + '/' + this.stand.id + '/' + this.sceneId);
+              //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
            })
            .catch(error => {
@@ -531,7 +523,8 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.editSave = null;
               this.showPanelTool = false
               this.bannerSelect = null;
-			  window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
+              //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
+              this.redirectTo('/super-admin/map-editor/product/' + this.pavilion.id + '/' + this.stand.id + '/' + this.product.id + '/' + this.sceneId);
               //this.router.navigateByUrl(`/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
            })
            .catch(error => {
@@ -560,7 +553,7 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.tabMenuObj = this.scene.menuTabs;
           }
       }
-      this.editSave = true;
+      this.onChangeItem();
       this.onChangeMenuTabs();
   }
   
@@ -568,28 +561,30 @@ logScrollEnd() {this.showlogScrolling = false;}
     const id = new Date().valueOf();
     const banner = {"style": "container-arrow--curve","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
-    this.editSave = true;
+    this.onChangeItem();
   }
 
   addArrowLineRect() {
     const id = new Date().valueOf();
     const banner = {"style":"container-arrow--rect","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
-    this.editSave = true;
+    this.onChangeItem();
   }
 
   addArrowLineLine() {
     const id = new Date().valueOf();
     const banner = {"style":"container-arrow--line","line":{"weight":"4","type":"dashed"},"fontColor":"#000000","backgroundColor":"#ffff00","position":{"y":156,"x":195},"rotation":{"x":0,"y":0,"z":0},"size":{"x":114,"y":105},"id":id};
     this.scene.banners.push(banner);
-    this.editSave = true;
+    this.onChangeItem();
   }
 
 
   addBanner(type) {
     const id = new Date().valueOf();
+    const primaryColor = "#007bff";
     let banner: any;
-    const _defaultBanner = {id:id,type:type,rotation:{"x":0,"y":0,"z":0},"position": this.getNewPosition({"x":156,"y":195}),border:{"style":"none"},fontSize:16};
+    const _defaultBanner = {id:id,type:type,rotation:{"x":0,"y":0,"z":0},"position": this.getNewPosition({"x":156,"y":195}),border:{"style":"none"},
+    'fontWeight':100,'fontFamily':'YoutubeSansMedium', 'fontSize': 12};
     switch(type) { 
       case 'Text':
           banner = {"textAlign":"left","fontColor":"#000000","text":"Texto aquí","size":{"x":100,"y":20}};
@@ -611,12 +606,65 @@ logScrollEnd() {this.showlogScrolling = false;}
           banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
           banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
       break;
-      case 'ProductCatalog':
-          banner = {"size":{"x":384,"y":105},"productCatalog": {  }};
-          this.presentNewProductListCatalog(banner);
+      case 'ProductCatalog': 
+          banner = { "size":{"x":428,"y":237},
+          "position": this.getNewPosition({"x":64,"y":29}),
+          "productCatalog": { 
+          'buttonWidth': 145,
+          'buttonHeight': 28,
+          'buttonBackgroundColor': primaryColor,
+          'buttonFontColor': '#fff',
+          'buttonFontFamily': 'YoutubeSansMedium',
+          'buttonFontSize': 12,
+          'buttonFontWeight': 'bold',
+          'buttonLabel': 'Ver Oferta',
+          'buttonRight': 10,
+          'buttonBottom': 10,
+          'titleFontSize': 23,
+          'titleFontColor': '#004782',
+          'titleTop': 10,
+          'titleLeft': 69,
+          'titleFontFamily': 'YoutubeSansMedium',
+          'titleFontWeight': 70,
+          'descTop': 54,
+          'descLeft': 170,
+          'descWidth': 238,
+          'descFontSize': 12,
+          'descTextAlign': 'justify',
+          'lineHeightMili': 0,
+          'lineHeightUnit': 1,
+          'lineHeight': 1.0,
+          'descFontFamily': 'YoutubeSansLight',
+          'descFontWeight': 100,
+          'priceFontColor': '#000',
+          'priceFontFamily': 'YoutubeSansMedium',
+          'priceFontSize': 19,
+          'priceFontWeight': 'bold',
+          'priceLeft': 0,
+          'priceTop': 113,
+          'imagesTop': 18,
+          'imagesLeft': 6,
+          'imagesWidth': 146,
+          'imagesHeight': 146,
+          'imagesPriceWidth': 16, 
+          },'backgroundColor':'#f5f6ff'};
+          banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
+          
       break;
       case 'Contact':
-          banner = {"size":{"x":384,"y":105},"contact": {  }};
+          banner = {"groupMode":true,"size":{"x":367,"y":408},"contact": { "name":"" }, "backgroundColor":"#ffffff","fontColor":"#000000", "fontSize":"13", "shadowActivate":true,"shadowRight":-8,"shadowDown":4,"shadowDisperse":21,"shadowExpand":-16,
+              "banners": [
+                {"id":1634621128693,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":45.567676237283834,"y":65.05649707519393},"border":{"style":"none"},"fontSize":26.821538267842993,"textAlign":"left","fontColor":"#35abbe","text":"Contáctenos","size":{"x":399.4697188827678,"y":42.22965599617846},"hoverEffects":"","lineHeight":"1.0","fontFamily":"\"Gill Sans Extrabold\", Helvetica, sans-serif","textHtml":{"changingThisBreaksApplicationSecurity":"Contáctenos"},"isChecked":true},
+                {"id":1634621128695,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":217.0648374979585},"border":{"style":"none"},"fontSize":13.056531578824574,"textAlign":"left","fontColor":"#000000","text":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Nombre</p>","size":{"x":81.60332236765359,"y":16.320664473530716},"hoverEffects":"","lineHeight":"1.0","textHtml":{"changingThisBreaksApplicationSecurity":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Nombre</p>"},"isHtml":true,"fontFamily":"YoutubeSansMedium","fontWeight":"lighter","isChecked":true},
+                {"id":1634621128696,"type":"Banner","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":248.07409999766685},"border":{"style":"solid","color":"#28bdd7","radius":0,"width":1},"fontSize":13.056531578824574,"fontColor":"#000000","backgroundColor":"#1ab6cb","size":{"x":310.09262499708365,"y":0},"hoverEffects":"","lineHeight":"1.0","isChecked":true,"textHtml":{}},
+                {"id":1634621128697,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":275.0031963789925},"border":{"style":"none"},"fontSize":13.056531578824574,"textAlign":"left","fontColor":"#000000","text":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Correo electrónico</p>","size":{"x":115.06068453839156,"y":41.61769440750332},"hoverEffects":"","lineHeight":"1.0","textHtml":{"changingThisBreaksApplicationSecurity":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Correo electrónico</p>"},"isHtml":true,"fontFamily":"YoutubeSansMedium","fontWeight":"lighter","isChecked":true},
+                {"id":1634621128698,"type":"Banner","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":307.64452532605395},"border":{"style":"solid","color":"#28bdd7","radius":0,"width":1},"fontSize":13.056531578824574,"fontColor":"#000000","backgroundColor":"#1ab6cb","size":{"x":310.09262499708365,"y":0},"hoverEffects":"","lineHeight":"1.0","isChecked":true,"textHtml":{}},
+                {"id":1634621128699,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":338.6537878257623},"border":{"style":"none"},"fontSize":13.056531578824574,"textAlign":"left","fontColor":"#000000","text":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Asunto</p>","size":{"x":115.06068453839156,"y":41.61769440750332},"hoverEffects":"","lineHeight":"1.0","textHtml":{"changingThisBreaksApplicationSecurity":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Asunto</p>"},"isHtml":true,"fontFamily":"YoutubeSansMedium","fontWeight":"lighter","isChecked":true},
+                {"id":1634621128700,"type":"Banner","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":369.6630503254707},"border":{"style":"solid","color":"#28bdd7","radius":0,"width":1},"fontSize":13.056531578824574,"fontColor":"#000000","backgroundColor":"#1ab6cb","size":{"x":310.09262499708365,"y":0},"hoverEffects":"","lineHeight":"1.0","isChecked":true,"textHtml":{}},
+                {"id":1634621128701,"type":"Banner","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":390.06388091738404},"border":{"style":"solid","color":"#1db8d3","radius":8.160332236765358,"width":2},"fontSize":13.056531578824574,"fontColor":"#000000","backgroundColor":"#ffffff","size":{"x":310.9086582207602,"y":191.76780756398588},"hoverEffects":"","lineHeight":"1.0","textHtml":{},"isChecked":true},
+                {"id":1634621128702,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":77.52315624927091,"y":406.38454539091475},"border":{"style":"none"},"fontSize":13.056531578824574,"textAlign":"left","fontColor":"#000000","text":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Mensaje</p>","size":{"x":115.06068453839156,"y":41.61769440750332},"hoverEffects":"","lineHeight":"1.0","textHtml":{"changingThisBreaksApplicationSecurity":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Mensaje</p>"},"isHtml":true,"fontFamily":"YoutubeSansMedium","fontWeight":"lighter","isChecked":true,"opacity":0.56}
+             ]
+          };
       break;
       case 'ProductName':
           banner = {"size":{"x":300,"y":33},"position": this.getNewPosition({"x":532,"y":41}),"fontColor":"#F5F6FF","fontSize":"25"};
@@ -624,7 +672,7 @@ logScrollEnd() {this.showlogScrolling = false;}
       case 'ProductDescription':
           banner = {"size":{"x":530,"y":205},"position": this.getNewPosition({"x":359,"y":115}),"textAlign":"justify","fontColor":"#000","fontSize":"16"};
       break;      
-	  case 'ProductCarousel':
+      case 'ProductCarousel':
           banner = {"size":{"x":304,"y":291},"position": this.getNewPosition({"x":117,"y":141})};
       break;
       default:
@@ -634,10 +682,10 @@ logScrollEnd() {this.showlogScrolling = false;}
     }
     
     this.scene.banners.push(Object.assign(_defaultBanner,banner));
-    
     //open settingsBanner panel with last element
     this.bannerSelect = this.scene.banners[this.scene.banners.length-1];
-    this.editSave = true;
+    if(type == 'ProductCatalog') this.presentNewProductListCatalog(this.bannerSelect);
+    this.onChangeItem();
     this.showPanelTool = 'settingsBanner'; 
   }
   
@@ -653,8 +701,9 @@ logScrollEnd() {this.showlogScrolling = false;}
 
     const { data } = await modal.onWillDismiss();
     if (data) {
-        banner.productCatalog.list = data;
-        this.initializeProductCatalogs();
+        banner.productCatalog.list = data.categorySelected;
+        banner.__catalog = {};
+        banner.__catalog.products =  data.products;
     }
   } 
   
@@ -681,7 +730,11 @@ logScrollEnd() {this.showlogScrolling = false;}
   dragBannerEnd($event,banner) {
     banner.position.y += $event.y;
     banner.position.x += $event.x;
-    this.editSave = true;
+    banner.banners.forEach((bannerch)=>{
+       bannerch.position.y += $event.y;
+       bannerch.position.x += $event.x;
+    });
+    this.onChangeItem();
   }
    
   onDeleteBanner(bannerSelect) {
@@ -690,7 +743,7 @@ logScrollEnd() {this.showlogScrolling = false;}
     });
     this.bannerSelect = null;
     this.showPanelTool = false;
-    this.editSave = true;
+    this.onChangeItem();
   }
   
   async onDeleteBannerList(itemList) {
@@ -720,7 +773,7 @@ logScrollEnd() {this.showlogScrolling = false;}
             });
 
             this.scene.banners = newList;
-            this.editSave = true;
+            this.onChangeItem();
             this.copyMultiFromList = [];
           }
         }
@@ -734,7 +787,7 @@ logScrollEnd() {this.showlogScrolling = false;}
     let id = new Date().valueOf();
     this.bannerCopy = [];
     itemList.forEach((banner)=>{        
-       const newBanner = this.clone(banner);
+       const newBanner = clone(banner);
        newBanner.id = id;
        newBanner.position = this.getNewPosition(banner.position);
        this.bannerCopy.push(newBanner);
@@ -762,7 +815,7 @@ logScrollEnd() {this.showlogScrolling = false;}
        newBanner.position = this.getNewPosition(banner.position);
        this.scene.banners.push(newBanner);
        id ++;
-       this.editSave = true;
+       this.onChangeItem();
     });
     
     setTimeout(() => {
@@ -776,6 +829,7 @@ logScrollEnd() {this.showlogScrolling = false;}
     
     window.addEventListener('map:fullscreenOff', (e:any) => {
         setTimeout(() => {
+          this.editModeBackdrop    = false;
           this.fullScreen = false;
           this.onResize();
       }, 300);
@@ -784,6 +838,11 @@ logScrollEnd() {this.showlogScrolling = false;}
         setTimeout(() => {
           this.fullScreen = true;
           this.onResize();
+          if(!this.historyList) { 
+            this.historyList = [];
+            this.historyList.push(clone(this.scene));
+            this.historySel ++;    
+          }
       }, 300);
     });
   }
@@ -826,7 +885,7 @@ logScrollEnd() {this.showlogScrolling = false;}
              this.bannerSelect.hoverEffects += effect.name + ";";
           }
       });
-      this.editSave = true;
+      this.onChangeItem();
   }
   
   async onDeleteScene(sceneId) {
@@ -850,7 +909,7 @@ logScrollEnd() {this.showlogScrolling = false;}
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-					   window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
+                       window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
                        //this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
@@ -908,7 +967,7 @@ logScrollEnd() {this.showlogScrolling = false;}
               this.tabMenuObj.actions = this.tabMenuObj.actions.filter((tab,key)=>{
                   return key != tabMenuInstance.tabId;
               });
-              this.editSave = true;
+              this.onChangeItem();
           }
         }
       ]
@@ -931,7 +990,6 @@ logScrollEnd() {this.showlogScrolling = false;}
         }
         for(let j=0; j<pavilion.stands.length; j++) {
             stand = pavilion.stands[j];
-			console.log(stand)
             for(let k=0; k<stand.resources.scenes.length; k++) {
                 scene = stand.resources.scenes[k];
                 this.internalUrlList.stands.push({'label':'Local '+ stand.merchant.name + '. Escena - ' + (k+1), 'value':`/map/stand/${pavilion.id}/${stand.id}/${k}`});
@@ -990,7 +1048,7 @@ logScrollEnd() {this.showlogScrolling = false;}
     
     document.getElementsByTagName('head')[0].appendChild(style);
     this.onChangeMenuTabs();
-    this.editSave = true;
+    this.onChangeItem();
   }
   
   initializeGroupOfLinks() {
@@ -1062,22 +1120,22 @@ logScrollEnd() {this.showlogScrolling = false;}
         }
     });
     this.scene.banners = ev.detail.complete(this.scene.banners);
-    this.editSave = true;
+    this.onChangeItem();
   } 
   
   doReorderCarousel(ev: any) {
     this.bannerSelect.carousel.images = ev.detail.complete(this.bannerSelect.carousel.images);
-    this.editSave = true;
+    this.onChangeItem();
   } 
   
   toogleTabMenu() {
     this.scene.menuTabs.showMenuParent = !this.scene.menuTabs.showMenuParent;
     this.tabMenuObj = this.scene.menuTabs.showMenuParent ? this.resources.menuTabs : this.scene.menuTabs;
-    this.editSave = true;
+    this.onChangeItem();
   }
   
   onChangeMenuTabs() {
-      this.editSave = true;
+      this.onChangeItem();
       this.editMenuTabSave = true;
       this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
   }
@@ -1102,7 +1160,7 @@ logScrollEnd() {this.showlogScrolling = false;}
            newBanner.position = this.getNewPosition(banner.position);
            this.bannerCopy.push(newBanner);
            id ++;
-           this.editSave = true;
+           this.onChangeItem();
            this.showInputClipboard = false;
         });
         
@@ -1140,7 +1198,7 @@ logScrollEnd() {this.showlogScrolling = false;}
          text: 'Guardar', 
          role: 'destructive', 
          handler: (data) => {
-          this.editSave = true;
+          this.onChangeItem();
           this.bannerSelect.carousel.images = this.bannerSelect.carousel.images || [];
           this.bannerSelect.carousel.images.push({'url':data.url,'title':data.title});
          }
@@ -1186,7 +1244,7 @@ logScrollEnd() {this.showlogScrolling = false;}
          text: 'Guardar', 
          role: 'destructive', 
          handler: (data) => {
-          this.editSave = true;
+          this.onChangeItem();
           image.url = data.url;
          }
         }]
@@ -1208,7 +1266,7 @@ logScrollEnd() {this.showlogScrolling = false;}
          role: 'destructive', 
          cssClass: 'danger',
          handler: (data) => {
-          this.editSave = true;
+          this.onChangeItem();
           list[type] = list[type].filter((img,key)=>{
               return key != index;
           });
@@ -1290,7 +1348,7 @@ logScrollEnd() {this.showlogScrolling = false;}
   }
   
   onChangeCarousel() {
-    this.editSave = true;
+    this.onChangeItem();
     this.onResizeCarousels();
   }
   
@@ -1324,28 +1382,31 @@ logScrollEnd() {this.showlogScrolling = false;}
       div.scrollTop = scrollTop;
   }
   
-  onChangeItemTextLineHeight(event){
+  onChangeItemTextLineHeight(obj){
       
-
-      const mili = Number.parseInt(this.bannerSelect.lineHeight);
-      const unit = Number.parseFloat(this.bannerSelect.lineHeight) | 0;
-      
-      if( this.lineHeightMili > 9 ) {
-           this.lineHeightMili = 0;
-           this.lineHeightUnit ++;
+      if(!obj.lineHeight) { 
+         obj.lineHeight = 1;
+         obj.lineHeightUnit = 1;
       }
-      else if( this.lineHeightMili < 0 ) {
-           this.lineHeightMili = 9;
-           this.lineHeightUnit --;
+      const mili = Number.parseInt(obj.lineHeight);
+      const unit = Number.parseFloat(obj.lineHeight) | 0;
+      
+      if( obj.lineHeightMili > 9 ) {
+           obj.lineHeightMili = 0;
+           obj.lineHeightUnit ++;
+      }
+      else if( obj.lineHeightMili < 0 ) {
+           obj.lineHeightMili = 9;
+           obj.lineHeightUnit --;
       }
       
-      this.bannerSelect.lineHeight = this.lineHeightUnit + '.' + this.lineHeightMili;
+      obj.lineHeight = obj.lineHeightUnit + '.' + obj.lineHeightMili;
   }
   
   onChangeVideoUrl() {
     //const video = document.querySelector<HTMLElement>('#video-id-'+this.bannerSelect.id);
     //video.innerHTML = '<video controls><source src="'+this.bannerSelect.video.url+'" type="video/mp4"></video>';
-    this.editSave = true;
+    this.onChangeItem();
     this.bannerSelect.video.sanitizer =  this.sanitizer.bypassSecurityTrustResourceUrl(this.bannerSelect.video.url);
     
     //var player = document.querySelector<HTMLElement>('#video-id-'+this.bannerSelect.id +' video');
@@ -1388,31 +1449,73 @@ logScrollEnd() {this.showlogScrolling = false;}
   }
   
   onChangeImage() {
-	  let img = new Image();
-	  const _self = this;
-	  img.onload = function() {
+      let img = new Image();
+      const _self = this;
+      img.onload = function() {
          const _selfImg : any = this;  
-		_self.bannerSelect.size.x = _selfImg.width;
-		_self.bannerSelect.size.y = _selfImg.height;
-	  }
-	  img.src = this.bannerSelect.image_url;
+        _self.bannerSelect.size.x = _selfImg.width;
+        _self.bannerSelect.size.y = _selfImg.height;
+      }
+      img.src = this.bannerSelect.image_url;
   }
   
-  clone(obj){
-	
-	if(typeof obj == 'object') {
-	    let objNew =  Object.assign({},obj);
-		for (let key of Object.keys(obj)) {
-		   if(obj[key]) {
-			  objNew[key] = this.clone(obj[key]);
-		   }
-		}
-		
-		return objNew;
-	}
-	else {
-		return obj;
-	}
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
+  }
+  
+  
+  initializeProductCatalogs(banner) {
+     
+      banner.__catalog = {"products":[]};
+      let remark = banner.productCatalog.list;
+        
+      let str = remark.split(';')[0];    
+      const pavilion = str.split(':')[1];
+      str = remark.split(';')[1];
+      const stand = str.split(':')[1];
+      str = remark.split(';').length==3 ? remark.split(';')[2] : null;
+      const category = str ? str.split(':')[1] : '';
+    
+      this.productsService.get(this.fair.id,pavilion,stand,null)
+      .then((products) => {
+        if(products.length > 0) {
+            products.forEach((product)=>{
+                if(category == 'all' || product.category_id == category ){
+                    product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
+                    banner.__catalog.products.push(product);
+                    product.priceSelected = product.prices[0];
+                }
+            });
+        }
+      })
+      .catch(error => {
+        
+      });
+  }
+  
+  changePriceProductCatalog(product,price,price2){
+    
+  }
+  
+  goToEditProduct(product){
+    const uri = '/super-admin/product/' + product.stand.pavilion_id + '/' + product.stand_id + '/' + product.id;
+    this.router.navigate([uri])
+  }
+  
+  onHistoryBack() {
+    this.historySel --;
+    this.scene = this.historyList[this.historySel];
+  }
+  
+  onHistoryNext() {
+    this.historySel ++;
+    this.scene = this.historyList[this.historySel];
   }
 
+  onBackdropEditMode() {
+    this.editModeBackdrop = true;
+    window.dispatchEvent(new CustomEvent('map:fullscreenIn'));    
+ }
 }

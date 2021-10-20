@@ -27,13 +27,13 @@ export class UsersService {
       catchError((e: any) => {
         if(e.status === 422) {
            throw new Error(`Usuario o contraseña incorrectos`);
-		}
-		else if(e.message){
-		   throw new Error(`Consultando el servicio para cerrar sesión: ${e.name} - ${e.message}`);
-	    }
-		else {
-			throw new Error(`Consultando el servicio para cerrar sesión: ${e.status} - ${e.statusText}`);
-		}
+        }
+        else if(e.message){
+           throw new Error(`Consultando el servicio para cerrar sesión: ${e.name} - ${e.message}`);
+        }
+        else {
+            throw new Error(`Consultando el servicio para cerrar sesión: ${e.status} - ${e.statusText}`);
+        }
         
         return of(null);
       })
@@ -47,10 +47,10 @@ export class UsersService {
        else {
            if(e.status){
              throw new Error(`Consultando el servicio para el inicio de sesión: ${e.status} - ${e.statusText}`);
-			}
-			else if(e.message){
+            }
+            else if(e.message){
              throw new Error(`Consultando el servicio para el inicio de sesión: ${e.name} - ${e.message}`);
-			}
+            }
        }
       })
     )*/
@@ -70,11 +70,11 @@ export class UsersService {
       catchError((e: any) => {
         if(e.status !== 401) {
            if(e.status){
-			 throw new Error(`Consultando el servicio para cerrar sesión: ${e.status} - ${e.statusText}`);
-		   }
+             throw new Error(`Consultando el servicio para cerrar sesión: ${e.status} - ${e.statusText}`);
+           }
            if(e.message){
-			 throw new Error(`Consultando el servicio para cerrar sesión: ${e.name} - ${e.message}`);
-		   }
+             throw new Error(`Consultando el servicio para cerrar sesión: ${e.name} - ${e.message}`);
+           }
         }
         return of(null);
       })

@@ -1,3 +1,9 @@
+.container-carousel {
+  height: 202px;  
+  padding-left: 13px; 
+  padding-top: 19px;
+}
+
 $blue-color: #004782;
 $blue-light-color: #F5F6FF;
 
@@ -12,10 +18,10 @@ $blue-light-color: #F5F6FF;
     left: -1px;
     z-index: 58;
     -webkit-box-shadow: 0px 2px 9px -1px rgb(0 0 0 / 37%);
-	ion-icon {
-	   font-size: 3.2em;
+    ion-icon {
+       font-size: 3.2em;
        margin: 0.14em;
-	   --ion-color-base: #004782 !important;
+       --ion-color-base: #004782 !important;
     }
   }
  
@@ -62,3 +68,21 @@ $blue-light-color: #F5F6FF;
   height: 3em;
   width: 13em;
 }
+
+.attribute-list {
+  border: 1px solid gray;
+  border-radius: 14px;
+  background: #9d9fa6;
+  font-size: 1.2em;
+  margin-top: 3em;
+  ion-row {
+  
+  }
+  ion-row.par {
+    background: #f4f5f8;
+    width: 107%;
+    margin-left: -0.5em;
+    padding-left: 0.5em;
+  }
+}
+

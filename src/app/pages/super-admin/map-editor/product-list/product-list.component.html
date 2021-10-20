@@ -14,7 +14,7 @@
   </ion-card-header>
    
   <ion-card-content [hidden]="category">
-    <ion-list>
+    <ion-list class="container-height">
       <div *ngFor="let pavilion of catalogList">
         <ion-label>Pabellón {{pavilion.name}}</ion-label>
         <ion-list>
@@ -40,9 +40,6 @@
         </ion-list>
        </div>
     </ion-list>
-    <ion-item *ngIf="showProducts">
-        
-    </ion-item>
   </ion-card-content>
 
   <ion-card-content *ngIf="category">

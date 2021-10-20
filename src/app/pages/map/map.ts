@@ -1,6 +1,7 @@
 import { Component, ElementRef,QueryList, ViewChild, ViewChildren, OnInit} from '@angular/core';
 import { HostListener } from "@angular/core";
 import { FairsService } from './../../api/fairs.service';
+import { ProductsService } from './../../api/products.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { LoadingService } from './../../providers/loading.service';
@@ -10,6 +11,7 @@ import { ProductDetailComponent } from '../product-catalog/product-detail/produc
 import { DomSanitizer} from '@angular/platform-browser';
 import { UsersService } from '../../api/users.service';
 import { AlertController, ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'page-map',
@@ -19,10 +21,10 @@ import { AlertController, ModalController, IonRouterOutlet,ToastController } fro
 export class MapPage implements OnInit {
 
   url: any;
+  number = Number;
   @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;  
   @ViewChildren('carrousel') carrousels: any;
-  @ViewChildren('productCatalog') productCatalogs: any;    
-
+  //@ViewChildren('productCatalog') productCatalogs: any;    
   fullScreen = false;
   scene: any;
   intro = false;
@@ -38,18 +40,25 @@ export class MapPage implements OnInit {
   bannerSelectHover = null;
   showlogScrolling = false;
   profileRole:any;
+  slideOpts = {
+    initialSlide: 0,
+    slidesPerView: 1,
+    autoplay:true
+  };
   
   constructor(
     private fairsService: FairsService,
+    private productsService: ProductsService,
     private route: ActivatedRoute,
     private router: Router,
     private animationCtrl: AnimationController,
     private loading: LoadingService,
     private sanitizer: DomSanitizer,
     private usersService: UsersService,
-	private modalCtrl: ModalController,
-    private routerOutlet: IonRouterOutlet) {
-		
+    private modalCtrl: ModalController,
+    private routerOutlet: IonRouterOutlet,
+    private formBuilder: FormBuilder) {
+        
       this.url = window.location.origin;
       this.listenForFullScreenEvents();
       this.usersService.getUser().then((userDataSession: any)=>{
@@ -137,16 +146,19 @@ export class MapPage implements OnInit {
             banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
         });
 
-        this.initializeHtmlTexts(this.scene.banners);
+        this.initializeProductCatalogs(this.scene.banners);
+        
+        this.scene.banners.forEach((banner)=>{
+           if(banner.contact) {
+             this.initializeContact(banner);
+           }
+        });
 
         setTimeout(() => {
+          this.initializeHtmlTexts(this.scene.banners);
           this.initializeCarousels();
-          this.initializeProductCatalogs();
-          if(this.carrousels._results && this.carrousels._results.length> 0)  {
-              setTimeout(() => {this.loading.dismiss(); },500 * ( this.carrousels._results.length + this.productCatalogs._results.length ));
-          }
-          else { this.loading.dismiss(); } 
-        }, 5);
+          this.loading.dismiss();
+        }, 15);
         
         if(this.scene.menuTabs.showMenuParent) {
            this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
@@ -206,53 +218,49 @@ export class MapPage implements OnInit {
      }
      this.scene.container.w = newWidth;
      this.scene.container.h = newHeight;
-     this.scene.banners.forEach((banner)=>{
-        if(banner.size) { 
-           banner.size.x /= deltaW;
-           banner.size.y /= deltaH;
+          this.scene.banners.forEach((banner)=>{
+        if(banner.size) banner.size.x /= deltaW;
+        if(banner.size) banner.size.y /= deltaH;
+        if(banner.position) banner.position.x /= deltaW;
+        if(banner.position) banner.position.y /= deltaH;
+        if(banner.fontSize > 0 ) banner.fontSize /= deltaW;
+        if(banner.border && banner.border.radius > 0) banner.border.radius /= deltaH;
+        if(banner.productCatalog ) {
+           if(banner.productCatalog.buttonWidth > 0) banner.productCatalog.buttonWidth /= deltaW;
+           if(banner.productCatalog.buttonHeight > 0) banner.productCatalog.buttonHeight /= deltaW;
+           if(banner.productCatalog.buttonFontSize > 0) banner.productCatalog.buttonFontSize /= deltaW;
+           if(banner.productCatalog.buttonFontWeight > 0) banner.productCatalog.buttonFontWeight /= deltaW;
+           if(banner.productCatalog.buttonRight > 0) banner.productCatalog.buttonRight /= deltaW;
+           if(banner.productCatalog.buttonBottom > 0) banner.productCatalog.buttonBottom /= deltaW;
+           
+           if(banner.productCatalog.titleFontSize > 0) banner.productCatalog.titleFontSize /= deltaW;
+           if(banner.productCatalog.titleFontWeight > 0) banner.productCatalog.titleFontWeight /= deltaW;
+           if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
+           if(banner.productCatalog.titleTop > 0) banner.productCatalog.titleTop /= deltaW;
+           if(banner.productCatalog.descTop > 0) banner.productCatalog.descTop /= deltaW;
+           if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
+           if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
+           if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
+           //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
+           
+           if(banner.productCatalog.priceTop > 0) banner.productCatalog.priceTop /= deltaW;
+           if(banner.productCatalog.priceLeft > 0) banner.productCatalog.priceLeft /= deltaW;
+           if(banner.productCatalog.priceFontSize > 0) banner.productCatalog.priceFontSize /= deltaW;
+           if(banner.productCatalog.imageTop > 0) banner.productCatalog.imageTop /= deltaW;
+           if(banner.productCatalog.imageLeft > 0) banner.productCatalog.imageLeft /= deltaW;
+           if(banner.productCatalog.imagesWidth > 0) banner.productCatalog.imagesWidth /= deltaW;
+           if(banner.productCatalog.imagesHeight > 0) banner.productCatalog.imagesHeight /= deltaW;
+           if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
         }
-        if(banner.position) { 
-           banner.position.x /= deltaW;
-           banner.position.y /= deltaH;
-        }
-        if(banner.fontSize > 0 ) {
-           banner.fontSize /= deltaW;
-        }		
-		if(banner.border && banner.border.radius > 0){
-			banner.border.radius /= deltaH;
-		}
-     });
+     }); 
      
      //Menu tab resize/render
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
      
      //product catalog and carrete of images resize/render 
      this.onResizeCarousels();
-	 this.onRenderProductCatalogs(deltaW,deltaH);
      
   }
-/*
-logScrollStart() {this.showlogScrolling = true;}
-logScrollEnd() {this.showlogScrolling = false;}
-
-  logScrolling(e) {
-      let target = e.target;
-      const scrollLeft = target.scrollLeft;
-      const scrollTop = target.scrollTop;
-      const oldScrollX = Number(target.getAttribute('scroll-x'));
-      const oldScrollY = Number(target.getAttribute('scroll-y'));
-      const deltaX = scrollLeft - oldScrollX;
-      const deltaY = scrollTop - oldScrollY;
-      
-      document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
-          banner.style.left = ( banner.offsetLeft - deltaX ) + 'px';  
-          banner.style.top  = ( banner.offsetTop - deltaY ) + 'px';
-      });
-      
-      target.setAttribute('scroll-x',scrollLeft.toString());
-      target.setAttribute('scroll-y',scrollTop.toString());      
-  }
-*/
 
   listenForFullScreenEvents() {
     
@@ -306,7 +314,9 @@ logScrollEnd() {this.showlogScrolling = false;}
   }
   
   goToInternalUrl(banner){
-     this.redirectTo(banner.internalUrl);
+     if(banner.internalUrl && banner.internalUrl.length > 0) {
+        this.redirectTo(banner.internalUrl);
+     }
   }
 
   initializeHtmlTexts(banners) {
@@ -331,24 +341,7 @@ logScrollEnd() {this.showlogScrolling = false;}
         });
     }    
   }
-
-  initializeProductCatalogs() {
-    if(this.productCatalogs && this.productCatalogs._results ) {
-        this.productCatalogs._results.forEach((elm)=>{
-            elm.initialize();
-            elm.onResize();
-        });
-    }    
-  }
   
-  onRenderProductCatalogs(deltaW,deltaH) {
-    if(this.productCatalogs && this.productCatalogs._results ) {
-        this.productCatalogs._results.forEach((elm)=>{
-            elm.onRender(deltaW,deltaH);
-        });
-    }    
-  }
-
   onToMapEditor(scene){
     const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
     const standId = this.route.snapshot.paramMap.get('standId');
@@ -397,7 +390,7 @@ logScrollEnd() {this.showlogScrolling = false;}
      this.moveMouseEvent = null;
   } 
   
-  @HostListener('document:mousemove', ['$event'])     
+  /*@HostListener('document:mousemove', ['$event'])     
   onMouseMove(e) {
     if(this.moveMouseEvent) {
       const target = document.querySelector<HTMLElement>('.div-container');      
@@ -431,23 +424,21 @@ logScrollEnd() {this.showlogScrolling = false;}
        }); 
      }
      
-    
-    
       //target.scrollTo(newScrollX, newScrollY);
       this.moveMouseEvent.x = x;
       this.moveMouseEvent.y = y;
       //document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-x',newScrollX.toString());
       //document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',newScrollY.toString());
     }
-  }
+  }*/
   
   async onShowProduct(product) {
     const modal = await this.modalCtrl.create({
       component: ProductDetailComponent,
       swipeToClose: false, 
-	  cssClass: 'product-modal',
+      cssClass: 'product-modal',
       presentingElement: this.routerOutlet.nativeEl,
-      componentProps: { 'fair': this.fair, 'pavilion': product.pavilion, 'standId': product.stand_id, 'product': product }
+      componentProps: { 'fair': this.fair, 'pavilionId': product.stand.pavilion_id, 'standId': product.stand_id, 'product': product }
     });
     await modal.present();
 
@@ -457,5 +448,55 @@ logScrollEnd() {this.showlogScrolling = false;}
     }
   }
 
+  initializeContact(banner) {
+      banner.__contactForm = this.formBuilder.group({
+        name: ['', Validators.required],
+        email: ['', Validators.required],
+        message: ['', Validators.required],
+        subject: ['', Validators.required]
+         });
+  }
+  
+  initializeProductCatalogs(banners) {
+   
+    banners.forEach((banner)=>{
+     if(banner.productCatalog) {
+      
+      banner.__catalog = {"products":[]};
+      let remark = banner.productCatalog.list;
+        
+      let str = remark.split(';')[0];    
+      const pavilion = str.split(':')[1];
+      str = remark.split(';')[1];
+      const stand = str.split(':')[1];
+      str = remark.split(';').length==3 ? remark.split(';')[2] : null;
+      const category = str ? str.split(':')[1] : '';
+    
+      this.productsService.get(this.fair.id,pavilion,stand,null)
+      .then((products) => {
+        if(products.length > 0) {
+            products.forEach((product)=>{
+                if(category == 'all' || product.category_id == category ){
+                    product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
+                    banner.__catalog.products.push(product);
+                    product.priceSelected = product.prices[0];
+                }
+            });
+        }
+      })
+      .catch(error => {
+        
+      });   
+    }
+    });
+  }
+  
+  changePriceProductCatalog(product,price,price2){
+    
+  }
+
+  contactSendForm(form){
+      console.log(form.value);
+  }  
 
 }

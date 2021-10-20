@@ -18,19 +18,19 @@ export class AdminMerchantsService {
 
   constructor(
     private http: HttpClient,
-	private usersService: UsersService
+    private usersService: UsersService
   ) { }
 
   create(data): Promise<any> {
 
     return new Promise((resolve, reject) => {
-	  
-	  this.usersService.getUser().then((userDataSession: any)=>{
-		const httpOptions = {
-		  headers: new HttpHeaders({
-			  'Authorization':  'Bearer ' + userDataSession.token
-		  })
-	    };
+      
+      this.usersService.getUser().then((userDataSession: any)=>{
+        const httpOptions = {
+          headers: new HttpHeaders({
+              'Authorization':  'Bearer ' + userDataSession.token
+          })
+        };
 
       this.http.post(`/api/merchant/create`, processDataToString(data),httpOptions)
         .pipe(
@@ -49,7 +49,7 @@ export class AdminMerchantsService {
           if (data.success) {
             resolve(processData(dataResponse.data));
           } else {
-			data = processData(data);
+            data = processData(data);
             reject(JSON.stringify(dataResponse));
           }
         },error => {

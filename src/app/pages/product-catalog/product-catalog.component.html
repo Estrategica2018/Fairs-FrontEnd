@@ -1,26 +1,30 @@
 <div class="grid" id="grid-{{banner.id}}" [ngStyle]="{'--width': banner.size.x +'px'}">
-  <div class="card item-{{(i+1)}}" *ngFor="let product of products; let i = index;">
-	<ion-grid class="card w-100">
-	  <ion-row>
-		<ion-col size="5">
-		   <app-carousel-images [product]="product">
-			</app-carousel-images>
-		</ion-col>
-		<ion-col id="grid-col-{{banner.id}}" size="7" class="col-max scroll-light">
-		   <h2 class="name ion-text-center m-0 p-0">{{product?.name}}</h2>
-		   <h6 class="description m-0 p-0 ion-text-justify pr-4 pt-2"><small [ngStyle]="{
-		      'font-size': banner.fontSize + 'px',
-   		      'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
-			  'color': banner.fontColor,
-			  'text-align': banner.textAlign
-		   }">{{product?.description}}</small></h6>
-		   <ion-label class="ion-text-center">{{priceSelected?.price}}</ion-label>
-		   <ion-button class="button" color="primary" size="small" (click)="onShowProductEl(product)">
-			 ver oferta
-		  </ion-button>
-		</ion-col>
-	  </ion-row>
-	  
-	</ion-grid>
+  <div class="card item-{{(i+1)}}" *ngFor="let product of products; let i = index;"
+  [ngStyle]="{
+     'background-color': banner.backgroundColor
+  }">
+    <ion-grid class=" w-100">
+      <ion-row>
+        <ion-col size="5">
+           <app-carousel-images [product]="product" (changePrice)="changePrice($event)">
+            </app-carousel-images>
+        </ion-col>
+        <ion-col class="grid-col-{{banner.id}}" size="7" class="col-max scroll-light">
+           <h2 class="name ion-text-center m-0 p-0">{{product?.name}}</h2>
+           <h6 class="description m-0 p-0 ion-text-justify pr-4 pt-2"><small [ngStyle]="{
+              'font-size': banner.fontSize + 'px',
+                 'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
+              'color': banner.fontColor,
+              'font-weight': banner.fontWeight,
+              'text-align': banner.textAlign
+           }">{{product?.description}}</small></h6>
+           <ion-label class="ion-text-center">{{priceSelected?.price}}</ion-label>
+        </ion-col>
+      </ion-row>
+      
+    </ion-grid>
+    <ion-button class="button-show" color="primary" size="small" (click)="onShowProductEl(product)">
+       ver oferta
+    </ion-button>
   </div>
 </div>

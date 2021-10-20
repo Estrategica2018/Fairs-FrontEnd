@@ -93,7 +93,7 @@ export class FairPage implements OnInit {
         this.showPrice = fair.price > 0;
         
         
-		this.agendasService.list()
+        this.agendasService.list()
         .then((agendas) => {
             this.agendas = agendas;
             this.agendas.forEach((agenda)=>{
@@ -101,25 +101,25 @@ export class FairPage implements OnInit {
                 agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
                 agenda.location = agenda.room ? agenda.room.name : '';
             });
-			
-			this.categoryService.list('all', this.fair)
-			.then((response) => {
-				this.groupsCategoryList = [ { "label":"Categorías para agenda", "name": "AgendaType", "values":[] },{ "label":"Categorías para productos", "name": "ProductCategory", "values":[] }];
-				if(response.success == 201 ) {
-				   response.data.forEach((category)=>{
-					  if(category.type=='AgendaType') { this.groupsCategoryList[0].values.push(category); }
-					  else if(category.type=='ProductCategory') { this.groupsCategoryList[1].values.push(category); }
-				   });
-				}
-				this.loading.dismiss();
-			 })
-			 .catch(error => {
-				this.loading.dismiss(); 
-				this.errors = `Consultando el servicio para categorias: ${error}`;
-			 });
-			
+            
+            this.categoryService.list('all', this.fair)
+            .then((response) => {
+                this.groupsCategoryList = [ { "label":"Categorías para agenda", "name": "AgendaType", "values":[] },{ "label":"Categorías para productos", "name": "ProductCategory", "values":[] }];
+                if(response.success == 201 ) {
+                   response.data.forEach((category)=>{
+                      if(category.type=='AgendaType') { this.groupsCategoryList[0].values.push(category); }
+                      else if(category.type=='ProductCategory') { this.groupsCategoryList[1].values.push(category); }
+                   });
+                }
+                this.loading.dismiss();
+             })
+             .catch(error => {
+                this.loading.dismiss(); 
+                this.errors = `Consultando el servicio para categorias: ${error}`;
+             });
+            
             this.loading.dismiss(); 
-			
+            
          })
          .catch(error => {
             this.loading.dismiss(); 

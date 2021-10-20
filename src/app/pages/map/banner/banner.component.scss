@@ -1,0 +1,24 @@
+.banner {
+  position: absolute;
+}
+
+.cube {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.cube__face {
+  position: absolute;
+  border: 2px solid black;
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
+.link.cube__face--right:hover {
+  cursor: pointer;
+}
+
+

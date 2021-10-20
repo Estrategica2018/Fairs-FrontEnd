@@ -12,14 +12,13 @@
       *ngFor="let speaker of speakers;let i = index;" 
       (click)="presenterSpeakerModal(speaker)">
           <div class="d-flex" >
-              <div class="div-avatar" [ngStyle]="{ 'background-image': 'url('+speaker.resources.url_image+')'}">
+              <div class="div-avatar" [ngStyle]="{ 'background-image': 'url('+speaker.profile_picture+')'}">
               </div>
-              <h2 class="name">{{speaker.user.name}}</h2>
-              <img src="https://res.cloudinary.com/dfxkgtknu/image/upload/v1631769965/samples/ico_ovvfue.png">
+              <h3 class="name">{{speaker.user.name}}</h3>
+              <img [src]="speaker.company_logo">
               <h3 class="last-name">{{speaker.user.last_name}}</h3>
-              <ion-label class="description">
-                <h5 class="white-space">{{speaker.title}}</h5>
-                <h3 class="white-space">{{speaker.description}}</h3>
+              <ion-label class="description" >
+                <h5 class="white-space">{{speaker.description_one}}</h5>
               </ion-label>
           </div>
       </div>
@@ -40,7 +39,7 @@
                   </p>
                 </ion-label> 
                 <ion-thumbnail class="m-auto">
-                  <ion-img [src]="agenda.resources.url_image" style="width: 73px;" class="ml"></ion-img>
+                  <ion-img [src]="agenda.profile_picture" style="width: 73px;" class="ml"></ion-img>
                 </ion-thumbnail>
               </ion-item>
     

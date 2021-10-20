@@ -72,27 +72,27 @@
                   </ion-item>
                 </div>
                 <ion-item (click)="onClickPavilionLocal(pavilion)"
-				          lines="none"
+                          lines="none"
                           button="true"
                           class="sub-menu"
-						  *ngIf="pavilion.stands.length > 0" >
+                          *ngIf="pavilion.stands.length > 0" >
                   <ion-label class="menu-label ml-4">Locales comerciales </ion-label>
-				  <ion-icon slot="end" name="chevron-down-outline" size="small" [hidden]="pavilion.showStandDetail"></ion-icon>
+                  <ion-icon slot="end" name="chevron-down-outline" size="small" [hidden]="pavilion.showStandDetail"></ion-icon>
                   <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="pavilion.showStandDetail"></ion-icon>
                 </ion-item>
                 <div *ngIf="pavilion.showStandDetail">
                     <div *ngFor="let stand of pavilion.stands;let i_stand = index">
-					  <ion-item (click)="onClickPavilionStand(pavilion,stand)"
+                      <ion-item (click)="onClickPavilionStand(pavilion,stand)"
                               button="true" lines="none" class="sub-menu-stand">
                         <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
                         <ion-label class="menu-label ml-6 ion-text-wrap" style="margin-left: 2em;">{{stand.merchant.name}}</ion-label>
                       </ion-item>
-				      <div *ngIf="stand.standShowSelect && stand.resources.scenes.length > 1">
-					    <div *ngFor="let scene of stand.resources.scenes;let i_scene = index">
+                      <div *ngIf="stand.standShowSelect && stand.resources.scenes.length > 1">
+                        <div *ngFor="let scene of stand.resources.scenes;let i_scene = index">
                           <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
                               (click)="onClickPavilionStandScene(pavilion,stand,i_scene)"
                               button="true"
-							  lines="none" class="sub-menu-stand">
+                              lines="none" class="sub-menu-stand">
                             <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
                             <ion-label class="menu-label ion-text-wrap" style="margin-left: 2em;">{{scene.title || 'Escena #' + ( i_scene + 1 ) }}</ion-label>
                           </ion-item>

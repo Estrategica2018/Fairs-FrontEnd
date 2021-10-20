@@ -101,7 +101,7 @@ $delta-height: 12px;
       
       div .last-name {
          position: absolute;
-         top: 32px;
+         top: 51px;
          text-align: right;
          right: 5px;
          padding-right: 4px;
@@ -122,12 +122,14 @@ $delta-height: 12px;
          position: absolute;
          width: 41%;
          right: 10px;
-          top: 96px;
+         top: 96px;
+         max-height: 102px;
+         overflow: hidden;
       }
    }
 }
 
-.grid .card.item-1,	
+.grid .card.item-1,    
 .grid .card.item-4,
 .grid .card.item-7,
 .grid .card.item-10,

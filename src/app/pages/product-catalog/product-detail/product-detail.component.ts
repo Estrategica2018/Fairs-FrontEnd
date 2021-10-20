@@ -14,7 +14,7 @@ import { UsersService } from '../../../api/users.service';
 export class ProductDetailComponent implements OnInit {
 
   @Input() fair: any;
-  @Input() pavilion: any;
+  @Input() pavilionId: any;
   @Input() standId: any;
   @Input() product: any;
   priceSelected: any;
@@ -27,17 +27,17 @@ export class ProductDetailComponent implements OnInit {
   constructor(
     private alertCtrl: AlertController,
     private actionSheetController: ActionSheetController,
-	private sanitizer: DomSanitizer,
-	private adminProductsService: AdminProductsService,
-	private loading: LoadingService,
-	private toastController: ToastController,
-	private usersService: UsersService,
+    private sanitizer: DomSanitizer,
+    private adminProductsService: AdminProductsService,
+    private loading: LoadingService,
+    private toastController: ToastController,
+    private usersService: UsersService,
   ) { }
 
   ngOnInit() {
-	
-	this.changePrice(this.product.prices[0]);
-	
+    
+    this.changePrice(this.product.prices[0]);
+    
     this.usersService.getUser().then((userDataSession: any)=>{
       if(userDataSession && userDataSession.user_roles_fair)  {
         this.profileRole = {};
@@ -50,15 +50,15 @@ export class ProductDetailComponent implements OnInit {
       }
     });
     
-	  if(this.product && this.product.resources && this.product.resources && this.product.resources.detail.elements ) {
-	    this.product.resources.detail.elements.forEach((item)=>{
-		  if(item.video) { 
-		    const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(item.video.videoUrl);
-		    item.video.sanitizer = sanitizer;
-		  }
-	    })
-	  }
-	  
+      if(this.product && this.product.resources && this.product.resources && this.product.resources.detail.elements ) {
+        this.product.resources.detail.elements.forEach((item)=>{
+          if(item.video) { 
+            const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(item.video.videoUrl);
+            item.video.sanitizer = sanitizer;
+          }
+        })
+      }
+      
   }
 
   async onAddImg(){
@@ -84,10 +84,10 @@ export class ProductDetailComponent implements OnInit {
          role: 'destructive', 
          handler: (data) => {
           if(!this.product.resources || !this.product.resources.detail) {
-			  this.product.resources = { 'detail': { 'elements': [] } };
-		  }
+              this.product.resources = { 'detail': { 'elements': [] } };
+          }
           this.product.resources.detail.elements.push({'url':data.url,'title':data.title});
-		  this.saveProduct('Agregar imágen');
+          this.saveProduct('Agregar imágen');
          }
         }]
     });
@@ -119,12 +119,12 @@ export class ProductDetailComponent implements OnInit {
          role: 'destructive', 
          handler: (data) => {
           
-		  if(!this.product.resources || !this.product.resources.detail) {
-			  this.product.resources = { 'detail': { 'elements': [] } };
-		  }
-		  const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(data.videoUrl);
+          if(!this.product.resources || !this.product.resources.detail) {
+              this.product.resources = { 'detail': { 'elements': [] } };
+          }
+          const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(data.videoUrl);
           this.product.resources.detail.elements.push({'video':{'videoUrl':data.videoUrl,'sanitizer': sanitizer},'title':data.title});
-		  this.saveProduct('Agregar video');
+          this.saveProduct('Agregar video');
          }
         }]
     });
@@ -137,7 +137,7 @@ export class ProductDetailComponent implements OnInit {
       message: "Ingresa el Párrafo",
       inputs: [
         {
-		  type: 'textarea',
+          type: 'textarea',
           name: 'paragraph',
           placeholder: 'Párrafo'
         }
@@ -149,11 +149,11 @@ export class ProductDetailComponent implements OnInit {
          text: 'Agregar', 
          role: 'destructive', 
          handler: (data) => {
-		  if(!this.product.resources || !this.product.resources.detail) {
-			  this.product.resources = { 'detail': { 'elements': [] } };
-		  }
+          if(!this.product.resources || !this.product.resources.detail) {
+              this.product.resources = { 'detail': { 'elements': [] } };
+          }
           this.product.resources.detail.elements.push({'paragraph':data.paragraph});
-		  this.saveProduct('Agregar Párrafo');
+          this.saveProduct('Agregar Párrafo');
          }
         }]
     });
@@ -193,42 +193,42 @@ export class ProductDetailComponent implements OnInit {
   }
   
   onDeleteItemAdded(index){
-	  this.product.resources.detail.elements = this.product.resources.detail.elements.filter((item, ind)=>{
-		  return ind != index;
-	 });
-	 this.saveProduct('Borrar elemento');
+      this.product.resources.detail.elements = this.product.resources.detail.elements.filter((item, ind)=>{
+          return ind != index;
+     });
+     this.saveProduct('Borrar elemento');
   }
   
   saveProduct(action) {
-	  
+      
     this.loading.present({message:'Cargando...'});
-    this.adminProductsService.update(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.standId},this.product))
+    this.adminProductsService.update(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilionId,'stand_id':this.standId},this.product))
     .then((product) => {
-	  
-	  //window.location.replace(`${this.url}/#/super-admin/map-editor/product/${this.pavilion.id}/${this.standId}/${this.product.id}/${this.sceneId}`);
-	  //this.router.navigateByUrl(`/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
-	   this.presentToast('Acción '+action+' exitosa', 'app-success-alert');
-	   this.loading.dismiss(); 
+      
+      //window.location.replace(`${this.url}/#/super-admin/map-editor/product/${this.pavilion.id}/${this.standId}/${this.product.id}/${this.sceneId}`);
+      //this.router.navigateByUrl(`/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
+       this.presentToast('Acción '+action+' exitosa', 'app-success-alert');
+       this.loading.dismiss(); 
     })
     .catch(error => {
-	   this.loading.dismiss(); 
-	   this.presentToast('Acción '+action+' generó error', 'app-error-alert');
-	   //this.errors = `Consultando el servicio para actualizar producto ${error}`;
+       this.loading.dismiss(); 
+       this.presentToast('Acción '+action+' generó error', 'app-error-alert');
+       //this.errors = `Consultando el servicio para actualizar producto ${error}`;
     });
   }
 
   async presentToast(msg,cssClass) {
     const toast = await this.toastController.create({
       message: msg,
-	  cssClass: cssClass,
+      cssClass: cssClass,
       duration: 2000
     });
     toast.present();
   }
  
   openSelect() {
-	this.showSelectAmount = true;
-	setTimeout(()=>{
+    this.showSelectAmount = true;
+    setTimeout(()=>{
       var m=document.querySelector(".select-amount");
       var length = 10;
       //open dropdown
@@ -236,32 +236,34 @@ export class ProductDetailComponent implements OnInit {
     },100);
   }
   
-  changePrice(price){
-    this.priceSelected = price;
+  changePrice(product){
+    this.priceSelected = product.priceSelected;
+    console.log(this.priceSelected.price);
     this.attributes = [];
-	let value;
-	if(this.product && this.product.resources && this.product.resources.attributes)
-	for(let attr in this.product.resources.attributes) {
-	  value = this.product.resources.attributes[attr];
-	  this.attributes.push({'name':value.key,'value': value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' ) });
-	}
-	let mbControl = false;
-    if(this.priceSelected.resources.attributes)
+    let value;
+    if(this.product && this.product.resources && this.product.resources.attributes)
+    for(let attr in this.product.resources.attributes) {
+      value = this.product.resources.attributes[attr];
+      this.attributes.push({'name':value.key,'value': value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' ) });
+    }
+    let mbControl = false;
+    if(this.priceSelected.resources.attributes) {
      for(let attr in this.priceSelected.resources.attributes) {
-	  mbControl = false;
-	  value = this.priceSelected.resources.attributes[attr];
-	  for(let attrTem of this.attributes) { 
-	    if(attrTem.name === attr) {
-		   mbControl = true;
-		   attrTem.value = value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' );
-		}
-	  }
-	  if(!mbControl)
-	  this.attributes.push({'name':attr,'value': value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' ) });
+       mbControl = false;
+       value = this.priceSelected.resources.attributes[attr];
+       for(let attrTem of this.attributes) { 
+         if(attrTem.name === attr) {
+            mbControl = true;
+            attrTem.value = value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' );
+         }
+       }
+       if(!mbControl)
+       this.attributes.push({'name':attr,'value': value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' ) });
      }
+    }
   }
   
   onBuyProduct(product) {
-	  
+      
   }
 }

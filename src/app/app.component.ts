@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
     private fairsService: FairsService,
     private pavilionsService: PavilionsService,
     private titleService: Title,
-	private menuCtrl: MenuController
+    private menuCtrl: MenuController
   ) {
     this.initializeApp();
     this.initializeFair();
@@ -57,14 +57,14 @@ export class AppComponent implements OnInit {
       then( fair => {
         this.fair = fair;
         this.titleService.setTitle(this.fair.description);
-      },error=> console.log(error));
+      },(e: any)=> console.log(e));
   }
 
   ngOnInit() {
     this.checkLoginStatus();
     this.listenForLoginEvents();
     this.listenForFullScreenEvents();
-    this._toolbarHeight = document.querySelector('ion-toolbar').offsetHeight;
+    this._toolbarHeight = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
     
     this.usersService.getUser().then((userDataSession: any)=>{
       if(userDataSession && userDataSession.user_roles_fair)  {
@@ -206,22 +206,22 @@ export class AppComponent implements OnInit {
   }
   
   onClickPavilionScene(pavilion,index) {
-	  this.redirectTo('/map/pavilion/'+pavilion.id+'/'+index);
+      this.redirectTo('/map/pavilion/'+pavilion.id+'/'+index);
   }
   
   async onClickPavilionLocal(pavilion){
-	  if(pavilion)
+      if(pavilion)
        pavilion.showStandDetail =  pavilion.showStandDetail ==='pavilion_id_'+pavilion.id ? null : 'pavilion_id_'+pavilion.id;
-	   await this.menuCtrl.open('end');
+       await this.menuCtrl.open('end');
   }
   
   onClickPavilionStand(pavilion,stand) {
     stand.standShowSelect = stand.standShowSelect ? false : true;
-	this.redirectTo('/map/stand/'+pavilion.id+'/'+stand.id+'/0');
+    this.redirectTo('/map/stand/'+pavilion.id+'/'+stand.id+'/0');
   }
   
   onClickPavilionStandScene(pavilion,stand,index){
-	  this.redirectTo('/map/stand/'+pavilion.id+'/'+stand.id+'/'+index);
+      this.redirectTo('/map/stand/'+pavilion.id+'/'+stand.id+'/'+index);
   }
   
 }

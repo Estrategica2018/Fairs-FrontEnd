@@ -3,6 +3,7 @@
     "downlevelIteration": true,
     "importHelpers": true,
     "module": "esnext",
+    "skipLibCheck": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,

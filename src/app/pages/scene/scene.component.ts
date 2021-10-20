@@ -16,7 +16,7 @@ export class SceneComponent implements OnInit {
   }
   
   ngOnInit() {
-	setTimeout(()=>{this.onResize()},30);
+    setTimeout(()=>{this.onResize()},30);
   } 
   
   ngAfterViewInit() {
@@ -27,7 +27,7 @@ export class SceneComponent implements OnInit {
      
      const main = document.querySelector<HTMLElement>(this.mainContainer);
      if(!this.scene || !main) return;
-	 //const menu = document.querySelector < HTMLElement > ('.menu-main-content');
+     //const menu = document.querySelector < HTMLElement > ('.menu-main-content');
      //const offsetWidth = window.innerWidth - menu.offsetWidth;
      const offsetWidth = main.offsetHeight;
      //const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
@@ -60,10 +60,10 @@ export class SceneComponent implements OnInit {
         }
         if(banner.fontSize > 0 ) {
            banner.fontSize /= deltaW;
-        }				
-		if(banner.border && banner.border.radius > 0){
-			banner.border.radius /= deltaH;
-		}
+        }                
+        if(banner.border && banner.border.radius > 0){
+            banner.border.radius /= deltaH;
+        }
      });
      
      //Menu tab resize/render

@@ -13,8 +13,8 @@ import { ProductDetailComponent } from '../product-catalog/product-detail/produc
     IonicModule.forRoot(),
     MapPageRoutingModule,
     ComponentsModule,
-	FormsModule,
-	ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     MapPage

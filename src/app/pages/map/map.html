@@ -72,7 +72,7 @@
         <!--if banner is banner-->
        <div class="cube__face cube__face--right square " 
        [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }" 
-       [hidden]=" ( banner.video && banner.video.url ) || banner.line"
+       [hidden]=" ( banner.video && banner.video.url ) || banner.line || banner.productCatalog"
        id="obj-{{banner.id}}"
        (click)="goToInternalUrl(banner)"
        (mouseover)="startAnimation(banner); bannerSelectHover = banner; "
@@ -87,11 +87,11 @@
        'width': banner.size.x + 'px', 
        'height': banner.size.y + 'px',
        'font-size': banner.fontSize + 'px',
-       'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansBold' ),
+       'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansMedium' ),
        'color': banner.fontColor,
+       'font-weight': banner.fontWeight,
        'border-color': banner.border?.color,
        'border-style': banner.border?.style,
-       'font-weight': banner.fontWeight,
        'border-radius': banner.border?.radius + 'px',
        'border-width': banner.border?.width +'px',
        'text-align': banner.textAlign,
@@ -99,6 +99,55 @@
        }">  
          <div [ngClass]="{'selected': bannerSelectHover === banner}" 
          [ngStyle]="{'line-height': banner?.lineHeight}">
+         
+         
+             <!--if banner is Contact-->
+            <div *ngIf="banner.contact && banner.__contactForm" class="p-3">
+             <form [formGroup]="banner.__contactForm" (ngSubmit)="contactSendForm(banner.__contactForm)">
+                <p class="d-flex ml-3" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 0.3 / 10) + 'px'}">
+                  <span style="color: rgb(224, 62, 45);">*</span> 
+                  <span [ngStyle]="{'color': banner.fontColor}"> Nombre </span>
+                </p>
+                <ion-input formControlName="name" type="text" class="position-absolute ion-text-start" 
+                [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px','top': ( banner.size.y * 0.6 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                </ion-input>
+                <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 1.4 / 10) + 'px'}" class="contact-line"></div>
+                
+                <p class="d-flex" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 1.7 / 10) + 'px'}">
+                  <span style="color: rgb(224, 62, 45);">*</span> 
+                  <span [ngStyle]="{'color': banner.fontColor}"> Correo electrónico </span>
+                </p>
+                <ion-input formControlName="email" type="text" class="position-absolute ion-text-start" 
+                [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'top': ( banner.size.y * 2 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                </ion-input>
+                <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 2.8 / 10) + 'px'}" class="contact-line"></div>
+                
+                <p class="d-flex" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 3.1 / 10) + 'px'}">
+                  <span style="color: rgb(224, 62, 45);">*</span> 
+                  <span [ngStyle]="{'color': banner.fontColor}"> Asunto </span>
+                </p>
+                <ion-input formControlName="subject" type="text" class="position-absolute ion-text-start" 
+                [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'top': ( banner.size.y * 3.4 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                </ion-input>
+                <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 4.2 / 10) + 'px'}" class="contact-line"></div>
+                
+                <ion-textarea maxlength="10" formControlName="message" placeholder="Mensaje" type="text" class="position-absolute contact-text-area ion-text-justify" 
+                [ngStyle]="{'top': ( banner.size.y * 4.5 / 10) + 'px', 'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'border-radius': ( banner.size.w * 0.3 ) + 'px',
+                'height': ( banner.size.y * 3.5 / 10) + 'px'}">
+                </ion-textarea>
+                
+                <ion-button color="primary" type="submit" class="position-absolute" [disabled]="!banner.__contactForm?.valid"
+                [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 
+                'top': ( banner.size.y * 8.5 / 10) + 'px', 'height': ( banner.size.y * 1 / 10) + 'px'}">
+                  <ion-label> Enviar Mensaje</ion-label>
+                  <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
+                </ion-button>
+             </form>
+            </div>
+            <!--End if banner is Contact-->
+         
+         
+         
            <div *ngIf="banner.isHtml">
              <div [innerHTML]="banner.textHtml"></div>
            </div>
@@ -122,12 +171,91 @@
        </app-carousel-template>
        
        <!--if banner is product-catalog -->
-       <app-product-catalog #productCatalog [banner]="banner" *ngIf="banner.productCatalog" 
-       id="product-catalog-id-{{banner.id}}"
-	   (onShowProduct)="onShowProduct($event)"
-       [fair]="fair" [pavilion]="pavilion" [stand]="stand" 
-       [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
-       </app-product-catalog>   
+       <div class="grid" *ngIf="banner.productCatalog"  id="grid-{{banner.id}}" 
+          [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+            <div class="card item-{{(i+1)}}" 
+              *ngFor="let product of banner.__catalog?.products; let i = index;" 
+              [ngStyle]="{
+               'position': 'absolute',
+               'top': (( number.parseInt( i / 3 ) * banner.size.y) + (banner.size.y * number.parseInt( i / 3 ) * 0.03) ) + 'px',
+               'left': ( i % 3 >= 2 ?  banner.size.x * 2.06 : ( i % 3 ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+               'width': banner.size.x + 'px', 
+               'height': banner.size.y + 'px',
+               'background-image': 'url('+banner.image_url+')',
+               'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+               'background-repeat': 'no-repeat',
+               'background-color': banner.backgroundColor,
+               'border-color': banner.border.color,
+               'border-style': banner.border.style,
+               'border-radius': banner.border.radius + 'px',
+               'border-width': banner.border.width +'px'
+              }">
+               <ion-grid class=" w-100">
+                <ion-row>
+                  <div class="position-absolute"
+                  [ngStyle]="{
+                      'top': banner.productCatalog.imageTop + 'px',
+                      'left': banner.productCatalog.imageLeft + 'px',
+                      'width': banner.productCatalog.imagesWidth + 'px',
+                      'height': banner.productCatalog.imagesHeight + 'px'
+                     }">
+                      <app-carousel-images [imageHeight]="banner.productCatalog.imagesHeight" [imageWidth]="banner.productCatalog.imagesWidth" [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth"
+                      [product]="product" (changePrice)="changePriceProductCatalog($event,$event,$event)">
+                      </app-carousel-images>
+                      <!--ion-slides pager="true" [options]="slideOpts"-->
+                  </div>
+                  
+                     <div class="ion-text-center m-0 p-0 position-absolute w-100"
+                     [ngStyle]="{
+                      'font-size': banner.productCatalog.titleFontSize + 'px',
+                      'font-family': ( banner.productCatalog.titleFontFamily ? banner.productCatalog.titleFontFamily : 'YoutubeSansMedium' ),
+                      'color': banner.productCatalog.titleFontColor,
+                      'font-weight':  banner.productCatalog.titleFontWeight,
+                      'top': banner.productCatalog.titleTop + 'px',
+                      'left': banner.productCatalog.titleLeft + 'px'
+                     }" >{{product.name}}</div>
+                     <div  class="position-absolute"
+                     [ngStyle]="{
+                      'font-size': banner.productCatalog.descFontSize + 'px',
+                      'font-family': ( banner.productCatalog.descFontFamily ? banner.productCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                      'color': banner.productCatalog.descFontColor,
+                      'top': banner.productCatalog.descTop + 'px',
+                      'left': banner.productCatalog.descLeft + 'px',
+                      'width': banner.productCatalog.descWidth + 'px',
+                      'font-weight':  banner.productCatalog.descFontWeight,
+                      'line-height': banner.productCatalog.lineHeight,
+                      'text-align': banner.productCatalog.descTextAlign
+                     }">{{product.description}}
+                     <br>
+                     <div ><div  class="position-absolute"
+                     [ngStyle]="{
+                      'font-size': banner.productCatalog.priceFontSize + 'px',
+                      'font-family': ( banner.productCatalog.priceFontFamily ? banner.productCatalog.priceFontFamily : 'YoutubeSansMedium' ),
+                      'color': banner.productCatalog.priceFontColor,
+                      'top': banner.productCatalog.priceTop + 'px',
+                      'left': banner.productCatalog.priceLeft + 'px',
+                      'font-weight':  banner.productCatalog.priceFontWeight
+                     }">{{product.priceSelected?.price | currency: 'COP $ ':'symbol':'1.2-2' }}</div>
+                     </div></div> 
+                </ion-row>
+               </ion-grid>
+               <ion-button class="position-absolute" color="primary" size="small"  (click)="onShowProduct(product)"
+                [ngStyle]="{
+                  'width': banner.productCatalog.buttonWidth + 'px', 
+                  'height': banner.productCatalog.buttonHeight + 'px',
+                  '--background': banner.productCatalog.buttonBackgroundColor,
+                  'font-size': banner.productCatalog.buttonFontSize + 'px',
+                  'font-family': ( banner.productCatalog.buttonFontFamily ? banner.productCatalog.buttonFontFamily : 'YoutubeSansMedium' ),
+                  'font-weight': banner.productCatalog.buttonFontWeight,
+                  'color': banner.productCatalog.buttonFontColor,
+                  'right': banner.productCatalog.buttonRight + 'px',
+                  'bottom': banner.productCatalog.buttonBottom + 'px'
+               }">
+                 <div > {{banner.productCatalog.buttonLabel}}
+                 </div>
+               </ion-button>
+            </div>
+          </div>
 
      </div>
     <!--Tooltip-->

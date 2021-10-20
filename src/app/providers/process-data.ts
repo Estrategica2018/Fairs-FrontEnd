@@ -50,3 +50,27 @@ export function processDataToString(obj){
     }
     return obj;
 }
+
+export function clone(obj){
+    
+    if(typeof obj == 'object' && obj.length > 0) {
+        let list = [];
+        for(let item of obj) {
+            list.push(clone(item));
+        }
+        return list;
+    }
+    else if(typeof obj == 'object') {
+        let objNew =  Object.assign({},obj);
+        for (let key of Object.keys(obj)) {
+           if(obj[key]) {
+              objNew[key] = clone(obj[key]);
+           }
+        }
+        
+        return objNew;
+    }
+    else {
+        return obj;
+    }
+  }

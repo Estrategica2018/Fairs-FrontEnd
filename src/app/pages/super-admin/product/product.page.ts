@@ -70,7 +70,7 @@ export class ProductPage implements OnInit {
             this.categoryService.list('ProductCategory',this.fair)
             .then(({data}) => {
               this.categories = data;
-			  
+              
               this.fair.pavilions.forEach((pavilion)=>{
                 if(pavilion.id == pavilionId ) {
                     this.pavilion = pavilion;
@@ -87,10 +87,10 @@ export class ProductPage implements OnInit {
                 .then((products) => {
                     this.loading.dismiss();
                     this.product = products[0];
-					this.product.url_imagen = this.product.prices[0].resources.images[0].url_image;
-					this.product.resources = this.product.resources || {};
-			        this.product.resources.attributes = this.product.resources.attributes || [];
-			        this.product.resources.keywords = this.product.resources.keywords || [];
+                    this.product.url_imagen = this.product.prices[0].resources.images[0].url_image;
+                    this.product.resources = this.product.resources || {};
+                    this.product.resources.attributes = this.product.resources.attributes || [];
+                    this.product.resources.keywords = this.product.resources.keywords || [];
                   })
                   .catch(error => {
                      this.loading.dismiss();
@@ -111,7 +111,7 @@ export class ProductPage implements OnInit {
                      this.errors = error;
                   });
                }
-			   
+               
             })
             .catch(error => {
                this.loading.dismiss();
@@ -200,27 +200,27 @@ export class ProductPage implements OnInit {
   
   addAttribute(){
     if(this.newAttr.key.length > 0 && this.newAttr.value.length > 0) {
-	  this.product.resources.attributes.push(this.newAttr);
+      this.product.resources.attributes.push(this.newAttr);
       this.newAttr = null;
-	  this.editSave = true;
+      this.editSave = true;
     }
   }
   
   deleteAttr(index, slidingItem) {
-	this.product.resources.attributes = this.product.resources.attributes.filter((attr, ind)=>{
-		return ind != index;
-	});
-	this.editSave = true;
-	slidingItem.close();
+    this.product.resources.attributes = this.product.resources.attributes.filter((attr, ind)=>{
+        return ind != index;
+    });
+    this.editSave = true;
+    slidingItem.close();
   }
   
   showModifyAttr(i, slidingItem) {
-	slidingItem.close();
-	this.indexEditAttr = i;
+    slidingItem.close();
+    this.indexEditAttr = i;
   }
   
   modifyAttr(i,slidingItem) {
-	this.indexEditAttr = null;
+    this.indexEditAttr = null;
   }
   
 

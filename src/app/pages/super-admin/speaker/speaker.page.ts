@@ -48,10 +48,10 @@ export class SpeakerPage implements OnInit {
     this.fairsService.getCurrentFair()
       .then((fair) => {
 
-		this.speaker.fair_id = fair.id;
-		this.speaker.origin = window.location.origin;
-		this.adminSpeakersService.create(this.speaker)
-		  .then((speaker) => {
+        this.speaker.fair_id = fair.id;
+        this.speaker.origin = window.location.origin;
+        this.adminSpeakersService.create(this.speaker)
+          .then((speaker) => {
         this.speakersService.list().then((speakers) => {
           this.speakers = speakers;
           console.log(this.speakers);
@@ -61,12 +61,12 @@ export class SpeakerPage implements OnInit {
           this.speaker = speaker;
           console.log(speaker, 'creación');
         });
-		  })
-		  .catch(error => {
-			this.loading.dismiss();
-			this.errors = error;
-		  });
-	  });
+          })
+          .catch(error => {
+            this.loading.dismiss();
+            this.errors = error;
+          });
+      });
   }
   get(speakerId) {
     console.log('id conferencista', speakerId);

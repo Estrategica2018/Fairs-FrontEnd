@@ -5,32 +5,32 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabMenuScenesComponent } from './pages/map/tab-menu-scenes/tab-menu-scenes.component';
 import { CarouselTemplateComponent } from './pages/map/carousel-template/carousel-template.component';
 import { SceneComponent } from './pages/scene/scene.component';
-import { ProductCatalogComponent } from './pages/product-catalog/product-catalog.component';
 import { CarouselImagesComponent } from './pages/product-catalog/carousel-images/carousel-images.component';
 import { ProductDetailComponent } from './pages/product-catalog/product-detail/product-detail.component';
+import { BannerComponent } from './pages/map/banner/banner.component';
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule.forRoot(),
-	FormsModule,
-	ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     TabMenuScenesComponent,
     CarouselTemplateComponent,
     SceneComponent,
-    ProductCatalogComponent,
     CarouselImagesComponent,
-	ProductDetailComponent
+    ProductDetailComponent,
+    BannerComponent
   ],
   exports: [
     TabMenuScenesComponent,
     CarouselTemplateComponent,
     SceneComponent,
-    ProductCatalogComponent,
     CarouselImagesComponent,
-	ProductDetailComponent
+    ProductDetailComponent,
+    BannerComponent
   ]
   
 })

@@ -8,7 +8,7 @@ $height: 16em;
  
 .container-carousel {
    width: 100%;
-   height: 16em;
+   height: 100%;
 }
 
 
@@ -23,10 +23,10 @@ $height: 16em;
 .color-attr {
   border-radius: 50%;
   cursor: pointer;
-  margin-left: 11px;
+  margin: auto;
   border: 1px solid gray;
-  min-width: 14px;
-  min-height: 14px;
+  min-width: 16px;
+  min-height: 16px;
 }
 
 .container-img {
@@ -41,4 +41,23 @@ $height: 16em;
   display: flex;
 }
 
-  
+.bullet {
+  cursor: pointer;
+  top: 110px;
+  font-size: 40px;
+  .left {
+    left: -32px;
+  }
+  .right {
+    left: 152px;
+  }
+}
+
+
+.bullet .active {
+  color: #007aff;
+}
+
+.bullet .in-active {
+  color: #e1e1e1;
+}

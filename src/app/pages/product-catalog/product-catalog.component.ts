@@ -17,6 +17,7 @@ export class ProductCatalogComponent implements OnInit {
   @Input() stand: any;
   @Input() product: any;
   @Output() onShowProduct = new EventEmitter<any>();
+  @Output() onChangePrice = new EventEmitter<any>();
   products: any;
   
   constructor(
@@ -61,23 +62,75 @@ export class ProductCatalogComponent implements OnInit {
 
   }
   
-  
   onResize() {
     const el = document.querySelector<HTMLElement>('#grid-'+this.banner.id);
-	el.style.setProperty('--width', this.banner.size.x + 'px' );
-	el.style.setProperty('--height', this.banner.size.y + 'px' );
-	//el.style.setProperty('font-size', this.banner.fontSize + 'px' );
+    el.style.setProperty('--width', this.banner.size.x + 'px' );
+    el.style.setProperty('--height', this.banner.size.y + 'px' );
+    //el.style.setProperty('font-size', this.banner.fontSize + 'px' );
   }
   
   onRender(deltaW,deltaH) {
     const el = document.querySelector<HTMLElement>('#grid-'+this.banner.id);
-	const nW: any = el.style.getPropertyValue('--width').replace('px','');
-	const nH: any = el.style.getPropertyValue('--height').replace('px','');
-	el.style.setProperty('--width', (nW / deltaW) + 'px' );
+    const nW: any = el.style.getPropertyValue('--width').replace('px','');
+    const nH: any = el.style.getPropertyValue('--height').replace('px','');
+    el.style.setProperty('--width', (nW / deltaW) + 'px' );
     el.style.setProperty('--height', (nH / deltaH) + 'px' );
-	const elname = document.querySelector<HTMLElement>('#grid-col-'+this.banner.id + ' h2');
-	const fs: any = elname.style.getPropertyValue('font-size').replace('px','');
-	elname.style.setProperty('font-size', (fs / deltaW)  + 'px' );
+    const titles = document.querySelectorAll<HTMLElement>('.grid-col-'+this.banner.id + ' .name');
+    titles.forEach((title)=>{
+        if(title) {
+          let fs: any = title.style.getPropertyValue('font-size').replace('px','');
+          if(fs && fs != "") {
+            title.style.setProperty('font-size', (fs / deltaW)  + 'px' );
+          }
+          else {
+            title.style.setProperty('font-size', 21/deltaW  + 'px' );
+          }
+        }
+    });
+    
+    const descriptions = document.querySelectorAll<HTMLElement>('.grid-col-'+this.banner.id + ' .description');
+    descriptions.forEach((desc)=>{
+        let height = document.querySelector<HTMLElement>('.button-show').offsetTop;
+        desc.style.setProperty('height', ( height * 0.8 )+ 'px' );
+    });
+    
+    const colors = document.querySelectorAll<HTMLElement>('.container-carousel');
+    colors.forEach((color)=>{
+        let height = document.querySelector<HTMLElement>('.button-show').offsetTop;
+        console.log(height);
+        color.style.setProperty('height', ( height * 0.8 )+ 'px' );
+    });
+    
+    const btns = document.querySelectorAll<HTMLElement>('.button-show');
+    btns.forEach((btn)=>{
+        
+      //btn.style.setProperty('width', 102/deltaW  + 'px' );
+      //btn.style.setProperty('height', 25/deltaH  + 'px' );
+      
+      
+      let height: any = btn.style.getPropertyValue('height').replace('px','');
+      if(height && height != "") {
+        btn.style.setProperty('height', height / deltaH  + 'px' );
+      }
+      else {
+        btn.style.setProperty('height', 25 / deltaH  + 'px' );
+      }
+      
+      let width: any = btn.style.getPropertyValue('width').replace('px','');
+      if(width && width != "") {
+        btn.style.setProperty('width', width / deltaW  + 'px' );
+      }
+      else {
+        btn.style.setProperty('width', 160 / deltaW  + 'px' );
+      }
+      /*let bottom: any = btn.style.getPropertyValue('bottom').replace('px','');
+      if(bottom && bottom != "") {
+        btn.style.setProperty('bottom', bottom * deltaH  + 'px' );
+      }
+      else {
+        btn.style.setProperty('bottom', (this.banner.size.y / 10 ) + 'px' );
+      }*/
+    });
   }
 
   
@@ -89,15 +142,19 @@ export class ProductCatalogComponent implements OnInit {
   }
   
   renderPrice(product) {
-	let minValue = 0;
-	let maxValue = 0;
+    let minValue = 0;
+    let maxValue = 0;
     product.prices.forEach((price)=>{
-		
-	})
+        
+    })
   }
   
   onShowProductEl(product) {
-	product.pavilion = this.pavilion
-	this.onShowProduct.emit(product);
+    product.pavilion = this.pavilion
+    this.onShowProduct.emit(product);
+  }
+  
+  changePrice(price){
+    this.onChangePrice.emit(price);
   }
 }
