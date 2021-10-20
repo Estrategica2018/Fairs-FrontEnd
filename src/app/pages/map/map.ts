@@ -510,6 +510,7 @@ export class MapPage implements OnInit {
         
 		 if(speakers)
 		 speakers.forEach((speaker)=>{
+		   console.log(speaker);
 		   //product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
 		   banner.__speakers.push(speaker);
 		 });
@@ -525,6 +526,14 @@ export class MapPage implements OnInit {
   }
 
   contactSendForm(form){
+	  let from = '';
+	  if(this.template == 'Fair') {
+		  from = this.fair.resources.supportContact;
+	  }
+	  if(this.template == 'Stand') {
+		  from = this.stand.merchant.email_contact;
+	  }
+	  
       console.log(form.value);
   }  
 
