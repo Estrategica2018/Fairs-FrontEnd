@@ -9,10 +9,12 @@ import { Animation, AnimationController } from '@ionic/angular';
 export class BannerComponent implements OnInit {
 
   @Output() changeItem = new EventEmitter<any>();
-  @Output() bannerSelect = new EventEmitter<any>();
+  @Output() onBannerSelect = new EventEmitter<any>();
   @Output() editProduct = new EventEmitter<any>();
   @Output() changePriceProduct = new EventEmitter<any>();
   @Input() banner: any;
+  @Input() bannerSelect: any;
+  @Input() isHover: any;
   
   bannerSelectHover: any;
   
@@ -24,8 +26,8 @@ export class BannerComponent implements OnInit {
       this.changeItem.emit(true);
   }
   
-  onBannerSelect(banner) {
-     this.bannerSelect.emit(banner);
+  onBannerSelected(banner) {
+     this.onBannerSelect.emit(banner);
   }
   
   changePriceProductCatalog(product) {

@@ -167,11 +167,10 @@ Pegar
                       <ion-label> Enviar Mensaje</ion-label>
                       <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
                     </ion-button>
-                    
                   </div>
                   <!--End if banner is Contact-->
-              
-                  <div *ngIf="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                  
+				  <div *ngIf="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
                     <div [innerHTML]="banner.textHtml"></div>
                   </div>
                   <div [hidden]="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
@@ -289,7 +288,83 @@ Pegar
             </div>
           </div>
           
-       </div>
+				  <!--if banner is Speakers-->
+				  <div class="grid" *ngIf="banner.speakers"  id="grid-{{banner.id}}" 
+				  [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+					<div class="card item-{{(i+1)}} rounded-withradius grayscale" 
+					  *ngFor="let speaker of banner.__speakers;let i = index;" (click)="presenterSpeakerModal(speaker)"
+					  [ngStyle]="{
+					   'position': 'absolute',
+					   'top': (( number.parseInt( i / 3 ) * banner.size.y) + (banner.size.y * number.parseInt( i / 3 ) * 0.03) ) + 'px',
+					   'left': ( i % 3 >= 2 ?  banner.size.x * 2.06 : ( i % 3 ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+					   'width': banner.size.x + 'px', 
+					   'height': banner.size.y + 'px',
+					   'background-image': 'url('+banner.image_url+')',
+					   'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+					   'background-repeat': 'no-repeat',
+					   'background-color': banner.backgroundColor,
+					   'border-color': banner.border.color,
+					   'border-style': banner.border.style,
+					   'border-radius': banner.border.radius + 'px',
+					   'border-width': banner.border.width +'px'
+					  }">
+					   <ion-grid class=" w-100">
+						<ion-row>
+							<div class="position-absolute"
+							  [ngStyle]="{
+								  'top': banner.speakers.imagesTop + 'px',
+								  'left': banner.speakers.imagesLeft + 'px',
+								  'width': banner.speakers.imagesWidth + 'px',
+								  'height': banner.speakers.imagesHeight + 'px'
+								 }">
+								  <div class="div-avatar" [ngStyle]="{ 'background-image': 'url('+speaker.profile_picture+')'}">
+              </div>             <!--ion-slides pager="true" [options]="slideOpts"-->
+							</div>
+						  
+							 <div class="ion-text-center m-0 p-0 position-absolute w-100"
+							 [ngStyle]="{
+							  'font-size': banner.speakers.titleFontSize + 'px',
+							  'font-family': ( banner.speakers.titleFontFamily ? banner.speakers.titleFontFamily : 'YoutubeSansMedium' ),
+							  'color': banner.speakers.titleFontColor,
+							  'font-weight':  banner.speakers.titleFontWeight,
+							  'top': banner.speakers.titleTop + 'px',
+							  'left': banner.speakers.titleLeft + 'px'
+							 }" >{{speaker.user.name}} {{ speaker.user.last_name}}</div>
+							 <div  class="position-absolute"
+							 [ngStyle]="{
+							  'font-size': banner.speakers.descFontSize + 'px',
+							  'font-family': ( banner.speakers.descFontFamily ? banner.speakers.descFontFamily : 'YoutubeSansMedium' ),
+							  'color': banner.speakers.descFontColor,
+							  'top': banner.speakers.descTop + 'px',
+							  'left': banner.speakers.descLeft + 'px',
+							  'width': banner.speakers.descWidth + 'px',
+							  'font-weight':  banner.speakers.descFontWeight,
+							  'line-height': banner.speakers.lineHeight,
+							  'text-align': banner.speakers.descTextAlign
+							 }">{{speaker.description_one}}
+							 </div> 
+						</ion-row>
+					   </ion-grid>
+					   <ion-button class="position-absolute" color="primary" size="small" (click)="goToEditProduct(product)"
+						[ngStyle]="{
+						  'width': banner.speakers.buttonWidth + 'px', 
+						  'height': banner.speakers.buttonHeight + 'px',
+						  '--background': banner.speakers.buttonBackgroundColor,
+						  'font-size': banner.speakers.buttonFontSize + 'px',
+						  'font-family': ( banner.speakers.buttonFontFamily ? banner.speakers.buttonFontFamily : 'YoutubeSansMedium' ),
+						  'font-weight': banner.speakers.buttonFontWeight,
+						  'color': banner.speakers.buttonFontColor,
+						  'right': banner.speakers.buttonRight + 'px',
+						  'bottom': banner.speakers.buttonBottom + 'px'
+					   }">
+						 <div > {{banner.speakers.buttonLabel}}
+						 </div>
+					   </ion-button>
+					</div>
+				  </div>
+				  <!--End if banner is Speakers-->
+				  
+	   </div>
        <!--Tooltip-->
        <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
        [ngClass]="banner.toolTipArrow"
@@ -560,6 +635,10 @@ Pegar
             <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('Contact');">
                <small>Contáctenos</small>
                <ion-icon style="font-size: 24px" name="list-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('Speakers');">
+               <small>Conferencistas</small>
+               <ion-icon style="font-size: 24px" name="people-outline"></ion-icon>
             </div>
          </div>
       </ion-card-content>

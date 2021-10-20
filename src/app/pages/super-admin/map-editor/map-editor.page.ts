@@ -20,6 +20,7 @@ import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl
 import { PopoverController, ActionSheetController  } from '@ionic/angular';
 import { environment, SERVER_URL } from '../../../../environments/environment';
 import { ProductListComponent } from '../../super-admin/map-editor/product-list/product-list.component';
+import { SpeakersService } from '../../../api/speakers.service';
 
 declare var tinymce;
 
@@ -125,7 +126,8 @@ export class MapEditorPage implements OnInit {
     private sanitizer: DomSanitizer,
     private productsService: ProductsService,
     private popoverCtrl: PopoverController,
-    private actionSheetController: ActionSheetController) { 
+    private actionSheetController: ActionSheetController,
+	private speakersService: SpeakersService) { 
       
       this.listenForFullScreenEvents();
       this.initializePanel();
@@ -265,11 +267,22 @@ export class MapEditorPage implements OnInit {
     this.initializeGroupOfLinks();
     
     this.scene.banners.forEach((banner)=>{
+        if(banner.video)
+         banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+    });
+	
+    this.scene.banners.forEach((banner)=>{
       if(banner.productCatalog) {
         this.initializeProductCatalogs(banner);
       }
     });
-    
+	
+	this.scene.banners.forEach((banner)=>{
+	   if(banner.speakers) {
+		 this.initializeSpeakers(banner);
+	   }
+	});
+	
     setTimeout(() => {
       this.initializeHtmlTexts(this.scene.banners);
       this.initializeCarousels();
@@ -606,6 +619,51 @@ export class MapEditorPage implements OnInit {
           banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
           banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
       break;
+      case 'Speakers': 
+          banner = { "size":{"x":428,"y":237},
+          "position": this.getNewPosition({"x":64,"y":29}),
+          "speakers": { 
+          'buttonWidth': 145,
+          'buttonHeight': 28,
+          'buttonBackgroundColor': primaryColor,
+          'buttonFontColor': '#fff',
+          'buttonFontFamily': 'YoutubeSansMedium',
+          'buttonFontSize': 12,
+          'buttonFontWeight': 'bold',
+          'buttonLabel': 'Ver Oferta',
+          'buttonRight': 10,
+          'buttonBottom': 10,
+          'titleFontSize': 23,
+          'titleFontColor': '#004782',
+          'titleTop': 10,
+          'titleLeft': 69,
+          'titleFontFamily': 'YoutubeSansMedium',
+          'titleFontWeight': 70,
+          'descTop': 54,
+          'descLeft': 170,
+          'descWidth': 238,
+          'descFontSize': 12,
+          'descTextAlign': 'justify',
+          'lineHeightMili': 0,
+          'lineHeightUnit': 1,
+          'lineHeight': 1.0,
+          'descFontFamily': 'YoutubeSansLight',
+          'descFontWeight': 100,
+          'priceFontColor': '#000',
+          'priceFontFamily': 'YoutubeSansMedium',
+          'priceFontSize': 19,
+          'priceFontWeight': 'bold',
+          'priceLeft': 0,
+          'priceTop': 113,
+          'imagesTop': 18,
+          'imagesLeft': 6,
+          'imagesWidth': 146,
+          'imagesHeight': 146,
+          'imagesPriceWidth': 16, 
+          },'backgroundColor':'#f5f6ff'};
+          banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
+          
+      break;
       case 'ProductCatalog': 
           banner = { "size":{"x":428,"y":237},
           "position": this.getNewPosition({"x":64,"y":29}),
@@ -730,10 +788,12 @@ export class MapEditorPage implements OnInit {
   dragBannerEnd($event,banner) {
     banner.position.y += $event.y;
     banner.position.x += $event.x;
-    banner.banners.forEach((bannerch)=>{
-       bannerch.position.y += $event.y;
-       bannerch.position.x += $event.x;
-    });
+	if(banner.banners) {
+      banner.banners.forEach((bannerch)=>{
+         bannerch.position.y += $event.y;
+         bannerch.position.x += $event.x;
+      });
+	}
     this.onChangeItem();
   }
    
@@ -1498,6 +1558,25 @@ export class MapEditorPage implements OnInit {
   changePriceProductCatalog(product,price,price2){
     
   }
+  
+  initializeSpeakers(banner) {
+   
+      banner.__speakers = [];
+      
+      this.speakersService.list()
+      .then((speakers) => {
+		 if(speakers)
+		 speakers.forEach((speaker)=>{
+		   //product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
+		   banner.__speakers.push(speaker);
+		 });
+        
+      })
+      .catch(error => {
+        
+      });
+  }
+
   
   goToEditProduct(product){
     const uri = '/super-admin/product/' + product.stand.pavilion_id + '/' + product.stand_id + '/' + product.id;

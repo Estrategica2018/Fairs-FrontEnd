@@ -12,6 +12,8 @@ import { DomSanitizer} from '@angular/platform-browser';
 import { UsersService } from '../../api/users.service';
 import { AlertController, ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
+import { SpeakersService } from '../../api/speakers.service';
 
 @Component({
   selector: 'page-map',
@@ -45,6 +47,7 @@ export class MapPage implements OnInit {
     slidesPerView: 1,
     autoplay:true
   };
+  modalSpeaker: any;
   
   constructor(
     private fairsService: FairsService,
@@ -57,7 +60,8 @@ export class MapPage implements OnInit {
     private usersService: UsersService,
     private modalCtrl: ModalController,
     private routerOutlet: IonRouterOutlet,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+	private speakersService: SpeakersService) {
         
       this.url = window.location.origin;
       this.listenForFullScreenEvents();
@@ -146,11 +150,21 @@ export class MapPage implements OnInit {
             banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
         });
 
-        this.initializeProductCatalogs(this.scene.banners);
+        this.scene.banners.forEach((banner)=>{
+           if(banner.productCatalog) {
+               this.initializeProductCatalogs(banner);
+		   }
+		});
         
         this.scene.banners.forEach((banner)=>{
            if(banner.contact) {
              this.initializeContact(banner);
+           }
+        });
+
+        this.scene.banners.forEach((banner)=>{
+           if(banner.speakers) {
+             this.initializeSpeakers(banner);
            }
         });
 
@@ -457,11 +471,8 @@ export class MapPage implements OnInit {
          });
   }
   
-  initializeProductCatalogs(banners) {
+  initializeProductCatalogs(banner) {
    
-    banners.forEach((banner)=>{
-     if(banner.productCatalog) {
-      
       banner.__catalog = {"products":[]};
       let remark = banner.productCatalog.list;
         
@@ -486,9 +497,27 @@ export class MapPage implements OnInit {
       })
       .catch(error => {
         
-      });   
-    }
-    });
+      });
+  }
+  
+  initializeSpeakers(banner) {
+   
+      banner.__speakers = [];
+      
+      this.speakersService.list()
+      .then((speakers) => {
+		  console.log(speakers);
+        
+		 if(speakers)
+		 speakers.forEach((speaker)=>{
+		   //product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
+		   banner.__speakers.push(speaker);
+		 });
+        
+      })
+      .catch(error => {
+        
+      });
   }
   
   changePriceProductCatalog(product,price,price2){
@@ -498,5 +527,20 @@ export class MapPage implements OnInit {
   contactSendForm(form){
       console.log(form.value);
   }  
+
+  async presenterSpeakerModal(speaker) {
+    
+    this.modalSpeaker = await this.modalCtrl.create({
+      component: SpeakerDetailComponent,
+      cssClass: 'speaker-modal',
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { speaker: speaker }
+    });
+    await this.modalSpeaker.present();
+
+    const { data } = await this.modalSpeaker.onWillDismiss();
+  }
+
 
 }

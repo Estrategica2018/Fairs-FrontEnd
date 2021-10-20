@@ -8,6 +8,7 @@ import { SceneComponent } from './pages/scene/scene.component';
 import { CarouselImagesComponent } from './pages/product-catalog/carousel-images/carousel-images.component';
 import { ProductDetailComponent } from './pages/product-catalog/product-detail/product-detail.component';
 import { BannerComponent } from './pages/map/banner/banner.component';
+import { SpeakerDetailComponent } from './pages/speaker-list/speaker-detail/speaker-detail.component';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { BannerComponent } from './pages/map/banner/banner.component';
     SceneComponent,
     CarouselImagesComponent,
     ProductDetailComponent,
-    BannerComponent
+    BannerComponent,
+	SpeakerDetailComponent
   ],
   exports: [
     TabMenuScenesComponent,

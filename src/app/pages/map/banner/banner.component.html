@@ -22,7 +22,7 @@
       [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }"
       [hidden]=" ( banner.video && banner.video.url ) || banner.line || banner.productCatalog "
       id="obj-{{banner.id}}"
-      (click)="onBannerSelect(banner);"
+      (click)="onBannerSelected(banner);"
       (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
       (mouseout)="isHover = null; bannerSelectHover = null;"
       [ngStyle]="{

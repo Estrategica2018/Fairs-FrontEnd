@@ -49,21 +49,6 @@ ion-col:not(:last-of-type) .speaker-card {
 }
 
 
-.rounded-withradius {
-  --ion-grid-column-padding: 10px;
-  border: 7px solid transparent;
-  margin: 3px;
-  border-radius: 10px;
-  background-image: linear-gradient(#EEF2EF, white), linear-gradient(to top right, #BEBEBE, #FEFEFE);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-}
-
-.rounded-withradius:hover {
-  background-image: linear-gradient(#109BE0, #109BE0), linear-gradient(to top right, #BEBEBE, #FEFEFE);
-  color: white;
-}
-
 
 $width: 341px;
 $height: 218px;

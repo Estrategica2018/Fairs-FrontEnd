@@ -6,6 +6,7 @@ import { MapPage } from './map';
 import { MapPageRoutingModule } from './map-routing.module';
 import { ComponentsModule } from '../../components.module';
 import { ProductDetailComponent } from '../product-catalog/product-detail/product-detail.component';
+import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import { ProductDetailComponent } from '../product-catalog/product-detail/produc
     MapPage
   ],
   entryComponents: [
-    ProductDetailComponent
+    ProductDetailComponent, SpeakerDetailComponent
   ]
 })
 export class MapModule { }
