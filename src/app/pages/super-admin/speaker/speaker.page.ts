@@ -35,10 +35,10 @@ export class SpeakerPage implements OnInit {
       position: '',
       profession: '',
       email: '',
+      active: '',
     };
     this.speakersService.list().then((speakers) => {
       this.speakers = speakers;
-      console.log(this.speakers);
     });
   }
   store() {
@@ -54,12 +54,10 @@ export class SpeakerPage implements OnInit {
           .then((speaker) => {
         this.speakersService.list().then((speakers) => {
           this.speakers = speakers;
-          console.log(this.speakers);
           this.loading.dismiss();
           this.success = `Conferencista creado exitosamente`;
           this.errors = null;
           this.speaker = speaker;
-          console.log(speaker, 'creación');
         });
           })
           .catch(error => {
@@ -69,7 +67,6 @@ export class SpeakerPage implements OnInit {
       });
   }
   get(speakerId) {
-    console.log('id conferencista', speakerId);
     this.loading.present({message: 'Cargando...'});
     this.speakersService.get(speakerId).then((speaker) => {
       this.speaker = speaker;
@@ -85,25 +82,21 @@ export class SpeakerPage implements OnInit {
     });
   }
   update() {
-    console.log(1);
     this.loading.present({message: 'Cargando...'});
     this.adminSpeakersService.update(this.speaker)
       .then((speaker) => {
         this.speakersService.list().then((speakers) => {
           this.speakers = speakers;
-          console.log(this.speakers);
           this.loading.dismiss();
           this.success = `Conferencista creado exitosamente`;
           this.errors = null;
           this.speaker = speaker;
-          console.log(speaker, 'creación');
           this.speakersService.get(speaker.id).then((speakerGet) => {
             this.speaker = speakerGet;
             this.speaker.id = speakerGet.id;
             this.speaker.name = speakerGet.user.name;
             this.speaker.last_name = speakerGet.user.last_name;
             this.speaker.email = speakerGet.user.email;
-            console.log('conferencista', speakerGet);
           } ).catch(error => {
             this.loading.dismiss();
             this.errors = error;
@@ -111,13 +104,45 @@ export class SpeakerPage implements OnInit {
         }).catch(error => {
           this.loading.dismiss();
           this.errors = error;
-          console.log(error);
         });
       })
       .catch(error => {
         this.loading.dismiss();
         this.errors = error;
-        console.log(error);
+      });
+  }
+  delete(speakerId) {
+    this.loading.present({message: 'Cargando...'});
+    this.adminSpeakersService.delete({ id: speakerId })
+      .then((speaker) => {
+        this.speakersService.list().then((speakers) => {
+          this.speakers = speakers;
+          this.loading.dismiss();
+          if ( this.speakers.active ) {
+            this.success = `Conferencista activado exitosamente`;
+          } else {
+            this.success = `Conferencista inactivado exitosamente`;
+          }
+          this.errors = null;
+          this.speaker = speaker;
+          this.speakersService.get(speaker.id).then((speakerGet) => {
+            this.speaker = speakerGet;
+            this.speaker.id = speakerGet.id;
+            this.speaker.name = speakerGet.user.name;
+            this.speaker.last_name = speakerGet.user.last_name;
+            this.speaker.email = speakerGet.user.email;
+          } ).catch(error => {
+            this.loading.dismiss();
+            this.errors = error;
+          });
+        }).catch(error => {
+          this.loading.dismiss();
+          this.errors = error;
+        });
+      })
+      .catch(error => {
+        this.loading.dismiss();
+        this.errors = error;
       });
   }
 }

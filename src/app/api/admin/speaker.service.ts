@@ -90,5 +90,38 @@ export class AdminSpeakersService {
       });
     });
   }
+
+  delete(data): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.usersService.getUser().then((userDataSession: any) => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            Authorization:  'Bearer ' + userDataSession.token
+          })
+        };
+        this.http.post(`/api/speakers/delete`, processDataToString(data), httpOptions)
+          .pipe(
+            timeout(30000),
+            catchError(e => {
+              if (e.status && e.statusText) {
+                const statusText = e.statusText + (e.error ? e.error.message : '');
+                throw new Error(`Consultando el servicio para eliminar conferencista : ${e.status} - ${statusText}`);
+              } else {
+                throw new Error(`Consultando el servicio para eliminar conferencista`);
+              }
+            })
+          )
+          .subscribe(( data : any ) => {
+            if (data.success) {
+              resolve(processData(data.data));
+            } else {
+              reject(JSON.stringify(data));
+            }
+          }, error => {
+            reject( error );
+          });
+      });
+    });
+  }
 }
 
