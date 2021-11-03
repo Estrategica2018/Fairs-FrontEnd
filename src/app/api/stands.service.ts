@@ -14,7 +14,7 @@ export class StandsService {
 
   url = '';
   pavilions = {};
-  
+
   constructor(
     private http: HttpClient,
     private pavilionsService: PavilionsService
@@ -25,7 +25,7 @@ export class StandsService {
         this.pavilionsService.get(pavilionId)
          .then((response) => {
             for(let stand of response.pavilion.stands) {
-              if(Number(stand.id)  === Number(standId)) { 
+              if(Number(stand.id)  === Number(standId)) {
                 resolve(stand);
                 return;
               }
@@ -34,10 +34,10 @@ export class StandsService {
           })
         .catch(error => {
             reject(error)
-         });    
+         });
     });
   }
-  
+
   getProduct(fairId: string, pavilionId: string, standId: string, productId: string): any {
       return new Promise((resolve, reject) => {
             this.http.get(`/api/products/find_by/?fair_id=${fairId}&pavilion_id=${pavilionId}&stand_id=${standId}&product_id=${productId}`)
@@ -46,7 +46,7 @@ export class StandsService {
                   catchError((e: any) => {
                     console.log(e);
                     if(e.status && e.statusText) {
-                      throw new Error(`Ejecutando el servicio para consulta de productos: ${e.status} - ${e.statusText}`);    
+                      throw new Error(`Ejecutando el servicio para consulta de productos: ${e.status} - ${e.statusText}`);
                     }
                     else {
                       throw new Error(`Ejecutando el servicio de consulta de productos`);
@@ -61,5 +61,35 @@ export class StandsService {
                 });
       });
   }
-  
+
+  sendMessage(messageData): Promise<any> {
+
+    return new Promise((resolve, reject) => {
+
+      this.http.post(`/api/stand/ontactsupport/notification`, messageData)
+        .pipe(
+          timeout(30000),
+          catchError((e: any) => {
+            console.log(e);
+            if ( e.status == 422) {
+              const error = JSON.stringify(e.error);
+              throw new Error(`Consultando el servicio para envío de mensajes: ${error}`);
+            } else if ( e.status && e.statusText) {
+              throw new Error(`Consultando el servicio para envío de mensajes: ${e.status} - ${e.statusText}`);
+            } else {
+              throw new Error(`Consultando el servicio para envío de mensajes`);
+            }
+          })
+        )
+        .subscribe((data : any ) => {
+          if (data.success) {
+            resolve(data);
+          } else {
+            reject(JSON.stringify(data));
+          }
+        },error => {
+          reject(error)
+        });
+    });
+  }
 }

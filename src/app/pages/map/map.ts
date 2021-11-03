@@ -1,6 +1,7 @@
 import { Component, ElementRef,QueryList, ViewChild, ViewChildren, OnInit} from '@angular/core';
 import { HostListener } from "@angular/core";
 import { FairsService } from './../../api/fairs.service';
+import { StandsService } from './../../api/stands.service';
 import { ProductsService } from './../../api/products.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
@@ -24,9 +25,9 @@ export class MapPage implements OnInit {
 
   url: any;
   number = Number;
-  @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;  
+  @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;
   @ViewChildren('carrousel') carrousels: any;
-  //@ViewChildren('productCatalog') productCatalogs: any;    
+  //@ViewChildren('productCatalog') productCatalogs: any;
   fullScreen = false;
   scene: any;
   intro = false;
@@ -48,8 +49,9 @@ export class MapPage implements OnInit {
     autoplay:true
   };
   modalSpeaker: any;
-  
+
   constructor(
+    private standService: StandsService,
     private fairsService: FairsService,
     private productsService: ProductsService,
     private route: ActivatedRoute,
@@ -62,7 +64,7 @@ export class MapPage implements OnInit {
     private routerOutlet: IonRouterOutlet,
     private formBuilder: FormBuilder,
 	private speakersService: SpeakersService) {
-        
+
       this.url = window.location.origin;
       this.listenForFullScreenEvents();
       this.usersService.getUser().then((userDataSession: any)=>{
@@ -73,25 +75,25 @@ export class MapPage implements OnInit {
                    this.profileRole.admin = true;
                 }
              });
-             
+
           }
       });
   }
-  
+
   ngOnInit() {
     const div = document.querySelector<HTMLElement>('.div-container');
     //div.addEventListener('scroll', this.logScrolling);
-  } 
-  
+  }
+
   ngOnDestroy(): void {
      if(window.location.href.indexOf('/#/map/') < 0)
      window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
   }
-  
+
   ngAfterViewInit() {
      this.initializeScreen();
   }
-  
+
   ngDoCheck(){
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
@@ -99,7 +101,7 @@ export class MapPage implements OnInit {
      const div = document.querySelector<HTMLElement>('.div-container');
      div.style.height = ( window.innerHeight - top )  + 'px';
   }
-  
+
   initializeScreen() {
     this.errors = null;
     this.loading.present({message:'Cargando...'});
@@ -116,7 +118,7 @@ export class MapPage implements OnInit {
             this.template = 'pavilion';
             const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
             const sceneId = this.route.snapshot.paramMap.get('sceneId');
-            
+
             fair.pavilions.forEach((pavilion)=>{
                 if(pavilion.id == pavilionId) {
                       this.resources = pavilion.resources;
@@ -143,7 +145,7 @@ export class MapPage implements OnInit {
               }
           });
         }
-        
+
         this.scene.banners = this.scene.banners || [];
         this.scene.banners.forEach((banner)=>{
             if(banner.video)
@@ -155,7 +157,7 @@ export class MapPage implements OnInit {
                this.initializeProductCatalogs(banner);
 		   }
 		});
-        
+
         this.scene.banners.forEach((banner)=>{
            if(banner.contact) {
              this.initializeContact(banner);
@@ -173,16 +175,16 @@ export class MapPage implements OnInit {
           this.initializeCarousels();
           this.loading.dismiss();
         }, 15);
-        
+
         if(this.scene.menuTabs.showMenuParent) {
            this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
         }
         else {
             this.tabMenuObj = this.scene.menuTabs;
         }
-        
+
         this.onResize();
-        
+
     }, error => {
         this.loading.dismiss();
         console.log(error);
@@ -192,38 +194,38 @@ export class MapPage implements OnInit {
   }
 
   onToogleFullScreen() {
-    window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));    
+    window.dispatchEvent(new CustomEvent( this.fullScreen ? 'map:fullscreenOff' : 'map:fullscreenIn'));
   }
-    
+
   redirectTo(uri:string){
     this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
       this.router.navigate([uri])
     });
   }
-  
+
   onRouterLink(tab) {
     this.fullScreen = false;
     window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
     this.router.navigate([tab]);
   }
-  
+
   @HostListener('window:resize', ['$event'])
   onResize() {
-     
+
      if(!this.scene) return;
-     
+
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const menu = document.querySelector < HTMLElement > ('.menu-main-content');
      const offsetWidth = window.innerWidth - menu.offsetWidth;
      const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
      main.style.top = top + 'px';
-   
+
      let newWidth = offsetWidth;//main.offsetWidth;
      const offsetHeight = window.innerHeight - top;
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
-    
+
      if(newHeight < offsetHeight) {
         newHeight = window.innerHeight;
         newWidth = newHeight * this.scene.container.w / this.scene.container.h;
@@ -246,7 +248,7 @@ export class MapPage implements OnInit {
            if(banner.productCatalog.buttonFontWeight > 0) banner.productCatalog.buttonFontWeight /= deltaW;
            if(banner.productCatalog.buttonRight > 0) banner.productCatalog.buttonRight /= deltaW;
            if(banner.productCatalog.buttonBottom > 0) banner.productCatalog.buttonBottom /= deltaW;
-           
+
            if(banner.productCatalog.titleFontSize > 0) banner.productCatalog.titleFontSize /= deltaW;
            if(banner.productCatalog.titleFontWeight > 0) banner.productCatalog.titleFontWeight /= deltaW;
            if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
@@ -256,7 +258,7 @@ export class MapPage implements OnInit {
            if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
            if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
            //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
-           
+
            if(banner.productCatalog.priceTop > 0) banner.productCatalog.priceTop /= deltaW;
            if(banner.productCatalog.priceLeft > 0) banner.productCatalog.priceLeft /= deltaW;
            if(banner.productCatalog.priceFontSize > 0) banner.productCatalog.priceFontSize /= deltaW;
@@ -266,18 +268,18 @@ export class MapPage implements OnInit {
            if(banner.productCatalog.imagesHeight > 0) banner.productCatalog.imagesHeight /= deltaW;
            if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
         }
-     }); 
-     
+     });
+
      //Menu tab resize/render
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
-     
-     //product catalog and carrete of images resize/render 
+
+     //product catalog and carrete of images resize/render
      this.onResizeCarousels();
-     
+
   }
 
   listenForFullScreenEvents() {
-    
+
     window.addEventListener('map:fullscreenOff', (e:any) => {
         setTimeout(() => {
           this.fullScreen = false;
@@ -291,9 +293,9 @@ export class MapPage implements OnInit {
       }, 300);
     });
   }
-  
+
   async startAnimation(obj) {
-    
+
     if(!obj.hoverEffects) return;
 
     if(!obj.startAnimation) {
@@ -301,7 +303,7 @@ export class MapPage implements OnInit {
       if(obj.hoverEffects.includes('GirarDerecha')) {
         const squareA = this.animationCtrl.create()
         .addElement(document.querySelector('#obj-' + obj.id))
-      
+
         .duration(1000)
         .keyframes([
           { offset: 0, transform: 'rotate(0)' },
@@ -314,7 +316,7 @@ export class MapPage implements OnInit {
       if(obj.hoverEffects.includes('GirarIzquierda')) {
         const squareA = this.animationCtrl.create()
         .addElement(document.querySelector('#obj-' + obj.id))
-        
+
         .duration(1000)
         .keyframes([
           { offset: 0, transform: 'rotate(0)' },
@@ -326,7 +328,7 @@ export class MapPage implements OnInit {
       }
     }
   }
-  
+
   goToInternalUrl(banner){
      if(banner.internalUrl && banner.internalUrl.length > 0) {
         this.redirectTo(banner.internalUrl);
@@ -337,31 +339,31 @@ export class MapPage implements OnInit {
       banners.forEach((banner)=>{
           banner.textHtml = this.sanitizer.bypassSecurityTrustHtml(banner.text);
       });
-  }  
-  
+  }
+
   initializeCarousels() {
     if(this.carrousels && this.carrousels._results ) {
         this.carrousels._results.forEach((elm)=>{
             elm.initialize();
             elm.onResize();
         });
-    }    
-  } 
-  
+    }
+  }
+
   onResizeCarousels() {
     if(this.carrousels && this.carrousels._results ) {
         this.carrousels._results.forEach((elm)=>{
             elm.onResize();
         });
-    }    
+    }
   }
-  
+
   onToMapEditor(scene){
     const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
     const standId = this.route.snapshot.paramMap.get('standId');
     const sceneId = this.route.snapshot.paramMap.get('sceneId');
     const urlBase = window.location.href.split('#')[0];
-    
+
     if(this.template === 'fair') {
       window.location.href = urlBase + "#/super-admin/map-editor/fair/"+sceneId;
     }
@@ -370,10 +372,10 @@ export class MapPage implements OnInit {
     }
     else if(this.template === 'stand') {
       window.location.href = urlBase + "#/super-admin/map-editor/stand/"+pavilionId+"/"+standId+"/"+sceneId;
-      
-    } 
+
+    }
   }
-  
+
   onToBackEditor(scene) {
      window.history.back();
   }
@@ -381,33 +383,33 @@ export class MapPage implements OnInit {
   onMouseWheel(evt) {
       const div = document.querySelector<HTMLElement>('.div-container');
       const scrollLeft = div.scrollLeft + evt.deltaY;
-      const scrollTop = div.scrollTop + evt.deltaY;    
+      const scrollTop = div.scrollTop + evt.deltaY;
       div.scrollLeft = scrollLeft;
       div.scrollTop = scrollTop;
   }
 
   mouseDownContainer(e,banner) {
     if(!banner || !banner.internalUrl) {
-      this.moveMouseEvent = { 
+      this.moveMouseEvent = {
          "x": e.clientX || e.layerX || e.offsetX || e.pageX || e.screenX,
          "y": e.clientY || e.layerY || e.offsetY || e.pageY || e.screenY
       }
     };
 
   }
-  
+
   mouseUpContainer(e) {
     this.moveMouseEvent = null;
-  } 
+  }
 
   mouseLeaveContainer(e) {
      this.moveMouseEvent = null;
-  } 
-  
-  /*@HostListener('document:mousemove', ['$event'])     
+  }
+
+  /*@HostListener('document:mousemove', ['$event'])
   onMouseMove(e) {
     if(this.moveMouseEvent) {
-      const target = document.querySelector<HTMLElement>('.div-container');      
+      const target = document.querySelector<HTMLElement>('.div-container');
 
       const scrollTop = target.scrollTop;
       const scrollLeft = target.scrollLeft;
@@ -415,29 +417,29 @@ export class MapPage implements OnInit {
       let y  =  e.clientY || e.layerY || e.offsetY || e.pageY || e.screenY;
       const deltaX = x - this.moveMouseEvent.x;
       const deltaY = y - this.moveMouseEvent.y;
-      
+
      const newScrollX =  Number(scrollLeft) - deltaX;
      if(newScrollX>=0) {
        target.scrollTo(newScrollX, target.scrollTop);
        const offsetLeft = target.scrollLeft;
-       
+
        if( newScrollX >= offsetLeft ) {
          document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
          //  banner.style.left = ( banner.offsetLeft + deltaX ) + 'px';
          });
          }
-     } 
-     
-     
+     }
+
+
      const newScrollY = Number(scrollTop) - deltaY;
      target.scrollTo(newScrollX, newScrollY);
      const offsetTop = target.scrollTop;
-     if(offsetTop != scrollTop )  { 
+     if(offsetTop != scrollTop )  {
        document.querySelectorAll('.banner').forEach((banner:HTMLElement) => {
        //     banner.style.top  = ( banner.offsetTop + deltaY ) + 'px';
-       }); 
+       });
      }
-     
+
       //target.scrollTo(newScrollX, newScrollY);
       this.moveMouseEvent.x = x;
       this.moveMouseEvent.y = y;
@@ -445,11 +447,11 @@ export class MapPage implements OnInit {
       //document.querySelector<HTMLElement>('.div-container').setAttribute('scroll-y',newScrollY.toString());
     }
   }*/
-  
+
   async onShowProduct(product) {
     const modal = await this.modalCtrl.create({
       component: ProductDetailComponent,
-      swipeToClose: false, 
+      swipeToClose: false,
       cssClass: 'product-modal',
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { 'fair': this.fair, 'pavilionId': product.stand.pavilion_id, 'standId': product.stand_id, 'product': product }
@@ -458,7 +460,7 @@ export class MapPage implements OnInit {
 
     const { data } = await modal.onWillDismiss();
     if (data) {
-        
+
     }
   }
 
@@ -470,19 +472,19 @@ export class MapPage implements OnInit {
         subject: ['', Validators.required]
          });
   }
-  
+
   initializeProductCatalogs(banner) {
-   
+
       banner.__catalog = {"products":[]};
       let remark = banner.productCatalog.list;
-        
-      let str = remark.split(';')[0];    
+
+      let str = remark.split(';')[0];
       const pavilion = str.split(':')[1];
       str = remark.split(';')[1];
       const stand = str.split(':')[1];
       str = remark.split(';').length==3 ? remark.split(';')[2] : null;
       const category = str ? str.split(':')[1] : '';
-    
+
       this.productsService.get(this.fair.id,pavilion,stand,null)
       .then((products) => {
         if(products.length > 0) {
@@ -496,49 +498,51 @@ export class MapPage implements OnInit {
         }
       })
       .catch(error => {
-        
+
       });
   }
-  
+
   initializeSpeakers(banner) {
-   
+
       banner.__speakers = [];
-      
+
       this.speakersService.list()
       .then((speakers) => {
 		  console.log(speakers);
-        
+
 		 if(speakers)
 		 speakers.forEach((speaker)=>{
 		   console.log(speaker);
 		   //product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
 		   banner.__speakers.push(speaker);
 		 });
-        
+
       })
       .catch(error => {
-        
+
       });
   }
-  
+
   changePriceProductCatalog(product,price,price2){
-    
+
   }
 
-  contactSendForm(form){
-	  let from = '';
-	  if(this.template == 'Fair') {
-		  from = this.fair.resources.supportContact;
-	  }
-	  if(this.template == 'Stand') {
-		  from = this.stand.merchant.email_contact;
-	  }
-	  
-      console.log(form.value);
-  }  
+  contactSendForm(form) {
+    let from = null;
+    if ( this.template == 'Fair') {
+      from = this.fair.resources.supportContact;
+      this.fairsService.sendMessage((from.value));
+    }
+    if ( this.template == 'Stand') {
+      from = this.stand.merchant.email_contact;
+      //from = from.value;
+      this.standService.sendMessage((from.value));
+    }
+    console.log('datos del form',form.value);
+  }
 
   async presenterSpeakerModal(speaker) {
-    
+
     this.modalSpeaker = await this.modalCtrl.create({
       component: SpeakerDetailComponent,
       cssClass: 'speaker-modal',

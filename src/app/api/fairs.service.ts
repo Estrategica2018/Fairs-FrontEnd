@@ -16,11 +16,11 @@ export class FairsService {
   refresTime = null;
   fair = null;
   fairName: string;
-  
+
   constructor(private http: HttpClient) { }
 
   list(): any {
-    
+
     return new Promise((resolve, reject) => {
         this.http.get(`/api/fair/to_list`)
        .pipe(
@@ -29,32 +29,32 @@ export class FairsService {
             console.log(e);
             if(e.status && e.statusText && e.statusText.indexOf('Gateway Timeout') >= 0) {
                 throw new Error(`No está conectado a internet`);
-            }  
+            }
             else if(e.status && e.statusText) {
-              throw new Error(`Consultando el servicio de feria: ${e.status} - ${e.statusText}`);    
+              throw new Error(`Consultando el servicio de feria: ${e.status} - ${e.statusText}`);
             }
             else {
-              throw new Error(`Consultando el servicio de feria`);    
+              throw new Error(`Consultando el servicio de feria`);
             }
           })
         )
         .subscribe((data : any )=> {
             if(data.data)
             data.data.forEach((fair)=>{
-              fair.social_media = fair.social_media ? JSON.parse(fair.social_media) : null;    
+              fair.social_media = fair.social_media ? JSON.parse(fair.social_media) : null;
             });
-            
+
             resolve(data);
         },error => reject(error));
     });
   }
-  
+
   refreshCurrentFair(): any {
     this.fair = null;
   }
-  
+
   getCurrentFair(): any {
-    
+
     if(this.fair === null || moment().isAfter(moment(this.refresTime).add(/*120 */1, 'seconds'))) {
         return new Promise((resolve, reject) => {
             try {
@@ -64,16 +64,16 @@ export class FairsService {
                 else {
                    this.fairName = environment.fairName;
                 }
-                
+
             } catch(error) {
                 reject(`No se encontró nombre de la feria`);
             }
-        
+
             this.list()
-             .then((data) => {    
+             .then((data) => {
                 if(data && data.success == 201 && data.data )
                 for(let fair of data.data ) {
-                    
+
                     if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
                       this.refresTime = moment();
                       this.fair = processData(fair);
@@ -97,10 +97,10 @@ export class FairsService {
                 }
                 reject(`No se encontraron datos para la feria: ${this.fairName}`);
                 //window.location.href = SERVER_URL;
-              },error => { 
+              },error => {
                 reject(error)
              })
-            .catch(error => { 
+            .catch(error => {
                 reject(error)
              });
         });
@@ -109,12 +109,12 @@ export class FairsService {
         return new Promise((resolve, reject) => resolve(this.fair));
     }
   }
-  
+
   sendMessage(messageData): Promise<any> {
 
         return new Promise((resolve, reject) => {
 
-            this.http.post(`/api/contactsupport/notification`,messageData)
+            this.http.post(`/api/fair/ontactsupport/notification`,messageData)
             .pipe(
               timeout(30000),
               catchError((e: any) => {
@@ -143,17 +143,17 @@ export class FairsService {
             });
         });
   }
-  
+
   skipPavilionIntro = [];
-  
+
   getPavilionIntro(name){
     return this.skipPavilionIntro[name] || false;
   }
-  
+
   setPavilionIntro(name){
     this.skipPavilionIntro[name] = true;
   }
-  
+
   getCategories(type){
     return new Promise((resolve, reject) => {
         this.http.get(`/api/category/to_list/${type}`)
@@ -181,7 +181,7 @@ export class FairsService {
         });
     });
   }
-  
+
   createCategory(category){
     return new Promise((resolve, reject) => {
         this.http.post(`/api/category/create/`,category)
@@ -209,7 +209,7 @@ export class FairsService {
         });
     });
   }
-    
+
     updateCategory(category){
         return new Promise((resolve, reject) => {
             this.http.post(`/api/category/create/`,category)
@@ -237,6 +237,6 @@ export class FairsService {
             });
         });
     }
-  
-  
+
+
 }
