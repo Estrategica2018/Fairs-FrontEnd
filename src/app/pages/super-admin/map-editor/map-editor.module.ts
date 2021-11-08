@@ -8,7 +8,9 @@ import { PanelEditorComponent } from './panel-editor/panel-editor.component';
 import { DragAndDropModule } from 'angular-draggable-droppable';
 import { ComponentsModule } from '../../../components.module';
 import { ProductListComponent } from '../../super-admin/map-editor/product-list/product-list.component';
-
+import { ProductDetailComponent } from '../../product-catalog/product-detail/product-detail.component';
+import { SpeakerDetailComponent } from '../../speaker-list/speaker-detail/speaker-detail.component';
+import { BannerEditorComponent } from './banner-editor/banner-editor.component';
 
 @NgModule({
   imports: [
@@ -20,6 +22,6 @@ import { ProductListComponent } from '../../super-admin/map-editor/product-list/
     ComponentsModule
   ],
   declarations: [MapEditorPage, PanelEditorComponent,ProductListComponent], 
-  entryComponents: [PanelEditorComponent,ProductListComponent]
+  entryComponents: [PanelEditorComponent,ProductListComponent, ProductDetailComponent, SpeakerDetailComponent, BannerEditorComponent]
 })
 export class MapEditorPageModule {}

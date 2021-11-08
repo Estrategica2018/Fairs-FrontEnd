@@ -2,13 +2,20 @@ import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angu
 import { IonSlides } from '@ionic/angular';
 
 @Component({
-  selector: 'app-carousel-images',
-  templateUrl: './carousel-images.component.html',
-  styleUrls: ['./carousel-images.component.scss'],
+  selector: 'app-carousel-slides',
+  templateUrl: './carousel-slides.component.html',
+  styleUrls: ['./carousel-slides.component.scss'],
 })
-export class CarouselImagesComponent implements OnInit {
+export class CarouselSlidesComponent implements OnInit {
 
-  @ViewChild('slides', { static: true }) slides: IonSlides;
+  @ViewChild('slides', { static: false }) slides: IonSlides;
+  
+ /*@ViewChild('slides') set slides(slides: IonSlides) {
+    if(slides) { // initially setter gets called with undefined
+        this.slides = slides;
+    }
+ }*/
+  
   
   @Input() product: any;
   @Input() imagesPriceWidth: any;
@@ -33,14 +40,17 @@ export class CarouselImagesComponent implements OnInit {
          }
      }); 
      setTimeout(()=>{
+         
+         //this.slides = <IonSlides>document.getElementById("slides");
+         
          if(this.colors.length >= 1) {
             this.onChangeColor(1);
             this.onChangeColor(0);
-            this.simpleSlideOpts();
+            //this.simpleSlideOpts();
          }
          else {
             this.onChangeColor(0)
-            this.simpleSlideOpts();
+            //this.simpleSlideOpts();
          }
      },50);
      
@@ -373,12 +383,13 @@ export class CarouselImagesComponent implements OnInit {
      this.imageSelected = index;
      this.imagesArray = this.product.prices[index].resources.images; 
      if(this.changePrice) {
-       this.product.priceSelected = this.product.prices[index]
+         console.log('changePrice');
+       this.product.priceSelected = this.product.prices[index];
        this.changePrice.emit(this.product);
      }
   }    
 
-  slidePrev() {
+  slidePrev(slides) {
     this.slides.slidePrev();
   }
   
@@ -387,12 +398,15 @@ export class CarouselImagesComponent implements OnInit {
   }
 
   ionSlideChange(eve) {
-    this.slides.isBeginning().then((isbeg)=>{
+    if(this.slides) {
+      this.slides.isBeginning().then((isbeg)=>{
         this.isBeginning = isbeg;
-    });
-    this.slides.isEnd().then((isE)=>{
+      });
+    
+      this.slides.isEnd().then((isE)=>{
         this.isEnd = isE;
-    });
+      });
+    }
   }
 
 }

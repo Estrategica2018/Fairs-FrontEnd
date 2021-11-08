@@ -21,6 +21,8 @@ import { PopoverController, ActionSheetController  } from '@ionic/angular';
 import { environment, SERVER_URL } from '../../../../environments/environment';
 import { ProductListComponent } from '../../super-admin/map-editor/product-list/product-list.component';
 import { SpeakersService } from '../../../api/speakers.service';
+import { ProductDetailComponent } from '../../product-catalog/product-detail/product-detail.component';
+import { BannerEditorComponent } from './banner-editor/banner-editor.component';
 
 declare var tinymce;
 
@@ -33,7 +35,8 @@ export class MapEditorPage implements OnInit {
 
   url: string;
   @ViewChild('videoMeeting', { static: true }) videoElement: ElementRef;
-  @ViewChildren('carrousel') carrousels: any;    
+  @ViewChildren('carrousels') carrousels: any;    
+  @ViewChildren('carouselSlides') carouselSlides: any;    
   
   @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;
   number = Number;
@@ -42,7 +45,7 @@ export class MapEditorPage implements OnInit {
   fixedBannerPanel = true;
   moveMouseEvent: any;
   tabMenuOver = false;
-  fullScreen = false;
+  fullScreen = true;
   showInputClipboard = false;
   tabMenuSelected = null;
   fair = null;
@@ -76,9 +79,9 @@ export class MapEditorPage implements OnInit {
   selectionElementList = null;
   showlogScrolling = false;
   showProductCatalogActions = '';
-  historyList = null;
+  historyList = [];
   historySel = -1;
-  editModeBackdrop = false;
+  editModeBackdrop = true;
     
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
   toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow right","value":"arrow--4"},
@@ -127,7 +130,7 @@ export class MapEditorPage implements OnInit {
     private productsService: ProductsService,
     private popoverCtrl: PopoverController,
     private actionSheetController: ActionSheetController,
-	private speakersService: SpeakersService) { 
+    private speakersService: SpeakersService) { 
       
       this.listenForFullScreenEvents();
       this.initializePanel();
@@ -136,16 +139,18 @@ export class MapEditorPage implements OnInit {
   }
 
   ngOnInit() {
-    const div = document.querySelector<HTMLElement>('.div-container');
+    window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
   } 
   
   ngOnDestroy(): void {
-     if(window.location.href.indexOf('/#/super-admin/map-editor/') < 0)
-     window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
+    if(window.location.href.indexOf('map') < 0) {
+     // window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
+    }
 
   } 
   ngAfterViewInit() {
-     this.initializeScreen();
+    this.initializeScreen();
+    //window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
   }
 
   ngDoCheck(){
@@ -215,37 +220,7 @@ export class MapEditorPage implements OnInit {
               }
           });
         }
-        /*else if(this.template === 'product') {
-          
-          this.fair.pavilions.forEach((pavilion)=>{
-              if(pavilion.id == pavilionId) {
-                this.pavilion = pavilion;
-                pavilion.stands.forEach((standEl)=>{
-                   if(standEl.id == standId) {
-                      this.stand = standEl;
-                      this.productsService.get(this.fair.id,this.pavilion.id,this.stand.id,productId)
-                      .then((products) => {
-                        if(products.length > 0) {
-                           this.product = products[0];
-                        }
-                        this.resources = this.product.resources || { 'scenes': []};
-                        this.scene = this.sceneId ? this.product.resources.scenes[this.sceneId] : this.defaultEscene(this.resources);
-                        if(!this.scene.banners || this.scene.banners.length == 0) {
-                            this.addBanner('ProductName');
-                            this.addBanner('ProductDescription');
-                            this.addBanner('ProductCarousel');
-                        }
-                        //this.scene.container = {}
-                        this.initializeScene();
-                      })
-                      .catch(error => {
-                        this.errors = error;
-                      });
-                   }
-                });
-              }
-          });
-        }*/
+       
      }, error => {
         this.loading.dismiss();
         this.errors = `Consultando el servicio del mapa general de la feria ${error}`;
@@ -258,31 +233,24 @@ export class MapEditorPage implements OnInit {
     this.resources.menuTabs = this.resources.menuTabs || {};
 
     this.scene.banners = this.scene.banners || [];
-    this.scene.banners.forEach((banner)=>{
-        if(banner.video)
-        banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
-    });
-
+    
+    this.onChangeBackgroundStyle();
     this.initializeInternalUrl();
     this.initializeGroupOfLinks();
     
+    
     this.scene.banners.forEach((banner)=>{
-        if(banner.video)
+      if(banner.video) {
          banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
-    });
-	
-    this.scene.banners.forEach((banner)=>{
+      }
       if(banner.productCatalog) {
         this.initializeProductCatalogs(banner);
       }
+      if(banner.speakerCatalog) {
+         this.initializeSpeakers(banner);
+       }
     });
-	
-	this.scene.banners.forEach((banner)=>{
-	   if(banner.speakers) {
-		 this.initializeSpeakers(banner);
-	   }
-	});
-	
+    
     setTimeout(() => {
       this.initializeHtmlTexts(this.scene.banners);
       this.initializeCarousels();
@@ -330,9 +298,23 @@ export class MapEditorPage implements OnInit {
       this.bannerSelect.opacity = originYRange.value / 100;
   }
   
+  onChangeItemColor() {  
+    
+    if(this.bannerSelect)
+    if(this.bannerSelect.video) {
+     this.bannerSelect.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(this.bannerSelect.video.url);
+    }
+    else if(this.bannerSelect.productCatalog) {
+       this.initializeProductCatalogs(this.bannerSelect);
+    }
+    else if(this.bannerSelect.speakerCatalog) {
+      this.initializeSpeakers(this.bannerSelect);
+    }
+  }
+  
   onRouterLink(tab) {
-    this.fullScreen = false;
-    window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
+    //this.fullScreen = false;
+    //window.dispatchEvent(new CustomEvent('map:fullscreenOff'));
     this.router.navigate([tab]);
   } 
   
@@ -349,52 +331,65 @@ export class MapEditorPage implements OnInit {
     
      let newWidth = offsetWidth;//main.offsetWidth;
      const offsetHeight = window.innerHeight - top;
+      
      let deltaW =  this.scene.container.w / newWidth;
      let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
      let deltaH = this.scene.container.h / newHeight;
      
      if(newHeight < offsetHeight) {
-         newHeight = window.innerHeight;
-         newWidth = newHeight * this.scene.container.w / this.scene.container.h;
-         deltaW =  this.scene.container.w / newWidth;
-         deltaH = this.scene.container.h / newHeight;
+        if( this.scene.render )  {
+           newHeight = offsetHeight;
+           newWidth = newHeight * this.scene.container.w / this.scene.container.h;
+           deltaW =  this.scene.container.w / newWidth;
+           deltaH = this.scene.container.h / newHeight;
+        }
      }
      this.scene.container.w = newWidth;
      this.scene.container.h = newHeight;
+
      
      this.scene.banners.forEach((banner)=>{
-        if(banner.size) banner.size.x /= deltaW;
-        if(banner.size) banner.size.y /= deltaH;
-        if(banner.position) banner.position.x /= deltaW;
-        if(banner.position) banner.position.y /= deltaH;
-        if(banner.fontSize > 0 ) banner.fontSize /= deltaW;
-        if(banner.border && banner.border.radius > 0) banner.border.radius /= deltaH;
-        if(banner.productCatalog ) {
-           if(banner.productCatalog.buttonWidth > 0) banner.productCatalog.buttonWidth /= deltaW;
-           if(banner.productCatalog.buttonHeight > 0) banner.productCatalog.buttonHeight /= deltaW;
-           if(banner.productCatalog.buttonFontSize > 0) banner.productCatalog.buttonFontSize /= deltaW;
-           if(banner.productCatalog.buttonFontWeight > 0) banner.productCatalog.buttonFontWeight /= deltaW;
-           if(banner.productCatalog.buttonRight > 0) banner.productCatalog.buttonRight /= deltaW;
-           if(banner.productCatalog.buttonBottom > 0) banner.productCatalog.buttonBottom /= deltaW;
-           
-           if(banner.productCatalog.titleFontSize > 0) banner.productCatalog.titleFontSize /= deltaW;
-           if(banner.productCatalog.titleFontWeight > 0) banner.productCatalog.titleFontWeight /= deltaW;
-           if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
-           if(banner.productCatalog.titleTop > 0) banner.productCatalog.titleTop /= deltaW;
-           if(banner.productCatalog.descTop > 0) banner.productCatalog.descTop /= deltaW;
-           if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
-           if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
-           if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
-           //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
-           
-           if(banner.productCatalog.priceTop > 0) banner.productCatalog.priceTop /= deltaW;
-           if(banner.productCatalog.priceLeft > 0) banner.productCatalog.priceLeft /= deltaW;
-           if(banner.productCatalog.priceFontSize > 0) banner.productCatalog.priceFontSize /= deltaW;
-           if(banner.productCatalog.imageTop > 0) banner.productCatalog.imageTop /= deltaW;
-           if(banner.productCatalog.imageLeft > 0) banner.productCatalog.imageLeft /= deltaW;
-           if(banner.productCatalog.imagesWidth > 0) banner.productCatalog.imagesWidth /= deltaW;
-           if(banner.productCatalog.imagesHeight > 0) banner.productCatalog.imagesHeight /= deltaW;
-           if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
+         
+        //position always changes size
+        
+        if( this.scene.render )  {
+            if(banner.size ) {    banner.size.x /= deltaW;banner.size.y /= deltaH;}
+            if(banner.position)  { banner.position.x /= deltaW; banner.position.y /= deltaH; }
+            
+            if(banner.fontSize > 0 ) banner.fontSize /= deltaW;
+            if(banner.border && banner.border.radius > 0) banner.border.radius /= deltaH;
+            if(banner.productCatalog ) {
+               if(banner.productCatalog.buttonWidth > 0) banner.productCatalog.buttonWidth /= deltaW;
+               if(banner.productCatalog.buttonHeight > 0) banner.productCatalog.buttonHeight /= deltaW;
+               if(banner.productCatalog.buttonFontSize > 0) banner.productCatalog.buttonFontSize /= deltaW;
+               if(banner.productCatalog.buttonFontWeight > 0) banner.productCatalog.buttonFontWeight /= deltaW;
+               if(banner.productCatalog.buttonRight > 0) banner.productCatalog.buttonRight /= deltaW;
+               if(banner.productCatalog.buttonBottom > 0) banner.productCatalog.buttonBottom /= deltaW;
+               
+               if(banner.productCatalog.titleFontSize > 0) banner.productCatalog.titleFontSize /= deltaW;
+               if(banner.productCatalog.titleFontWeight > 0) banner.productCatalog.titleFontWeight /= deltaW;
+               if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
+               if(banner.productCatalog.titleTop > 0) banner.productCatalog.titleTop /= deltaW;
+               if(banner.productCatalog.descTop > 0) banner.productCatalog.descTop /= deltaW;
+               if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
+               if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
+               if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
+               //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
+               
+               if(banner.productCatalog.priceTop > 0) banner.productCatalog.priceTop /= deltaW;
+               if(banner.productCatalog.priceLeft > 0) banner.productCatalog.priceLeft /= deltaW;
+               if(banner.productCatalog.priceFontSize > 0) banner.productCatalog.priceFontSize /= deltaW;
+               if(banner.productCatalog.imageTop > 0) banner.productCatalog.imageTop /= deltaW;
+               if(banner.productCatalog.imageLeft > 0) banner.productCatalog.imageLeft /= deltaW;
+               if(banner.productCatalog.imagesWidth > 0) banner.productCatalog.imagesWidth /= deltaW;
+               if(banner.productCatalog.imagesHeight > 0) banner.productCatalog.imagesHeight /= deltaW;
+               if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
+            }
+            
+            this.initializeCatalogs(banner);
+        }
+        else {
+            this.initializeCatalogs(banner);
         }
      });     
      
@@ -404,6 +399,56 @@ export class MapEditorPage implements OnInit {
      //product catalog and carrete of images resize/render 
      this.onResizeCarousels();
      
+  }
+  
+  initializeCatalogs(banner) {
+    if(banner.__catalog) {
+        for(var i=10;i>0;i--) {
+           if( ( i * banner.size.x <= this.scene.container.w ) || ( ( i - 0.5 ) * banner.size.x <= this.scene.container.w ) )  {
+              banner.__catalog.__factor = i;
+              const menu = document.querySelector < HTMLElement > ('.menu-main-content');
+              const innerWidth = window.innerWidth - menu.offsetWidth;
+              if ( banner.size.x  * banner.__catalog.__factor < innerWidth ) {
+                const left = innerWidth - ( banner.size.x + 10 ) * banner.__catalog.__factor;
+                banner.position.x = left / 2;
+              }
+              else {
+                banner.position.x = innerWidth * 0.05;
+              }
+              break;
+           }
+        }
+    }
+    if(banner.speakerCatalog) {
+        for(var i=10;i>0;i--) {
+           if( ( i * banner.size.x <= this.scene.container.w ) || ( ( i - 0.5 ) * banner.size.x <= this.scene.container.w ) )  {
+              banner.__factor = i;
+              const menu = document.querySelector < HTMLElement > ('.menu-main-content');
+              const innerWidth = window.innerWidth - menu.offsetWidth;
+              if ( banner.size.x  * banner.__factor < innerWidth ) {
+                const left = innerWidth - ( banner.size.x + 10 ) * banner.__factor;
+                banner.position.x = left / 2;
+              }
+              else {
+                banner.position.x = innerWidth * 0.05;
+              }
+              break;
+           }
+        }
+    }
+    else if(banner.type === 'Título') {
+        if(this.scene.render) {
+            const menu = document.querySelector < HTMLElement > ('.menu-main-content');
+            const innerWidth = window.innerWidth - menu.offsetWidth;
+            if ( banner.size.x  < innerWidth ) {
+              const left = innerWidth - ( banner.size.x + 10 );
+              banner.position.x = left / 2;
+            }
+            else {
+              banner.position.x = innerWidth * 0.05;
+            }
+        }
+    }
   }
 
   onBannerSelect(bannerSelect) {
@@ -426,6 +471,10 @@ export class MapEditorPage implements OnInit {
       });
       this.historyList.push(clone(this.scene));
       this.historySel ++;
+  }
+  
+  onChangeSizeItem() {
+      
   }
   
   initializePanel() {
@@ -597,7 +646,7 @@ export class MapEditorPage implements OnInit {
     const primaryColor = "#007bff";
     let banner: any;
     const _defaultBanner = {id:id,type:type,rotation:{"x":0,"y":0,"z":0},"position": this.getNewPosition({"x":156,"y":195}),border:{"style":"none"},
-    'fontWeight':100,'fontFamily':'YoutubeSansMedium', 'fontSize': 12};
+    'fontWeight':100,'fontFamily':'YoutubeSansMedium', 'fontSize': 12, "lineHeight":"1.0","lineHeightUnit":1,"lineHeightMili":"0", "shadowActivate":false,"shadowRight":4,"shadowDown":4,"shadowDisperse":7,"shadowExpand":2,"shadowColor":"#ababab" };
     switch(type) { 
       case 'Text':
           banner = {"textAlign":"left","fontColor":"#000000","text":"Texto aquí","size":{"x":100,"y":20}};
@@ -619,50 +668,18 @@ export class MapEditorPage implements OnInit {
           banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
           banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
       break;
-      case 'Speakers': 
+      case 'Título':
+          banner = {"textAlign":"center","fontColor":"#98A000","text":"Título de la Escena aquí","size":{"x":571,"y":70}, "fontSize": 59, "position": this.getNewPosition({"x":156,"y":95})};
+      break;
+      case 'Sub-Título':
+          banner = {"size":{"x":114,"y":105},"color": "#98A000"};
+      break;
+      case 'SpeakerCatalog':
           banner = { "size":{"x":428,"y":237},
-          "position": this.getNewPosition({"x":64,"y":29}),
-          "speakers": { 
-          'buttonWidth': 145,
-          'buttonHeight': 28,
-          'buttonBackgroundColor': primaryColor,
-          'buttonFontColor': '#fff',
-          'buttonFontFamily': 'YoutubeSansMedium',
-          'buttonFontSize': 12,
-          'buttonFontWeight': 'bold',
-          'buttonLabel': 'Ver Oferta',
-          'buttonRight': 10,
-          'buttonBottom': 10,
-          'titleFontSize': 23,
-          'titleFontColor': '#004782',
-          'titleTop': 10,
-          'titleLeft': 69,
-          'titleFontFamily': 'YoutubeSansMedium',
-          'titleFontWeight': 70,
-          'descTop': 54,
-          'descLeft': 170,
-          'descWidth': 238,
-          'descFontSize': 12,
-          'descTextAlign': 'justify',
-          'lineHeightMili': 0,
-          'lineHeightUnit': 1,
-          'lineHeight': 1.0,
-          'descFontFamily': 'YoutubeSansLight',
-          'descFontWeight': 100,
-          'priceFontColor': '#000',
-          'priceFontFamily': 'YoutubeSansMedium',
-          'priceFontSize': 19,
-          'priceFontWeight': 'bold',
-          'priceLeft': 0,
-          'priceTop': 113,
-          'imagesTop': 18,
-          'imagesLeft': 6,
-          'imagesWidth': 146,
-          'imagesHeight': 146,
-          'imagesPriceWidth': 16, 
-          },'backgroundColor':'#f5f6ff'};
+            "position": this.getNewPosition({"x":64,"y":29}),
+            "speakerCatalog":{"nameFontSize":24,"nameFontColor":"#ffffff","nameTop":26,"nameLeft":225,"nameFontFamily":"YoutubeSansMedium","nameFontWeight":"100","descTop":139,"descLeft":198,"descWidth":208,"descFontSize":14,"descTextAlign":"justify","lineHeightMili":0,"lineHeightUnit":1,"lineHeight":1,"descFontFamily":"YoutubeSansLight","descFontWeight":100,"titleFontColor":"#000","titleFontFamily":"YoutubeSansMedium","titleFontSize":19,"titleFontWeight":"bold","titleLeft":0,"titleTop":113,"imagesTop":0,"imagesLeft":0,"imagesWidth":187,"imagesHeight":224,"imagesPriceWidth":16,"imagestitleWidth":null,"priceTop":38,"priceLeft":27,"priceFontColor":"#ff1a1a","nameWidth":177,"nameHeight":0,"logoLeft":142,"logoTop":26,"logoWidth":74,"logoHeight":69,"professionFontColor":"#ffffff","professionTop":97,"professionLeft":199,"descFontColor":"","professionFontSize":15},"backgroundColor":"#109be0",
+            "class":"rounded-withradius grayscale cursor-pointer","fontColor":"#ffffff"};
           banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
-          
       break;
       case 'ProductCatalog': 
           banner = { "size":{"x":428,"y":237},
@@ -710,19 +727,7 @@ export class MapEditorPage implements OnInit {
           
       break;
       case 'Contact':
-          banner = {"groupMode":true,"size":{"x":367,"y":408},"contact": { "name":"" }, "backgroundColor":"#ffffff","fontColor":"#000000", "fontSize":"13", "shadowActivate":true,"shadowRight":-8,"shadowDown":4,"shadowDisperse":21,"shadowExpand":-16,
-              "banners": [
-                {"id":1634621128693,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":45.567676237283834,"y":65.05649707519393},"border":{"style":"none"},"fontSize":26.821538267842993,"textAlign":"left","fontColor":"#35abbe","text":"Contáctenos","size":{"x":399.4697188827678,"y":42.22965599617846},"hoverEffects":"","lineHeight":"1.0","fontFamily":"\"Gill Sans Extrabold\", Helvetica, sans-serif","textHtml":{"changingThisBreaksApplicationSecurity":"Contáctenos"},"isChecked":true},
-                {"id":1634621128695,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":217.0648374979585},"border":{"style":"none"},"fontSize":13.056531578824574,"textAlign":"left","fontColor":"#000000","text":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Nombre</p>","size":{"x":81.60332236765359,"y":16.320664473530716},"hoverEffects":"","lineHeight":"1.0","textHtml":{"changingThisBreaksApplicationSecurity":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Nombre</p>"},"isHtml":true,"fontFamily":"YoutubeSansMedium","fontWeight":"lighter","isChecked":true},
-                {"id":1634621128696,"type":"Banner","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":248.07409999766685},"border":{"style":"solid","color":"#28bdd7","radius":0,"width":1},"fontSize":13.056531578824574,"fontColor":"#000000","backgroundColor":"#1ab6cb","size":{"x":310.09262499708365,"y":0},"hoverEffects":"","lineHeight":"1.0","isChecked":true,"textHtml":{}},
-                {"id":1634621128697,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":275.0031963789925},"border":{"style":"none"},"fontSize":13.056531578824574,"textAlign":"left","fontColor":"#000000","text":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Correo electrónico</p>","size":{"x":115.06068453839156,"y":41.61769440750332},"hoverEffects":"","lineHeight":"1.0","textHtml":{"changingThisBreaksApplicationSecurity":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Correo electrónico</p>"},"isHtml":true,"fontFamily":"YoutubeSansMedium","fontWeight":"lighter","isChecked":true},
-                {"id":1634621128698,"type":"Banner","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":307.64452532605395},"border":{"style":"solid","color":"#28bdd7","radius":0,"width":1},"fontSize":13.056531578824574,"fontColor":"#000000","backgroundColor":"#1ab6cb","size":{"x":310.09262499708365,"y":0},"hoverEffects":"","lineHeight":"1.0","isChecked":true,"textHtml":{}},
-                {"id":1634621128699,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":338.6537878257623},"border":{"style":"none"},"fontSize":13.056531578824574,"textAlign":"left","fontColor":"#000000","text":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Asunto</p>","size":{"x":115.06068453839156,"y":41.61769440750332},"hoverEffects":"","lineHeight":"1.0","textHtml":{"changingThisBreaksApplicationSecurity":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Asunto</p>"},"isHtml":true,"fontFamily":"YoutubeSansMedium","fontWeight":"lighter","isChecked":true},
-                {"id":1634621128700,"type":"Banner","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":369.6630503254707},"border":{"style":"solid","color":"#28bdd7","radius":0,"width":1},"fontSize":13.056531578824574,"fontColor":"#000000","backgroundColor":"#1ab6cb","size":{"x":310.09262499708365,"y":0},"hoverEffects":"","lineHeight":"1.0","isChecked":true,"textHtml":{}},
-                {"id":1634621128701,"type":"Banner","rotation":{"x":0,"y":0,"z":0},"position":{"x":66.91472434147595,"y":390.06388091738404},"border":{"style":"solid","color":"#1db8d3","radius":8.160332236765358,"width":2},"fontSize":13.056531578824574,"fontColor":"#000000","backgroundColor":"#ffffff","size":{"x":310.9086582207602,"y":191.76780756398588},"hoverEffects":"","lineHeight":"1.0","textHtml":{},"isChecked":true},
-                {"id":1634621128702,"type":"Text","rotation":{"x":0,"y":0,"z":0},"position":{"x":77.52315624927091,"y":406.38454539091475},"border":{"style":"none"},"fontSize":13.056531578824574,"textAlign":"left","fontColor":"#000000","text":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Mensaje</p>","size":{"x":115.06068453839156,"y":41.61769440750332},"hoverEffects":"","lineHeight":"1.0","textHtml":{"changingThisBreaksApplicationSecurity":"<p><span style=\"color: rgb(224, 62, 45);\" data-mce-style=\"color: #e03e2d;\">*</span> Mensaje</p>"},"isHtml":true,"fontFamily":"YoutubeSansMedium","fontWeight":"lighter","isChecked":true,"opacity":0.56}
-             ]
-          };
+          banner = {"groupMode":true,"size":{"x":367,"y":408},"contact": { "name":"" }, "backgroundColor":"#ffffff","fontColor":"#000000", "fontSize":"13", "shadowActivate":true,"shadowRight":-8,"shadowDown":4,"shadowDisperse":21,"shadowExpand":-16};
       break;
       case 'ProductName':
           banner = {"size":{"x":300,"y":33},"position": this.getNewPosition({"x":532,"y":41}),"fontColor":"#F5F6FF","fontSize":"25"};
@@ -733,7 +738,7 @@ export class MapEditorPage implements OnInit {
       case 'ProductCarousel':
           banner = {"size":{"x":304,"y":291},"position": this.getNewPosition({"x":117,"y":141})};
       break;
-      default:
+      case 'Banner':
           banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
                     "border":{"style":"solid","color":"#000","radius":20,"width":1}};
       break;
@@ -742,7 +747,8 @@ export class MapEditorPage implements OnInit {
     this.scene.banners.push(Object.assign(_defaultBanner,banner));
     //open settingsBanner panel with last element
     this.bannerSelect = this.scene.banners[this.scene.banners.length-1];
-    if(type == 'ProductCatalog') this.presentNewProductListCatalog(this.bannerSelect);
+    if(this.bannerSelect.productCatalog) this.presentNewProductListCatalog(this.bannerSelect);
+    if(this.bannerSelect.speakerCatalog) this.initializeSpeakers(this.bannerSelect);
     this.onChangeItem();
     this.showPanelTool = 'settingsBanner'; 
   }
@@ -788,12 +794,12 @@ export class MapEditorPage implements OnInit {
   dragBannerEnd($event,banner) {
     banner.position.y += $event.y;
     banner.position.x += $event.x;
-	if(banner.banners) {
+    if(banner.banners) {
       banner.banners.forEach((bannerch)=>{
          bannerch.position.y += $event.y;
          bannerch.position.x += $event.x;
       });
-	}
+    }
     this.onChangeItem();
   }
    
@@ -889,7 +895,7 @@ export class MapEditorPage implements OnInit {
     
     window.addEventListener('map:fullscreenOff', (e:any) => {
         setTimeout(() => {
-          this.editModeBackdrop    = false;
+          this.editModeBackdrop = false;
           this.fullScreen = false;
           this.onResize();
       }, 300);
@@ -898,11 +904,6 @@ export class MapEditorPage implements OnInit {
         setTimeout(() => {
           this.fullScreen = true;
           this.onResize();
-          if(!this.historyList) { 
-            this.historyList = [];
-            this.historyList.push(clone(this.scene));
-            this.historySel ++;    
-          }
       }, 300);
     });
   }
@@ -1119,7 +1120,7 @@ export class MapEditorPage implements OnInit {
     group = {'label':'Escenas de Feria', 'links': []};
     for(let i=0; i<this.fair.resources.scenes.length; i++) {
         scene = this.fair.resources.scenes[i];
-        group.links.push({'label':'Escena - ' + (i+1), 'value':`/map/fair/${i}`});
+        group.links.push({'label':'Escena - ' + scene.title, 'value':`/map/fair/${i}`});
     }
     this.groupOfLinks.push(group);
 
@@ -1128,16 +1129,16 @@ export class MapEditorPage implements OnInit {
         group = {'label':'Escenas de Pabellón - ' + pavilion.name , 'links': []};
         for(let j=0; j<pavilion.resources.scenes.length; j++) {
             scene = pavilion.resources.scenes[j];
-            group.links.push({'label':'Escena - ' + (j+1), 'value':`/map/pavilion1/${pavilion.id}/${j}`});
+            group.links.push({'label':'Escena - ' + scene.title, 'value':`/map/pavilion1/${pavilion.id}/${j}`});
         }
         this.groupOfLinks.push(group);
         
         for(let j=0; j<pavilion.stands.length; j++) {
             stand = pavilion.stands[j];
-            group = {'label':'Escenas de Local - ' + stand.name , 'links': []};
+            group = {'label':'Escenas de Local - ' + stand.merchant.name , 'links': []};
             for(let j=0; j<stand.resources.scenes.length; j++) {
                 scene = stand.resources.scenes[j];
-                group.links.push({'label': 'Escena - ' + (j+1), 'value':`/map/stand1/${pavilion.id}/${stand.id}/${j}`});
+                group.links.push({'label': 'Escena - ' + scene.title, 'value':`/map/stand1/${pavilion.id}/${stand.id}/${j}`});
             }
             this.groupOfLinks.push(group);
         }
@@ -1198,6 +1199,23 @@ export class MapEditorPage implements OnInit {
       this.onChangeItem();
       this.editMenuTabSave = true;
       this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
+  }
+  
+  onChangeSpeakerStyle(banner) {
+    let style = document.createElement('style');
+    const id = 'card-style-id-' + banner.id;
+    style.type = 'text/css';
+    style.id = id;
+    style.innerHTML = '.' + id +':hover { color: ' + banner.fontColor + '; background-image: linear-gradient(' + banner.backgroundColor + ', ' + banner.backgroundColor + '), linear-gradient(to top right, #BEBEBE, #FEFEFE); }';
+    
+    style.innerHTML += '.' + id +' .name { color: ' + banner.speakerCatalog.nameFontColor + '; } ';
+    style.innerHTML += '.' + id +' .desc { color: ' + banner.speakerCatalog.descFontColor + '; } ';
+    style.innerHTML += '.' + id +' .profession { color: ' + banner.speakerCatalog.professionFontColor + '; } ';
+
+    if(document.querySelector('#'+id)) {
+      document.getElementsByTagName('head')[0].removeChild(document.querySelector('#'+id));
+    }
+    document.getElementsByTagName('head')[0].appendChild(style);
   }
 
   setModifyTab(tab, i) {
@@ -1528,7 +1546,7 @@ export class MapEditorPage implements OnInit {
   
   initializeProductCatalogs(banner) {
      
-      banner.__catalog = {"products":[]};
+      banner.__catalog = {"products":[],"__factor": 3 };
       let remark = banner.productCatalog.list;
         
       let str = remark.split(';')[0];    
@@ -1555,8 +1573,14 @@ export class MapEditorPage implements OnInit {
       });
   }
   
-  changePriceProductCatalog(product,price,price2){
-    
+  changePriceProductCatalog(product, banner){
+   setTimeout(() => {
+      if(this.carouselSlides && this.carouselSlides._results ) {
+        this.carouselSlides._results.forEach((elm)=>{
+            elm.ionSlideChange(elm);
+        });
+      }    
+    }, 5);
   }
   
   initializeSpeakers(banner) {
@@ -1565,12 +1589,12 @@ export class MapEditorPage implements OnInit {
       
       this.speakersService.list()
       .then((speakers) => {
-		 if(speakers)
-		 speakers.forEach((speaker)=>{
-		   //product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
-		   banner.__speakers.push(speaker);
-		 });
-        
+         if(speakers) {
+             speakers.forEach((speaker, indx)=>{
+               banner.__speakers.push(speaker);
+             });
+         } 
+         this.onChangeSpeakerStyle(banner);
       })
       .catch(error => {
         
@@ -1597,4 +1621,66 @@ export class MapEditorPage implements OnInit {
     this.editModeBackdrop = true;
     window.dispatchEvent(new CustomEvent('map:fullscreenIn'));    
  }
+ 
+  async presentActionProduct(product) {
+    
+    const actionSheet = await this.actionSheetController.create({
+      buttons: [{
+        text: 'Ver detalle',
+        role: 'destructive', 
+        cssClass: 'customCSSClass',
+        handler: () => {
+          this.onShowProduct(product);
+        }
+      },{
+        text: 'Editar producto',
+        role: 'destructive',
+        handler: () => {
+          this.goToEditProduct(product);
+        }
+      }]
+    });
+    await actionSheet.present();
+
+    const { role } = await actionSheet.onDidDismiss();
+    
+  }
+
+  async onShowProduct(product) {
+    const modal = await this.modalCtrl.create({
+      component: ProductDetailComponent,
+      swipeToClose: false, 
+      cssClass: 'product-modal',
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { 'fair': this.fair, 'pavilionId': product.stand.pavilion_id, 'standId': product.stand_id, 'product': product }
+    });
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+        
+    }
+  }
+
+  async presentMapEditorBanner(banner) {
+    const modal = await this.modalCtrl.create({
+      component: BannerEditorComponent,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl
+    });
+    await modal.present();
+  }  
+
+  onChangeBackgroundStyle() {
+    let ionContent = document.querySelector('#ionContent');
+    if(this.scene && this.scene.backgroundColor) {
+      ionContent.setAttribute("style","--background:" + this.scene.backgroundColor );
+    }
+    else if(this.scene && this.scene.url_image){
+      ionContent.setAttribute("style","--background:none");
+      //ionContent.setAttribute("style","background-repeat:" + 'no-repeat;' + "background-size:" + '100% 100%;' + "--background:" + 'url(' + this.scene.url_image + '); ' );
+      //ionContent.setAttribute("style","--background:" + "#fff url('" + this.scene.url_image + "') no-repeat center center / cover");
+    }
+  }
+
 }

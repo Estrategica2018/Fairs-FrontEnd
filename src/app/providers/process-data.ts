@@ -15,7 +15,7 @@ export function processData(obj){
         }
         let objItem = null;
         for (let key of Object.keys(obj)) {
-            if(obj[key]) {
+            if(key.indexOf('__') < 0 && obj[key]) {
                processData(obj[key]);
             }
         }

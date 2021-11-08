@@ -156,6 +156,10 @@ const routes: Routes = [
   {
     path: 'overflow',
     loadChildren: () => import('./pages/overflow/overflow.module').then( m => m.OverflowPageModule)
+  },
+  {
+    path: 'shopping-cart',
+    loadChildren: () => import('./pages/shopping-cart/shopping-cart.module').then( m => m.ShoppingCartPageModule)
   }
 
 

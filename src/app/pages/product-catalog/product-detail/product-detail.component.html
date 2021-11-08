@@ -7,9 +7,9 @@
   <ion-row>
     <ion-col size="4" >
        <!--img src="https://res.cloudinary.com/deueufyac/image/upload/v1631835507/sublimacion/productos/otros_productos/imgProducto2-08_ozf01b.png"-->
-       <div class="container-carousel">
-       <app-carousel-images [product]="product" class="mt-5" (changePrice)="changePrice($event)">
-       </app-carousel-images>
+       <div class="container-carousel-slide">
+       <app-carousel-slides [product]="product" class="mt-5" (changePrice)="changePrice($event)">
+       </app-carousel-slides>
        </div>
        <ion-grid class="attribute-list">
        <ion-row *ngFor="let attr of attributes; let i = index;" class="attribute" [ngClass]="{'par': i%2}">

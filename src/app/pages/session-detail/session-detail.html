@@ -71,20 +71,17 @@
             <h4 *ngIf="session?.invited_speakers.length > 1">Conferencistas</h4>
             <h4 *ngIf="session?.invited_speakers.length === 1">Conferencista</h4>
             
-            <ion-item *ngFor="let invited_speaker of session.invited_speakers">
-            <ion-card class="speaker-card" routerLink="/speakers/speaker-details/{{invited_speaker.speaker?.id}}" >
-               <ion-card-header> 
+            <ion-item *ngFor="let invited_speaker of session.invited_speakers" (click)="presenterSpeakerModal(invited_speaker.speaker)" button>
+            <!--ion-card class="speaker-card" routerLink="/speakers/speaker-details/{{invited_speaker.speaker?.id}}" -->
                   <div class="d-flex">
                     <ion-avatar slot="start">
-                       <img [src]="invited_speaker.speaker?.resources?.url_image" [alt]="invited_speaker.speaker?.user?.name + ' profile picture'">
+                       <img [src]="invited_speaker.speaker?.profile_picture" [alt]="invited_speaker.speaker?.user?.name + ' profile picture'">
                     </ion-avatar>
                     <ion-label class="speaker-name">
                         <h5>{{ invited_speaker.speaker?.user?.name + '  ' + invited_speaker.speaker?.user?.last_name }} </h5>
                         <small>{{invited_speaker.speaker?.title}}</small>
                     </ion-label>
                   </div>
-              </ion-card-header>
-             </ion-card>
              </ion-item>
           </ion-label>
         </ion-col>

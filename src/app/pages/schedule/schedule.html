@@ -32,7 +32,9 @@
   </div>
   
   <ion-text class="padding-container"> {{textFilters}} </ion-text>
-  <ion-list #scheduleList [hidden]="groups?.length === 0" class="padding-container">
+  
+  <!--ion-list #scheduleList [hidden]="groups?.length === 0" class="padding-container">
+    
     <ion-item-group *ngFor="let group of groups" [hidden]="group.hide">
       <ion-item-divider sticky color="secondary">
         <ion-label>
@@ -42,7 +44,7 @@
 
       <ion-item-sliding *ngFor="let session of group.sessions" #slidingItem class="category" [hidden]="session.hide">
         <ion-item routerLink="/schedule/session/{{session.id}}">
-            <ion-label [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color}">
+            <ion-label8 [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color}">
                <h3>{{session.name}}</h3>
                <p translate="no">
                 {{session.timeStart}} &mdash; {{session.timeEnd}} <span>{{session.timezone}}</span>
@@ -54,16 +56,76 @@
              <ion-buttons slot="end">
                 <div *ngIf="session.audience_config == 4 && !session.userPaidEvent" class="button-price" ion-button icon-start (click)="openTemplateAgenda(session)">
                  <ion-icon name="bookmark"></ion-icon>
-                  <!--Paga el valor del evento <strong> ${{session?.price}} </strong-->
+                  <Paga el valor del evento <strong> ${{session?.price}} </strong>
                 </div>
                 <div *ngIf="session.audience_config==3 && !userPaidAllfair" class="button-price" ion-button icon-start (click)="openTemplateFair()">
                   <ion-icon name="pricetags"></ion-icon>
-                <!--Evento con pago por suscripción-->
                 </div>
             </ion-buttons>
         </ion-item>
       </ion-item-sliding>
     </ion-item-group>
+  </ion-list-->
+  
+  <ion-list class="agenda-list">
+     <h1 class="title">
+        Agenda Virtual
+     </h1>
+     <ion-grid *ngIf="groups && groups.length > 0" class="not-found">
+        <ion-row>
+          <ion-col *ngFor="let group of groups">
+
+            <div class="card-schedule">
+                <div class="head">
+                     {{ group.month }}
+                </div>
+                <div class="container-card">
+                    <ion-buttons>
+                    <div slot="start" class="" style="margin-left: 2em;">
+                      <img class="border-card" src="assets/icon/border-card.png">
+                      <div class="circle">
+                         <div class="text">
+                          {{ group.strDay }}
+                         </div>
+                      </div>
+                    </div>
+                    <div slot="end" class="container-schedule">
+                       <ion-item button class="d-flex" *ngFor="let session of group.sessions" routerLink="/schedule/session/{{session.id}}">
+                           <div class="hour"> 
+                              {{session.hour}}
+                           </div>
+                           <div class="hour-unit"> 
+                             <div>
+                              {{session.minutes}}
+                             </div>
+                             <div class="signature">
+                             {{session.signature}}
+                             </div>
+                           </div>
+                           <div style="margin-top: -9px;">
+                               <div class="agenda-name"> 
+                                  {{session.name}}
+                               </div>
+                               <div class="speakers-name"> 
+                                  conferencias
+                               </div>
+                           </div>
+                       </ion-item>
+                         <!--ion-buttons slot="end">
+                            <div *ngIf="session.audience_config == 4 && !session.userPaidEvent" class="button-price" ion-button icon-start (click)="openTemplateAgenda(session)">
+                               <ion-icon name="bookmark"></ion-icon>
+                            </div>
+                            <div *ngIf="session.audience_config==3 && !userPaidAllfair" class="button-price" ion-button icon-start (click)="openTemplateFair()">
+                              <ion-icon name="pricetags"></ion-icon>
+                            </div>
+                        </ion-buttons-->
+                    </div>
+                    </ion-buttons>
+                </div>
+            </div>
+          </ion-col>
+        </ion-row>
+     </ion-grid>
   </ion-list>
 
   <ion-list-header *ngIf="groups && groups.length === 0" class="not-found">

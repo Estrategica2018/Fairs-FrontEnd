@@ -12,7 +12,7 @@ import { SpeakerDetailComponent } from './speaker-detail/speaker-detail.componen
     CommonModule,
     IonicModule,
     SpeakerListPageRoutingModule,
-	ComponentsModule
+    ComponentsModule
   ],
   declarations: [SpeakerListPage],
   entryComponents: [

@@ -30,10 +30,18 @@ $col_2: 0.35;
   text-align: center;
 }
 
-.ico {
-  width: calc( #{$width} / 4 );
+.icon-circle {
+  width: 10em;
+  margin-top: 2em;
   height: auto;
 }
+
+.icon-rectangle {
+  width: 10em;
+  margin-top: 2em;
+  height: auto;
+}
+
 
 :root {
   --border-radius: 29px;
@@ -41,10 +49,11 @@ $col_2: 0.35;
 
 .agenda {
  position: absolute;
- top: calc( #{$height} - 24% );
+ top: 23.1em;
  right: 0;
- min-width: 54%;
+ min-width: 50%;
  margin: 17px;
+ box-shadow: #b0b0b0 -2px 2px 3px 1px;
  .container {
    overflow: auto;
    height: 188px;
@@ -89,6 +98,7 @@ $col_2: 0.35;
   width: 45%;
   padding: 16px;
   text-align: justify;
+  font-size: 1.2em;
 }
 
 .stretch-2 {

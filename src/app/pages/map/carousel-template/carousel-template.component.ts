@@ -16,7 +16,8 @@ export class CarouselTemplateComponent {
   @Input() pavilion: any;
   @Input() stand: any;
   @Input() product: any;
-  @ViewChild(IonSlides, { static: true }) ionSlides: IonSlides;
+  //@ViewChild(IonSlides, { static: true }) ionSlides: IonSlides;
+  @ViewChild('slides', { static: true }) ionSlides: IonSlides;
   
   slideOpts: any;
   items: any;

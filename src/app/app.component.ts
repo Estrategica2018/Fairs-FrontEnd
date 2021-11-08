@@ -8,6 +8,7 @@ import { UsersService } from './api/users.service';
 import { MenuController, Platform, ToastController } from '@ionic/angular';
 import { LoadingService } from './providers/loading.service';
 import { FairsService } from './api/fairs.service';
+import { ShoppingCarts } from './api/shopping-carts.service';
 import { PavilionsService } from './api/pavilions.service';
 import { AlertController } from '@ionic/angular';
 import { Title } from '@angular/platform-browser';
@@ -30,6 +31,7 @@ export class AppComponent implements OnInit {
   showStandDetail: string = null;
   _toolbarHeight = 56;
   profileRole:any;
+  showShoppingCart: any;
   
   constructor(
     private alertCtrl: AlertController,
@@ -44,6 +46,7 @@ export class AppComponent implements OnInit {
     private toastCtrl: ToastController,
     private loading: LoadingService,
     private fairsService: FairsService,
+    private shoppingCarts: ShoppingCarts,
     private pavilionsService: PavilionsService,
     private titleService: Title,
     private menuCtrl: MenuController
@@ -222,6 +225,24 @@ export class AppComponent implements OnInit {
   
   onClickPavilionStandScene(pavilion,stand,index){
       this.redirectTo('/map/stand/'+pavilion.id+'/'+stand.id+'/'+index);
+  }
+  
+  getShoppingCart() {
+      this.loading.present({message:'Cargando...'});
+      this.shoppingCarts.list(this.fair)
+      .then( response => {
+        console.log('getShoppingCart(): ' + response);
+        this.loading.dismiss();
+      }, errors => {
+          this.errors = errors;
+          this.loading.dismiss();
+      })
+     .catch(error => {
+        this.errors = error; 
+        this.loading.dismiss();
+     }); 
+     
+     
   }
   
 }

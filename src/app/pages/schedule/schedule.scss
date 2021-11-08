@@ -75,3 +75,110 @@ ion-list-header.not-found {
     cursor: pointer;
     -webkit-font-smoothing: subpixel-antialiased;
 } 
+
+.title {
+  color: #98A000;
+  font-size: 59px;
+  text-align: center;
+}
+
+.circle {
+  background: #AFD333;
+  position: absolute;
+  border-radius: 87px;
+  padding: 24px;
+  width: 8em;
+  height: 8em;
+  top: 4.8em;
+  left: 3em;
+  z-index: -1;
+  .text {
+    position: absolute;
+    top: 0.2em;
+    left: 0.5em;
+    color: white;
+    font-size: 4em;
+  }  
+}
+
+.head {
+  font-size: 2.5em;
+  width: 6em;
+  box-shadow: #cfcfcf 0.3px -1px 2px 0px;
+  padding-left: 0.4em;
+  left: 0em;
+  color: #62A000;
+  border-top-left-radius: 0.2em;
+  border-top-right-radius: 1.4em;
+}
+
+
+/*.head::before {
+  content: "";
+  box-shadow: rgb(207 207 207) 1px 0px 4px 1px;
+  width: 1.7em;
+  border-radius: 0.3em;
+  height: 1.2em;
+  transform: rotate(67deg);
+  position: absolute;
+  top: 0.53em;
+  left: 5.3em;
+}*/
+
+.card-schedule {
+  width: 44em;
+  height: 27em;
+  margin: auto;
+}
+
+.container-card {
+  border-radius: 2em;
+  box-shadow: rgb(207 207 207) 1px 0px 4px 1px;
+  height: 23em;
+}
+
+.border-card {
+  height: 14em;
+  margin-left: 0em;
+  z-index: 10;
+  margin-top: 2em;
+}
+
+.container-schedule {
+  height: 14em;
+  margin-left: auto;
+  margin-right: 3em;
+}
+
+.hour {
+  color: #1B676B;
+  font-size: 2.1em;
+}
+
+.hour-unit {
+  color: #1B676B;
+  font-size: 1em;
+  margin-left: 0.3em;
+  margin-top: 0em;
+  .signature {
+    margin-top: -0.5em
+  }
+}
+
+.agenda-name {
+  color: #519548;
+  font-size: 1.2em;
+  margin-left: 1em;
+  margin-top: 10px;
+}
+
+.speakers-name {
+  color: #AFD333;
+  margin-left: 1.3em;
+  margin-top: -3px;
+  font-size: 1em;
+}
+
+.agenda-list {
+  padding: 1em;
+}

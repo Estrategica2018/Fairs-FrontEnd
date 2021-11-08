@@ -8,6 +8,7 @@ import { StandsService } from './../../../api/stands.service';
 import { AdminProductsService } from './../../../api/admin/products.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { clone } from '../../../providers/process-data';
 
 @Component({
   selector: 'app-product',
@@ -123,14 +124,15 @@ export class ProductPage implements OnInit {
   updateProduct(){
     this.loading.present({message:'Cargando...'});
     if(this.product.id) {
-        this.adminProductsService.update(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id},this.product))
+        const product = clone(this.product);
+        this.adminProductsService.update(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id},product))
        .then((product) => {
           this.loading.dismiss();
           this.errors = null;
           this.success = `Producto modificado exitosamente`;
-          this.fairsService.refreshCurrentFair();
-          this.pavilionsService.refreshCurrentPavilion();
-          this.redirectTo(`/super-admin/product/${this.pavilion.id}/${this.stand.id}/${product.id}`);
+          //this.fairsService.refreshCurrentFair();
+          //this.pavilionsService.refreshCurrentPavilion();
+          //this.redirectTo(`/super-admin/product/${this.pavilion.id}/${this.stand.id}/${product.id}`);
       })
       .catch(error => {
         this.loading.dismiss();
@@ -206,20 +208,18 @@ export class ProductPage implements OnInit {
     }
   }
   
-  deleteAttr(index, slidingItem) {
+  deleteAttr(index) {
     this.product.resources.attributes = this.product.resources.attributes.filter((attr, ind)=>{
         return ind != index;
     });
     this.editSave = true;
-    slidingItem.close();
   }
   
-  showModifyAttr(i, slidingItem) {
-    slidingItem.close();
+  showModifyAttr(i) {
     this.indexEditAttr = i;
   }
   
-  modifyAttr(i,slidingItem) {
+  modifyAttr(i) {
     this.indexEditAttr = null;
   }
   
@@ -236,9 +236,14 @@ export class ProductPage implements OnInit {
       this.attributeSel = attribute;
       this.showColor = true;
   }
+  
   setColor (color){
       this.attributeSel.value = color.value;
       this.showColor = false;
       this.editSave = true;
   }  
+  
+  onToBack() {
+     window.history.back();
+  }
 }

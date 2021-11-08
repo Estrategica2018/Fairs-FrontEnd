@@ -7,6 +7,8 @@ import { AgendasService } from './../../api/agendas.service';
 import { DatePipe } from '@angular/common'
 import { Router } from '@angular/router';
 import { LoadingService } from './../../providers/loading.service';
+import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
+import { ModalController, IonRouterOutlet } from '@ionic/angular';
 
 @Component({
   selector: 'page-session-detail',
@@ -18,7 +20,7 @@ export class SessionDetailPage {
   defaultHref = '';
   errors: string = null;
   speaker: any;
-  
+  modalSpeaker: any;
 
   constructor(
     private dataProvider: ConferenceData,
@@ -28,6 +30,8 @@ export class SessionDetailPage {
     private datepipe: DatePipe,
     private router: Router,
     private loading: LoadingService,
+    private routerOutlet: IonRouterOutlet,
+    private modalCtrl: ModalController,
   ) { }
   
   ngDoCheck(){
@@ -54,6 +58,8 @@ export class SessionDetailPage {
           "location": location
         },agenda);
         
+        console.log(this.session);
+        
     })
     .catch(error => {
        this.loading.dismiss();
@@ -70,6 +76,19 @@ export class SessionDetailPage {
      //     this.router.navigateByUrl('/support');
      this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
   }
- 
+
+  async presenterSpeakerModal(speaker) {
+      
+    this.modalSpeaker = await this.modalCtrl.create({
+      component: SpeakerDetailComponent,
+      cssClass: 'speaker-modal',
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { speaker: speaker }
+    });
+    await this.modalSpeaker.present();
+
+    const { data } = await this.modalSpeaker.onWillDismiss();
+  }
   
 }

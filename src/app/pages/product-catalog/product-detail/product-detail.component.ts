@@ -5,6 +5,7 @@ import { AdminProductsService } from './../../../api/admin/products.service';
 import { LoadingService } from './../../../providers/loading.service';
 import { ToastController } from '@ionic/angular';
 import { UsersService } from '../../../api/users.service';
+import { ShoppingCarts } from '../../../api/shopping-carts.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -32,6 +33,7 @@ export class ProductDetailComponent implements OnInit {
     private loading: LoadingService,
     private toastController: ToastController,
     private usersService: UsersService,
+    private shoppingCarts: ShoppingCarts,
   ) { }
 
   ngOnInit() {
@@ -238,7 +240,6 @@ export class ProductDetailComponent implements OnInit {
   
   changePrice(product){
     this.priceSelected = product.priceSelected;
-    console.log(this.priceSelected.price);
     this.attributes = [];
     let value;
     if(this.product && this.product.resources && this.product.resources.attributes)
@@ -247,7 +248,7 @@ export class ProductDetailComponent implements OnInit {
       this.attributes.push({'name':value.key,'value': value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' ) });
     }
     let mbControl = false;
-    if(this.priceSelected.resources.attributes) {
+    if(this.priceSelected && this.priceSelected.resources.attributes) {
      for(let attr in this.priceSelected.resources.attributes) {
        mbControl = false;
        value = this.priceSelected.resources.attributes[attr];
@@ -264,6 +265,15 @@ export class ProductDetailComponent implements OnInit {
   }
   
   onBuyProduct(product) {
-      
+      const data = { 'type': 'product', 'id': product.id };
+      this.shoppingCarts.addShoppingCart(this.fair, data)    
+      .then((response) => {
+        this.loading.dismiss();
+        this.presentToast('Producto agredado exitósamente al carrito', 'app-success-alert');
+      })
+      .catch(error => {
+        this.loading.dismiss(); 
+        this.presentToast('Ocurrió un error al agregar al carrito de compras: ['+ error +']', 'app-error-alert');
+      });
   }
 }

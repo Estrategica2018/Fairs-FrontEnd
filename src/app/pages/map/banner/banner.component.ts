@@ -30,7 +30,7 @@ export class BannerComponent implements OnInit {
      this.onBannerSelect.emit(banner);
   }
   
-  changePriceProductCatalog(product) {
+  onChangePriceProductCatalog(product) {
       this.changePriceProduct.emit(product);
   }
 

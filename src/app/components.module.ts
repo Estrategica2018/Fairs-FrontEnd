@@ -5,10 +5,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabMenuScenesComponent } from './pages/map/tab-menu-scenes/tab-menu-scenes.component';
 import { CarouselTemplateComponent } from './pages/map/carousel-template/carousel-template.component';
 import { SceneComponent } from './pages/scene/scene.component';
-import { CarouselImagesComponent } from './pages/product-catalog/carousel-images/carousel-images.component';
+import { CarouselSlidesComponent } from './pages/product-catalog/carousel-slides/carousel-slides.component';
 import { ProductDetailComponent } from './pages/product-catalog/product-detail/product-detail.component';
 import { BannerComponent } from './pages/map/banner/banner.component';
 import { SpeakerDetailComponent } from './pages/speaker-list/speaker-detail/speaker-detail.component';
+import { BannerEditorComponent } from './pages/super-admin/map-editor/banner-editor/banner-editor.component';
 
 @NgModule({
   imports: [
@@ -21,18 +22,21 @@ import { SpeakerDetailComponent } from './pages/speaker-list/speaker-detail/spea
     TabMenuScenesComponent,
     CarouselTemplateComponent,
     SceneComponent,
-    CarouselImagesComponent,
+    CarouselSlidesComponent,
     ProductDetailComponent,
     BannerComponent,
-	SpeakerDetailComponent
+    SpeakerDetailComponent,
+    BannerEditorComponent
   ],
   exports: [
     TabMenuScenesComponent,
     CarouselTemplateComponent,
     SceneComponent,
-    CarouselImagesComponent,
+    CarouselSlidesComponent,
     ProductDetailComponent,
-    BannerComponent
+    BannerComponent,
+    SpeakerDetailComponent,
+    BannerEditorComponent
   ]
   
 })

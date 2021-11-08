@@ -261,6 +261,15 @@ ion-router-outlet {
 }
 
 .rounded-withradius:hover {
-  background-image: linear-gradient(#109BE0, #109BE0), linear-gradient(to top right, #BEBEBE, #FEFEFE);
-  color: white;
+  
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+
+.product-modal .modal-wrapper,
+.speaker-modal .modal-wrapper {
+  --width: 60em;
 }

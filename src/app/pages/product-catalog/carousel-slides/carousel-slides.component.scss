@@ -7,29 +7,41 @@ $width: 100px;
 $height: 16em;
  
 .container-carousel {
-   width: 100%;
-   height: 100%;
+  width: 100%;
+  height: 41%;
+  left: -0.6em;
 }
 
-
-.color-container .color-attr:first-child {
+.color-container div .color-attr:first-child {
   margin-left: auto !important;
 }
 
-.color-container .color-attr:last-child {
+.color-container div .color-attr:last-child {
   margin-right: auto !important;
 }
 
 .color-attr {
   border-radius: 50%;
   cursor: pointer;
-  margin: auto;
   border: 1px solid gray;
   min-width: 16px;
   min-height: 16px;
 }
 
-.container-img {
+
+.cont-attr {
+  margin: auto;
+  height: 2em;
+}
+
+.cont-attr.select {
+  border-bottom: 1px solid black;
+  
+}
+
+
+
+.container-img { 
   background-repeat: no-repeat;
   background-size: 100%;
   width: 70%;
@@ -39,6 +51,8 @@ $height: 16em;
   
 .color-container {
   display: flex;
+  top: 20em;
+  left: 0em;
 }
 
 .bullet {
@@ -46,13 +60,14 @@ $height: 16em;
   top: 110px;
   font-size: 40px;
   .left {
-    left: -32px;
+    z-index: 10000;
+    left: -21px;
   }
   .right {
-    left: 152px;
+    z-index: 10000;
+    left: 4em;
   }
 }
-
 
 .bullet .active {
   color: #007aff;

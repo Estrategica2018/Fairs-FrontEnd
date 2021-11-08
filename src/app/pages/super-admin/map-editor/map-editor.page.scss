@@ -10,7 +10,6 @@
 
 .cube__face {
   position: absolute;
-  border: 2px solid black;
   font-size: 40px;
   font-weight: bold;
   color: white;
@@ -92,7 +91,7 @@
   top: 0px;
   right: 52px;
   width: 425px;
-  z-index: 2;
+  z-index: 1002;
 }
 
 .close {
@@ -314,7 +313,7 @@ ion-tab-button {
 .paste-button {
   position: absolute;
   top: 0px;
-  left: 174px;
+  left: 278px;
   z-index: 11;
 }
 
@@ -454,24 +453,25 @@ ion-tab-button {
 
 .edit-mode-backdrop {
   opacity: 0.3;
+  cursor: initial;
   z-index: 1001;
 }
 
 .edit-mode-backdrop-text {
     color: white;
     margin: auto;
-    z-index: 1000;
+    z-index: 1002;
     position: absolute;
     left: 23em;
     top: 12em;
     width: 31em;
     height: 9em;
-    opacity: 0.9;
     border-radius: 12px;
     --background: var(--light);
     ion-item {
        margin-top: 2em;
     }
+    cursor: pointer;
 }
 
 .tool-tip {
