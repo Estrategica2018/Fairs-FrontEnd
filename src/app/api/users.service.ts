@@ -29,10 +29,10 @@ export class UsersService {
            throw new Error(`Usuario o contraseña incorrectos`);
         }
         else if(e.message){
-           throw new Error(`Consultando el servicio para cerrar sesión: ${e.name} - ${e.message}`);
+           throw new Error(`Consultando el servicio para iniciar sesión: ${e.name} - ${e.message}`);
         }
         else {
-            throw new Error(`Consultando el servicio para cerrar sesión: ${e.status} - ${e.statusText}`);
+            throw new Error(`Consultando el servicio para iniciar sesión: ${e.status} - ${e.statusText}`);
         }
         
         return of(null);

@@ -153,6 +153,7 @@ export class StandPage implements OnInit {
       }
       else {
           this.stand.stand_type_id = 1;
+		  this.stand.resources = { 'scenes': [this.defaultEscene()] };
           this.adminStandsService.create(this.stand)
           .then((stand) => {
              this.loading.dismiss();
@@ -273,6 +274,18 @@ export class StandPage implements OnInit {
   
   onRouterLink(tab) {
     this.router.navigate([tab]);
+  }
+
+  defaultEscene() {
+      const main = document.querySelector<HTMLElement>('ion-router-outlet');
+      
+      return { 'url_image': 'https://dummyimage.com/'+window.outerWidth+'x'+window.outerHeight+'/EFEFEF/000.png', 
+               'banners': [], 
+               'container':  { 'w': window.outerWidth, 'h': window.outerHeight },
+               'show': true,
+               'menuIcon': 'map-outline', 
+               'title': 'Escena Principal',
+               'menuTabs': {'showMenuParent':true, 'position':'none' }}
   }
   
 }

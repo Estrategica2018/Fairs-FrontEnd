@@ -60,7 +60,7 @@ export class ShoppingCarts {
   }
    
   
-  addShoppingCart(fair: any, data: any): any {
+  addShoppingCart(fair: any, product: any, productPrice: any, amount: number): any {
     
     return new Promise((resolve, reject) => {
         
@@ -70,8 +70,15 @@ export class ShoppingCarts {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };
-  
-           this.http.post(`/api/add/shopping-cart/${fair.id}`,data,httpOptions)
+           
+		   const data = {
+			   "fair_id": fair.id,
+			   "product_id": product.id,
+			   "product_price_id": productPrice.id, 
+			   "amount": amount  
+		   };
+		   
+           this.http.post(`/api/store/shopping-cart/${fair.id}`,data,httpOptions)
             .pipe(
               timeout(30000),
               catchError((e: any) => {

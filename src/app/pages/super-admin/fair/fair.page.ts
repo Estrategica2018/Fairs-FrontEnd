@@ -210,22 +210,11 @@ export class FairPage implements OnInit {
   
   async presentActionIcons() {
     const actionAlert = await this.alertCtrl.create({
-      header: 'Iconos de la feria',
-      message: "Ingresa las Url de los íconos la feria",
+      message: "Ingresa la Url deL ícono la feria",
       inputs: [{
           name: 'icon',
           label: 'Icono Logo',
           value: this.fair.social_media.icon,
-          placeholder: ''
-        },{
-          name: 'iconNight',
-          label: 'Icono Logo Noche',
-          value: this.fair.social_media.iconNight,
-          placeholder: ''
-        },{
-          name: 'iconMini',
-          label: 'Icono Pequeño',
-          value: this.fair.social_media.iconMini,
           placeholder: ''
         }],
       buttons: [{
@@ -237,7 +226,6 @@ export class FairPage implements OnInit {
          handler: (data) => {
           this.editSave = true;
           this.fair.social_media.icon = data.icon;
-          this.fair.social_media.iconNight = data.iconNight;
          }
         }]
     });

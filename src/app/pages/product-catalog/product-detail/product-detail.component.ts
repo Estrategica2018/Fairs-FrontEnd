@@ -265,11 +265,10 @@ export class ProductDetailComponent implements OnInit {
   }
   
   onBuyProduct(product) {
-      const data = { 'type': 'product', 'id': product.id };
-      this.shoppingCarts.addShoppingCart(this.fair, data)    
+      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount )
       .then((response) => {
         this.loading.dismiss();
-        this.presentToast('Producto agredado exitósamente al carrito', 'app-success-alert');
+        this.presentToast('Producto agredado exitósamente al carrito de compras', 'app-success-alert');
       })
       .catch(error => {
         this.loading.dismiss(); 

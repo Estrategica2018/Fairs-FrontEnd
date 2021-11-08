@@ -81,12 +81,10 @@ export class PavilionPage implements OnInit {
   }
   
   updatePavilion(){
-      console.log(this.stands);
     this.loading.present({message:'Cargando...'});
     if(this.pavilion.id) {
         this.adminPavilionsService.update(this.pavilion)
        .then((pavilion) => {
-           console.log(this.stands);
           this.loading.dismiss();
           this.editSave = false;
           this.errors = null;
@@ -99,17 +97,13 @@ export class PavilionPage implements OnInit {
            .then((response) => {
               this.pavilion = response.pavilion;
               this.stands = this.pavilion.stands;
-              console.log(this.stands);
               this.fair = response.fair;
-              
               this.loading.dismiss();
           })
           .catch(error => {
              this.loading.dismiss();
              this.errors = error;
           });
-          
-          //window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
       })
       .catch(error => {
         this.loading.dismiss();
@@ -118,6 +112,7 @@ export class PavilionPage implements OnInit {
     }
     else {
       this.pavilion.fair_id = this.fair.id;
+	  this.pavilion.resources = { 'scenes': [this.defaultEscene()] };
       this.adminPavilionsService.create(this.pavilion)
        .then((pavilion) => {
           this.loading.dismiss();
@@ -186,5 +181,18 @@ export class PavilionPage implements OnInit {
       this.router.navigate([uri])
     });
   }
+
+  defaultEscene() {
+      const main = document.querySelector<HTMLElement>('ion-router-outlet');
+      
+      return { 'url_image': 'https://dummyimage.com/'+window.outerWidth+'x'+window.outerHeight+'/EFEFEF/000.png', 
+               'banners': [], 
+               'container':  { 'w': window.outerWidth, 'h': window.outerHeight },
+               'show': true,
+               'menuIcon': 'map-outline', 
+               'title': 'Escena Principal',
+               'menuTabs': {'showMenuParent':true, 'position':'none' }}
+  }
+
 
 }
