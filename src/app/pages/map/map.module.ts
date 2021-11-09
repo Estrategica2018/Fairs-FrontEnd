@@ -7,6 +7,7 @@ import { MapPageRoutingModule } from './map-routing.module';
 import { ComponentsModule } from '../../components.module';
 import { ProductDetailComponent } from '../product-catalog/product-detail/product-detail.component';
 import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
+import { ShoppingCartComponent } from '../shopping-cart/shopping-cart-component/shopping-cart-component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-d
     MapPage
   ],
   entryComponents: [
-    ProductDetailComponent, SpeakerDetailComponent
+    ProductDetailComponent, SpeakerDetailComponent, ShoppingCartComponent
   ]
 })
 export class MapModule { }

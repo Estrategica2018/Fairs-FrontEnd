@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
+import { HostListener } from "@angular/core";
 
 @Component({
   selector: 'app-carousel-slides',
@@ -16,8 +17,9 @@ export class CarouselSlidesComponent implements OnInit {
     }
  }*/
   
-  
+  _factor = 0.9;
   @Input() product: any;
+  @Input() resize: any;
   @Input() imagesPriceWidth: any;
   @Input() imageWidth: any;
   @Input() imageHeight: any;
@@ -32,7 +34,7 @@ export class CarouselSlidesComponent implements OnInit {
   isEnd = false;
 
   ngOnInit() {
-     'use strict';
+   this.onResize()
      this.product.prices.forEach((price)=>{
          if(price.resources && price.resources.attributes && price.resources.attributes.color) {
            this.colors.push({'value': price.resources.attributes.color.value, 'image': price.resources.images});
@@ -408,6 +410,14 @@ export class CarouselSlidesComponent implements OnInit {
       });
     }
   }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    if(this.resize)
+    this._factor = window.innerWidth < 598 ? 3.4 : 3.9;
+    
+  }
+
 
 }
 

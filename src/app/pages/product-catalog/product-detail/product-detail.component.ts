@@ -18,6 +18,7 @@ export class ProductDetailComponent implements OnInit {
   @Input() pavilionId: any;
   @Input() standId: any;
   @Input() product: any;
+  @Input() _parent: any;
   priceSelected: any;
   lockHover: any;
   profileRole: any = null;
@@ -223,7 +224,8 @@ export class ProductDetailComponent implements OnInit {
     const toast = await this.toastController.create({
       message: msg,
       cssClass: cssClass,
-      duration: 2000
+      duration: 2000,
+      position: 'top'
     });
     toast.present();
   }
@@ -269,6 +271,7 @@ export class ProductDetailComponent implements OnInit {
       .then((response) => {
         this.loading.dismiss();
         this.presentToast('Producto agredado exitósamente al carrito de compras', 'app-success-alert');
+        if(this._parent && this._parent.openShoppingCart) this._parent.openShoppingCart(this.priceSelected);
       })
       .catch(error => {
         this.loading.dismiss(); 

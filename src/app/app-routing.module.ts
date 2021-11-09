@@ -9,6 +9,10 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'schedule',
+    loadChildren: () => import('./pages/schedule/schedule.module').then(m => m.ScheduleModule)
+  },
+  {
     path: 'account',
     loadChildren: () => import('./pages/account/account.module').then(m => m.AccountModule)
   },

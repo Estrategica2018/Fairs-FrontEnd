@@ -11,7 +11,6 @@ import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import { UsersService } from './../../api/users.service';
 import { WompiPaymentLayoutPage } from '../wompi-payment-layout/wompi-payment-layout.page';
 
-
 @Component({
   selector: 'page-schedule',
   templateUrl: 'schedule.html',
@@ -290,6 +289,22 @@ export class SchedulePage implements OnInit {
 
     this.modal = await this.modalCtrl.create({
       component: WompiPaymentLayoutPage,
+      componentProps: {
+          'objPrice': session,
+          'type': 'Agenda'
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+  
+  async openAgenda(session) {
+
+    this.modal = await this.modalCtrl.create({
+      component: ShoppingCartComponent,
       componentProps: {
           'objPrice': session,
           'type': 'Agenda'

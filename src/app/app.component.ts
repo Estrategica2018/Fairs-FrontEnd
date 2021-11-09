@@ -158,7 +158,7 @@ export class AppComponent implements OnInit {
             
             this.usersService.setUser(null).then(() => {
               window.dispatchEvent(new CustomEvent('user:logout'));
-              this.router.navigateByUrl(`/app/tabs/schedule`);
+              this.router.navigateByUrl(`/app/schedule`);
             });
             
           },

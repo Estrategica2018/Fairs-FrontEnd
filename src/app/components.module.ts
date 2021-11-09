@@ -10,6 +10,7 @@ import { ProductDetailComponent } from './pages/product-catalog/product-detail/p
 import { BannerComponent } from './pages/map/banner/banner.component';
 import { SpeakerDetailComponent } from './pages/speaker-list/speaker-detail/speaker-detail.component';
 import { BannerEditorComponent } from './pages/super-admin/map-editor/banner-editor/banner-editor.component';
+import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-component/shopping-cart-component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { BannerEditorComponent } from './pages/super-admin/map-editor/banner-edi
     ProductDetailComponent,
     BannerComponent,
     SpeakerDetailComponent,
-    BannerEditorComponent
+    BannerEditorComponent,
+    ShoppingCartComponent
   ],
   exports: [
     TabMenuScenesComponent,
@@ -36,7 +38,8 @@ import { BannerEditorComponent } from './pages/super-admin/map-editor/banner-edi
     ProductDetailComponent,
     BannerComponent,
     SpeakerDetailComponent,
-    BannerEditorComponent
+    BannerEditorComponent,
+    ShoppingCartComponent
   ]
   
 })

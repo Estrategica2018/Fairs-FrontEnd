@@ -86,8 +86,39 @@ $blue-light-color: #F5F6FF;
   }
 }
 
-@media (min-width: 598px) {
- .bullet .right {
-   left: 3.3em;
+.border-line {
+  border-bottom: 1px solid #{$blue-color};
+}
+
+.grid-shopping-cart {
+  overflow: auto;
+  height: 35em;
+}
+
+@media (min-width: 768px) {
+ .grid-shopping-cart {
+   height: 35em;
  }
+}
+
+.vertical-widget {
+  display: none;
+}
+
+.horizontal-widget {
+  display: flex;
+}
+
+@media (max-width: 592px) {
+ .vertical-widget {
+   display: block;
+ }
+ .horizontal-widget {
+   display: none;
+ }
+}
+
+.product-image {
+  width: 5em;
+  height: 5em;
 }

@@ -1,0 +1,72 @@
+<div class="card w-100">
+  <div class="info">
+    <ion-icon color="primary" name="cart-outline"></ion-icon>
+  </div>
+  <div class="info-background">
+  </div>
+  
+  <h2 class="name ion-text-center">Carrito de compras</h2>
+  
+      <ion-grid style="padding-left: 1.2em; margin: 0px;">
+        <ion-row class="name border-line ion-text-center">
+          <ion-col size="4"  class="ion-text-center"> <h6 class="ml-2">Producto </h6></ion-col>
+          <ion-col size="2"> <h6>Cantidad </h6></ion-col>
+          <ion-col size="3"> <h6>Precio por ud. </h6></ion-col>
+          <ion-col size="2"> <h6>Subtotal </h6></ion-col>
+          <ion-col size="1"> <h6> </h6></ion-col>
+        </ion-row>
+        <div class="grid-shopping-cart scroll-light">
+         <ion-row class="name border-line ion-text-center" *ngFor="let shoppingCart of shoppingCarts">
+            <ion-col size="4" class="horizontal-widget">
+              <img class="product-image" [src]="shoppingCart.product_price.resources.images[0].url_image">
+              <div class="ion-text-left ml-4">
+                <div> 
+                    {{ shoppingCart.product_price.product.name}}
+                </div>
+                <div *ngFor="let attr of shoppingCart.product_price.resources.attributesStr"> 
+                  {{ attr.label }} : {{ attr.value }}
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="4" class="vertical-widget">
+              <img class="product-image" [src]="shoppingCart.product_price.resources.images[0].url_image">
+              <div class="ion-text-center mt-4">
+                <div> 
+                    {{ shoppingCart.product_price.product.name}}
+                </div>
+                <div *ngFor="let attr of shoppingCart.product_price.resources.attributesStr"> 
+                  {{ attr.label }} : {{ attr.value }}
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="2"> <h6>{{shoppingCart.amount}} </h6></ion-col>
+            <ion-col size="3"> <h6> {{ ( shoppingCart.product_price.price || shoppingCart.product_price.product.price ) | currency: '$ ':'symbol':'1.0-0'}} </h6></ion-col>
+            <ion-col size="2"> <h6> {{ ( shoppingCart.product_price.price ? shoppingCart.product_price.price * shoppingCart.amount : shoppingCart.amount * shoppingCart.product_price.product.price ) | currency: '$ ':'symbol':'1.0-0' }} </h6></ion-col>
+            <ion-col size="1"> <h6> x </h6></ion-col>
+          </ion-row>
+          </div>
+          <ion-row class="name ion-text-center">
+            <ion-col size="6"></ion-col>
+            <ion-col size="3"> <h6> Total </h6></ion-col>
+            <ion-col size="2"> <h6> {{ totalAmount | currency: '$ ':'symbol':'1.0-0' }}</h6></ion-col>
+            <ion-col size="1"> </ion-col>
+          </ion-row>
+        <ion-row style="margin-top: -2em;">
+            <ion-col class="ion-text-center">
+              <ion-toolbar  class="ion-text-right" *ngIf="totalAmount > 0">
+                <ion-button class="button mr-6" color="primary" size="small" (click)="onBuyProduct(product)">
+                  Agregar más productos 
+                  <ion-icon name="cart-outline">
+                  </ion-icon>
+                </ion-button>
+                <ion-button [hidden]="showSelectAmount" class="button ml-6" color="primary" size="small" (click)="openSelect()">
+                  Pagar  <!--ion-icon name="logo-usd"> </ion-icon--> {{ totalAmount | currency: '$ ':'symbol':'1.0-0' }}
+                  
+                </ion-button>
+                
+              </ion-toolbar>
+            </ion-col>
+        </ion-row>
+      </ion-grid>
+  
+</div>

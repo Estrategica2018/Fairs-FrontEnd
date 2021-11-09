@@ -1,7 +1,7 @@
 import { Component, ElementRef,QueryList, ViewChild, ViewChildren, OnInit} from '@angular/core';
 import { HostListener } from "@angular/core";
 import { FairsService } from './../../api/fairs.service';
-import { StandsService } from './../../api/stands.service';                                                           
+import { StandsService } from './../../api/stands.service';
 import { ProductsService } from './../../api/products.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { ModalController, IonRouterOutlet,ToastController } from '@ionic/angular
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
 import { SpeakersService } from '../../api/speakers.service';
+import { ShoppingCartComponent } from '../shopping-cart/shopping-cart-component/shopping-cart-component';
 
 @Component({
   selector: 'page-map',
@@ -519,7 +520,9 @@ export class MapPage implements OnInit {
       swipeToClose: false, 
       cssClass: 'product-modal',
       presentingElement: this.routerOutlet.nativeEl,
-      componentProps: { 'fair': this.fair, 'pavilionId': product.stand.pavilion_id, 'standId': product.stand_id, 'product': product }
+      componentProps: { 
+      '_parent': this,
+      'fair': this.fair, 'pavilionId': product.stand.pavilion_id, 'standId': product.stand_id, 'product': product }
     });
     await modal.present();
 
@@ -645,5 +648,21 @@ export class MapPage implements OnInit {
     ionContent.setAttribute("style","--background:" + this.scene.backgroundColor );
   }
 
+  async openShoppingCart(productPrice) {
 
+    this.modal = await this.modalCtrl.create({
+      component: ShoppingCartComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+          'fair': this.fair,
+          'type': 'Agenda'
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+  
 }

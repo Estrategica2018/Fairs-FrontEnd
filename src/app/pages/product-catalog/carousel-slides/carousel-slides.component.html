@@ -18,7 +18,7 @@
   
   <div (click)="slideNext()" ion-button class="position-absolute right" 
   [ngClass]="{'active': !isEnd, 'in-active':isEnd}"
-  [ngStyle]="{'left': ( imageWidth * 0.90 ) +'px'}"><ion-icon name="chevron-forward-outline"></ion-icon></div>
+  [ngStyle]="{'left': ( imageWidth ? ( imageWidth * _factor ) +'px': ( _factor +'em') ) }"><ion-icon name="chevron-forward-outline"></ion-icon></div>
 
 </div>
 

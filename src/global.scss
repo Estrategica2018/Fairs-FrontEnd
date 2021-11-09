@@ -268,8 +268,19 @@ ion-router-outlet {
   overflow: hidden;
 }
 
-
 .product-modal .modal-wrapper,
 .speaker-modal .modal-wrapper {
   --width: 60em;
 }
+
+
+.boder-radius-modal .modal-wrapper {
+  --width: 60em;
+}
+
+@media (min-width: 768px) {
+ .boder-radius-modal .modal-wrapper {
+   --height: 56em;
+ }
+}
+

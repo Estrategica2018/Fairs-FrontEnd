@@ -30,7 +30,7 @@ export class ShoppingCarts {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };     
-            this.http.get(`/api/shopping-cart/list?fair_id=${fair.id}`,httpOptions)
+            this.http.get(`/api/store/shopping-cart/list?fair_id=${fair.id}`,httpOptions)
             .pipe(
               timeout(30000),
               catchError((e: any) => {
@@ -44,12 +44,7 @@ export class ShoppingCarts {
               })
             )
             .subscribe((data : any )=> {
-                this.refresTime = moment();
-                this.agendas = processData(data.data);
-                for(let agenda of this.agendas) {
-                  agenda.start_at  *= 1000;
-                }
-                resolve(this.agendas);
+                resolve(processData(data.data));
             },error => {
                 reject(error)
             });
@@ -71,13 +66,13 @@ export class ShoppingCarts {
               })
             };
            
-		   const data = {
-			   "fair_id": fair.id,
-			   "product_id": product.id,
-			   "product_price_id": productPrice.id, 
-			   "amount": amount  
-		   };
-		   
+           const data = {
+               "fair_id": fair.id,
+               "product_id": product.id,
+               "product_price_id": productPrice.id, 
+               "amount": amount  
+           };
+           
            this.http.post(`/api/store/shopping-cart/${fair.id}`,data,httpOptions)
             .pipe(
               timeout(30000),

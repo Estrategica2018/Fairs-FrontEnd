@@ -182,3 +182,7 @@ ion-list-header.not-found {
 .agenda-list {
   padding: 1em;
 }
+
+ion-header::after {
+  background-image: none;
+}

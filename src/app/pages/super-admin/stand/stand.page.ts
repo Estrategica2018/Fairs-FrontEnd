@@ -153,7 +153,7 @@ export class StandPage implements OnInit {
       }
       else {
           this.stand.stand_type_id = 1;
-		  this.stand.resources = { 'scenes': [this.defaultEscene()] };
+          this.stand.resources = { 'scenes': [this.defaultEscene()] };
           this.adminStandsService.create(this.stand)
           .then((stand) => {
              this.loading.dismiss();
