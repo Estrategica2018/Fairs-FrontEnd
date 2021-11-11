@@ -11,6 +11,7 @@ import { BannerComponent } from './pages/map/banner/banner.component';
 import { SpeakerDetailComponent } from './pages/speaker-list/speaker-detail/speaker-detail.component';
 import { BannerEditorComponent } from './pages/super-admin/map-editor/banner-editor/banner-editor.component';
 import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-component/shopping-cart-component';
+import { ScheduleDetailComponent } from './pages/schedule/schedule-detail/schedule-detail.component';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-compo
     BannerComponent,
     SpeakerDetailComponent,
     BannerEditorComponent,
-    ShoppingCartComponent
+    ShoppingCartComponent,
+    ScheduleDetailComponent
   ],
   exports: [
     TabMenuScenesComponent,
@@ -39,7 +41,8 @@ import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-compo
     BannerComponent,
     SpeakerDetailComponent,
     BannerEditorComponent,
-    ShoppingCartComponent
+    ShoppingCartComponent,
+    ScheduleDetailComponent
   ]
   
 })

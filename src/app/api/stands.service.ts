@@ -66,7 +66,7 @@ export class StandsService {
 
     return new Promise((resolve, reject) => {
 
-      this.http.post(`/api/stand/ontactsupport/notification`, messageData)
+      this.http.post(`/api/stand/contactsupport/notification`, messageData)
         .pipe(
           timeout(30000),
           catchError((e: any) => {

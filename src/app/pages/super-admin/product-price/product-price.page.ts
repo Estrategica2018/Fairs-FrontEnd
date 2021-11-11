@@ -27,8 +27,10 @@ export class ProductPricePage implements OnInit {
   success: string = null;
   editSave = false;
   showColor = false;
-  attributeSel = null;
   attributeList: any;
+  newAttr = null;
+  indexEditAttr = null;
+  attrColor = null;
   
   //colorList = [{'name':'Negro','value':'black'},{'name':'Plata','value':'silver'},{'name':'Gris','value':'gray'},{'name':'Blanco','value':'white'},{'name':'Granate','value':'maroon'},{'name':'Rojo','value':'red    '},{'name':'Púrpura','value':'purple'},{'name':'Fucsia','value':'fuchsia'},{'name':'Verde','value':'green'},{'name':'Lima','value':'lime'},{'name':'Aceituna','value':'olive'},{'name':'Amarillo','value':'yellow'},{'name':'Armada','value':'navy'},{'name':'Azul','value':'blue'},{'name':'Verde azulado','value':'teal'},{'name':'Agua','value':'aqua'}];
   colorList : any;
@@ -94,24 +96,17 @@ export class ProductPricePage implements OnInit {
                       this.product.prices.forEach((price)=>{
                         if(Number(price.id) === Number(this.productPriceId)) {
                             this.productPrice = price;
-                            
-                            if(this.productPrice.resources.attributes) {
-                              this.attributeList.forEach((group)=>{
-                               group.values.forEach((attr)=>{
-                                  if(this.productPrice.resources.attributes &&
-                                     this.productPrice.resources.attributes[attr.name]
-                                  ) {
-                                    attr.value = this.productPrice.resources.attributes[attr.name].value;
-                                    attr.formatSelect = this.productPrice.resources.attributes[attr.name].formatSelect;
-                                  }
-                               });
-                              });
+                            if(typeof this.productPrice.resources.attributes !== 'object' || !this.productPrice.resources.attributes.length ) {
+                               this.attrColor = {'name':'Color','label':'','value':''};
+                               this.productPrice.resources.attributes = [ this.attrColor ];
                             }
                         }
                       });
                     }
                     else {
-                        this.productPrice = { 'price':'0','resources': {'images':[{'url_image':'https://dummyimage.com/114x105/EFEFEF/000.png'}]} };
+                        this.productPrice = { 'price':'','resources': {'images':[{'url_image':'https://dummyimage.com/114x105/EFEFEF/000.png'}]} };
+                        this.attrColor = {'name':'Color','label':'','value':''};
+                        this.productPrice.resources.attributes = [ this.attrColor ];
                     }
                   })
                   .catch(error => {
@@ -261,13 +256,33 @@ export class ProductPricePage implements OnInit {
   }
   
   openColors (attribute){
-      this.attributeSel = attribute;
-      this.showColor = true;
+    this.showColor = true;
   }
+  
   setColor (color){
-      this.attributeSel.value = color.value;
-      this.showColor = false;
-      this.editSave = true;
+    console.log(color);
+    this.showColor = false;
+    this.attrColor = this.productPrice.resources.attributes[0];
+    this.attrColor.value = color.value;
+    this.attrColor.label = color.label;
+    this.editSave = true;
   }
+  
+  addAttribute(){
+    if(this.newAttr.key.length > 0 && this.newAttr.value.length > 0) {
+      this.productPrice.resources.attributes.push(this.newAttr);
+      this.newAttr = null;
+      this.editSave = true;
+    }
+  }
+
+  showModifyAttr(i) {
+    this.indexEditAttr = i;
+  }
+  
+  modifyAttr(i) {
+    this.indexEditAttr = null;
+  }
+
 
 }

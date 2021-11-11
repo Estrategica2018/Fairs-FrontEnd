@@ -114,7 +114,7 @@ export class FairsService {
 
         return new Promise((resolve, reject) => {
 
-            this.http.post(`/api/fair/ontactsupport/notification`,messageData)
+            this.http.post(`/api/fair/contactsupport/notification`,messageData)
             .pipe(
               timeout(30000),
               catchError((e: any) => {
@@ -122,6 +122,9 @@ export class FairsService {
                 if(e.status == 422) {
                    const error = JSON.stringify(e.error);
                    throw new Error(`Consultando el servicio para envío de mensajes: ${error}`);
+                }
+                else if(e.error && e.error.message) {
+                  throw new Error(`Consultando el servicio para envío de mensajes: ${e.error.message}`);
                 }
                 else if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para envío de mensajes: ${e.status} - ${e.statusText}`);

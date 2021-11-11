@@ -1,26 +1,28 @@
-<div class="card-spaker d-flex">
-  <div class="div-avatar" [ngStyle]="{ 'background-image': 'url('+speaker.profile_picture+')'}"></div>
-  <div class="content">
-    <h2 class="name text">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
-    <h5 class="text">{{speaker.profession}}</h5>
-    <div class="ion-text-center">
-      <img class="icon-circle" [src]="speaker.company_logo"/>
-    </div> 
-  </div>  
-       
-  <div class="agenda"> 
-    <ion-list class="panel-agenda">
-      <div class="panel-border"></div>
-      <h4 class="title">Agenda</h4>
-      <div class="container scroll-light">
-        <ion-item button class="item d-flex" *ngFor="let agenda of speaker.agenda" (click)="onAgenda(agenda)">
-          <h5 class="title m-0"> {{agenda.title}}</h5>
-          <h6 class="date"> {{agenda.str_start_time}}</h6>
-        </ion-item>
-       </div>        
-    </ion-list>
+<div [ngClass]="{ 'content-horizontal': screenSm }">
+  <div class="card-spaker d-flex">
+    <div class="div-avatar" [ngStyle]="{'height': ( screenSm ? '20em' : '25em'), 'background-image': 'url('+speaker.profile_picture+')'}"></div>
+    <div class="content">
+      <h2 class="name text">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
+      <h5 class="text">{{speaker.profession}}</h5>
+      <div class="ion-text-center">
+        <img class="icon-circle" [ngStyle]="{ 'margin-top': ( screenSm ? '0' : '2em'), 'margin-bottom': ( screenSm ? '2em' : '0') }" [src]="speaker.company_logo"/>
+      </div> 
+    </div>  
+         
+    <div class="agenda" [ngStyle]="{'width': ( screenSm ? '90%' : '25em'), 'top': ( screenSm ? '21.2em' : '25em'), 'right': ( screenSm ? '1.6em' : '0em') }"> 
+      <ion-list class="panel-agenda">
+        <div class="panel-border"></div>
+        <h4 class="title">Agenda</h4>
+        <div class="container scroll-light">
+          <ion-item button class="item d-flex" *ngFor="let agenda of speaker.agenda" (click)="onAgenda(agenda)">
+            <h5 class="title m-0"> {{agenda.title}}</h5>
+            <h6 class="date"> {{agenda.str_start_time}}</h6>
+          </ion-item>
+         </div>        
+      </ion-list>
+    </div>
   </div>
-</div>
-<div class="stretch-1">
-  {{speaker.description_one}}
+  <div class="stretch-1" [ngClass]="{'horizontal': screenSm, 'vertical': !screenSm}">
+    {{speaker.description_one}}
+  </div>
 </div>

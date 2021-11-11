@@ -90,8 +90,11 @@ export class ProductPage implements OnInit {
                     this.product = products[0];
                     this.product.url_imagen = this.product.prices[0].resources.images[0].url_image;
                     this.product.resources = this.product.resources || {};
-                    this.product.resources.attributes = this.product.resources.attributes || [];
+                    if(typeof this.product.resources.attributes !== 'object' || !this.product.resources.attributes.length ) {
+                       this.product.resources.attributes = [];
+                    }
                     this.product.resources.keywords = this.product.resources.keywords || [];
+                    
                   })
                   .catch(error => {
                      this.loading.dismiss();
@@ -104,6 +107,7 @@ export class ProductPage implements OnInit {
                     let id = products && products.length ? products.length + 1 : 1;
                     this.product = { 'name': 'Producto #' + id , 'description':  'Descripción producto #' + id}
                     this.product.resources = { 'attributes': [], 'keywords':[] };
+                    
                     this.editSave = true;
                     this.loading.dismiss();
                   })

@@ -158,14 +158,23 @@
             </ion-input>
             <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 4.2 / 10) + 'px'}" class="contact-line"></div>
             
-            <ion-textarea maxlength="10" formControlName="message" placeholder="Mensaje" type="text" class="position-absolute contact-text-area ion-text-justify" 
-            [ngStyle]="{'top': ( banner.size.y * 4.5 / 10) + 'px', 'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'border-radius': ( banner.size.w * 0.3 ) + 'px',
+            <ion-textarea placeholder="Mensaje" type="text" 
+            rows="6" cols="20" maxlength="500" formControlName="message" 
+            class="position-absolute contact-text-area ion-text-justify" 
+            [ngStyle]="{'top': ( banner.size.y * 4.5 / 10) + 'px', 'left':( banner.size.x * 0.8 / 10) + 'px', 
+            'width':( banner.size.x * 0.85 ) + 'px', 'border-radius': ( banner.size.w * 0.3 ) + 'px',
             'height': ( banner.size.y * 3.5 / 10) + 'px'}">
             </ion-textarea>
+            <div class="position-absolute" *ngIf="banner?.__contactForm?.value?.message?.length > 0"
+            [ngStyle]="{'color': 'gray',
+            'top': ( banner.size.y * 8.2 / 10) + 'px', 'left':( banner.size.x * 0.8 / 10) + 'px', 
+            'width':( banner.size.x * 0.85 ) + 'px'}"
+            > caracteres {{banner?.__contactForm?.value?.message?.length}} / 500</div>
+            
             
             <ion-button color="primary" type="submit" class="position-absolute" [disabled]="!banner.__contactForm?.valid"
             [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 
-            'top': ( banner.size.y * 8.5 / 10) + 'px', 'height': ( banner.size.y * 1 / 10) + 'px'}">
+            'top': ( banner.size.y * 8.7 / 10) + 'px', 'height': ( banner.size.y * 1 / 10) + 'px'}">
               <ion-label> Enviar Mensaje</ion-label>
               <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
             </ion-button>

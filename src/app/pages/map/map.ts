@@ -53,6 +53,8 @@ export class MapPage implements OnInit {
   modalSpeaker: any;
   offsetHeight: 0;
   sceneId: any = '0';
+  modalShoppingCart: any;
+  modalProduct: any;
   
   constructor(
     private standService: StandsService,                                    
@@ -67,6 +69,7 @@ export class MapPage implements OnInit {
     private modalCtrl: ModalController,
     private routerOutlet: IonRouterOutlet,
     private formBuilder: FormBuilder,
+    private toastCtrl: ToastController,
     private speakersService: SpeakersService) {
         
       this.url = window.location.origin;
@@ -93,6 +96,8 @@ export class MapPage implements OnInit {
      if(window.location.href.indexOf('map') < 0) {
        window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
      }
+     if(this.modalShoppingCart) { this.modalShoppingCart.dismiss(); }
+     if(this.modalProduct) { this.modalProduct.dismiss(); }
   }
   
   ngAfterViewInit() {
@@ -515,7 +520,7 @@ export class MapPage implements OnInit {
   }*/
   
   async onShowProduct(product) {
-    const modal = await this.modalCtrl.create({
+    this.modalProduct = await this.modalCtrl.create({
       component: ProductDetailComponent,
       swipeToClose: false, 
       cssClass: 'product-modal',
@@ -524,9 +529,9 @@ export class MapPage implements OnInit {
       '_parent': this,
       'fair': this.fair, 'pavilionId': product.stand.pavilion_id, 'standId': product.stand_id, 'product': product }
     });
-    await modal.present();
+    await this.modalProduct.present();
 
-    const { data } = await modal.onWillDismiss();
+    const { data } = await this.modalProduct.onWillDismiss();
     if (data) {
         
     }
@@ -602,14 +607,30 @@ export class MapPage implements OnInit {
   }
 
   contactSendForm(form){
-      let from = null;
-      if(this.template == 'Fair') {
-          from = this.fair.resources.supportContact;
+      let fromEmail = '';
+      if(this.template == 'fair') {
+          fromEmail = this.fair.resources.supportContact.value;
       }
-      if(this.template == 'Stand') {
-          from = this.stand.merchant.email_contact;
+      if(this.template == 'stand') {
+          fromEmail = this.stand.merchant.email_contact.value;
       }
-      this.fairsService.sendMessage((from.value));
+      const data = { 
+        'from': fromEmail,
+        'name': form.value.name,
+        'email': form.value.email,
+        'subject': form.value.subject,
+        'message': form.value.message
+      };
+      
+      this.loading.present({message:'Cargando...'});
+      this.fairsService.sendMessage(data)
+      .then((response)=>{
+         this.presentToast(response.message);
+      }, error => {
+        this.loading.dismiss();
+        this.errors = error;
+        this.presentToast(this.errors);
+      });
   }  
 
   async presenterSpeakerModal(speaker) {
@@ -650,7 +671,7 @@ export class MapPage implements OnInit {
 
   async openShoppingCart(productPrice) {
 
-    this.modal = await this.modalCtrl.create({
+    this.modalShoppingCart = await this.modalCtrl.create({
       component: ShoppingCartComponent,
       cssClass: 'boder-radius-modal',
       componentProps: {
@@ -658,11 +679,21 @@ export class MapPage implements OnInit {
           'type': 'Agenda'
       }
     });
-    await this.modal.present();
-    const { data } = await this.modal.onWillDismiss();
+    await this.modalShoppingCart.present();
+    const { data } = await this.modalShoppingCart.onWillDismiss();
 
     if(data) {
     }
   } 
-  
+ 
+  async presentToast(message) {
+    let toast =  await this.toastCtrl.create({
+      message: message,
+      duration: 3000,
+      position: 'top'
+    });
+
+    await toast.present();
+  }
+    
 }

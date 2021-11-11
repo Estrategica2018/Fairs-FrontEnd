@@ -43,17 +43,11 @@ $col_2: 0.35;
 }
 
 
-:root {
-  --border-radius: 29px;
-}
-
 .agenda {
  position: absolute;
- top: 23.1em;
  right: 0;
  min-width: 50%;
- margin: 17px;
- box-shadow: #b0b0b0 -2px 2px 3px 1px;
+ box-shadow: #b0b0b0 -2px 4px 3px 1px;
  .container {
    overflow: auto;
    height: 188px;
@@ -92,28 +86,41 @@ $col_2: 0.35;
   transform: rotate(180deg);
 }
 
-.stretch-1 {
+.stretch-1.vertical {
   top: calc( #{$height} - 7px );
   position: absolute;
   width: 45%;
-  padding: 16px;
+  padding: 1em;
   text-align: justify;
   font-size: 1.2em;
-}
+} 
 
-.stretch-2 {
-  position: absolute;
-  top: calc( #{$height} + ( #{$height} / 3 ) - 14px );
-  width: 45%;
-  padding: 16px;
-  text-align: justify;
-}
-
-.stretch-3 {
+.stretch-1.horizontal {
+  top: 38em;
   position: absolute;
   width: 100%;
-  padding: 16px;
+  padding: 1em;
   text-align: justify;
-  bottom: -11px;
+  font-size: 1.2em;
+  margin-top: 0.5em;
+}
+
+
+.agenda.horizontal {
+  width: 85%;
+  top: 31em;
+  display: none;
+  margin-right: 5em;
+}
+
+.agenda.vertical {
+  width: 25em;
+  top: 25em;
+  margin-right: 5em;
+}
+
+.content-horizontal {
+  height: 46em;
+  overflow: auto;
 }
 

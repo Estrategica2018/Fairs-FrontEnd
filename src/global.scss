@@ -269,7 +269,8 @@ ion-router-outlet {
 }
 
 .product-modal .modal-wrapper,
-.speaker-modal .modal-wrapper {
+.speaker-modal .modal-wrapper,
+.agenda-modal .modal-wrapper {
   --width: 60em;
 }
 
@@ -284,3 +285,28 @@ ion-router-outlet {
  }
 }
 
+.agenda-modal .modal-wrapper {
+  --border-radius: 2em;
+}
+
+.speaker-modal { overflow:auto; };
+
+.speaker-modal::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+/* Track */
+.speaker-modal::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.speaker-modal::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+.speaker-modal::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}

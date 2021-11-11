@@ -89,13 +89,13 @@ ion-list-header.not-found {
   padding: 24px;
   width: 8em;
   height: 8em;
-  top: 4.8em;
+  top: 5.8em;
   left: 3em;
   z-index: -1;
   .text {
     position: absolute;
     top: 0.2em;
-    left: 0.5em;
+    left: 0.7em;
     color: white;
     font-size: 4em;
   }  
@@ -141,7 +141,7 @@ ion-list-header.not-found {
   height: 14em;
   margin-left: 0em;
   z-index: 10;
-  margin-top: 2em;
+  margin-top: 3em;
 }
 
 .container-schedule {
@@ -185,4 +185,12 @@ ion-list-header.not-found {
 
 ion-header::after {
   background-image: none;
+}
+
+.agenda-modal {
+  
+}
+
+.agenda-modal .modal-wrapper {
+  --border-radius: 2em;
 }

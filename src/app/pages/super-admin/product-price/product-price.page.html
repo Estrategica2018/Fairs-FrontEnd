@@ -39,9 +39,85 @@
         </ion-buttons>
       </ion-item>
     
-      <ion-item lines="none" class="mt-2">
-        <ion-label> Atributos Físicos </ion-label>
-      </ion-item>
+
+      <div class="container-attr mt-4 mb-4" *ngIf="productPrice.id && productPrice.resources && productPrice.resources.attributes">
+          <ion-item lines="none" *ngIf="productPrice.id" [ngClass]="{'mt-4': productPrice.id}">
+             <ion-label class="ion-text-wrap" slot="start">Atributos Físicos</ion-label>
+             <ion-buttons slot="end">
+                <ion-button (click)="newAttr={'key':'','value':''}">
+                  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+                </ion-button>
+             </ion-buttons>
+          </ion-item>
+          
+          <!-- attribute list-->
+          <ion-item>
+            <ion-label>  
+                Color
+            </ion-label>
+            <div (click)="openColors();" class="d-flex color-small">
+              <div *ngIf="attrColor?.value" class="label-color-small" 
+               [ngStyle]="{'background-color':attrColor.value}">
+              </div>
+              <div [hidden]="attrColor?.value" class="label-color-small" 
+               [ngStyle]="{'background-color':attrColor.value}">
+              </div>
+              <span class="ml-4">{{attrColor?.value}}</span>
+            </div>
+              <ion-button class="ml-4" (click)="attrColor.value = null">
+                Limpiar
+              </ion-button>
+              <div>
+                <input (change)="editSave = true" class="ml-auto" style="z-index: 10000; margin-right:10px" [type]="attribute.type" [(ngModel)]="attribute.value">
+              </div>
+          </ion-item>
+          <ion-item *ngFor="let attr of productPrice.resources.attributes; let i = index;">
+              <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.key }} </ion-label>
+              <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.value }} </ion-label>
+              <ion-grid *ngIf="indexEditAttr == i">
+                <ion-row>
+                  <ion-col size="5">
+                    <input class="attribute-key fs-1" [(ngModel)]="attr.key">
+                  </ion-col>
+                  <ion-col size="5">
+                    <input class="attribute-value fs-1" [(ngModel)]="attr.value">        
+                  </ion-col>
+                  <ion-col size="2">
+                    <ion-button (click)="modifyAttr(i)">
+                    Modificar
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <ion-buttons side="end">
+                <ion-button color="danger" (click)="deleteAttr(i)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-button>
+                <ion-button  (click)="showModifyAttr(i)">
+                  <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+          </ion-item>
+          <!-- end attribute list-->
+          
+          <ion-grid class="attribute" button="true" *ngIf="newAttr">
+            <ion-row>
+              <ion-col size="5">
+                <input class="attribute-key" [(ngModel)]="newAttr.key">
+              </ion-col>
+              <ion-col size="5">
+                <input class="attribute-value" [(ngModel)]="newAttr.value">        
+              </ion-col>
+              <ion-col size="2">
+                <ion-button (click)="addAttribute()">
+                Agregar
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+      </div>
+
+
       <ion-item button="true" *ngFor="let attribute of productPrice.resources.attributes" class="pr-2 attribute-group">
          <ion-label>  
            {{attribute.label}}

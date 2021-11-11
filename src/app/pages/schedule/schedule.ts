@@ -10,6 +10,8 @@ import { DatePipe } from '@angular/common'
 import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import { UsersService } from './../../api/users.service';
 import { WompiPaymentLayoutPage } from '../wompi-payment-layout/wompi-payment-layout.page';
+import { ScheduleDetailComponent } from './schedule-detail/schedule-detail.component';
+import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
 
 @Component({
   selector: 'page-schedule',
@@ -40,6 +42,7 @@ export class SchedulePage implements OnInit {
   showPaymentFair: boolean = false;
   userPaidAllfair: boolean = false;
   loaded = 0;
+  speakerDetailComponent = SpeakerDetailComponent;
 
   constructor(
     private alertCtrl: AlertController,
@@ -140,16 +143,16 @@ export class SchedulePage implements OnInit {
         for (let agenda of this.dataInitMeetings) {
             agenda.hide  = false;
             const time = this.datepipe.transform(new Date( agenda.start_at ), 'yyyy-MM-dd');
-            const mont = Number(this.datepipe.transform(new Date( agenda.start_at ), 'MM'))  - 1;
+            const month = Number(this.datepipe.transform(new Date( agenda.start_at ), 'MM'))  - 1;
             const hour = new Date( agenda.start_at ).getHours();
             const strHour = hour > 12 ? ( hour - 12 < 10 ? '0'+(hour-12) : (hour - 12 )) : ( hour < 10 ? '0'+hour : hour);
             const strSignature = hour > 12 ? 'PM' : 'AM';
             const minutes = new Date( agenda.start_at ).getMinutes();
             const strMinutes = minutes < 10 ? '0'+minutes : minutes;
             //const strMonth = this.datepipe.transform(new Date(agenda.start_at), 'EEEE, MMMM d, y');
-            const strMonth = months[mont];
+            const strMonth = months[month-1];
             const strYear = this.datepipe.transform(new Date(agenda.start_at), 'y');
-            const day = new Date( agenda.start_at ).getDay();
+            const day = new Date( agenda.start_at ).getDate();
             const strDay = day < 10 ? '0'  + day : day;
             
             let groupTemp = null;
@@ -304,10 +307,12 @@ export class SchedulePage implements OnInit {
   async openAgenda(session) {
 
     this.modal = await this.modalCtrl.create({
-      component: ShoppingCartComponent,
+      component: ScheduleDetailComponent,
+      cssClass: 'agenda-modal',
       componentProps: {
-          'objPrice': session,
-          'type': 'Agenda'
+        'agenda': session,
+        'speakerDetailComponent': this.speakerDetailComponent,
+        'type': 'Agenda'
       }
     });
     await this.modal.present();

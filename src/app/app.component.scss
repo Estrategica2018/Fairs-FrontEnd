@@ -331,12 +331,12 @@ body.backdrop-no-scroll {
 }
 
 .product-modal .modal-wrapper {
-  --border-radius: 15px !important;
+  --border-radius: 2em !important;
   --height: 47em;
 }
 
 .boder-radius-modal .modal-wrapper {
-  --border-radius: 1em !important;
+  --border-radius: 2em !important;
 }
 
 /* pass "app-success-alert" in cssClass for the ion-toast component */

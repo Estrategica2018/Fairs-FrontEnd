@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HostListener } from "@angular/core";
 import { Config, ModalController, NavParams } from '@ionic/angular';
 import { SpeakersService } from '../../../api/speakers.service';
 import * as moment from 'moment';
@@ -13,7 +14,7 @@ export class SpeakerDetailComponent implements OnInit {
 
   speaker: any;
   months = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-
+  screenSm = false;
   
   constructor(private navParams: NavParams,
   private speakersService: SpeakersService,
@@ -21,7 +22,7 @@ export class SpeakerDetailComponent implements OnInit {
   private modalCtrl: ModalController) { }
 
   ngOnInit() {
-    
+    this.onResize();
   }
   
   ionViewWillEnter() {
@@ -62,6 +63,11 @@ export class SpeakerDetailComponent implements OnInit {
     this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
       this.router.navigate([uri])
     });
+  }
+  
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+      this.screenSm = window.outerWidth < 590;
   }
   
 }
