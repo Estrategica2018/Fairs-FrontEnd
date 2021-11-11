@@ -50,6 +50,7 @@
 
    <!--Banner List-->
    <div *ngFor="let banner of scene?.banners;let i = index" class="banner"
+   (click)="goToUrl(banner);"
    [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}">
         
        <div (wheel)="onMouseWheel($event)"

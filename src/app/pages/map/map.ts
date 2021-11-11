@@ -9,7 +9,7 @@ import { LoadingService } from './../../providers/loading.service';
 import { Animation, AnimationController } from '@ionic/angular';
 import { TabMenuScenesComponent } from '../map/tab-menu-scenes/tab-menu-scenes.component';
 import { ProductDetailComponent } from '../product-catalog/product-detail/product-detail.component';
-import { DomSanitizer} from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { UsersService } from '../../api/users.service';
 import { ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
@@ -694,6 +694,12 @@ export class MapPage implements OnInit {
     });
 
     await toast.present();
+  }
+  
+  goToUrl(banner) {
+   const url = banner.externalUrl ? `${banner.externalUrl}` : banner.internalUrl ? `${banner.internalUrl}` : '';
+   const windowReference = window.open();
+   windowReference.location.href = url;
   }
     
 }
