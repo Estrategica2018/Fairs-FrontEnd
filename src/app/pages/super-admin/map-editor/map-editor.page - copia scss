@@ -1,0 +1,517 @@
+
+.cube {
+  width: 20px;
+  height: 20px;
+}
+
+.cube__face {
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+.full-screen-button {
+  position: absolute;
+  top: 0px;
+  z-index: 11;
+}
+
+.full-screen-button:hover {
+  z-index: 18;
+}
+
+.tabs-menu {
+  position: absolute;
+  bottom: 20px;
+  left: calc(22% - 10px);
+  z-index: 11;
+}
+
+@media (max-width: 690px) {
+  .tabs-menu {
+      right: calc(0% - 10px);
+      left: 0;
+      ion-button {
+         font-size: 10px;
+         
+         ion-label {
+           font-size: 10px;
+         }
+      }
+    }
+}
+
+.div-container {
+  width: 100%;
+  position: absolute;
+}
+
+.scene-setting-panel {
+  position: absolute;
+  top: 0px;
+  right: 51px;
+  width: 391px;
+  z-index: 2;
+}
+
+.general-setting-panel {
+  position: absolute;
+  top: 0px;
+  right: 51px;
+  width: 391px;
+  z-index: 2;
+}
+
+.tabmenu-panel {  
+  position: absolute;
+  top: 0px;
+  right: 51px;
+  width: 391px;
+  z-index: 2;
+}
+
+.tool-panel {
+  position: absolute;
+  top: 0px;
+  right: 51px;
+  width: 385px;
+  z-index: 2;
+}
+  
+.panel-scene-select {
+  position: absolute;
+  top: 0px;
+  right: 52px;
+  width: 425px;
+  z-index: 1002;
+}
+
+.close {
+  position: absolute;
+  z-index: 2;
+  right: 19px;
+  top: 14px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--color-selected);
+}
+
+.fixed {
+  position: absolute;
+  cursor: pointer;
+  z-index: 2;
+  left: 13px;
+  top: 8px;
+  font-size: 21px;
+}
+
+.fixed:hover {
+  color: var(--color-selected);
+}
+
+
+
+
+ion-tab-bar {
+  position: relative;
+  border-radius: 16px;
+  width: 92%;
+  margin: 0 auto;
+}
+
+ion-tab-button {
+  --color: var(--ion-color-medium);
+  --color-selected: var(--ion-color-primary);
+
+  &::before {
+    background-color: transparent;
+    display: block;
+    content: "";
+    margin: 0 auto;
+    width: 20px;
+    height: 2px;
+  }
+
+  &.tab-selected::before {
+    background-color: var(--ion-color-primary);
+  }
+}
+
+
+
+.tooltip-label {
+  position: absolute;
+  left: -150px;
+  top: 7px;
+  background-color: black;
+  padding: 8px;
+  border-radius: 11px;
+  color: #fff;
+}
+
+.tabs-menu {
+  position: absolute;
+  z-index: 11;
+}
+
+@media (max-width: 690px) {
+  .tabs-menu {
+      left: 0;
+      ion-button {
+         font-size: 10px;
+         
+         ion-label {
+           font-size: 10px;
+         }
+      }
+    }
+}
+
+
+
+
+
+
+.cube__face--right:hover {
+  border: 1px solid gray !important;
+}
+
+.line-arrow-button {
+  left: 11px;
+  top: 4px;
+  width: 29px;
+  height: 47px;
+  position: absolute;
+  border-width: 2px 0 0 2px;
+}
+
+
+.panel-tab-menu {
+  position: absolute;
+  top: 80px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-tab-menu:hover {
+  z-index: 19;
+}
+
+.panel-video-preview {
+  position: absolute;
+  top: 122px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-video-preview:hover {
+  z-index: 19;
+}
+
+.panel-show-item {
+  position: absolute;
+  top: 163px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-show-item:hover {
+  z-index: 19;
+}
+
+.panel-scene-plus {
+  position: absolute;
+  top: 205px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-scene-plus:hover {
+  z-index: 19;
+}
+
+.icon-panel-scene {
+  border: 1px solid gray;
+  height: 54px;
+  width: 63px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.icon-panel-scene:hover {
+  border: 1px solid darkslategrey;
+  background-color: var(--ion-color-light);
+}
+
+
+.panel-scene-save {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-scene-save:hover {
+  z-index: 19;
+}
+
+.panel-scene-settings {
+  position: absolute;
+  top: 40px;
+  right: 0px;
+  z-index: 11;
+}
+
+.panel-scene-settings:hover {
+  z-index: 19;
+}
+
+.icon-panel-scene-label {
+  position: absolute;
+  top: 23px;
+  left: 33px;
+  cursor: pointer;
+}
+
+.icon-panel-scene-label:hover {
+  z-index: 19;
+}
+
+.card-content-panel {
+   max-height: 495px;
+   overflow-y: scroll; 
+}
+
+.modify-tabs-menu-style {
+    border: 1px solid gray;
+    border-radius: 56px;
+}
+
+.btn-tab-menu-icon {
+  opacity: 0.8;
+  border: 1px solid gray;
+}
+
+.btn-tab-menu-icon:hover {
+  opacity: 1;
+}
+
+.reorder {
+  height: 406px;
+  overflow: auto;
+}
+
+.paste-button {
+  position: absolute;
+  top: 0px;
+  left: 278px;
+  z-index: 11;
+}
+
+.reorder-banner {}
+.reorder-banner:hover {
+   --background: var(--ion-color-light-tint);
+   --color: white;
+}
+
+
+.border-gray {
+  height: 49px;
+}
+.mt--8 {
+    margin-top: -8px;
+}
+
+.clean-html-button {
+  position: absolute;
+  top: 0px;
+  right: 14em;
+  z-index: 10;
+}
+.close-html-button {
+  position: absolute;
+  top: 0px;
+  right: 8em;
+  z-index: 10;
+}
+.accept-html-button {
+  position: absolute;
+  top: 0px;
+  right: 1.6em;
+  z-index: 10;
+}
+
+.edit-carousel-button {
+  top: 48px;
+  position: absolute;
+  z-index: 2;
+}
+
+.edit-contact-button {
+  top: 48px;
+  position: absolute;
+  z-index: 2;
+}
+
+.goto-back-button {
+  position: absolute;
+  top: 0px;
+  left: 58px;
+  z-index: 11;
+}
+
+.goto-back-button:hover {
+  z-index: 19;
+}
+
+.goto-back-history-button {
+  position: absolute;
+  top: 0px;
+  left: 144px;
+  z-index: 11;
+}
+
+.goto-back-history-button:hover {
+  z-index: 19;
+}
+
+.goto-next-history-button {
+  position: absolute;
+  top: 0px;
+  left: 204px;
+  z-index: 11;
+}
+
+.goto-next-history-button:hover {
+  z-index: 19;
+}
+
+.max-height {
+  height: 1934px;
+}
+
+.card-shadow {
+  background-color: white;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 128px;
+}
+
+.toolbar-styles-scroll {
+  height: 413px;
+  overflow: auto;
+}
+
+
+.line-height-mili {
+  width: 36px;
+}
+
+.content-scroll {
+    height: 417px;
+    overflow: auto;
+}
+
+.separator-text {
+  border-bottom: 1px solid var(--cyan);
+  width: 95%;
+  cursor: pointer;
+  ion-buttons { 
+    ion-card-subtitle {
+      color: var(--cyan);
+      margin: auto;
+          padding-left: 9em;
+    } 
+  }
+}
+
+.tool-selected {
+  --color: var(--ion-color-primary);
+  --background: var(--ion-color-light);
+}
+
+.tool-special {
+  display: flex
+}
+
+.tool-special::before {
+  color: red;
+  content: "*";
+  opacity: 0.5;
+  padding: 2px;
+}
+
+.edit-mode-backdrop {
+  opacity: 0.3;
+  cursor: initial;
+  z-index: 1001;
+}
+
+.edit-mode-backdrop-text {
+    color: white;
+    margin: auto;
+    z-index: 1002;
+    position: absolute;
+    left: 23em;
+    top: 12em;
+    width: 31em;
+    height: 9em;
+    border-radius: 12px;
+    --background: var(--light);
+    ion-item {
+       margin-top: 2em;
+    }
+    cursor: pointer;
+}
+
+.tool-tip {
+  z-index: 10;
+}
+
+.tooltip-text {
+  display: none;
+  position: absolute;
+  left: 58px;
+  top: 7px;
+  background-color: black;
+  padding: 8px;
+  border-radius: 11px;
+  color: #fff;
+  width: 8em;
+  z-index: 19;
+  font-size: 1.3em;
+}
+
+.tooltip-text.arrow--2 {
+  left: -160px;
+  width: 11em;
+}
+
+.tool-tip:hover {
+  z-index: 19;
+}
+
+.tool-tip:hover~.tooltip-text{
+  display: block;
+}
+
+
+
+.contact-line { 
+  position: absolute; 
+  width: 100%; 
+  height: 0px;
+  border-color: rgb(40, 189, 215); 
+  border-style: solid; 
+  border-radius: 0px; 
+  border-width: 1px;
+}
+
+.contact-text-area {
+  border: 1px solid rgb(40, 189, 215);
+}

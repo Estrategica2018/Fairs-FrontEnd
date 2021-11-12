@@ -1,0 +1,3166 @@
+    <ion-backdrop [hidden]="editModeBackdrop" tappable="true" class="edit-mode-backdrop">
+ </ion-backdrop>
+
+<ion-card class="edit-mode-backdrop-text" [hidden]="editModeBackdrop" (click)="onBackdropEditMode()">
+  <ion-item class="ion-text-center">
+    <ion-icon name="expand-outline" slot="start"></ion-icon>
+    <ion-label>Da click para ingresar al modo editor</ion-label>
+  </ion-item>
+</ion-card>
+
+<div class="full-screen-button">
+  <ion-button color="light" class="tool-tip" (click)="onToogleFullScreen()">
+    <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
+    <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--4" *ngIf="fullScreen">Salir editor</span>
+  <span class="tooltip-text arrow--4" *ngIf="!fullScreen">Entrar editor</span>
+</div>
+
+<div class="goto-back-button">
+  <ion-button color="light" class="tool-tip" (click)="onToBackEditor(scene)">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--4">Atrás</span>
+</div>
+
+
+<div class="goto-back-history-button">
+  <ion-button [disabled]="!historyList || historyList.length == 1 || historySel == 0" 
+  color="light" class="tool-tip" 
+  class="tool-tip"
+  (click)="onHistoryBack()">
+     <ion-icon name="return-up-back-outline"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--4">Deshacer</span>
+</div>
+
+<div class="goto-next-history-button">
+  <ion-button [disabled]="!historyList || historyList.length == 1 || historySel == historyList.length -1" color="light" class="tool-tip" (click)="onHistoryNext()">
+    <ion-icon name="return-up-forward-outline"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--4">Rehacer</span>
+</div>
+
+<ion-button *ngIf="this.bannerCopy.length > 0" color="warning" class="paste-button" (click)="onPasteBannerBtn()">
+
+<ion-icon name="clipboard-outline"></ion-icon>
+</ion-button>
+
+<ion-content id="ionContent" [scrollEvents]="true" 
+   style="background-repeat: no-repeat" 
+   scroll-x="0" scroll-y="0" scrollX="true" 
+   cdkDropList class="content-boundary">
+   <ion-item [hidden]="!errors">
+      <div class="alert alert-danger alert-dismissible">
+         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+         <strong></strong> {{errors}}
+      </div>
+   </ion-item>
+
+   <!--Scene Background Image / Background Color -->
+   <div class="div-container" >
+      <!--Scene Background Image-->
+      <div [ngStyle]="{
+      'background-image': 'url(' + scene?.url_image + ')',
+      'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
+      'background-repeat': 'no-repeat',
+      'width':scene?.container?.w + 'px', 
+      'height': scene?.container?.h + 'px'
+      }" (ionScroll)="logScrolling($event)"
+      *ngIf="scene && scene.url_image">
+      </div>
+      <!--Scene Background Image-->
+      <!--div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
+      *ngIf="scene && scene.backgroundColor && !scene.url_image">
+      </div-->
+   </div>
+   <!--End Scene Background Image / Background Color -->
+   
+   <div *ngIf="scene && scene.render">
+   <!--Banner List-->
+   <div *ngFor="let banner of scene?.banners;let i = index" class="banner position-absolute" >
+      <div  (wheel)="onMouseWheel($event)"
+      [ngClass]="{'cube': !banner.line, 'arrow cursor-pointer':banner.line}" 
+      mwlDraggable (dragEnd)="dragBannerEnd($event,banner)"
+      class="{{ banner.line ? (banner.line.style||'container-arrow--curve') : ''}}"
+      id="banner-drag-{{banner.id}}"
+      
+      [ngStyle]="{
+      'left': banner.position?.x + 'px',
+      'top': banner.position?.y + 'px',
+      'opacity': bannerSelectHover ? ( bannerSelectHover.id !== banner.id ?  ( banner.opacity || 1 ) * 0.6  : 1  ) : banner.opacity,
+      'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
+      }">
+          <!--if banner is line-->
+          <div class="arrow__body" *ngIf="banner.line"
+          [ngStyle]="{
+          'border-width': banner?.line?.weight+'px 0 0 '+banner?.line?.weight+'px',
+          'border-style': banner?.line?.type,
+          'border-color': banner?.line?.color,
+          'width': banner.size.x + 'px', 
+          'height': banner.size.y + 'px'}"></div>
+          
+          <!--if banner is banner-->
+          <div class="cube__face position-absolute cube__face--right square {{ banner.class}}"
+          [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }"
+          [hidden] = ""
+          id="obj-{{banner.id}}"
+          (click)="onBannerSelect(banner);"
+          (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
+          (mouseout)="isHover = null; bannerSelectHover = null;"
+          [ngStyle]="{
+          'background-image': !banner.speakerCatalog && !banner.productCatalog ? 'url('+banner.image_url+')' : '',
+          'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+          'background-repeat': 'no-repeat',
+          'background-color': banner.backgroundColor,
+          'width': banner.size.x + 'px', 
+          'height': banner.size.y + 'px',
+          'font-size': banner.fontSize + 'px',
+          'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansMedium' ),
+          'font-weight': banner.fontWeight,
+          'color': banner.fontColor,
+          'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+          'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+          'border-radius': banner.border.radius + 'px',
+          'border-width': banner.border.width  + 'px',
+          'text-align': banner.textAlign,    
+          'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+          }">  
+              <div [ngClass]="{'selected': bannerSelectHover === banner}" 
+              [ngStyle]="{'line-height': banner?.lineHeight, 'font-weight': banner.fontWeight }">
+ 
+                  <div *ngIf="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                    <div [innerHTML]="banner.textHtml"></div>
+                  </div>
+                  <div [hidden]="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                    {{ banner.text}}
+                  </div>
+              </div>      
+          </div>
+          
+         
+          <!--if banner is Contact-->
+         <div *ngIf="banner.contact" class="p-3"
+         [ngStyle]="{
+           'background-color': banner.backgroundColor,
+           'width': banner.size.x + 'px', 
+           'height': banner.size.y + 'px',
+           'font-size': banner.fontSize + 'px',
+           'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansMedium' ),
+           'font-weight': banner.fontWeight,
+           'color': banner.fontColor,
+           'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+           'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+           'border-radius': banner.border.radius + 'px',
+           'border-width': banner.border.width  + 'px',
+           'text-align': banner.textAlign,
+           'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+         }">
+            <p class="d-flex ml-3" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 0.3 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px'}">
+              <span style="color: rgb(224, 62, 45);">*</span> 
+              <span [ngStyle]="{'color': banner.fontColor}"> Nombre </span>
+            </p>
+            <ion-input type="text" class="position-absolute ion-text-start" 
+            [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px','top': ( banner.size.y * 0.6 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+            </ion-input>
+            <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 1.4 / 10) + 'px'}" class="contact-line"></div>
+            
+            <p class="d-flex ml-3" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 1.7 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px'}">
+              <span style="color: rgb(224, 62, 45);">*</span> 
+              <span [ngStyle]="{'color': banner.fontColor}"> Correo electrónico </span>
+            </p>
+            <ion-input type="text" class="position-absolute ion-text-start" 
+            [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'top': ( banner.size.y * 2 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+            </ion-input>
+            <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 2.8 / 10) + 'px'}" class="contact-line"></div>
+            
+            <p class="position-absolute  w-100 d-flex" [ngStyle]="{'top': ( banner.size.y * 3.1 / 10) + 'px'}">
+              <span style="color: rgb(224, 62, 45);">*</span> 
+              <span [ngStyle]="{'color': banner.fontColor}"> Asunto </span>
+            </p>
+            <ion-input type="text" class="position-absolute ion-text-start" 
+            [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'top': ( banner.size.y * 3.4 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+            </ion-input>
+            <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 4.2 / 10) + 'px'}" class="contact-line"></div>
+            
+            <ion-textarea placeholder="Mensaje" type="text" class="position-absolute contact-text-area ion-text-justify" 
+            [ngStyle]="{'top': ( banner.size.y * 4.5 / 10) + 'px', 'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'border-radius': ( banner.size.w * 0.3 ) + 'px',
+            'height': ( banner.size.y * 3.5 / 10) + 'px'}">
+            </ion-textarea>
+            
+            <ion-button color="primary" type="submit" class="position-absolute"
+            [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 
+            'top': ( banner.size.y * 8.5 / 10) + 'px', 'height': ( banner.size.y * 1 / 10) + 'px'}">
+              <ion-label> Enviar Mensaje</ion-label>
+              <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
+            </ion-button>
+          </div>
+          <!--End if banner is Contact-->
+         
+         
+          <!--if banner is Video-->
+          <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.video" >
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          <iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
+          frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
+          id="video-id-{{banner.id}}"
+          class="{{banner.class}}"
+          (click)="onBannerSelect(banner);"
+          [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+          </iframe>
+          <!--End if banner is Video-->
+          
+          <!--if banner is carousel-->
+          <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.carousel" >
+          <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          <app-carousel-template #carrousels [banner]="banner" *ngIf="banner.carousel" editorMode="true"
+          [fair]="fair" [pavilion]="pavilion" [stand]="stand"
+          [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+          </app-carousel-template>
+          <!--End if banner is carousel-->
+          
+          <!--if banner is product-catalog -->
+          <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.productCatalog" >
+          <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          <div class="grid" *ngIf="banner.productCatalog"  id="grid-{{banner.id}}" 
+          [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+            <div class="card item-{{(i+1)}} {{banner.class}}" *ngFor="let product of banner.__catalog?.products; let i = index;" 
+              [ngStyle]="{
+               'position': 'absolute',
+               'top': (( number.parseInt( i / banner.__catalog.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__catalog.__factor ) * 0.03) ) + 'px',
+               'left': ( i % banner.__catalog.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__catalog.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+               'width': banner.size.x + 'px', 
+               'height': banner.size.y + 'px',
+               'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
+               'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+               'background-repeat': 'no-repeat',
+               'background-color': banner.backgroundColor,
+               'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+               'border-radius': banner.border.radius + 'px',
+               'border-width': banner.border.width  + 'px',
+               'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+              }">
+               <ion-grid class=" w-100">
+                <ion-row>
+                    <div class="position-absolute"
+                      [ngStyle]="{
+                          'top': banner.productCatalog.imagesTop + 'px',
+                          'left': banner.productCatalog.imagesLeft + 'px',
+                          'width': banner.productCatalog.imagesWidth + 'px',
+                          'height': banner.productCatalog.imagesHeight + 'px'
+                         }">
+                          <app-carousel-slides #carouselSlides [imageHeight]="banner.productCatalog.imagesHeight" [imageWidth]="banner.productCatalog.imagesWidth" [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth" 
+                          [product]="product" (changePrice)="changePriceProductCatalog($event,banner)">
+                          </app-carousel-slides>
+                          
+                    </div>
+                  
+                     <div class="ion-text-center m-0 p-0 position-absolute w-100"
+                     [ngStyle]="{
+                      'font-size': banner.productCatalog.titleFontSize + 'px',
+                      'font-family': ( banner.productCatalog.titleFontFamily ? banner.productCatalog.titleFontFamily : 'YoutubeSansMedium' ),
+                      'color': banner.productCatalog.titleFontColor,
+                      'font-weight':  banner.productCatalog.titleFontWeight,
+                      'top': banner.productCatalog.titleTop + 'px',
+                      'left': banner.productCatalog.titleLeft + 'px'
+                     }" >{{product.name}}</div>
+                     <div  class="position-absolute"
+                     [ngStyle]="{
+                      'font-size': banner.productCatalog.descFontSize + 'px',
+                      'font-family': ( banner.productCatalog.descFontFamily ? banner.productCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                      'color': banner.productCatalog.descFontColor,
+                      'top': banner.productCatalog.descTop + 'px',
+                      'left': banner.productCatalog.descLeft + 'px',
+                      'width': banner.productCatalog.descWidth + 'px',
+                      'font-weight':  banner.productCatalog.descFontWeight,
+                      'line-height': banner.productCatalog.lineHeight,
+                      'text-align': banner.productCatalog.descTextAlign
+                     }">{{product.description}}
+                     <br>
+                     <div ><div  class="position-absolute"
+                     [ngStyle]="{
+                      'font-size': banner.productCatalog.priceFontSize + 'px',
+                      'font-family': ( banner.productCatalog.priceFontFamily ? banner.productCatalog.priceFontFamily : 'YoutubeSansMedium' ),
+                      'color': banner.productCatalog.priceFontColor,
+                      'top': banner.productCatalog.priceTop + 'px',
+                      'left': banner.productCatalog.priceLeft + 'px',
+                      'font-weight':  banner.productCatalog.priceFontWeight
+                     }">{{product.priceSelected?.price | currency: 'COP $ ':'symbol':'1.2-2' }}</div>
+                     </div></div> 
+                </ion-row>
+               </ion-grid>
+               <ion-button class="position-absolute" color="primary" size="small" (click)="presentActionProduct(product)"
+                [ngStyle]="{
+                  'width': banner.productCatalog.buttonWidth + 'px', 
+                  'height': banner.productCatalog.buttonHeight + 'px',
+                  '--background': banner.productCatalog.buttonBackgroundColor,
+                  'font-size': banner.productCatalog.buttonFontSize + 'px',
+                  'font-family': ( banner.productCatalog.buttonFontFamily ? banner.productCatalog.buttonFontFamily : 'YoutubeSansMedium' ),
+                  'font-weight': banner.productCatalog.buttonFontWeight,
+                  'color': banner.productCatalog.buttonFontColor,
+                  'right': banner.productCatalog.buttonRight + 'px',
+                  'bottom': banner.productCatalog.buttonBottom + 'px'
+               }">
+                 <div > {{banner.productCatalog.buttonLabel}}
+                 </div>
+               </ion-button>
+            </div>
+          </div>
+          <!--End if banner is product-catalog -->
+          
+          <!--if banner is Speakers-->
+          <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.speakerCatalog" >
+          <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          <div class="grid" *ngIf="banner.speakerCatalog"  id="grid-{{banner.id}}"  
+          [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+            <div class="card card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.class}}" *ngFor="let speaker of banner.__speakers; let i = index;" 
+              (mouseover)="bannerSpeakerSelectHover = banner.id + '-' + i;"
+              (mouseout)="isHover = null; bannerSpeakerSelectHover = null;"
+              [ngClass]="{ 'selected': bannerSpeakerSelectHover == banner.id + '-' + i }"                                                        
+              [ngStyle]="{
+               'position': 'absolute',
+               'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
+               'left': ( i % banner.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+               'width': banner.size.x + 'px', 
+               'height': banner.size.y + 'px',
+               'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
+               'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+               'background-repeat': 'no-repeat',
+               'background-color': banner.backgroundColor,
+               'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+               'border-radius': banner.border.radius + 'px',
+               'border-width': banner.border.width  + 'px',
+               'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '')
+              }">
+               
+                <div class="position-absolute cursor-pointer name"
+                  (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'ImageProfile'; tabSelect = 'speakerCatalog';"
+                  [ngStyle]="{
+                      'top': banner.speakerCatalog.imagesTop + 'px',
+                      'left': banner.speakerCatalog.imagesLeft + 'px',
+                      'width': banner.speakerCatalog.imagesWidth + 'px',
+                      'height': banner.speakerCatalog.imagesHeight + 'px'
+                     }">
+                      <img [src]="speaker.profile_picture" 
+                      [ngStyle]="{
+                      'width': banner.speakerCatalog.imagesWidth + 'px',
+                      'height': banner.speakerCatalog.imagesHeight + 'px'
+                     }"/>
+                </div>
+              
+                <div class="ion-text-center position-absolute "
+                 (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Name'; tabSelect = 'speakerCatalog';"
+                 [ngStyle]="{
+                  'font-size': banner.speakerCatalog.nameFontSize + 'px',
+                  'font-family': ( banner.speakerCatalog.nameFontFamily ? banner.speakerCatalog.nameFontFamily : 'YoutubeSansMedium' ),
+                  'font-weight':  banner.speakerCatalog.nameFontWeight,
+                  'width': banner.speakerCatalog.nameWidth + 'px',
+                  'height': banner.speakerCatalog.nameHeight + 'px',
+                  'top': banner.speakerCatalog.nameTop + 'px',
+                  'left': banner.speakerCatalog.nameLeft + 'px'
+                 }" >{{speaker.user?.name}} {{speaker.user?.last_name}}
+                </div>
+                <div  class="position-absolute desc"
+                 (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Description';  tabSelect = 'speakerCatalog';"
+                 [ngStyle]="{
+                  'font-size': banner.speakerCatalog.descFontSize + 'px',
+                  'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                  
+                  'top': banner.speakerCatalog.descTop + 'px',
+                  'left': banner.speakerCatalog.descLeft + 'px',
+                  'width': banner.speakerCatalog.descWidth + 'px',
+                  'font-weight':  banner.speakerCatalog.descFontWeight,
+                  'line-height': banner.speakerCatalog.lineHeight,
+                  'text-align': banner.speakerCatalog.descTextAlign
+                 }">{{speaker.description_one}}
+                </div>
+                <div  class="position-absolute"
+                 (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Profession'; tabSelect = 'speakerCatalog';"
+                 [ngStyle]="{
+                  'font-size': banner.speakerCatalog.professionFontSize + 'px',
+                  'font-family': ( banner.speakerCatalog.professionFontFamily ? banner.speakerCatalog.professionFontFamily : 'YoutubeSansMedium' ),
+                  'top': banner.speakerCatalog.professionTop + 'px',
+                  'left': banner.speakerCatalog.professionLeft + 'px',
+                  'font-weight':  banner.speakerCatalog.professionFontWeight
+                 }">{{speaker.profession}}
+                </div>
+               <ion-img [src]="speaker.company_logo"
+               class="position-absolute" color="primary" size="small"
+               (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Logo'; tabSelect = 'speakerCatalog';"
+                [ngStyle]="{
+                  'width': banner.speakerCatalog.logoWidth + 'px', 
+                  'height': banner.speakerCatalog.logoHeight + 'px',
+                  'left': banner.speakerCatalog.logoLeft + 'px',
+                  'top': banner.speakerCatalog.logoTop + 'px'
+               }">
+               </ion-img>
+            </div>
+          </div>
+          <!--End if banner is Speakers-->
+                  
+       </div>
+       <!--Tooltip-->
+       <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
+       [ngClass]="banner.toolTipArrow"
+       [ngStyle]="{ 
+       'width': banner.toolPositionWidth+ 'px',
+       'height': banner.toolPosition+ 'px',
+       'top': (banner.position?.y + banner.toolPositionTop) + 'px',
+       'left': (banner.position?.x + banner.toolPositionLeft) + 'px'}">
+       {{banner.tooltipText}}
+       </span>
+          
+       <!--Banner List->
+       <app-banner (goToEditProduct)="goToEditProduct($event)" 
+          *ngFor="let bannerCh of banner?.banners;let i = index" class="banner"
+          (changePriceProduct)="changePriceProductCatalog($event)" 
+          (bannerSelect)="onBannerSelect($event)" 
+          (changeItem)="onChangeItem()" 
+          [banner]="bannerCh">
+       </app-banner>
+       <!--Banner List-->
+   </div>
+   </div>
+   <div [hidden]="scene && scene.render">
+   <ion-grid>
+     <ion-row *ngFor="let row of rows">
+       <ion-col size="12" [sizeLg]="12/row.size"  *ngFor="let col of row.columns"  style="border:1px solid">
+           
+           <!--Group List-->
+           <div *ngFor="let group of col.groups"  >
+                 <!--Banner List-->
+              <div *ngFor="let banner of group.banners;let i = index" class="banner">
+                <div [ngClass]="{'cube': !banner.line, 'arrow cursor-pointer':banner.line}" 
+                class=" {{ banner.line ? (banner.line.style||'container-arrow--curve') : ''}}"
+                id="banner-drag-{{banner.id}}"
+                mwlDraggable (dragEnd)="dragBannerEnd($event,banner)"
+                [ngStyle]="{
+                'margin-left': banner.position?.x + 'px',
+                'margin-top': banner.position?.y + 'px',
+                'width': banner.size.x + 'px', 
+                  'height': banner.size.y + 'px',
+                'opacity': bannerSelectHover ? ( bannerSelectHover.id !== banner.id ?  ( banner.opacity || 1 ) * 0.6  : 1  ) : banner.opacity,
+                'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
+                }">
+                    <!--if banner is banner-->
+                    <div [hidden]="banner.contact"
+                    class="cube__face cube__face--right square {{ banner.class}}"
+                    [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }"
+                    [hidden] = ""
+                    id="obj-{{banner.id}}"
+                    (click)="onBannerSelect(banner);"
+                    (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
+                    (mouseout)="isHover = null; bannerSelectHover = null;"
+                    [ngStyle]="{
+                    'background-image': !banner.speakerCatalog && !banner.productCatalog ? 'url('+banner.image_url+')' : '',
+                    'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+                    'background-repeat': 'no-repeat',
+                    'background-color': banner.backgroundColor,
+                    'font-size': banner.fontSize + 'px',
+                  'width': banner.size.x + 'px', 
+                    'height': banner.size.y + 'px',
+                    'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansMedium' ),
+                    'font-weight': banner.fontWeight,
+                    'color': banner.fontColor,
+                    'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                    'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+                    'border-radius': banner.border.radius + 'px',
+                    'border-width': banner.border.width  + 'px',
+                    'text-align': banner.textAlign,    
+                    'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+                    }">  
+                        <div [ngClass]="{'selected': bannerSelectHover === banner}" 
+                        [ngStyle]="{'line-height': banner?.lineHeight, 'font-weight': banner.fontWeight }">
+              
+                            <div *ngIf="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                              <div [innerHTML]="banner.textHtml"></div>
+                            </div>
+                            <div [hidden]="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                              {{ banner.text}}
+                            </div>
+                        </div>      
+                    </div>
+                    
+                    <!--if banner is Contact-->
+                   <div *ngIf="banner.contact" class="p-3"
+                   [ngStyle]="{
+                     'background-color': banner.backgroundColor,
+                     'width': banner.size.x + 'px', 
+                     'height': banner.size.y + 'px',
+                     'font-size': banner.fontSize + 'px',
+                     'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansMedium' ),
+                     'font-weight': banner.fontWeight,
+                     'color': banner.fontColor,
+                     'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                     'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+                     'border-radius': banner.border.radius + 'px',
+                     'border-width': banner.border.width  + 'px',
+                     'text-align': banner.textAlign,
+                     'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+                   }">
+                      <p class="d-flex ml-3" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 0.3 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px'}">
+                        <span style="color: rgb(224, 62, 45);">*</span> 
+                        <span [ngStyle]="{'color': banner.fontColor}"> Nombre </span>
+                      </p>
+                      <ion-input type="text" class="position-absolute ion-text-start" 
+                      [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px','top': ( banner.size.y * 0.6 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                      </ion-input>
+                      <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 1.4 / 10) + 'px'}" class="contact-line"></div>
+                      
+                      <p class="d-flex ml-3" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 1.7 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px'}">
+                        <span style="color: rgb(224, 62, 45);">*</span> 
+                        <span [ngStyle]="{'color': banner.fontColor}"> Correo electrónico </span>
+                      </p>
+                      <ion-input type="text" class="position-absolute ion-text-start" 
+                      [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'top': ( banner.size.y * 2 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                      </ion-input>
+                      <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 2.8 / 10) + 'px'}" class="contact-line"></div>
+                      
+                      <p class="position-absolute  w-100 d-flex" [ngStyle]="{'top': ( banner.size.y * 3.1 / 10) + 'px'}">
+                        <span style="color: rgb(224, 62, 45);">*</span> 
+                        <span [ngStyle]="{'color': banner.fontColor}"> Asunto </span>
+                      </p>
+                      <ion-input type="text" class="position-absolute ion-text-start" 
+                      [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'top': ( banner.size.y * 3.4 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                      </ion-input>
+                      <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 4.2 / 10) + 'px'}" class="contact-line"></div>
+                      
+                      <ion-textarea placeholder="Mensaje" type="text" class="position-absolute contact-text-area ion-text-justify" 
+                      [ngStyle]="{'top': ( banner.size.y * 4.5 / 10) + 'px', 'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'border-radius': ( banner.size.w * 0.3 ) + 'px',
+                      'height': ( banner.size.y * 3.5 / 10) + 'px'}">
+                      </ion-textarea>
+                      
+                      <ion-button color="primary" type="submit" class="position-absolute"
+                      [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 
+                      'top': ( banner.size.y * 8.5 / 10) + 'px', 'height': ( banner.size.y * 1 / 10) + 'px'}">
+                        <ion-label> Enviar Mensaje</ion-label>
+                        <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
+                      </ion-button>
+                    </div>
+                    <!--End if banner is Contact-->
+                   
+                   
+                    <!--if banner is Video-->
+                    <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.video" >
+                      <ion-icon name="create-outline"></ion-icon>
+                    </ion-button>
+                    <iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
+                    frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
+                    id="video-id-{{banner.id}}"
+                    class="{{banner.class}}"
+                    (click)="onBannerSelect(banner);"
+                    [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+                    </iframe>
+                    <!--End if banner is Video-->
+                    
+                    <!--if banner is carousel-->
+                    <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.carousel" >
+                    <ion-icon name="create-outline"></ion-icon>
+                    </ion-button>
+                    <app-carousel-template #carrousels [banner]="banner" *ngIf="banner.carousel" editorMode="true"
+                    [fair]="fair" [pavilion]="pavilion" [stand]="stand"
+                    [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+                    </app-carousel-template>
+                    <!--End if banner is carousel-->
+                    
+                    <!--if banner is product-catalog -->
+                    <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.productCatalog" >
+                    <ion-icon name="create-outline"></ion-icon>
+                    </ion-button>
+                    <div class="grid" *ngIf="banner.productCatalog"  id="grid-{{banner.id}}" 
+                    [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+                      <div class="card item-{{(i+1)}} {{banner.class}}" *ngFor="let product of banner.__catalog?.products; let i = index;" 
+                        [ngStyle]="{
+                         'position': 'absolute',
+                         'top': (( number.parseInt( i / banner.__catalog.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__catalog.__factor ) * 0.03) ) + 'px',
+                         'left': ( i % banner.__catalog.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__catalog.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+                         'width': banner.size.x + 'px', 
+                         'height': banner.size.y + 'px',
+                         'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
+                         'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+                         'background-repeat': 'no-repeat',
+                         'background-color': banner.backgroundColor,
+                         'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                          'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+                         'border-radius': banner.border.radius + 'px',
+                         'border-width': banner.border.width  + 'px',
+                         'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+                        }">
+                         <ion-grid class=" w-100">
+                          <ion-row>
+                              <div class="position-absolute"
+                                [ngStyle]="{
+                                    'top': banner.productCatalog.imagesTop + 'px',
+                                    'left': banner.productCatalog.imagesLeft + 'px',
+                                    'width': banner.productCatalog.imagesWidth + 'px',
+                                    'height': banner.productCatalog.imagesHeight + 'px'
+                                   }">
+                                    <app-carousel-slides #carouselSlides [imageHeight]="banner.productCatalog.imagesHeight" [imageWidth]="banner.productCatalog.imagesWidth" [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth" 
+                                    [product]="product" (changePrice)="changePriceProductCatalog($event,banner)">
+                                    </app-carousel-slides>
+                                    
+                              </div>
+                            
+                               <div class="ion-text-center m-0 p-0 position-absolute w-100"
+                               [ngStyle]="{
+                                'font-size': banner.productCatalog.titleFontSize + 'px',
+                                'font-family': ( banner.productCatalog.titleFontFamily ? banner.productCatalog.titleFontFamily : 'YoutubeSansMedium' ),
+                                'color': banner.productCatalog.titleFontColor,
+                                'font-weight':  banner.productCatalog.titleFontWeight,
+                                'top': banner.productCatalog.titleTop + 'px',
+                                'left': banner.productCatalog.titleLeft + 'px'
+                               }" >{{product.name}}</div>
+                               <div  class="position-absolute"
+                               [ngStyle]="{
+                                'font-size': banner.productCatalog.descFontSize + 'px',
+                                'font-family': ( banner.productCatalog.descFontFamily ? banner.productCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                                'color': banner.productCatalog.descFontColor,
+                                'top': banner.productCatalog.descTop + 'px',
+                                'left': banner.productCatalog.descLeft + 'px',
+                                'width': banner.productCatalog.descWidth + 'px',
+                                'font-weight':  banner.productCatalog.descFontWeight,
+                                'line-height': banner.productCatalog.lineHeight,
+                                'text-align': banner.productCatalog.descTextAlign
+                               }">{{product.description}}
+                               <br>
+                               <div ><div  class="position-absolute"
+                               [ngStyle]="{
+                                'font-size': banner.productCatalog.priceFontSize + 'px',
+                                'font-family': ( banner.productCatalog.priceFontFamily ? banner.productCatalog.priceFontFamily : 'YoutubeSansMedium' ),
+                                'color': banner.productCatalog.priceFontColor,
+                                'top': banner.productCatalog.priceTop + 'px',
+                                'left': banner.productCatalog.priceLeft + 'px',
+                                'font-weight':  banner.productCatalog.priceFontWeight
+                               }">{{product.priceSelected?.price | currency: 'COP $ ':'symbol':'1.2-2' }}</div>
+                               </div></div> 
+                          </ion-row>
+                         </ion-grid>
+                         <ion-button class="position-absolute" color="primary" size="small" (click)="presentActionProduct(product)"
+                          [ngStyle]="{
+                            'width': banner.productCatalog.buttonWidth + 'px', 
+                            'height': banner.productCatalog.buttonHeight + 'px',
+                            '--background': banner.productCatalog.buttonBackgroundColor,
+                            'font-size': banner.productCatalog.buttonFontSize + 'px',
+                            'font-family': ( banner.productCatalog.buttonFontFamily ? banner.productCatalog.buttonFontFamily : 'YoutubeSansMedium' ),
+                            'font-weight': banner.productCatalog.buttonFontWeight,
+                            'color': banner.productCatalog.buttonFontColor,
+                            'right': banner.productCatalog.buttonRight + 'px',
+                            'bottom': banner.productCatalog.buttonBottom + 'px'
+                         }">
+                           <div > {{banner.productCatalog.buttonLabel}}
+                           </div>
+                         </ion-button>
+                      </div>
+                    </div>
+                    <!--End if banner is product-catalog -->
+                    
+                    <!--if banner is Speakers-->
+                    <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.speakerCatalog" >
+                    <ion-icon name="create-outline"></ion-icon>
+                    </ion-button>
+                    <div class="grid" *ngIf="banner.speakerCatalog"  id="grid-{{banner.id}}"  
+                    [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+                      <div class="card card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.class}}" *ngFor="let speaker of banner.__speakers; let i = index;" 
+                        (mouseover)="bannerSpeakerSelectHover = banner.id + '-' + i;"
+                        (mouseout)="isHover = null; bannerSpeakerSelectHover = null;"
+                        [ngClass]="{ 'selected': bannerSpeakerSelectHover == banner.id + '-' + i }"                                                        
+                        [ngStyle]="{
+                         'position': 'absolute',
+                         'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
+                         'left': ( i % banner.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+                         'width': banner.size.x + 'px', 
+                         'height': banner.size.y + 'px',
+                         'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
+                         'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+                         'background-repeat': 'no-repeat',
+                         'background-color': banner.backgroundColor,
+                         'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                          'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+                         'border-radius': banner.border.radius + 'px',
+                         'border-width': banner.border.width  + 'px',
+                         'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '')
+                        }">
+                         
+                          <div class="position-absolute cursor-pointer name"
+                            (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'ImageProfile'; tabSelect = 'speakerCatalog';"
+                            [ngStyle]="{
+                                'top': banner.speakerCatalog.imagesTop + 'px',
+                                'left': banner.speakerCatalog.imagesLeft + 'px',
+                                'width': banner.speakerCatalog.imagesWidth + 'px',
+                                'height': banner.speakerCatalog.imagesHeight + 'px'
+                               }">
+                                <img [src]="speaker.profile_picture" 
+                                [ngStyle]="{
+                                'width': banner.speakerCatalog.imagesWidth + 'px',
+                                'height': banner.speakerCatalog.imagesHeight + 'px'
+                               }"/>
+                          </div>
+                        
+                          <div class="ion-text-center position-absolute "
+                           (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Name'; tabSelect = 'speakerCatalog';"
+                           [ngStyle]="{
+                            'font-size': banner.speakerCatalog.nameFontSize + 'px',
+                            'font-family': ( banner.speakerCatalog.nameFontFamily ? banner.speakerCatalog.nameFontFamily : 'YoutubeSansMedium' ),
+                            'font-weight':  banner.speakerCatalog.nameFontWeight,
+                            'width': banner.speakerCatalog.nameWidth + 'px',
+                            'height': banner.speakerCatalog.nameHeight + 'px',
+                            'top': banner.speakerCatalog.nameTop + 'px',
+                            'left': banner.speakerCatalog.nameLeft + 'px'
+                           }" >{{speaker.user?.name}} {{speaker.user?.last_name}}
+                          </div>
+                          <div  class="position-absolute desc"
+                           (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Description';  tabSelect = 'speakerCatalog';"
+                           [ngStyle]="{
+                            'font-size': banner.speakerCatalog.descFontSize + 'px',
+                            'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                            
+                            'top': banner.speakerCatalog.descTop + 'px',
+                            'left': banner.speakerCatalog.descLeft + 'px',
+                            'width': banner.speakerCatalog.descWidth + 'px',
+                            'font-weight':  banner.speakerCatalog.descFontWeight,
+                            'line-height': banner.speakerCatalog.lineHeight,
+                            'text-align': banner.speakerCatalog.descTextAlign
+                           }">{{speaker.description_one}}
+                          </div>
+                          <div  class="position-absolute"
+                           (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Profession'; tabSelect = 'speakerCatalog';"
+                           [ngStyle]="{
+                            'font-size': banner.speakerCatalog.professionFontSize + 'px',
+                            'font-family': ( banner.speakerCatalog.professionFontFamily ? banner.speakerCatalog.professionFontFamily : 'YoutubeSansMedium' ),
+                            'top': banner.speakerCatalog.professionTop + 'px',
+                            'left': banner.speakerCatalog.professionLeft + 'px',
+                            'font-weight':  banner.speakerCatalog.professionFontWeight
+                           }">{{speaker.profession}}
+                          </div>
+                         <ion-img [src]="speaker.company_logo"
+                         class="position-absolute" color="primary" size="small"
+                         (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Logo'; tabSelect = 'speakerCatalog';"
+                          [ngStyle]="{
+                            'width': banner.speakerCatalog.logoWidth + 'px', 
+                            'height': banner.speakerCatalog.logoHeight + 'px',
+                            'left': banner.speakerCatalog.logoLeft + 'px',
+                            'top': banner.speakerCatalog.logoTop + 'px'
+                         }">
+                         </ion-img>
+                      </div>
+                    </div>
+                    <!--End if banner is Speakers-->
+                            
+                 </div>
+                 <!--Tooltip-->
+                 <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
+                 [ngClass]="banner.toolTipArrow"
+                 [ngStyle]="{ 
+                 'width': banner.toolPositionWidth+ 'px',
+                 'height': banner.toolPosition+ 'px',
+                 'top': (banner.position?.y + banner.toolPositionTop) + 'px',
+                 'left': (banner.position?.x + banner.toolPositionLeft) + 'px'}">
+                 {{banner.tooltipText}}
+                 </span>
+              </div>
+              <!--Banner List-->
+           </div>
+           
+           <!--Banner List-->
+           <div *ngFor="let banner of col.banners;let i = index" class="banner" >
+           <!--div [hidden]="banner.groupId > 0"-->
+              <div [ngClass]="{'cube': !banner.line, 'arrow cursor-pointer':banner.line}" 
+              class="{{ banner.line ? (banner.line.style||'container-arrow--curve') : ''}}"
+              id="banner-drag-{{banner.id}}"
+              [ngStyle]="{
+              'margin-left': banner.position?.x + 'px',
+              'margin-top': banner.position?.y + 'px',
+              'opacity': bannerSelectHover ? ( bannerSelectHover.id !== banner.id ?  ( banner.opacity || 1 ) * 0.6  : 1  ) : banner.opacity,
+              'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
+              }">
+                  <!--if banner is banner-->
+                  <div class="cube__face cube__face--right square {{ banner.class}}"
+                  [ngClass]="{'selected': bannerSelectHover === banner, 'grayscale': banner.grayscale }"
+                  [hidden] = "col.groups"
+                  
+                  id="obj-{{banner.id}}"
+                  (click)="onBannerSelect(banner);"
+                  (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
+                  (mouseout)="isHover = null; bannerSelectHover = null;"
+                  [ngStyle]="{
+                  'background-image': !banner.speakerCatalog && !banner.productCatalog ? 'url('+banner.image_url+')' : '',
+                  'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+                  'background-repeat': 'no-repeat',
+                  'background-color': banner.backgroundColor,
+                  'width': banner.size.x + 'px', 
+                  'height': banner.size.y + 'px',
+                  'font-size': banner.fontSize + 'px',
+                  'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansMedium' ),
+                  'font-weight': banner.fontWeight,
+                  'color': banner.fontColor,
+                  'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                  'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+                  'border-radius': banner.border.radius + 'px',
+                  'border-width': banner.border.width  + 'px',
+                  'text-align': banner.textAlign,    
+                  'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+                  }">  
+                      <div [ngClass]="{'selected': bannerSelectHover === banner}" 
+                      [ngStyle]="{'line-height': banner?.lineHeight, 'font-weight': banner.fontWeight }">
+         
+                          <div *ngIf="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                            <div [innerHTML]="banner.textHtml"></div>
+                          </div>
+                          <div [hidden]="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
+                            {{ banner.text}}
+                          </div>
+                      </div>      
+                  </div>
+                  
+                  <!--if banner is Contact-->
+                 <div *ngIf="banner.contact" class="p-3"
+                 [ngStyle]="{
+                   'background-color': banner.backgroundColor,
+                   'width': banner.size.x + 'px', 
+                   'height': banner.size.y + 'px',
+                   'font-size': banner.fontSize + 'px',
+                   'font-family': ( banner.fontFamily ? banner.fontFamily : 'YoutubeSansMedium' ),
+                   'font-weight': banner.fontWeight,
+                   'color': banner.fontColor,
+                   'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                   'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+                   'border-radius': banner.border.radius + 'px',
+                   'border-width': banner.border.width  + 'px',
+                   'text-align': banner.textAlign,
+                   'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+                 }">
+                    <p class="d-flex ml-3" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 0.3 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px'}">
+                      <span style="color: rgb(224, 62, 45);">*</span> 
+                      <span [ngStyle]="{'color': banner.fontColor}"> Nombre </span>
+                    </p>
+                    <ion-input type="text" class="position-absolute ion-text-start" 
+                    [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px','top': ( banner.size.y * 0.6 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                    </ion-input>
+                    <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 1.4 / 10) + 'px'}" class="contact-line"></div>
+                    
+                    <p class="d-flex ml-3" class="position-absolute" [ngStyle]="{'top': ( banner.size.y * 1.7 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px'}">
+                      <span style="color: rgb(224, 62, 45);">*</span> 
+                      <span [ngStyle]="{'color': banner.fontColor}"> Correo electrónico </span>
+                    </p>
+                    <ion-input type="text" class="position-absolute ion-text-start" 
+                    [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'top': ( banner.size.y * 2 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                    </ion-input>
+                    <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 2.8 / 10) + 'px'}" class="contact-line"></div>
+                    
+                    <p class="position-absolute  w-100 d-flex" [ngStyle]="{'top': ( banner.size.y * 3.1 / 10) + 'px'}">
+                      <span style="color: rgb(224, 62, 45);">*</span> 
+                      <span [ngStyle]="{'color': banner.fontColor}"> Asunto </span>
+                    </p>
+                    <ion-input type="text" class="position-absolute ion-text-start" 
+                    [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'top': ( banner.size.y * 3.4 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
+                    </ion-input>
+                    <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 4.2 / 10) + 'px'}" class="contact-line"></div>
+                    
+                    <ion-textarea placeholder="Mensaje" type="text" class="position-absolute contact-text-area ion-text-justify" 
+                    [ngStyle]="{'top': ( banner.size.y * 4.5 / 10) + 'px', 'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 'border-radius': ( banner.size.w * 0.3 ) + 'px',
+                    'height': ( banner.size.y * 3.5 / 10) + 'px'}">
+                    </ion-textarea>
+                    
+                    <ion-button color="primary" type="submit" class="position-absolute"
+                    [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 
+                    'top': ( banner.size.y * 8.5 / 10) + 'px', 'height': ( banner.size.y * 1 / 10) + 'px'}">
+                      <ion-label> Enviar Mensaje</ion-label>
+                      <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
+                    </ion-button>
+                  </div>
+                  <!--End if banner is Contact-->
+                 
+                 
+                  <!--if banner is Video-->
+                  <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.video" >
+                    <ion-icon name="create-outline"></ion-icon>
+                  </ion-button>
+                  <iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
+                  frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
+                  id="video-id-{{banner.id}}"
+                  class="{{banner.class}}"
+                  (click)="onBannerSelect(banner);"
+                  [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+                  </iframe>
+                  <!--End if banner is Video-->
+                  
+                  <!--if banner is carousel-->
+                  <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.carousel" >
+                  <ion-icon name="create-outline"></ion-icon>
+                  </ion-button>
+                  <app-carousel-template #carrousels [banner]="banner" *ngIf="banner.carousel" editorMode="true"
+                  [fair]="fair" [pavilion]="pavilion" [stand]="stand"
+                  [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+                  </app-carousel-template>
+                  <!--End if banner is carousel-->
+                  
+                  <!--if banner is product-catalog -->
+                  <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.productCatalog" >
+                  <ion-icon name="create-outline"></ion-icon>
+                  </ion-button>
+                  <div class="grid" *ngIf="banner.productCatalog"  id="grid-{{banner.id}}" 
+                  [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+                    <div class="card item-{{(i+1)}} {{banner.class}}" *ngFor="let product of banner.__catalog?.products; let i = index;" 
+                      [ngStyle]="{
+                       'position': 'absolute',
+                       'top': (( number.parseInt( i / banner.__catalog.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__catalog.__factor ) * 0.03) ) + 'px',
+                       'left': ( i % banner.__catalog.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__catalog.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+                       'width': banner.size.x + 'px', 
+                       'height': banner.size.y + 'px',
+                       'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
+                       'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+                       'background-repeat': 'no-repeat',
+                       'background-color': banner.backgroundColor,
+                       'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                        'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+                       'border-radius': banner.border.radius + 'px',
+                       'border-width': banner.border.width  + 'px',
+                       'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+                      }">
+                       <ion-grid class=" w-100">
+                        <ion-row>
+                            <div class="position-absolute"
+                              [ngStyle]="{
+                                  'top': banner.productCatalog.imagesTop + 'px',
+                                  'left': banner.productCatalog.imagesLeft + 'px',
+                                  'width': banner.productCatalog.imagesWidth + 'px',
+                                  'height': banner.productCatalog.imagesHeight + 'px'
+                                 }">
+                                  <app-carousel-slides #carouselSlides [imageHeight]="banner.productCatalog.imagesHeight" [imageWidth]="banner.productCatalog.imagesWidth" [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth" 
+                                  [product]="product" (changePrice)="changePriceProductCatalog($event,banner)">
+                                  </app-carousel-slides>
+                                  
+                            </div>
+                          
+                             <div class="ion-text-center m-0 p-0 position-absolute w-100"
+                             [ngStyle]="{
+                              'font-size': banner.productCatalog.titleFontSize + 'px',
+                              'font-family': ( banner.productCatalog.titleFontFamily ? banner.productCatalog.titleFontFamily : 'YoutubeSansMedium' ),
+                              'color': banner.productCatalog.titleFontColor,
+                              'font-weight':  banner.productCatalog.titleFontWeight,
+                              'top': banner.productCatalog.titleTop + 'px',
+                              'left': banner.productCatalog.titleLeft + 'px'
+                             }" >{{product.name}}</div>
+                             <div  class="position-absolute"
+                             [ngStyle]="{
+                              'font-size': banner.productCatalog.descFontSize + 'px',
+                              'font-family': ( banner.productCatalog.descFontFamily ? banner.productCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                              'color': banner.productCatalog.descFontColor,
+                              'top': banner.productCatalog.descTop + 'px',
+                              'left': banner.productCatalog.descLeft + 'px',
+                              'width': banner.productCatalog.descWidth + 'px',
+                              'font-weight':  banner.productCatalog.descFontWeight,
+                              'line-height': banner.productCatalog.lineHeight,
+                              'text-align': banner.productCatalog.descTextAlign
+                             }">{{product.description}}
+                             <br>
+                             <div ><div  class="position-absolute"
+                             [ngStyle]="{
+                              'font-size': banner.productCatalog.priceFontSize + 'px',
+                              'font-family': ( banner.productCatalog.priceFontFamily ? banner.productCatalog.priceFontFamily : 'YoutubeSansMedium' ),
+                              'color': banner.productCatalog.priceFontColor,
+                              'top': banner.productCatalog.priceTop + 'px',
+                              'left': banner.productCatalog.priceLeft + 'px',
+                              'font-weight':  banner.productCatalog.priceFontWeight
+                             }">{{product.priceSelected?.price | currency: 'COP $ ':'symbol':'1.2-2' }}</div>
+                             </div></div> 
+                        </ion-row>
+                       </ion-grid>
+                       <ion-button class="position-absolute" color="primary" size="small" (click)="presentActionProduct(product)"
+                        [ngStyle]="{
+                          'width': banner.productCatalog.buttonWidth + 'px', 
+                          'height': banner.productCatalog.buttonHeight + 'px',
+                          '--background': banner.productCatalog.buttonBackgroundColor,
+                          'font-size': banner.productCatalog.buttonFontSize + 'px',
+                          'font-family': ( banner.productCatalog.buttonFontFamily ? banner.productCatalog.buttonFontFamily : 'YoutubeSansMedium' ),
+                          'font-weight': banner.productCatalog.buttonFontWeight,
+                          'color': banner.productCatalog.buttonFontColor,
+                          'right': banner.productCatalog.buttonRight + 'px',
+                          'bottom': banner.productCatalog.buttonBottom + 'px'
+                       }">
+                         <div > {{banner.productCatalog.buttonLabel}}
+                         </div>
+                       </ion-button>
+                    </div>
+                  </div>
+                  <!--End if banner is product-catalog -->
+                  
+                  <!--if banner is Speakers-->
+                  <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)" *ngIf="banner.speakerCatalog" >
+                  <ion-icon name="create-outline"></ion-icon>
+                  </ion-button>
+                  <div class="grid" *ngIf="banner.speakerCatalog"  id="grid-{{banner.id}}"  
+                  [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+                    <div class="card card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.class}}" *ngFor="let speaker of banner.__speakers; let i = index;" 
+                      (mouseover)="bannerSpeakerSelectHover = banner.id + '-' + i;"
+                      (mouseout)="isHover = null; bannerSpeakerSelectHover = null;"
+                      [ngClass]="{ 'selected': bannerSpeakerSelectHover == banner.id + '-' + i }"                                                        
+                      [ngStyle]="{
+                       'position': 'absolute',
+                       'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
+                       'left': ( i % banner.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+                       'width': banner.size.x + 'px', 
+                       'height': banner.size.y + 'px',
+                       'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
+                       'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+                       'background-repeat': 'no-repeat',
+                       'background-color': banner.backgroundColor,
+                       'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                        'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+                       'border-radius': banner.border.radius + 'px',
+                       'border-width': banner.border.width  + 'px',
+                       'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '')
+                      }">
+                       
+                        <div class="position-absolute cursor-pointer name"
+                          (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'ImageProfile'; tabSelect = 'speakerCatalog';"
+                          [ngStyle]="{
+                              'top': banner.speakerCatalog.imagesTop + 'px',
+                              'left': banner.speakerCatalog.imagesLeft + 'px',
+                              'width': banner.speakerCatalog.imagesWidth + 'px',
+                              'height': banner.speakerCatalog.imagesHeight + 'px'
+                             }">
+                              <img [src]="speaker.profile_picture" 
+                              [ngStyle]="{
+                              'width': banner.speakerCatalog.imagesWidth + 'px',
+                              'height': banner.speakerCatalog.imagesHeight + 'px'
+                             }"/>
+                        </div>
+                      
+                        <div class="ion-text-center position-absolute "
+                         (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Name'; tabSelect = 'speakerCatalog';"
+                         [ngStyle]="{
+                          'font-size': banner.speakerCatalog.nameFontSize + 'px',
+                          'font-family': ( banner.speakerCatalog.nameFontFamily ? banner.speakerCatalog.nameFontFamily : 'YoutubeSansMedium' ),
+                          'font-weight':  banner.speakerCatalog.nameFontWeight,
+                          'width': banner.speakerCatalog.nameWidth + 'px',
+                          'height': banner.speakerCatalog.nameHeight + 'px',
+                          'top': banner.speakerCatalog.nameTop + 'px',
+                          'left': banner.speakerCatalog.nameLeft + 'px'
+                         }" >{{speaker.user?.name}} {{speaker.user?.last_name}}
+                        </div>
+                        <div  class="position-absolute desc"
+                         (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Description';  tabSelect = 'speakerCatalog';"
+                         [ngStyle]="{
+                          'font-size': banner.speakerCatalog.descFontSize + 'px',
+                          'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                          
+                          'top': banner.speakerCatalog.descTop + 'px',
+                          'left': banner.speakerCatalog.descLeft + 'px',
+                          'width': banner.speakerCatalog.descWidth + 'px',
+                          'font-weight':  banner.speakerCatalog.descFontWeight,
+                          'line-height': banner.speakerCatalog.lineHeight,
+                          'text-align': banner.speakerCatalog.descTextAlign
+                         }">{{speaker.description_one}}
+                        </div>
+                        <div  class="position-absolute"
+                         (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Profession'; tabSelect = 'speakerCatalog';"
+                         [ngStyle]="{
+                          'font-size': banner.speakerCatalog.professionFontSize + 'px',
+                          'font-family': ( banner.speakerCatalog.professionFontFamily ? banner.speakerCatalog.professionFontFamily : 'YoutubeSansMedium' ),
+                          'top': banner.speakerCatalog.professionTop + 'px',
+                          'left': banner.speakerCatalog.professionLeft + 'px',
+                          'font-weight':  banner.speakerCatalog.professionFontWeight
+                         }">{{speaker.profession}}
+                        </div>
+                       <ion-img [src]="speaker.company_logo"
+                       class="position-absolute" color="primary" size="small"
+                       (click)="onBannerSelect(banner); showSpeakerCatalogActions = 'Logo'; tabSelect = 'speakerCatalog';"
+                        [ngStyle]="{
+                          'width': banner.speakerCatalog.logoWidth + 'px', 
+                          'height': banner.speakerCatalog.logoHeight + 'px',
+                          'left': banner.speakerCatalog.logoLeft + 'px',
+                          'top': banner.speakerCatalog.logoTop + 'px'
+                       }">
+                       </ion-img>
+                    </div>
+                  </div>
+                  <!--End if banner is Speakers-->
+                          
+               </div>
+               <!--Tooltip-->
+               <span class="tooltip-label" *ngIf="banner.tooltipText &&  bannerSelect && bannerSelect.id === banner.id"
+               [ngClass]="banner.toolTipArrow"
+               [ngStyle]="{ 
+               'width': banner.toolPositionWidth+ 'px',
+               'height': banner.toolPosition+ 'px',
+               'top': (banner.position?.y + banner.toolPositionTop) + 'px',
+               'left': (banner.position?.x + banner.toolPositionLeft) + 'px'}">
+               {{banner.tooltipText}}
+               </span>
+           <!--/div-->
+           </div>
+           <!--Banner List-->
+       </ion-col>
+     </ion-row>
+   </ion-grid>
+   </div>
+   
+</ion-content>
+
+<div class="panel-scene-save">
+  <ion-button *ngIf="!tabMenuOver" [color]="editSave ? 'primary' : 'light'" class="tool-tip" (click)="onSave()">
+    <ion-icon name="save-outline"></ion-icon>
+   </ion-button>
+   <span class="tooltip-text arrow--2">Guardar</span>
+</div>
+<div class="panel-scene-settings">
+  <ion-button *ngIf="!tabMenuOver" color="light" class="tool-tip" (click)="onSelectPanel('settings')">
+    <ion-icon name="construct-outline"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--2">Configuración de Escena</span>
+</div>
+<div class="panel-tab-menu">
+  <ion-button *ngIf="!tabMenuOver" color="light" class="tool-tip" (click)="onSelectPanel('menuTabs')">
+    <ion-icon name="grid-outline"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--2">Tab Menú</span>
+</div>
+<div class="panel-video-preview">
+  <ion-button *ngIf="!tabMenuOver" color="light" class="tool-tip" (click)="onSelectPanel('videoPreview')">
+    <ion-icon name="eye-outline"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--2">Video Preview</span>
+</div>
+<div class="panel-show-item">
+  <ion-button *ngIf="!tabMenuOver" color="light" class="tool-tip" (click)="onSelectPanel('items')">
+    <ion-icon name="list-outline"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--2">Mostrar elementos</span>
+</div>
+<div class="panel-scene-plus">
+  <ion-button *ngIf="!tabMenuOver" color="light" class="tool-tip" (click)="onSelectPanel('addBanners')">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-button>
+  <span class="tooltip-text arrow--2">Adicionar elemento</span>
+</div>
+
+
+<!-- Panel video Preview-->
+<div *ngIf="showPanelTool === 'videoPreview' && !tabMenuOver" class="general-setting-panel">
+   <div class="close" (click)="showPanelTool = null">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+   </div>
+   <ion-card class="scene-panel">
+      <ion-card-header>
+         <ion-card-title>Url de video de presentación de la escena</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+         <ion-toolbar>
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="text" (change)="onChangeItem()" [(ngModel)]="scene.videoUrl"/>
+            </ion-card-subtitle>
+         </ion-toolbar>
+         <ion-toolbar>
+         </ion-toolbar>
+         <ion-toolbar>
+            <video 
+            [ngStyle]="{'opacity': scene?.videoUrl ? 1 : 0, 'position': scene?.videoUrl ? 'block' : 'absolute'}"
+            crossOrigin="anonymous"
+            webkit-playsinline
+            autoplay
+            [src]="scene?.videoUrl"
+            playsinline preload="metadata" data-aos="fade-up"
+            id="videoFair"
+            class="video">
+            </video>
+            <iframe src="https://player.vimeo.com/video/226053498?h=a1599a8ee9" width="440" height="170" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+         </ion-toolbar>
+      </ion-card-content>
+   </ion-card>
+</div>
+<!-- Panel Settings-->
+<div *ngIf="showPanelTool === 'settings' && !tabMenuOver" class="general-setting-panel">
+   <div class="close" (click)="showPanelTool = null">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+   </div>
+   <ion-card class="scene-panel">
+      <ion-card-header>
+         <ion-card-title>Configuración de la Escena</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Icono de Menú </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle style="margin-top: -19px;" *ngIf="scene">
+                  <select [(ngModel)]="scene.menuIcon" (change)="onChangeItem()" style="width: 168px;">
+                  <option  *ngFor="let menuIcon of menuIcons" value="{{menuIcon}}">{{menuIcon}}</option>
+                  </select>
+                  <ion-icon class="ml-4" style="font-size: 30px;"  [name]="scene.menuIcon"></ion-icon>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Título </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <input class="mt-2 ml-2" type="text"  (change)="onChangeItem()" [(ngModel)]="scene.title"/> 
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle>Imagen de Fondo </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <input class="mt-2 ml-2" type="text"   (change)="onChangeBackgroundStyle()"  [(ngModel)]="scene.url_image"/>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle>Color de Fondo</ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-label (click)="scene.backgroundColor = '';">Clear </ion-label>
+               <ion-icon name="close-outline" (click)="bannerSelect.backgroundColor = '';">  </ion-icon>
+               <ion-card-subtitle>
+                  <input [ngStyle]="{'opacity': scene.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color" [(ngModel)]="scene.backgroundColor" 
+                  (change)="onChangeBackgroundStyle()" />
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Tamaño horizontal del lienzo </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <input type="number" [(ngModel)]="scene.container.w"  (change)="onChangeItem();" /> 
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Tamaño Vertical del lienzo </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <input type="number" [(ngModel)]="scene.container.h" (change)="onChangeItem();"/> 
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Mostrar en Menú? </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <ion-chip [color]="scene.show ? 'primary' : ''" (click)="scene.show = !scene.show">
+                  <ion-icon name="checkmark-circle"></ion-icon>
+                  <ion-label>{{ scene.show ? 'Mostrar': 'No mostrar' }}</ion-label>
+                  </ion-chip>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Renderizar Escena? </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <ion-chip [color]="scene.render ? 'primary' : ''" (click)="scene.render = !scene.render">
+                  <ion-icon name="checkmark-circle"></ion-icon>
+                  <ion-label>{{ scene.render ? 'Si': 'No' }}</ion-label>
+                  </ion-chip>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar *ngIf="sceneId">
+            <ion-buttons slot="start">
+               <ion-card-subtitle>
+                  <ion-label color="danger">Borrar Escena</ion-label>
+               </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-button (click)="onDeleteScene(sceneId)" color="danger">
+                  <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+               </ion-button>
+            </ion-buttons>
+         </ion-toolbar>
+      </ion-card-content>
+   </ion-card>
+</div>
+<!-- Panel Add Banners-->
+<div *ngIf="showPanelTool === 'addBanners'  && !tabMenuOver" class="scene-setting-panel">
+   <div class="close" (click)="showPanelTool = null">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+   </div>
+   <ion-card class="scene-panel">
+      <ion-card-header>
+         <ion-card-title><small>Agregar Forma</small></ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+         <div class="d-flex">
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Banner');">
+               <ion-label slot="start"> Banner </ion-label>
+               <ion-icon class="ml-2" style="font-size: 24px" name="browsers-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Text');">
+               <ion-label slot="start"> Texto </ion-label>
+               <ion-icon class="ml-2" style="font-size: 24px" name="text-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Image');">
+               Imagen
+               <ion-icon style="font-size: 24px" name="image-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Carrete');">
+               Carrete
+               <ion-icon style="font-size: 24px" name="albums-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Video');">
+               Video
+               <ion-icon style="font-size: 24px" name="videocam-outline"></ion-icon>
+            </div>
+         </div>
+      </ion-card-content>
+      <ion-card-header>
+         <ion-card-title><small>Agregar Elemento</small></ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+         <div class="d-flex">
+            <div class="icon-panel-scene" (click)="addArrowLineCurve();">
+               <div class="container-arrow--curve" >
+                  <div class="arrow line-arrow-button">
+                     <div class="arrow__body"></div>
+                  </div>
+               </div>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Título');">
+               Título
+               <ion-icon style="font-size: 24px" name="text-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Sub-Título');">
+               Título
+               <ion-icon style="font-size: 24px" name="text-outline"></ion-icon>
+            </div>
+         </div>
+      </ion-card-content>
+      <ion-card-header>
+         <ion-card-title><small>Agregar Elemento</small></ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+         <div class="d-flex">
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('ProductCatalog');">
+               <small>Productos</small>
+               <ion-icon style="font-size: 24px" name="grid-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('Contact');">
+               <small>Contáctenos</small>
+               <ion-icon style="font-size: 24px" name="list-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('SpeakerCatalog');">
+               <small>Conferencistas</small>
+               <ion-icon style="font-size: 24px" name="people-outline"></ion-icon>
+            </div>
+         </div>
+      </ion-card-content>
+   </ion-card>
+</div>
+<!-- Panel Item list-->
+<div *ngIf="showPanelTool === 'items'  && !tabMenuOver" class="tool-panel" >
+   <div class="close" (click)="showPanelTool = null; showInputClipboard = false;">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+   </div>
+   <ion-card class="scene-panel">
+      <ion-card-header>
+         <ion-card-title><small>Lista de ({{ scene.banners.length}}) Elemento(s)</small></ion-card-title>
+      </ion-card-header>
+      <ion-card-header>
+         <ion-checkbox class="mr-2"  (ionChange)="toogleSelection()"></ion-checkbox>
+         <ion-button style="margin-top: -10px" size="small" *ngIf="copyMultiFromList.length > 0" color="primary" fill="outline" (click)="onCopyBanner(copyMultiFromList)"> Copiar</ion-button>
+         <ion-button style="margin-top: -10px" size="small" *ngIf="copyMultiFromList.length > 0" color="danger" fill="outline" (click)="onDeleteBannerList(copyMultiFromList)"> Borrar</ion-button>
+         <ion-button style="margin-top: -10px" size="small" color="medium" fill="outline" (click)="showInputClipboard = true;"> Pegar portapales</ion-button>
+      </ion-card-header>
+      <ion-card-header *ngIf="showInputClipboard">
+         <input id="output-clipboard" (change)="onPasteFromClipboard()"/> 
+      </ion-card-header>
+      <ion-card-content class="reorder d-flex">
+         <ion-list class=" mt--8 max-height">
+            <ion-item *ngFor="let banner of scene.banners" buttom="true" class="border-gray">
+               <ion-checkbox [(ngModel)]="banner.isChecked" (ionChange)="toogleOneSelection()"></ion-checkbox>
+            </ion-item>
+         </ion-list>
+         <!-- The reorder gesture is disabled by default, enable it to drag and drop items -->
+         <ion-reorder-group (ionItemReorder)="doReorderBanners($event)" disabled="false">
+            <!-- Items wrapped in a reorder, entire item can be dragged -->
+            <ion-reorder *ngFor="let banner of scene.banners" buttom="true" class="border-gray" style="width: 215px;"
+            (mouseover)="bannerSelectHover =  banner;"
+            (mouseout)="isHover = null; bannerSelectHover = null;"
+            >
+            <ion-item class="reorder-banner" >
+               <ion-card-subtitle> {{ banner.type || 'Elemento' }}
+               </ion-card-subtitle>
+            </ion-item>
+            </ion-reorder>
+         </ion-reorder-group>
+         <ion-list class=" mt--8 max-height">
+            <ion-item *ngFor="let banner of scene.banners" buttom="true"  class="border-gray">
+               <ion-button size="small" color="light" (click)="onBannerSelect(banner)">
+                  <ion-icon name="create-outline"></ion-icon>
+               </ion-button>
+            </ion-item>
+         </ion-list>
+      </ion-card-content>
+   </ion-card>
+</div>
+<!-- Panel setting banner -->
+<div *ngIf="showPanelTool=== 'settingsBanner'  && !tabMenuOver" class="panel-scene-select" id="bannerPanel" [ngStyle]="{'top': panelPos.y, 'left': panelPos.x }" 
+[validateDrag]="fixedBannerPanelValidator" mwlDraggable (dragEnd)="dragPanelSceneSelectEnd($event)">
+<div class="close" (click)="showPanelTool = null; bannerSelect = null">
+   <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+</div>
+<div class="close fixed" style="width: 10%" (click)="onToogleBannerPanel()">
+   <ion-icon id="fixed-banner-icon" slot="icon-only" [name]="fixedBannerPanel ? 'attach-outline' : 'move-outline'"></ion-icon>
+</div>
+<ion-card *ngIf="bannerSelect" class="" >
+   <ion-card-header style="border-bottom-color: gray;border-bottom-width: 1px;border-bottom-style: solid;">
+      <ion-card-subtitle style="height: 18px;"> </ion-card-subtitle>
+      <ion-card-content>
+         <ion-tabs>
+            <ion-tab-bar slot="bottom">
+               <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'position' }" 
+               (click)="tabSelect = 'position'">
+                  <ion-label>Posición</ion-label>
+               </ion-tab-button>
+               <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'position' }" 
+               (click)="tabSelect = 'line'" *ngIf="bannerSelect.line">
+               <ion-label class="tool-special">Línea</ion-label>
+               </ion-tab-button>
+               <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'productCatalog' }" 
+               (click)="tabSelect = 'productCatalog'" *ngIf="bannerSelect.productCatalog">
+               <ion-label class="tool-special" > Catálogo</ion-label>
+               </ion-tab-button>
+               <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'speakerCatalog' }" 
+               (click)="tabSelect = 'speakerCatalog'" *ngIf="bannerSelect.speakerCatalog">
+               <ion-label class="tool-special" > Conferencistas</ion-label>
+               </ion-tab-button>                                                                                     
+               <ion-tab-button   [ngClass]="{'tool-selected': tabSelect == 'video' }" 
+               (click)="tabSelect = 'video'" *ngIf="bannerSelect.video">
+               <ion-label class="tool-special"> Video</ion-label>
+               </ion-tab-button>
+               <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'carousel' }" 
+               (click)="tabSelect = 'carousel'" *ngIf="bannerSelect.carousel">
+               <ion-label class="tool-special"> Carrete</ion-label>
+               </ion-tab-button>
+               
+               <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'contact' }" 
+               (click)="tabSelect = 'contact'" *ngIf="bannerSelect.contact">
+               <ion-label class="tool-special"> Contácto</ion-label>
+               </ion-tab-button>
+               
+               
+               <ion-tab-button   [ngClass]="{'tool-selected': tabSelect == 'background' }" 
+               (click)="tabSelect = 'background'" [hidden]="bannerSelect.line">
+               <ion-label>Fondo</ion-label>
+               </ion-tab-button>
+               
+               <ion-tab-button   [ngClass]="{'tool-selected': tabSelect == 'rotate' }" 
+               (click)="tabSelect = 'rotate'">
+                  <ion-label>Rotar</ion-label>
+               </ion-tab-button>
+               <ion-tab-button   [ngClass]="{'tool-selected': tabSelect == 'font' }" 
+               (click)="tabSelect = 'font'" [hidden]="bannerSelect.line">
+               <ion-label>Texto</ion-label>
+               </ion-tab-button>
+            </ion-tab-bar>
+         </ion-tabs>
+         <ion-tabs style="top:-31px">
+            <ion-tab-bar slot="bottom">
+               <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'link' }"
+               (click)="tabSelect = 'link'" [hidden]="bannerSelect.line">
+               <ion-label>Link</ion-label>
+               </ion-tab-button>
+               <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'border' }"
+               (click)="tabSelect = 'border'" [hidden]="bannerSelect.line">
+               <ion-label>Bordear</ion-label>
+               </ion-tab-button>
+               <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'css' }"
+               (click)="tabSelect = 'css'" [hidden]="bannerSelect.line"> 
+               <ion-label>Estilos CSS</ion-label>
+               </ion-tab-button>
+               <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'tooltip' }"
+               (click)="tabSelect = 'tooltip'">
+                  <ion-label>Tooltip</ion-label>
+               </ion-tab-button>
+            </ion-tab-bar>
+         </ion-tabs>
+      </ion-card-content>
+   </ion-card-header>
+   <ion-card-content *ngIf="tabSelect == 'position'">
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Top 
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form"  (change)="onResize()"  type="number" [(ngModel)]="bannerSelect.position.y"/>
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Left </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form"  (change)="onResize()"  type="number" [(ngModel)]="bannerSelect.position.x"/>
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Ancho </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" (change)="onResize()" [(ngModel)]="bannerSelect.size.x"/>
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Largo </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form"  (change)="onResize()"   type="number" [(ngModel)]="bannerSelect.size.y"/>
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'line'">
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Grueso
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" min="1" max="50" [(ngModel)]="bannerSelect.line.weight"/>
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle>Estilo de línea</ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <select [(ngModel)]="bannerSelect.line.type" (change)="onChangeItem()">
+               <option value="{{type.value}}" *ngFor="let type of lineTypes">{{type.label}}</option>
+               </select>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Tipo de línea </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <select [(ngModel)]="bannerSelect.line.style" (change)="onChangeItem()">
+               <option selected="selected" value="container-arrow--curve">curve</option>
+               <option selected="selected" value="container-arrow--rect">rect</option>
+               <option selected="selected" value="container-arrow--line">line</option>
+               </select>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Color de línea </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="color" (change)="onChangeItemColor()"[(ngModel)]="bannerSelect.line.color"/>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'rotate'">
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Rotar X </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.x"/> grade
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Rotar Y </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.y"/> grade
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Rotar Z </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" [(ngModel)]="bannerSelect.rotation.z"/> grade
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'background'">
+      <ion-toolbar>
+         <ion-card-subtitle slot="start"> Imagen de Fondo </ion-card-subtitle>
+         <input slot="end" class="mt-2 ml-2" type="text" (change)="onChangeImage()" [(ngModel)]="bannerSelect.image_url"/> 
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-card-subtitle slot="start"> Color de Fondo</ion-card-subtitle>
+         <ion-buttons slot="end">
+            <ion-label (click)="bannerSelect.backgroundColor = '';">Clear </ion-label>
+            <ion-icon name="close-outline" (click)="bannerSelect.backgroundColor = '';">  </ion-icon>
+            <input [ngStyle]="{'opacity': bannerSelect.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color" 
+            (change)="onChangeItemColor()"
+            [(ngModel)]="bannerSelect.backgroundColor"/> 
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Opacidad </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="origin-y-range" type="range" min="0" max="100" value="100" data-units="%" (change)="onChangeOpacity()"/>
+               <ion-icon name="sunny-outline"></ion-icon>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'video' && bannerSelect.video">
+      <ion-toolbar>
+         <ion-card-subtitle slot="start"> Url de video </ion-card-subtitle>
+         <input slot="end" class="mt-2 ml-2" type="text" (change)="onChangeVideoUrl()" [(ngModel)]="bannerSelect.video.url"/> 
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'contact'">
+      
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'carousel'" style="overflow: auto;height: 421px;">
+      <ion-toolbar *ngFor="let option of carouselOptionList">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> {{option}} </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2 input-form" type="number" 
+               [(ngModel)]="bannerSelect.carousel['options'][option]" 
+               (change)="onChangeCarousel()"
+               />
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-card-subtitle slot="start"> Lista de {{bannerSelect.carousel.images?.length}} Imágene(s)</ion-card-subtitle>
+         <ion-button  slot="end" size="small" (click)="presentActionAddCarrousel()">
+            <ion-icon name="add-outline"></ion-icon>
+         </ion-button>
+      </ion-toolbar>
+      <ion-item class="d-flex">
+         <ion-reorder-group (ionItemReorder)="doReorderCarousel($event)" disabled="false">
+            <!-- Items wrapped in a reorder, entire item can be dragged -->
+            <ion-reorder *ngFor="let image of bannerSelect.carousel.images" buttom="true" class="border-gray">
+               <ion-item class="reorder-banner" >
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> {{ image.title }}
+                     </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-card-subtitle>
+                        <img [src]="image.url" class="carousel-image" width="65"/>
+                     </ion-card-subtitle>
+                  </ion-buttons>
+               </ion-item>
+            </ion-reorder>
+         </ion-reorder-group>
+         <ion-list>
+            <ion-item *ngFor="let image of bannerSelect.carousel.images;let i = index" buttom="true"  class="border-gray">
+               <ion-button size="small" color="light" (click)="onOpenChangeImg(image,bannerSelect.carousel.images,i)">
+                  <ion-icon name="create-outline"></ion-icon>
+               </ion-button>
+               <ion-button size="small" color="danger" (click)="onDeleteCarretImg(image,bannerSelect.carousel,'images',i)">
+                  <ion-icon name="create-outline"></ion-icon>
+               </ion-button>
+            </ion-item>
+         </ion-list>
+      </ion-item>
+   </ion-card-content>
+
+   
+   <ion-card-content *ngIf="tabSelect == 'speakerCatalog'" class="content-scroll">
+     <ion-list>
+          <ion-toolbar class="separator-text"  (click)="showSpeakerCatalogActions == 'Name' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'Name'">
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Etiqueta Nombre 
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-icon name="chevron-down-outline" size="small" [hidden]="showSpeakerCatalogActions == 'Name'"></ion-icon>
+                <ion-icon name="chevron-up-outline" size="small" *ngIf="showSpeakerCatalogActions == 'Name'"></ion-icon>
+             </ion-buttons>
+          </ion-toolbar>
+
+     
+       <div *ngIf="showSpeakerCatalogActions == 'Name'">
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Superior </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.nameTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Izquierda  </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.nameLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Ancho </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.nameWidth"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Largo  </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.nameHeight"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tamaño de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.nameFontSize"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Color de letra</ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <ion-label (click)="bannerSelect.speakerCatalog.nameFontColor = '';">Clear </ion-label>
+                   <ion-icon name="close-outline" (click)="bannerSelect.speakerCatalog.nameFontColor = '';">  </ion-icon>
+                   <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()" [(ngModel)]="bannerSelect.speakerCatalog.nameFontColor"/> 
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tipo de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.speakerCatalog.nameFontFamily" (change)="onChangeItem()" >
+                   <option selected="selected" [hidden]="bannerSelect.speakerCatalog.nameFontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+                   <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Grosor de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.speakerCatalog.nameFontWeight" (change)="onChangeItem()" >
+                   <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+       </div>
+       
+       <ion-toolbar class="separator-text" (click)="showSpeakerCatalogActions == 'Description' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'Description'">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Descripción
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-icon name="chevron-down-outline" size="small" [hidden]="showSpeakerCatalogActions == 'Description'"></ion-icon>
+            <ion-icon name="chevron-up-outline" size="small" *ngIf="showSpeakerCatalogActions == 'Description'"></ion-icon>
+         </ion-buttons>
+       </ion-toolbar>
+
+       <div *ngIf="showSpeakerCatalogActions == 'Description'">
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Arriba </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.descTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Izquierda  </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.descLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Ancho </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.descWidth"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tamaño de letra 
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.descFontSize"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Color de letra</ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <ion-label (click)="bannerSelect.speakerCatalog.descFontColor = '';">Clear </ion-label>
+                   <ion-icon name="close-outline" (click)="bannerSelect.speakerCatalog.descFontColor = '';">  </ion-icon>
+                   <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"  [(ngModel)]="bannerSelect.speakerCatalog.descFontColor"/> 
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tipo de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.speakerCatalog.descFontFamily" (change)="onChangeItem()" >
+                   <option selected="selected" [hidden]="bannerSelect.speakerCatalog.descFontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+                   <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Grosor de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.speakerCatalog.descFontWeight" (change)="onChangeItem()" >
+                   <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Alineación de Texto </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <select [(ngModel)]="bannerSelect.speakerCatalog.descTextAlign" (change)="onChangeItem()" >
+                <option *ngFor="let textAlign of textAligns" value="{{textAlign.value}}">{{textAlign.label}}</option>
+                </select>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Interlineado de Texto </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                {{ bannerSelect.speakerCatalog.lineHeightUnit }} . 
+                <input class="mt-2 ml-2 line-height-mili" type="number" size="4" (change)="onChangeItemTextLineHeight(bannerSelect.__speakers)"  [(ngModel)]="bannerSelect.speakerCatalog.lineHeightMili"/>
+             </ion-buttons>
+          </ion-toolbar>
+       </div>
+       
+       
+       
+       <ion-toolbar class="separator-text" (click)="showSpeakerCatalogActions == 'Logo' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'Logo'">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Logo Empresa
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-icon name="chevron-down-outline" size="small" [hidden]="showSpeakerCatalogActions == 'Logo'"></ion-icon>
+            <ion-icon name="chevron-up-outline" size="small" *ngIf="showSpeakerCatalogActions == 'Logo'"></ion-icon>
+         </ion-buttons>
+       </ion-toolbar>
+
+       <div *ngIf="showSpeakerCatalogActions == 'Logo'">
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Izquierda </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.logoLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Superior </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.logoTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Ancho </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.logoWidth"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Largo </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.logoHeight"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+       </div>
+
+       
+       <ion-toolbar class="separator-text" (click)="showSpeakerCatalogActions == 'Profession' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'Profession'">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Etiqueta Profesión
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-icon name="chevron-down-outline" size="small" [hidden]="showSpeakerCatalogActions == 'Profession'"></ion-icon>
+            <ion-icon name="chevron-up-outline" size="small" *ngIf="showSpeakerCatalogActions == 'Profession'"></ion-icon>
+         </ion-buttons>
+       </ion-toolbar>
+
+       <div *ngIf="showSpeakerCatalogActions == 'Profession'">
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Superior </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.professionTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Izquierda </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.professionLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Color de letra</ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <ion-label (click)="bannerSelect.speakerCatalog.professionFontColor = '';">Clear </ion-label>
+                   <ion-icon name="close-outline" (click)="bannerSelect.speakerCatalog.professionFontColor = '';">  </ion-icon>
+                   <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"  [(ngModel)]="bannerSelect.speakerCatalog.professionFontColor"/> 
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tipo de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.speakerCatalog.professionFontFamily" (change)="onChangeItem()" >
+                   <option selected="selected" [hidden]="bannerSelect.fontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+                   <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tamaño de letra </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.speakerCatalog.professionFontSize"/> 
+                   px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Grosor de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.speakerCatalog.professionFontWeight" (change)="onChangeItem()" >
+                   <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+       </div>
+  
+       <ion-toolbar class="separator-text" (click)="showSpeakerCatalogActions == 'ImageProfile' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'ImageProfile'">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Imágen Conferencista
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-icon name="chevron-down-outline" size="small" [hidden]="showSpeakerCatalogActions == 'ImageProfile'"></ion-icon>
+            <ion-icon name="chevron-up-outline" size="small" *ngIf="showSpeakerCatalogActions == 'ImageProfile'"></ion-icon>
+         </ion-buttons>
+       </ion-toolbar>
+
+       <div *ngIf="showSpeakerCatalogActions == 'ImageProfile'">
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Superior </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.imagesTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Izquierda </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.imagesLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Ancho </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.speakerCatalog.imagesWidth"/> 
+                   px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Largo </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.speakerCatalog.imagesHeight"/> 
+                   px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-card-subtitle> Ancho botón color</ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.speakerCatalog.imagestitleWidth"/> 
+                    px
+                </ion-card-subtitle>
+               </ion-buttons>
+          </ion-toolbar>
+       </div>
+  
+    </ion-list>
+   </ion-card-content>
+   
+   <ion-card-content *ngIf="tabSelect == 'productCatalog'" class="content-scroll">
+     <ion-list>
+          <ion-toolbar class="separator-text"  (click)="showProductCatalogActions == 'Title' ? showProductCatalogActions = null : showProductCatalogActions = 'Title'">
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Etiqueta Título 
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-icon name="chevron-down-outline" size="small" [hidden]="showProductCatalogActions == 'Title'"></ion-icon>
+                <ion-icon name="chevron-up-outline" size="small" *ngIf="showProductCatalogActions == 'Title'"></ion-icon>
+             </ion-buttons>
+          </ion-toolbar>
+
+     
+       <div *ngIf="showProductCatalogActions == 'Title'">
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Superior </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.titleTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Izquierda  </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.titleLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tamaño de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.titleFontSize"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Color de letra</ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <ion-label (click)="bannerSelect.productCatalog.titleFontColor = '';">Clear </ion-label>
+                   <ion-icon name="close-outline" (click)="bannerSelect.productCatalog.titleFontColor = '';">  </ion-icon>
+                   <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"  [(ngModel)]="bannerSelect.productCatalog.titleFontColor"/> 
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tipo de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.productCatalog.titleFontFamily" (change)="onChangeItem()" >
+                   <option selected="selected" [hidden]="bannerSelect.productCatalog.titleFontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+                   <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Grosor de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.productCatalog.titleFontWeight" (change)="onChangeItem()" >
+                   <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+       </div>
+       
+       <ion-toolbar class="separator-text" (click)="showProductCatalogActions == 'Description' ? showProductCatalogActions = null : showProductCatalogActions = 'Description'">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Descripción
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-icon name="chevron-down-outline" size="small" [hidden]="showProductCatalogActions == 'Description'"></ion-icon>
+            <ion-icon name="chevron-up-outline" size="small" *ngIf="showProductCatalogActions == 'Description'"></ion-icon>
+         </ion-buttons>
+       </ion-toolbar>
+
+       <div *ngIf="showProductCatalogActions == 'Description'">
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Arriba </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.descTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Izquierda  </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.descLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Ancho </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.descWidth"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tamaño de letra 
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.descFontSize"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Color de letra</ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <ion-label (click)="bannerSelect.productCatalog.descFontColor = '';">Clear </ion-label>
+                   <ion-icon name="close-outline" (click)="bannerSelect.productCatalog.descFontColor = '';">  </ion-icon>
+                   <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"  [(ngModel)]="bannerSelect.productCatalog.descFontColor"/> 
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tipo de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.productCatalog.descFontFamily" (change)="onChangeItem()" >
+                   <option selected="selected" [hidden]="bannerSelect.productCatalog.descFontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+                   <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Grosor de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.productCatalog.descFontWeight" (change)="onChangeItem()" >
+                   <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Alineación de Texto </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <select [(ngModel)]="bannerSelect.productCatalog.descTextAlign" (change)="onChangeItem()" >
+                <option *ngFor="let textAlign of textAligns" value="{{textAlign.value}}">{{textAlign.label}}</option>
+                </select>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Interlineado de Texto </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                {{ bannerSelect.productCatalog.lineHeightUnit }} . 
+                <input class="mt-2 ml-2 line-height-mili" type="number" size="4" (change)="onChangeItemTextLineHeight(bannerSelect.productCatalog)"  [(ngModel)]="bannerSelect.productCatalog.lineHeightMili"/>
+             </ion-buttons>
+          </ion-toolbar>
+       </div>
+       
+       
+       
+       <ion-toolbar class="separator-text" (click)="showProductCatalogActions == 'Button' ? showProductCatalogActions = null : showProductCatalogActions = 'Button'">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Botón
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-icon name="chevron-down-outline" size="small" [hidden]="showProductCatalogActions == 'Button'"></ion-icon>
+            <ion-icon name="chevron-up-outline" size="small" *ngIf="showProductCatalogActions == 'Button'"></ion-icon>
+         </ion-buttons>
+       </ion-toolbar>
+
+       <div *ngIf="showProductCatalogActions == 'Button'">
+       
+              <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Título </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="text" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.buttonLabel"/>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Derecha </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.buttonRight"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Inferior </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.buttonBottom"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Ancho </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.buttonWidth"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Largo </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.buttonHeight"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Color de Fondo</ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <ion-label (click)="bannerSelect.productCatalog.buttonBackgroundColor = '';">Clear </ion-label>
+                   <ion-icon name="close-outline" (click)="bannerSelect.productCatalog.buttonBackgroundColor = '';">  </ion-icon>
+                   <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()" [(ngModel)]="bannerSelect.productCatalog.buttonBackgroundColor"/> 
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Color de letra</ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <ion-label (click)="bannerSelect.productCatalog.buttonFontColor = '';">Clear </ion-label>
+                   <ion-icon name="close-outline" (click)="bannerSelect.productCatalog.buttonFontColor = '';">  </ion-icon>
+                   <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"  [(ngModel)]="bannerSelect.productCatalog.buttonFontColor"/> 
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tipo de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.productCatalog.buttonFontFamily" (change)="onChangeItem()" >
+                   <option selected="selected" [hidden]="bannerSelect.fontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+                   <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tamaño de letra </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.productCatalog.buttonFontSize"/> 
+                   px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Grosor de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.productCatalog.buttonFontWeight" (change)="onChangeItem()" >
+                   <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Alineación de Texto </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <select [(ngModel)]="bannerSelect.productCatalog.buttonTextAlign" (change)="onChangeItem()" >
+                <option *ngFor="let textAlign of textAligns" value="{{textAlign.value}}">{{textAlign.label}}</option>
+                </select>
+             </ion-buttons>
+          </ion-toolbar>
+       </div>
+
+       
+       <ion-toolbar class="separator-text" (click)="showProductCatalogActions == 'Price' ? showProductCatalogActions = null : showProductCatalogActions = 'Price'">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Etiqueta Precio
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-icon name="chevron-down-outline" size="small" [hidden]="showProductCatalogActions == 'Price'"></ion-icon>
+            <ion-icon name="chevron-up-outline" size="small" *ngIf="showProductCatalogActions == 'Price'"></ion-icon>
+         </ion-buttons>
+       </ion-toolbar>
+
+       <div *ngIf="showProductCatalogActions == 'Price'">
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Superior </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.priceTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Izquierda </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.priceLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-card-subtitle> Color de letra</ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <ion-label (click)="bannerSelect.productCatalog.buttonFontColor = '';">Clear </ion-label>
+                   <ion-icon name="close-outline" (click)="bannerSelect.productCatalog.buttonFontColor = '';">  </ion-icon>
+                   <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"  [(ngModel)]="bannerSelect.productCatalog.priceFontColor"/> 
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tipo de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.productCatalog.priceFontFamily" (change)="onChangeItem()" >
+                   <option selected="selected" [hidden]="bannerSelect.fontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+                   <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Tamaño de letra </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.productCatalog.priceFontSize"/> 
+                   px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Grosor de letra
+                </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <select [(ngModel)]="bannerSelect.productCatalog.priceFontWeight" (change)="onChangeItem()" >
+                   <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+                   </select>
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+       </div>
+  
+       <ion-toolbar class="separator-text" (click)="showProductCatalogActions == 'Images' ? showProductCatalogActions = null : showProductCatalogActions = 'Images'">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Carrete de Imágenes
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-icon name="chevron-down-outline" size="small" [hidden]="showProductCatalogActions == 'Images'"></ion-icon>
+            <ion-icon name="chevron-up-outline" size="small" *ngIf="showProductCatalogActions == 'Images'"></ion-icon>
+         </ion-buttons>
+       </ion-toolbar>
+
+       <div *ngIf="showProductCatalogActions == 'Images'">
+          <ion-toolbar>
+             <ion-card-subtitle> Margen Superior </ion-card-subtitle>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.imagesTop"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Margen Izquierda </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.productCatalog.imagesLeft"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Ancho </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.productCatalog.imagesWidth"/> 
+                   px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Largo </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.productCatalog.imagesHeight"/> 
+                   px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-card-subtitle> Ancho botón color</ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.productCatalog.imagesPriceWidth"/> 
+                    px
+                </ion-card-subtitle>
+               </ion-buttons>
+          </ion-toolbar>
+       </div>
+  
+  </ion-list>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'font'">
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Texto 
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <ion-button (click)="onClickOpenHtml(bannerSelect,'text')"> html
+               </ion-button>
+               <input [hidden]="bannerSelect.isHtml" class="mt-2 ml-2" type="text" (change)="onChangeItem()" [(ngModel)]="bannerSelect.text"/>
+               <input *ngIf="bannerSelect.isHtml" (click)="onClickOpenHtml(bannerSelect,'text')" class="mt-2 ml-2" type="text" readonly [(ngModel)]="bannerSelect.text"/>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-card-subtitle> Color de letra</ion-card-subtitle>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <ion-label (click)="scene.backgroundColor = '';">Clear </ion-label>
+               <ion-icon name="close-outline" (click)="bannerSelect.fontColor = '';">  </ion-icon>
+               <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()" [(ngModel)]="bannerSelect.fontColor"/> 
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Tipo de letra
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <select [(ngModel)]="bannerSelect.fontFamily" (change)="onChangeItem()" >
+               <option selected="selected" [hidden]="bannerSelect.fontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+               <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
+               </select>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Tamaño de letra </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.fontSize"/> 
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Grosor de letra
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <select [(ngModel)]="bannerSelect.fontWeight" (change)="onChangeItem()" >
+               <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
+               </select>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Alineación de Texto </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <select [(ngModel)]="bannerSelect.textAlign" (change)="onChangeItem()" >
+            <option *ngFor="let textAlign of textAligns" value="{{textAlign.value}}">{{textAlign.label}}</option>
+            </select>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Interlineado de Texto </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            {{ bannerSelect.lineHeightUnit }} . 
+            <input class="mt-2 ml-2 line-height-mili" type="number" size="4" (change)="onChangeItemTextLineHeight(bannerSelect)"  [(ngModel)]="bannerSelect.lineHeightMili"/>
+         </ion-buttons>
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'tooltip'">
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Texto
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="text"  (change)="onChangeItem()"  [(ngModel)]="bannerSelect.tooltipText"/>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-card-subtitle> Izquierda </ion-card-subtitle>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="number"  (change)="onChangeItem()"  [(ngModel)]="bannerSelect.toolPositionLeft"/>
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Arriba
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.toolPositionTop"/>
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Ancho
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.toolPositionWidth"/>
+               px
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Tooltip Arrow
+            </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <select [(ngModel)]="bannerSelect.toolTipArrow" (change)="onChangeItem()" >
+               <option *ngFor="let arrow of toolTipArrowStyles" value="{{arrow.value}}">{{arrow.label}}</option>
+               </select>
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'border'">
+      <ion-toolbar line="solid">
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Estilo del borde  </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <select placeholder="Select One" [(ngModel)]="bannerSelect.border.style" (change)="onChangeItem()" >
+            <option *ngFor="let style of borderStyles" value="{{style}}">{{style}}</option>
+            </select>
+         </ion-buttons>
+      </ion-toolbar>
+      <div *ngIf="bannerSelect.border.style!='none' || bannerSelect.border.style!='hidden'">
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Color del borde</ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-label (click)="bannerSelect.border.color = '';">Clear </ion-label>
+               <ion-icon name="close-outline" (click)="bannerSelect.border.color = '';">  </ion-icon>
+               <ion-card-subtitle>
+                  <input [ngStyle]="{'opacity': tabMenuObj.backgroundColor == '' ? '0.5' : '1' }"
+                  [disabled]="bannerSelect.border.style=='none'" (change)="onChangeItemColor()"  class="mt-2 ml-2" type="color" [(ngModel)]="bannerSelect.border.color"/> 
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Redondear Borde </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <input class="mt-2 ml-2 mr-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.border.radius"/> px
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Ancho del borde  </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <input [disabled]="bannerSelect.border.style=='none'"  (change)="onChangeItem()"  class="mt-2 ml-2 m-2" type="number" [(ngModel)]="bannerSelect.border.width"/> px
+            </ion-buttons>
+         </ion-toolbar>
+      </div>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'css'"  class="toolbar-styles-scroll">
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Clases CSS </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="text" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.class"/> 
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Estilos CSS </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="text" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.style"/> 
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Sombra </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-chip [color]="bannerSelect.shadowActivate ? 'primary' : ''" (click)="bannerSelect.shadowActivate = !bannerSelect.shadowActivate">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <ion-label>{{ bannerSelect.shadowActivate ? 'Con sombra': 'Sin sombra' }}</ion-label>
+            </ion-chip>
+            <div *ngIf="bannerSelect.shadowActivate" class="card-shadow" [ngStyle]="{'box-shadow': ( bannerSelect.shadowActivate ?  bannerSelect?.shadowRight+'px ' + bannerSelect?.shadowDown+'px '+ bannerSelect?.shadowDisperse+'px '  +  bannerSelect?.shadowExpand+'px ' +  ( bannerSelect?.shadowColor || 'black') : '' )}">
+            </div>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="bannerSelect.shadowActivate">
+         <ion-list>
+            <ion-item>
+               <ion-buttons>
+                  <ion-card-subtitle> Derecha </ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <input size="2" class="mt-2 mr-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.shadowRight"/> 
+                  px
+               </ion-buttons>
+            </ion-item>
+            <ion-item>
+               <ion-buttons>
+                  <ion-card-subtitle> Abajo </ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <input size="2" class="mt-2 mr-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.shadowDown"/> 
+                  px
+               </ion-buttons>
+            </ion-item>
+            <ion-item>
+               <ion-buttons>
+                  <ion-card-subtitle> Dispersar </ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <input size="2" class="mt-2 mr-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.shadowDisperse"/> 
+                  px
+               </ion-buttons>
+            </ion-item>
+            <ion-item>
+               <ion-buttons>
+                  <ion-card-subtitle> Expandir </ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <input size="2" class="mt-2 mr-2" type="number" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.shadowExpand"/> 
+                  px
+               </ion-buttons>
+            </ion-item>
+            <ion-item>
+               <ion-buttons>
+                  <ion-card-subtitle> Color </ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <input size="2" class="mt-2 mr-2" type="color" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.shadowColor"/>
+               </ion-buttons>
+            </ion-item>
+         </ion-list>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-card-subtitle> Efectos especiales</ion-card-subtitle>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-list>
+            <ion-item>
+               <ion-card-subtitle>Iniciar en EscalaGris</ion-card-subtitle>
+               <ion-checkbox slot="end" [(ngModel)]="bannerSelect.grayscale" (click)="onChangeEffect(effect)"></ion-checkbox>
+            </ion-item>
+            <ion-item *ngFor="let effect of hoverEffects">
+               <ion-card-subtitle>{{effect.name}}</ion-card-subtitle>
+               <ion-checkbox slot="end" [(ngModel)]="effect.isChecked" (click)="onChangeEffect(effect)"></ion-checkbox>
+            </ion-item>
+         </ion-list>
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-card-content *ngIf="tabSelect == 'link'">
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> External URL </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <ion-card-subtitle>
+               <input class="mt-2 ml-2" type="text" (change)="onChangeItem()"  [(ngModel)]="bannerSelect.externalUrl"/> 
+            </ion-card-subtitle>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Ir a escenas de la feria </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <select [(ngModel)]="bannerSelect.internalUrl" class="w-100" (change)="onChangeItem()" >
+            <option *ngFor="let link of internalUrlList.fair" value="{{link.value}}">{{link.label}}</option>
+            </select>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Ir a escenas de pabellón </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <select [(ngModel)]="bannerSelect.internalUrl" (change)="onChangeItem()" >
+            <option *ngFor="let link of internalUrlList.pavilions" value="{{link.value}}">{{link.label}}</option>
+            </select>
+         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+         <ion-buttons slot="start">
+            <ion-card-subtitle> Ir a escena de local comercial </ion-card-subtitle>
+         </ion-buttons>
+         <ion-buttons slot="end">
+            <select [(ngModel)]="bannerSelect.internalUrl" class="w-100" (change)="onChangeItem()" >
+            <option *ngFor="let link of internalUrlList.stands" value="{{link.value}}">{{link.label}}</option>
+            </select>
+         </ion-buttons>
+      </ion-toolbar>
+   </ion-card-content>
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-card-subtitle>  </ion-card-subtitle>
+      </ion-buttons>
+      <ion-buttons slot="end">
+         <ion-card-subtitle>
+            <ion-label color="primary"> Rowid </ion-label>
+            <input type="number" [(ngModel)]="bannerSelect.rowId" (change)="onRender()"/>
+            <ion-label color="primary"> Colid </ion-label>
+            <input type="number" [(ngModel)]="bannerSelect.columnId" (change)="onRender()"/>
+            <ion-label color="primary"> GroupId </ion-label>
+            <input type="number" [(ngModel)]="bannerSelect.groupId" (change)="onRender()"/>
+
+            
+            <ion-button size="small" color="primary" (click)="onCopyBanner([bannerSelect]); showPanelTool = null;">
+               <ion-label color="primary"> Copiar </ion-label>
+               <ion-icon slot="end" name="copy-outline"></ion-icon>
+            </ion-button>
+            <ion-button size="small" color="danger" (click)="onDeleteBanner(bannerSelect)">
+               <ion-text color="danger"> Borrar</ion-text>
+               <ion-icon slot="end" name="trash-outline"></ion-icon>
+            </ion-button>
+         </ion-card-subtitle>
+      </ion-buttons>
+   </ion-toolbar>
+</ion-card>
+</div>
+<!--  Panel Menu Tabs -->
+<div *ngIf="showPanelTool=== 'menuTabs'  && !tabMenuOver" class="tabmenu-panel">
+   <div class="close" (click)="showPanelTool = null">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+   </div>
+   <ion-card class="scene-panel">
+      <ion-card-header>
+         <ion-card-title>Configuración de Menú Tabs </ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="card-content-panel">
+         <ion-toolbar class="padding-container" style="margin-top:-10px;">
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Mostrar en posición </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <select [(ngModel)]="scene.menuTabs.position" (change)="onChangeMenuTabs()">
+                  <option value="none">No mostrar</option>
+                  <option value="top">Arriba</option>
+                  <option value="bottom">Abajo</option>
+                  <option value="left">a la Izquierda</option>
+                  <option value="right">a la Derecha</option>
+                  </select>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-list [hidden]="scene.menuTabs.position === 'none'" *ngIf="tabMenuObj">
+         <ion-toolbar class="padding-container" style="margin-top: -17px;">
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Menú {{ scene.menuTabs.showMenuParent  ? 'por default' : 'personalizado'  }}</ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <ion-chip [color]="scene.menuTabs.showMenuParent ? 'primary' : ''" (click)="toogleTabMenu()">
+                  <ion-icon name="checkmark-circle"></ion-icon>
+                  </ion-chip>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar class="padding-container" style="margin-top: -10px;">
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Icono </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <input (keyup)="onChangeMenuTabs()" class="mt-2 ml-2" type="text" [(ngModel)]="tabMenuObj.icon" (change)="onChangeMenuTabs()"/>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar class="padding-container" style="margin-top: -10px;">
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Color de fondo </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-label (click)="tabMenuObj.backgroundColor = '';">Clear </ion-label>
+               <ion-icon name="close-outline" (click)="tabMenuObj.backgroundColor = ''; onChangeBackgroundStyle();">  </ion-icon>
+               <ion-card-subtitle>
+                  <input [ngStyle]="{'opacity': tabMenuObj.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" 
+                  (change)="onChangeColorTabMenu()"
+                  (ionChange)="onChangeColorTabMenu()" type="color" [(ngModel)]="tabMenuObj.backgroundColor"/>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar class="padding-container" style="margin-top: -10px;">
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Color fondo de logo</ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-label (click)="tabMenuObj.backgroundColorLogo = '';">Clear </ion-label>
+               <ion-icon name="close-outline" (click)="tabMenuObj.backgroundColorLogo = '';">  </ion-icon>
+               <ion-card-subtitle>
+                  <input [ngStyle]="{'opacity': tabMenuObj.backgroundColorLogo == '' ? '0.5' : '1' }" class="mt-2 ml-2" 
+                  (change)="onChangeColorTabMenu()"
+                  (ionChange)="onChangeColorTabMenu()" type="color" [(ngModel)]="tabMenuObj.backgroundColorLogo"/>
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-grid>
+            <ion-row>
+               <ion-toolbar class="padding-container" style="margin-top: -14px;">
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> Iconos y Acciones </ion-card-subtitle>
+                  </ion-buttons>
+               </ion-toolbar>
+            </ion-row>
+            <ion-row class="padding-container">
+               <ion-col button="true" *ngFor="let tab of tabMenuObj.actions;let i = index" button="true">
+                  <ion-button [fill]="tab.fill" [color]="tab.colorbtn" class="btn-tab-menu-icon"
+                  (click)="setModifyTab(tab,i)">
+                  <ion-icon [slot]="tab.title !== '' ? 'start': 'icon-only'" [name]="tab.icon"></ion-icon>
+                  {{tab.title}}
+                  </ion-button> 
+               </ion-col>
+               <ion-col button="true" button="true">
+                  <ion-button fill="fill" color="Primary" class="btn-tab-menu-icon"
+                     (click)="tabMenuInstance = {'isNew':true}">
+                     Nuevo Tab
+                     <ion-icon slot="end" name="add-outline"></ion-icon>
+                  </ion-button>
+               </ion-col>
+            </ion-row>
+         </ion-grid>
+         <div *ngIf="tabMenuInstance">
+            <ion-item>
+               <ion-card-subtitle> {{ !tabMenuInstance.isNew ? 'Modificar': 'Nuevo' }} Menú Tab</ion-card-subtitle>
+               <ion-button color="primary" [disabled]="tabMenuInstance?.icon == ''" class="panel-scene-save" (click)="onSaveTabMenu()">
+               <ion-icon name="save-outline"></ion-icon>
+               </ion-button>
+            </ion-item>
+            <div class="padding-container">
+               <ion-toolbar>
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> Título </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-card-subtitle>
+                        <input class="mt-2 ml-2" type="text" [(ngModel)]="tabMenuInstance.title"/> 
+                     </ion-card-subtitle>
+                  </ion-buttons>
+               </ion-toolbar>
+               <ion-toolbar>
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> Icono de menú </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-card-subtitle style="margin-top: -19px;">
+                        <select [(ngModel)]="tabMenuInstance.icon" (change)="onChangeMenuTabs()" style="width: 109px;">
+                        <option  *ngFor="let menuIcon of menuIcons" value="{{menuIcon}}">{{menuIcon}}</option>
+                        </select>
+                        <ion-icon class="ml-4" style="font-size: 30px;"  [name]="tabMenuInstance.icon"></ion-icon>
+                     </ion-card-subtitle>
+                  </ion-buttons>
+               </ion-toolbar>
+               <ion-toolbar>
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> Estilo del botón </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-card-subtitle>
+                        <select [(ngModel)]="tabMenuInstance.fill" (change)="onChangeMenuTabs()" style="width: 114px;">
+                        <option value="clear">clear</option>
+                        <option value="default">default</option>
+                        <option value="outline">outline</option>
+                        <option value="solid">solid</option>
+                        <option value="undefined">undefined</option>
+                        </select>
+                     </ion-card-subtitle>
+                  </ion-buttons>
+               </ion-toolbar>
+               <ion-toolbar>
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> Color del botón </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-card-subtitle>
+                        <select [(ngModel)]="tabMenuInstance.colorbtn" (change)="onChangeMenuTabs()" style="width: 114px;">
+                        <option value="primary">primary</option>
+                        <option value="secondary">secondary</option>
+                        <option value="tertiary">tertiary</option>
+                        <option value="success">success</option>
+                        <option value="warning">warning</option>
+                        <option value="danger">danger</option>
+                        <option value="light">light</option>
+                        <option value="medium">medium</option>
+                        <option value="dark">dark</option>
+                        </select>
+                     </ion-card-subtitle>
+                  </ion-buttons>
+               </ion-toolbar>
+               <ion-toolbar>
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> Enlace </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-card-subtitle style="margin-top: -19px;">
+                        <select class="select2_group form-control" [(ngModel)]="tabMenuInstance.link">
+                        <optgroup *ngFor="let group of groupOfLinks" label="{{group.label}}">
+                           <option *ngFor="let link of group.links" value="{{link.value}}">{{link.label}}</option>
+                        </optgroup>
+                        </select>
+                     </ion-card-subtitle>
+                  </ion-buttons>
+               </ion-toolbar>
+               <ion-toolbar [hidden]="tabMenuInstance.isNew">
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle>
+                        <ion-label color="danger">Borrar Menu Tab</ion-label>
+                     </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-button (click)="onDeleteTabMenu(tabMenuInstance)" color="danger">
+                        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                     </ion-button>
+                  </ion-buttons>
+               </ion-toolbar>
+            </div>
+         </div>
+         </ion-list>
+      </ion-card-content>
+   </ion-card>
+</div>
+<app-tab-menu-scenes 
+(mouseover)="tabMenuOver = true; bannerSelectHover = {};"
+(mouseout)="tabMenuOver = false; bannerSelectHover = null;"
+#menuTabs [editor]="true" [menuTabs]="tabMenuObj"
+[position]="scene?.menuTabs?.position"  ></app-tab-menu-scenes>
+<div style="position: absolute" [ngStyle]="{'top': (showHtmlEditor ? '56':'-1000')+ 'px' , 'z-index': (showHtmlEditor ? '10':'-1')+ 'px'}">
+   <ion-button size="small" color="danger" fill="outline" class="close-html-button" (click)="onCleanHtml()">
+      <ion-label>Limpiar</ion-label>
+   </ion-button>
+   <ion-button size="small" color="medium" fill="outline" class="clean-html-button" (click)="onCloseHtml()">
+      <ion-label>Cancelar</ion-label>
+   </ion-button>
+   <ion-button  size="small"  color="primary" fill="outline" class="accept-html-button" (click)="onAcceptHtml()" style="margin-left: 94%;">
+      <ion-label>Aceptar</ion-label>
+   </ion-button>
+   <div id="content-editorhtml"><textarea id="editorhtml"></textarea>
+   </div>
+</div>

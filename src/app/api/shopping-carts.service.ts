@@ -30,7 +30,7 @@ export class ShoppingCarts {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };     
-            this.http.get(`/api/store/shopping-cart/list?fair_id=${fair.id}`,httpOptions)
+            this.http.get(`/api/list/shopping-cart/list?fair_id=${fair.id}`,httpOptions)
             .pipe(
               timeout(30000),
               catchError((e: any) => {
@@ -100,8 +100,7 @@ export class ShoppingCarts {
     });
   }
  
- 
-  removeShoppingCart(fair: any, shoppingCart: any): any {
+  removeShoppingCart(shoppingCart: any): any {
     
     return new Promise((resolve, reject) => {
         
@@ -111,8 +110,8 @@ export class ShoppingCarts {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };
-  
-           this.http.delete(`/api/add/shopping-cart/${fair.id}/${shoppingCart.id}`,httpOptions)
+           const data = {'id': shoppingCart.id, 'state':'A'};
+           this.http.post(`/api/update/shopping-cart/`,data,httpOptions)
             .pipe(
               timeout(30000),
               catchError((e: any) => {
@@ -126,7 +125,7 @@ export class ShoppingCarts {
               })
             )
             .subscribe((data : any )=> {
-                if(data.success == 201) {
+                if(data.success == 201 || data.success == true) {
                    resolve(data);
                 }
                 else {

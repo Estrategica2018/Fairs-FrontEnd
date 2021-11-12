@@ -310,3 +310,37 @@ ion-router-outlet {
 .speaker-modal::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+
+
+.tool-tip {
+  z-index: 10;
+}
+
+.tooltip-text {
+  display: none;
+  position: absolute;
+  left: 58px;
+  top: 7px;
+  background-color: black;
+  padding: 8px;
+  border-radius: 11px;
+  color: #fff;
+  width: 8em;
+  z-index: 19;
+  font-size: 1.3em;
+}
+
+.tooltip-text.arrow--2 {
+  left: -160px;
+  width: 11em;
+}
+
+.tool-tip:hover {
+  z-index: 19;
+}
+
+.tool-tip:hover~.tooltip-text{
+  display: block;
+}
+

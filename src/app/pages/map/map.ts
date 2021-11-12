@@ -697,9 +697,14 @@ export class MapPage implements OnInit {
   }
   
   goToUrl(banner) {
-   const url = banner.externalUrl ? `${banner.externalUrl}` : banner.internalUrl ? `${banner.internalUrl}` : '';
-   const windowReference = window.open();
-   windowReference.location.href = url;
+    if(banner.externalUrl) {
+      const windowReference = window.open();
+      windowReference.location.href = banner.externalUrl;
+    }
+    else if(banner.internalUrl) {
+      this.redirectTo(banner.internalUrl);
+    }
+   
   }
     
 }
