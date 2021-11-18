@@ -4,8 +4,9 @@
   </div>
   <div class="info-background">
   </div>
+  <div (click)="closeModal()" class="close-modal"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
   
-  <h2 class="name ion-text-center">Carrito de compras</h2>
+  <h2 class="name ion-text-center">Carrito de compras </h2>
   
       <ion-grid style="padding-left: 1.2em; margin: 0px;">
         <ion-row class="name border-line ion-text-center">
@@ -34,30 +35,30 @@
                 <div> 
                     {{ shoppingCart.product_price.product.name}}
                 </div>
-                <div *ngFor="let attr of shoppingCart.product_price.resources.attributesStr"> 
+                <!--div *ngFor="let attr of shoppingCart.product_price.resources.attributesStr"> 
                   {{ attr.label }} : {{ attr.value }}
-                </div>
+                </div-->
               </div>
             </ion-col>
             <ion-col size="2"> <h6>{{shoppingCart.amount}} </h6></ion-col>
             <ion-col size="3"> <h6> {{ ( shoppingCart.product_price.price || shoppingCart.product_price.product.price ) | currency: '$ ':'symbol':'1.0-0'}} </h6></ion-col>
             <ion-col size="2"> <h6> {{ ( shoppingCart.product_price.price ? shoppingCart.product_price.price * shoppingCart.amount : shoppingCart.amount * shoppingCart.product_price.product.price ) | currency: '$ ':'symbol':'1.0-0' }} </h6></ion-col>
             <ion-col size="1"  class="tool-tip cursor-pointer" (click)="presenterDelete(shoppingCart)"> 
-              <h6 color="danger"> x </h6>
+              <ion-label color="danger" style="font-size: 2.9em;"> x </ion-label>
             </ion-col>
             <span class="tooltip-text" *ngIf="fullScreen">Eliminar</span>
           </ion-row>
           </div>
-          <ion-row class="name ion-text-center">
+          <!--ion-row class="name ion-text-center">
             <ion-col size="6"></ion-col>
             <ion-col size="3"> <h6> Total </h6></ion-col>
             <ion-col size="2"> <h6> {{ totalAmount | currency: '$ ':'symbol':'1.0-0' }}</h6></ion-col>
             <ion-col size="1"> </ion-col>
-          </ion-row>
-        <ion-row style="margin-top: -2em;">
+          </ion-row-->
+        <ion-row style="margin-top: 2em;">
             <ion-col class="ion-text-center">
               <ion-toolbar  class="ion-text-right" *ngIf="totalAmount > 0">
-                <ion-button class="button mr-6" color="primary" size="small" (click)="onBuyProduct(product)">
+                <ion-button class="button mr-6" color="primary" size="small" (click)="closeModal()" *ngIf="_continue" style="height: 3em; margin-top: -0.5em;">
                   Agregar más productos 
                   <ion-icon name="cart-outline">
                   </ion-icon>
@@ -65,13 +66,13 @@
                 
                 <button class="button-price" ion-button icon-start (click)="showPaymentButton()">
                   <ion-icon name="bookmark"></ion-icon>
-                   Paga <strong>  {{objPrice?.price  | currency: 'COP $ ':'symbol':'1.0'}} </strong>
+                   Paga <strong>  {{ totalAmount | currency: '$ ':'symbol':'1.0-0' }} </strong>
                 </button>
                 
-                <ion-button [hidden]="showSelectAmount" class="button ml-6" color="primary" size="small" (click)="openSelect()">
-                  Pagar  <!--ion-icon name="logo-usd"> </ion-icon--> {{ totalAmount | currency: '$ ':'symbol':'1.0-0' }}
+                <!--ion-button [hidden]="showSelectAmount" class="button ml-6" color="primary" size="small" (click)="showPaymentButton()">
+                  Pagar  <ion-icon name="logo-usd"> </ion-icon> {{ totalAmount | currency: '$ ':'symbol':'1.0-0' }}
                   
-                </ion-button>
+                </ion-button-->
                 
               </ion-toolbar>
             </ion-col>

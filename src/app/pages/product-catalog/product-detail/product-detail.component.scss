@@ -38,7 +38,12 @@ $blue-light-color: #F5F6FF;
 
 .col-max {
   overflow: auto;
-  height: 40em;
+  height: 47em;
+}
+
+.pay-button {
+  position: absolute;
+  bottom: -3em;
 }
 
 .thumbnail {
@@ -67,27 +72,77 @@ $blue-light-color: #F5F6FF;
 .select-amount {
   height: 3em;
   width: 13em;
+  right: 21em;
+  position: absolute;
+  top: 1.3em;
 }
 
 .attribute-list {
-  border: 1px solid gray;
-  border-radius: 14px;
-  background: #9d9fa6;
   font-size: 1.2em;
-  margin-top: 3em;
-  ion-row {
+  margin-top: 2em;
   
+  .head {
+    background: #7163AA;
+    text-align: center;
+    color: white;
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+    height: 2.4em;
+    padding-top: 0.4em;
+    font-size: 1.2em;
   }
   ion-row.par {
-    background: #f4f5f8;
     width: 107%;
     margin-left: -0.5em;
     padding-left: 0.5em;
   }
 }
 
+.attribute {
+  background-color: rgb(230,232,250,0.2);
+}
+
+.attribute.par {
+  background-color: rgb(214,202,221,0.2);
+}
+
+.attribute div {
+  /*border: 1px solid rgb(248, 249, 250);*/
+}
+
+.border-light-b {
+  border: 1px solid rgb(248, 249, 250);
+}
+
+
 @media (min-width: 598px) {
  .bullet .right {
    left: 3.3em;
  }
+}
+
+.footer-pay {
+  left: -1em;
+  width: 103%;
+  text-align: center;
+  --background: lightgray;
+}
+
+.close-play {
+  font-size: 2.2em;
+}
+
+.close-modal {
+  cursor: pointer; 
+  position: absolute;
+  right: 0.7em;
+  top: 0;
+  font-size: 2.5em;
+  color: darkgray;
+  z-index: 100;
+}
+
+.attribute-scroll {
+  height: 18em;
+  overflow: auto;
 }

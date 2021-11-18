@@ -32,52 +32,61 @@
          </ion-buttons>
        </ion-item>
        
-      <ion-item button="true" (click)="presentActionPrice()">
-       <ion-label> Precio por referencia </ion-label>
-       <ion-buttons>
-          <ion-label slot="end"> {{productPrice.price  | currency: 'COP $ ':'symbol':'1.2-2'}}</ion-label>
+      <ion-item button="true" [ngStyle]="{ 'opacity' : ( !productPrice.resources.mainPrice ? '0.5' : '1' ) }">
+       <ion-label> Precio base del producto </ion-label>
+        <ion-buttons>
+          <ion-chip [color]="productPrice.resources && productPrice.resources.mainPrice ? 'primary' : ''" (click)="changeMainPrice()">
+             <ion-icon name="checkmark-circle"></ion-icon>
+             <ion-label> {{product?.price  | currency: '$ ':'symbol':'1.0-0'}}</ion-label>
+          </ion-chip>
         </ion-buttons>
       </ion-item>
-    
+       
+      <ion-item button="true" (click)="presentActionPrice()" [disabled]="productPrice.resources.mainPrice">
+       <ion-label> Precio por referencia </ion-label>
+       <ion-buttons>
+          <ion-label slot="end" [hidden]="productPrice.resources.mainPrice"> {{productPrice.price  | currency: '$ ':'symbol':'1.0-0'}}</ion-label>
+        </ion-buttons>
+      </ion-item>
 
-      <div class="container-attr mt-4 mb-4" *ngIf="productPrice.id && productPrice.resources && productPrice.resources.attributes">
+      <div class="container-attr mb-4" *ngIf="productPrice.id && productPrice.resources && productPrice.resources.attributes">
           <ion-item lines="none" *ngIf="productPrice.id" [ngClass]="{'mt-4': productPrice.id}">
              <ion-label class="ion-text-wrap" slot="start">Atributos Físicos</ion-label>
              <ion-buttons slot="end">
-                <ion-button (click)="newAttr={'key':'','value':''}">
+                <ion-button (click)="newAttr={'name':'','value':''}">
                   <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
                 </ion-button>
              </ion-buttons>
           </ion-item>
           
-          <!-- attribute list-->
-          <ion-item>
+          <!-- attribute Color-->
+           <ion-item>
             <ion-label>  
                 Color
             </ion-label>
             <div (click)="openColors();" class="d-flex color-small">
+              <span class="mr-4" >{{attrColor?.label}}</span>
               <div *ngIf="attrColor?.value" class="label-color-small" 
-               [ngStyle]="{'background-color':attrColor.value}">
+               [ngStyle]="{'background-color':attrColor?.value}">
               </div>
               <div [hidden]="attrColor?.value" class="label-color-small" 
-               [ngStyle]="{'background-color':attrColor.value}">
+               [ngStyle]="{'background-color': transparent}">
               </div>
-              <span class="ml-4">{{attrColor?.value}}</span>
             </div>
-              <ion-button class="ml-4" (click)="attrColor.value = null">
+              <ion-button class="ml-4" (click)="clearColor()">
                 Limpiar
               </ion-button>
-              <div>
-                <input (change)="editSave = true" class="ml-auto" style="z-index: 10000; margin-right:10px" [type]="attribute.type" [(ngModel)]="attribute.value">
-              </div>
           </ion-item>
-          <ion-item *ngFor="let attr of productPrice.resources.attributes; let i = index;">
-              <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.key }} </ion-label>
+          
+          <!-- attribute list-->
+            <div *ngFor="let attr of attributes; let i = index;">
+            <ion-item *ngIf="i >= 1" >
+              <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.name }} </ion-label>
               <ion-label *ngIf="indexEditAttr==null || indexEditAttr !== i"> {{ attr.value }} </ion-label>
               <ion-grid *ngIf="indexEditAttr == i">
                 <ion-row>
                   <ion-col size="5">
-                    <input class="attribute-key fs-1" [(ngModel)]="attr.key">
+                    <input class="attribute-key fs-1" [(ngModel)]="attr.name">
                   </ion-col>
                   <ion-col size="5">
                     <input class="attribute-value fs-1" [(ngModel)]="attr.value">        
@@ -97,13 +106,15 @@
                   <ion-icon slot="icon-only" name="create-outline"></ion-icon>
                 </ion-button>
               </ion-buttons>
-          </ion-item>
+            </ion-item>
+            </div>
+            
           <!-- end attribute list-->
           
           <ion-grid class="attribute" button="true" *ngIf="newAttr">
             <ion-row>
               <ion-col size="5">
-                <input class="attribute-key" [(ngModel)]="newAttr.key">
+                <input class="attribute-key" [(ngModel)]="newAttr.name">
               </ion-col>
               <ion-col size="5">
                 <input class="attribute-value" [(ngModel)]="newAttr.value">        
@@ -118,29 +129,6 @@
       </div>
 
 
-      <ion-item button="true" *ngFor="let attribute of productPrice.resources.attributes" class="pr-2 attribute-group">
-         <ion-label>  
-           {{attribute.label}}
-         </ion-label>
-         <div *ngIf="attribute.type == 'color'" (click)="openColors(attribute);" class="d-flex color-small">
-            <div *ngIf="attribute.value && attribute.value.length > 0" class="label-color-small" [ngStyle]="{'background-color':attribute.value}">
-            </div>
-            <ion-button [hidden]="attribute.value && attribute.value.length > 0" class="ml-4">Selecciona</ion-button>
-            <span class="ml-4">{{attribute.value}}</span>
-         </div>
-         <ion-button *ngIf="attribute.type == 'color' && attribute.value && attribute.value.length > 0" class="ml-4" (click)="attribute.value = null">Limpiar</ion-button>
-         
-         <div [hidden]="attribute.type == 'color'">
-           <input (change)="editSave = true" class="ml-auto" style="z-index: 10000; margin-right:10px" [type]="attribute.type" [(ngModel)]="attribute.value">
-         </div>
-         <select *ngIf="attribute.format && attribute.format.length > 0" [(ngModel)]="attribute.formatSelect" 
-            (change)="attribute.value = attribute.formatSelect == '' ? '' : attribute.value;editSave = true">
-           <option value=""></option>
-           <option *ngFor="let format of attribute.format" value="{{format}}">{{format}}</option>
-         </select>
-         <ion-label [hidden]="attribute.format && attribute.format.length > 0" ></ion-label>
-      
-      </ion-item>
       
       <ion-item [hidden]="!errors">
         <div class="alert alert-danger m-auto">
@@ -180,7 +168,7 @@
           <ion-row>
             <ion-col *ngFor="let color of colorList" class="label-color" [ngStyle]="{'background-color':color.value}"
             (click)="setColor(color)">
-               <span>{{color.name}}</span>
+               <span class=" position-absolute" style="top: 47px;">{{color.name}}</span>
             </ion-col>
           </ion-row>
         </ion-grid>

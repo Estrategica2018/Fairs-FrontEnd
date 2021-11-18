@@ -88,6 +88,7 @@ export class ShoppingCarts {
             )
             .subscribe((data : any )=> {
                 if(data.success == 201) {
+                   window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
                    resolve(data);
                 }
                 else {
@@ -126,6 +127,7 @@ export class ShoppingCarts {
             )
             .subscribe((data : any )=> {
                 if(data.success == 201 || data.success == true) {
+                   window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
                    resolve(data);
                 }
                 else {

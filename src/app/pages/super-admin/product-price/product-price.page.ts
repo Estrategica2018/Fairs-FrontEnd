@@ -31,6 +31,7 @@ export class ProductPricePage implements OnInit {
   newAttr = null;
   indexEditAttr = null;
   attrColor = null;
+  attributes = null;
   
   //colorList = [{'name':'Negro','value':'black'},{'name':'Plata','value':'silver'},{'name':'Gris','value':'gray'},{'name':'Blanco','value':'white'},{'name':'Granate','value':'maroon'},{'name':'Rojo','value':'red    '},{'name':'Púrpura','value':'purple'},{'name':'Fucsia','value':'fuchsia'},{'name':'Verde','value':'green'},{'name':'Lima','value':'lime'},{'name':'Aceituna','value':'olive'},{'name':'Amarillo','value':'yellow'},{'name':'Armada','value':'navy'},{'name':'Azul','value':'blue'},{'name':'Verde azulado','value':'teal'},{'name':'Agua','value':'aqua'}];
   colorList : any;
@@ -100,13 +101,18 @@ export class ProductPricePage implements OnInit {
                                this.attrColor = {'name':'Color','label':'','value':''};
                                this.productPrice.resources.attributes = [ this.attrColor ];
                             }
+                            this.attributes = this.productPrice.resources.attributes;
+                            this.productPrice.resources.mainPrice = this.productPrice.resources.mainPrice || true;
+                            this.attrColor = this.attributes[0];
                         }
                       });
                     }
                     else {
                         this.productPrice = { 'price':'','resources': {'images':[{'url_image':'https://dummyimage.com/114x105/EFEFEF/000.png'}]} };
+                        this.productPrice.resources.mainPrice = true;
                         this.attrColor = {'name':'Color','label':'','value':''};
                         this.productPrice.resources.attributes = [ this.attrColor ];
+                        this.attributes = this.productPrice.resources.attributes;
                     }
                   })
                   .catch(error => {
@@ -120,15 +126,6 @@ export class ProductPricePage implements OnInit {
   updateProductPrice(){
     this.loading.present({message:'Cargando...'});
     if(this.productPrice.id) {
-        const list = {};
-        this.attributeList.forEach((group)=>{
-            group.values.forEach((attr)=>{
-                if(attr.value && attr.value.length > 0 ){
-                    list[attr.name] = {'value':attr.value,'formatSelect':attr.formatSelect,'type':attr.type};
-                }
-            });
-        });
-        this.productPrice.resources.attributes = list;
         this.adminProductPricesService.updatePrice(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id,'product_id':this.product.id},this.productPrice))
        .then((productPrice) => {
           this.loading.dismiss();
@@ -137,6 +134,9 @@ export class ProductPricePage implements OnInit {
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
           this.productPrice = productPrice;
+          this.attributes = this.productPrice.resources.attributes;
+          this.editSave = false;
+          console.log(this.productPrice);
           this.onRouterLink(`/super-admin/product-price/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${productPrice.id}`);
       })
       .catch(error => {
@@ -226,8 +226,8 @@ export class ProductPricePage implements OnInit {
 
   async presentActionPrice() {
     const actionSheet = await this.alertCtrl.create({
-      header: 'Precio por evento',
-      message: "Ingresa el precio del evento",
+      header: 'Precio por referencia',
+      message: "Ingresa el precio de la referencia",
       inputs: [
         {
           name: 'price',
@@ -259,17 +259,30 @@ export class ProductPricePage implements OnInit {
     this.showColor = true;
   }
   
-  setColor (color){
-    console.log(color);
-    this.showColor = false;
-    this.attrColor = this.productPrice.resources.attributes[0];
-    this.attrColor.value = color.value;
-    this.attrColor.label = color.label;
+  clearColor() { 
+    this.attrColor.name = 'Color';
+    this.attrColor.value = null;
+    this.attrColor.label = null;
     this.editSave = true;
   }
   
+  setColor (color){
+    this.showColor = false;
+    this.attrColor = this.productPrice.resources.attributes[0];
+    this.attrColor.name = 'Color';
+    this.attrColor.value = color.value;
+    this.attrColor.label = color.name;
+    this.editSave = true;
+  }
+  
+  addNewAttribute(){
+     this.newAttr={'name':'','value':''};
+     this.productPrice.resources.attributes.push(this.newAttr);
+     this.indexEditAttr = this.productPrice.resources.attributes.length - 1;
+  }
+  
   addAttribute(){
-    if(this.newAttr.key.length > 0 && this.newAttr.value.length > 0) {
+    if(this.newAttr.name.length > 0 && this.newAttr.value.length > 0) {
       this.productPrice.resources.attributes.push(this.newAttr);
       this.newAttr = null;
       this.editSave = true;
@@ -282,7 +295,23 @@ export class ProductPricePage implements OnInit {
   
   modifyAttr(i) {
     this.indexEditAttr = null;
+    this.attributes = this.productPrice.resources.attributes;
+    this.editSave = true;
+  }
+  
+  deleteAttr(index) {
+    this.productPrice.resources.attributes = this.productPrice.resources.attributes.filter((attr, ind)=>{
+        return ind != index;
+    });
+    this.attributes = this.productPrice.resources.attributes;
+    this.editSave = true;
   }
 
+  changeMainPrice() {
+    this.productPrice.resources.mainPrice = !this.productPrice.resources.mainPrice;
+    this.productPrice.price = null;
+    this.editSave = true;
+  }
+  
 
 }

@@ -5,13 +5,14 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Storage } from '@ionic/storage';
 import { UsersService } from './api/users.service';
-import { MenuController, Platform, ToastController } from '@ionic/angular';
+import { MenuController, Platform, ToastController, ModalController } from '@ionic/angular';
 import { LoadingService } from './providers/loading.service';
 import { FairsService } from './api/fairs.service';
 import { ShoppingCarts } from './api/shopping-carts.service';
 import { PavilionsService } from './api/pavilions.service';
 import { AlertController } from '@ionic/angular';
 import { Title } from '@angular/platform-browser';
+import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-component/shopping-cart-component';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,9 @@ export class AppComponent implements OnInit {
   showStandDetail: string = null;
   _toolbarHeight = 56;
   profileRole:any;
-  showShoppingCart: any;
+  
+  modalShoppingCart: any;
+  shoppintCartCount = 0;
   
   constructor(
     private alertCtrl: AlertController,
@@ -49,16 +52,19 @@ export class AppComponent implements OnInit {
     private shoppingCarts: ShoppingCarts,
     private pavilionsService: PavilionsService,
     private titleService: Title,
-    private menuCtrl: MenuController
+    private menuCtrl: MenuController,
+    private modalCtrl: ModalController,
   ) {
     this.initializeApp();
     this.initializeFair();
+    
   }
   
   initializeFair() {
       this.fairsService.getCurrentFair().
       then( fair => {
         this.fair = fair;
+        this.getShoppingCart();
         this.titleService.setTitle(this.fair.description);
       },(e: any)=> console.log(e));
   }
@@ -115,6 +121,11 @@ export class AppComponent implements OnInit {
     window.addEventListener('user:logout', () => {
       this.updateLoggedInStatus(null);
     });
+    
+    window.addEventListener('user:shoppingCart', () => {
+      this.getShoppingCart();
+    }); 
+
   }
   
   listenForFullScreenEvents() {
@@ -231,7 +242,7 @@ export class AppComponent implements OnInit {
       this.loading.present({message:'Cargando...'});
       this.shoppingCarts.list(this.fair)
       .then( response => {
-        console.log('getShoppingCart(): ' + response);
+        this.shoppintCartCount = response.length;
         this.loading.dismiss();
       }, errors => {
           this.errors = errors;
@@ -241,8 +252,24 @@ export class AppComponent implements OnInit {
         this.errors = error; 
         this.loading.dismiss();
      }); 
-     
-     
   }
   
+  async openShoppingCart() {
+
+    this.modalShoppingCart = await this.modalCtrl.create({
+      component: ShoppingCartComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+          'fair': this.fair,
+          'type': 'Agenda',
+          '_continue': false
+      }
+    });
+    await this.modalShoppingCart.present();
+    const { data } = await this.modalShoppingCart.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+ 
 }

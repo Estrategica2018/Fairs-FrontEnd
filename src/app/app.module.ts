@@ -16,7 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi-payment-layout.module';
-
+import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-component/shopping-cart-component';
 
 
 @NgModule({
@@ -35,7 +35,7 @@ import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi
     ComponentsModule
   ],
   declarations: [AppComponent],
-  entryComponents: [],
+  entryComponents: [ ShoppingCartComponent ],
   providers: [
     InAppBrowser, 
     SplashScreen, 

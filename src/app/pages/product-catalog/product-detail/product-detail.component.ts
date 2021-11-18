@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { AlertController, ActionSheetController  } from '@ionic/angular';
+import { AlertController, ActionSheetController, ModalController  } from '@ionic/angular';
 import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 import { AdminProductsService } from './../../../api/admin/products.service';
 import { LoadingService } from './../../../providers/loading.service';
 import { ToastController } from '@ionic/angular';
 import { UsersService } from '../../../api/users.service';
 import { ShoppingCarts } from '../../../api/shopping-carts.service';
+import { processData, clone } from '../../../providers/process-data';
 
 @Component({
   selector: 'app-product-detail',
@@ -23,8 +24,8 @@ export class ProductDetailComponent implements OnInit {
   lockHover: any;
   profileRole: any = null;
   amount = 1;
-  showSelectAmount: any;
   attributes = [];
+  showConfirmByProduct = false;
   
   constructor(
     private alertCtrl: AlertController,
@@ -35,11 +36,14 @@ export class ProductDetailComponent implements OnInit {
     private toastController: ToastController,
     private usersService: UsersService,
     private shoppingCarts: ShoppingCarts,
+    private modalCtrl: ModalController
   ) { }
 
   ngOnInit() {
     
-    this.changePrice(this.product.prices[0]);
+    this.product = clone(this.product);
+    
+    this.changePrice();
     
     this.usersService.getUser().then((userDataSession: any)=>{
       if(userDataSession && userDataSession.user_roles_fair)  {
@@ -53,7 +57,7 @@ export class ProductDetailComponent implements OnInit {
       }
     });
     
-      if(this.product && this.product.resources && this.product.resources && this.product.resources.detail.elements ) {
+      if(this.product && this.product.resources && this.product.resources && this.product.resources.detail && this.product.resources.detail.elements && this.product.resources.detail.elements.length >0 ) {
         this.product.resources.detail.elements.forEach((item)=>{
           if(item.video) { 
             const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(item.video.videoUrl);
@@ -224,52 +228,59 @@ export class ProductDetailComponent implements OnInit {
     const toast = await this.toastController.create({
       message: msg,
       cssClass: cssClass,
-      duration: 2000,
-      position: 'top'
+      duration: 1000,
+      position: 'bottom'
     });
     toast.present();
   }
  
-  openSelect() {
-    this.showSelectAmount = true;
-    setTimeout(()=>{
-      var m=document.querySelector(".select-amount");
-      var length = 10;
-      //open dropdown
-      //m.setAttribute('size',length)
-    },100);
-  }
-  
-  changePrice(product){
-    this.priceSelected = product.priceSelected;
+  changePrice(){
+    this.priceSelected = this.product.priceSelected;
     this.attributes = [];
     let value;
-    if(this.product && this.product.resources && this.product.resources.attributes)
-    for(let attr in this.product.resources.attributes) {
-      value = this.product.resources.attributes[attr];
-      this.attributes.push({'name':value.key,'value': value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' ) });
-    }
     let mbControl = false;
+    
     if(this.priceSelected && this.priceSelected.resources.attributes) {
-     for(let attr in this.priceSelected.resources.attributes) {
-       mbControl = false;
-       value = this.priceSelected.resources.attributes[attr];
-       for(let attrTem of this.attributes) { 
-         if(attrTem.name === attr) {
-            mbControl = true;
-            attrTem.value = value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' );
-         }
-       }
-       if(!mbControl)
-       this.attributes.push({'name':attr,'value': value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' ) });
-     }
+        for(let attr of this.priceSelected.resources.attributes) {
+           mbControl = false;
+           value = this.priceSelected.resources.attributes[attr];
+           for(let attrTem of this.attributes) { 
+             
+             if(attrTem.name === attr.name) {
+                mbControl = true;
+                //attrTem.value = value.value + ( value.formatSelect ? ' ' + value.formatSelect : '' );
+             }
+           }
+           if(!mbControl) {
+              if(attr.name === 'Color'){
+                if(attr.label) {
+                    this.attributes.push({'name':attr.name, 'value': attr.label});
+                }
+              }
+              else {
+                 this.attributes.push({'name':attr.name, 'value': attr.value});
+              }
+           }
+        }
     }
+     
+    if(this.product && this.product.resources && this.product.resources.attributes) {
+      for(let attr of this.product.resources.attributes) {
+        this.attributes.push({'name':( attr.name || attr.key ), 'value': attr.value});
+      }
+    }
+  }
+  
+  confirmBuyProduct(product) {
+      this.showConfirmByProduct = true;
   }
   
   onBuyProduct(product) {
+      this.loading.present({message:'Cargando...'});
       this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount )
       .then((response) => {
         this.loading.dismiss();
+        this.showConfirmByProduct = false;
         this.presentToast('Producto agredado exitósamente al carrito de compras', 'app-success-alert');
         if(this._parent && this._parent.openShoppingCart) this._parent.openShoppingCart(this.priceSelected);
       })
@@ -278,4 +289,22 @@ export class ProductDetailComponent implements OnInit {
         this.presentToast('Ocurrió un error al agregar al carrito de compras: ['+ error +']', 'app-error-alert');
       });
   }
+  
+  onBuyProductAndClose(product) {
+      this.loading.present({message:'Cargando...'});
+      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount )
+      .then((response) => {
+        this.loading.dismiss();
+        this.showConfirmByProduct = false;
+      })
+      .catch(error => {
+        this.loading.dismiss(); 
+        this.presentToast('Ocurrió un error al agregar al carrito de compras: ['+ error +']', 'app-error-alert');
+      });
+  }
+  
+  closeModal() {
+      this.modalCtrl.dismiss();
+  }
+
 }

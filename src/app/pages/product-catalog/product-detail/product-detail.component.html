@@ -4,29 +4,40 @@
   </div>
   <div class="info-background">
   </div>
+  <div (click)="closeModal()" class="close-modal"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
   <ion-row>
-    <ion-col size="4" >
+    <ion-col size="5" >
        <!--img src="https://res.cloudinary.com/deueufyac/image/upload/v1631835507/sublimacion/productos/otros_productos/imgProducto2-08_ozf01b.png"-->
        <div class="container-carousel-slide">
-       <app-carousel-slides [resize]="true" [product]="product" class="mt-5" (changePrice)="changePrice($event)">
+       <app-carousel-slides [resize]="true" [product]="product" class="mt-5" (changePrice)="changePrice()">
        </app-carousel-slides>
        </div>
-       <ion-grid class="attribute-list">
-       <ion-row *ngFor="let attr of attributes; let i = index;" class="attribute" [ngClass]="{'par': i%2}">
-       <ion-col size="6" >
-         {{attr.name}}
-       </ion-col>
-       <ion-col size="6" class="value">
-         {{attr.value}}
-       </ion-col>
-       </ion-row>
-       </ion-grid>
+       <div class="attribute-list">
+         <div class="head">
+           <div style="height: 2.1em;">
+             Características
+           </div>
+         </div>
+         <div class="attribute-scroll scroll-light">
+            <div *ngFor="let attr of attributes; let i = index;" [ngClass]="{'par': i%2}" class="border-light-b d-flex attribute">
+              <div class="pl-2 pt-2 capitalize w-50">
+               {{attr.name}}
+              </div>
+               <div class="pl-2 p-2 capitalize w-50">
+                {{attr.value}}
+               </div>
+            </div>
+            <div class="border-light-b d-flex attribute" [ngClass]="{'par': (attributes.length ) %2}">
+              .
+            </div>
+          </div>
+       </div>
        
     </ion-col>
-    <ion-col size="8" class="col-max scroll-light">
+    <ion-col size="7" class="col-max scroll-light" *ngIf="product && priceSelected">
        <h2 class="name ion-text-center">{{product?.name}}</h2>
-       <h6 class="description ion-text-justify pr-4 pt-2"><small>{{product?.description}}</small></h6>
-       <h6 class="">Precio por unidad {{ priceSelected?.price  | currency: '$ ':'symbol':'1.0-2' }}</h6>
+       <h6 class="description ion-text-justify pr-4 pt-2 mb-5"><small>{{product?.description}}</small></h6>
+       <h6 class="mb-5">Precio por unidad {{  ( priceSelected.price || product.price )  | currency: '$ ':'symbol':'1.0-2' }}</h6>
        <div *ngFor="let item of product.resources?.detail?.elements; let i = index;" class="item-add" (mouseover)="lockHover = i">
             <ion-thumbnail class="thumbnail" slot="start" *ngIf="item.url">
               <ion-img [src]="item.url"></ion-img>
@@ -45,26 +56,35 @@
   </ion-row>
   <ion-row>
     <ion-col class="ion-text-center">
-        <ion-toolbar>
-        <ion-button class="button mr-6" color="primary" size="small" (click)="onBuyProduct(product)">
-          Comprar
-        </ion-button>
-        <ion-button [hidden]="showSelectAmount" class="button ml-6" color="primary" size="small" (click)="openSelect()">
-          Cantidad {{amount}}
-        </ion-button>
-        <select id="select-amount" class="select-amount" [(ngModel)]="amount" *ngIf="showSelectAmount" (change)="showSelectAmount=false">
-         <option value="1"> Cantidad 1 </option>
-         <option value="2"> Cantidad 2 </option>
-         <option value="3"> Cantidad 3 </option>
-         <option value="4"> Cantidad 4 </option>
-         <option value="5"> Cantidad 5 </option>
-         <option value="6"> Cantidad 6 </option>
-         <option value="7"> Cantidad 7 </option>
-         <option value="8"> Cantidad 8 </option>
-         <option value="9"> Cantidad 9 </option>
-         <option value="10"> Cantidad 10 </option>
-        </select>
-        <h6 *ngIf="amount>1" slot="end">Total {{ ( priceSelected?.price * amount ) | currency: '$ ':'symbol':'1.0-2' }}</h6>
+        <ion-toolbar class="pay-button ml-6" style="text-align: end;" [hidden]="showConfirmByProduct">
+            <select id="select-amount" class="select-amount mr-4" [(ngModel)]="amount">
+             <option value="1"> Cantidad 1 </option>
+             <option value="2"> Cantidad 2 </option>
+             <option value="3"> Cantidad 3 </option>
+             <option value="4"> Cantidad 4 </option>
+             <option value="5"> Cantidad 5 </option>
+             <option value="6"> Cantidad 6 </option>
+             <option value="7"> Cantidad 7 </option>
+             <option value="8"> Cantidad 8 </option>
+             <option value="9"> Cantidad 9 </option>
+             <option value="10"> Cantidad 10 </option>
+            </select>
+            <ion-button class="button mr-4" color="primary" size="small" (click)="confirmBuyProduct(product)">
+              Comprar
+            </ion-button>
+            <h6 style="margin-right:2em" *ngIf="amount>0" slot="end">Total {{ ( ( priceSelected.price || product.price ) * amount ) | currency: '$ ':'symbol':'1.0-0' }}</h6>
+        </ion-toolbar>
+        <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 1em;"*ngIf="showConfirmByProduct">
+            <h6 style="margin-right:2em; width: 87%;" slot="start">Confirma para agregar {{ amount }} {{ (amount > 1 ? 'productos': 'producto' )}} por {{ ( ( priceSelected.price || product.price ) * amount ) | currency: '$ ':'symbol':'1.0-0' }}</h6>
+            <div (click)="showConfirmByProduct=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
+        </ion-toolbar>
+        <ion-toolbar class="pay-button ml-6 footer-pay" *ngIf="showConfirmByProduct">
+            <ion-button class="button ml-6" color="primary" size="small" (click)="onBuyProductAndClose(product)">
+               Agregar al carrito y continuar comprando
+            </ion-button>
+            <ion-button class="button ml-6" color="primary" size="small" (click)="onBuyProduct(product)">
+               Añadir al carrito
+            </ion-button>
         </ion-toolbar>
     </ion-col>
    </ion-row>

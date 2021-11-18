@@ -47,7 +47,7 @@ export class AgendaPage implements OnInit {
     private routerOutlet: IonRouterOutlet,
     private actionSheetController: ActionSheetController
     ) { 
-        this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': 'https://res.cloudinary.com/dfxkgtknu/image/upload/v1618157128/feria1/null-21_1_joxd4u.jpg' } };
+        this.agenda = { 'category':{},'audience_config':1, 'resources': { 'audience_config': { 'type': 1 }, 'url_image': 'https://dummyimage.com/620x348/EFEFEF/000.png' } };
     }
     
   ngDoCheck(){

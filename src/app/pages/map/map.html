@@ -220,20 +220,21 @@
               }">
                <ion-grid class=" w-100">
                 <ion-row>
-                  <div class="position-absolute"
-                  [ngStyle]="{
-                      'top': banner.productCatalog.imageTop + 'px',
-                      'left': banner.productCatalog.imageLeft + 'px',
-                      'width': banner.productCatalog.imagesWidth + 'px',
-                      'height': banner.productCatalog.imagesHeight + 'px'
-                     }">
-                      <app-carousel-slides #carouselSlides [imageHeight]="banner.productCatalog.imagesHeight" 
-                      [imageWidth]="banner.productCatalog.imagesWidth" 
-                      [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth"
-                      [product]="product" (changePrice)="changePriceProductCatalog($event, banner)">
-                      </app-carousel-slides>
-                      <!--ion-slides pager="true" [options]="slideOpts"-->
-                  </div>
+                    <div class="position-absolute"
+                      [ngStyle]="{
+                          'top': banner.productCatalog.imageTop + 'px',
+                          'left': banner.productCatalog.imageLeft + 'px',
+                          'width': banner.productCatalog.imagesWidth + 'px',
+                          'height': banner.productCatalog.imagesHeight + 'px'
+                         }">
+                          <app-carousel-slides #carouselSlides [imageHeight]="banner.productCatalog.imagesHeight" 
+                          [imageWidth]="banner.productCatalog.imagesWidth"
+                          [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth" 
+                          [product]="product"
+                          (changePrice)="changePriceProductCatalog($event,banner)">
+                          </app-carousel-slides>
+                          
+                    </div>
                   
                      <div class="ion-text-center m-0 p-0 position-absolute w-100"
                      [ngStyle]="{
@@ -265,7 +266,7 @@
                       'top': banner.productCatalog.priceTop + 'px',
                       'left': banner.productCatalog.priceLeft + 'px',
                       'font-weight':  banner.productCatalog.priceFontWeight
-                     }">{{product.priceSelected?.price | currency: 'COP $ ':'symbol':'1.2-2' }}</div>
+                     }">{{ ( product.priceSelected.price || product.price ) | currency: '$ ':'symbol':'1.0-0' }}</div>
                      </div></div> 
                 </ion-row>
                </ion-grid>

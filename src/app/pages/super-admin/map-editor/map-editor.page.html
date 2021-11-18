@@ -248,12 +248,14 @@
                 <ion-row>
                     <div class="position-absolute"
                       [ngStyle]="{
-                          'top': banner.productCatalog.imagesTop + 'px',
-                          'left': banner.productCatalog.imagesLeft + 'px',
+                          'top': banner.productCatalog.imageTop + 'px',
+                          'left': banner.productCatalog.imageLeft + 'px',
                           'width': banner.productCatalog.imagesWidth + 'px',
                           'height': banner.productCatalog.imagesHeight + 'px'
                          }">
-                          <app-carousel-slides #carouselSlides [imageHeight]="banner.productCatalog.imagesHeight" [imageWidth]="banner.productCatalog.imagesWidth" [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth" 
+                          <app-carousel-slides #carouselSlides [imageHeight]="banner.productCatalog.imagesHeight" 
+                          [imageWidth]="banner.productCatalog.imagesWidth"
+                          [imagesPriceWidth]="banner.productCatalog.imagesPriceWidth" 
                           [product]="product" (changePrice)="changePriceProductCatalog($event,banner)">
                           </app-carousel-slides>
                           
@@ -289,7 +291,7 @@
                       'top': banner.productCatalog.priceTop + 'px',
                       'left': banner.productCatalog.priceLeft + 'px',
                       'font-weight':  banner.productCatalog.priceFontWeight
-                     }">{{product.priceSelected?.price | currency: 'COP $ ':'symbol':'1.2-2' }}</div>
+                     }">{{ ( product.priceSelected.price || product.price ) | currency: 'COP $ ':'symbol':'1.2-2' }}</div>
                      </div></div> 
                 </ion-row>
                </ion-grid>

@@ -10,17 +10,18 @@
       <ion-label class="fair-title"> {{fair?.description}} </ion-label>
     </ion-buttons>
     <ion-buttons slot="end" >
-      <ion-button *ngIf="showShoppingCart">
+      <ion-button (click)="openShoppingCart()">
         <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
       </ion-button>
+      <ion-badge class="icon-badge" color="danger" *ngIf="shoppintCartCount > 0" >{{shoppintCartCount}}</ion-badge>
       <ion-button class="d-none d-md-flex end-menu-button" color="secondary" routerLink="/login/" routerLinkActive="selected" routerDirection="root" *ngIf="!loggedIn" fill="outline" shape="round">
         <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
          Acceder
       </ion-button>
-      <ion-item class="d-none d-md-flex" *ngIf="loggedIn" routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
+      <ion-button class="d-none d-md-flex" *ngIf="loggedIn" routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
         <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
          Cuenta
-      </ion-item>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

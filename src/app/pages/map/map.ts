@@ -564,8 +564,9 @@ export class MapPage implements OnInit {
             products.forEach((product)=>{
                 if(category == 'all' || product.category_id == category ){
                     product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
-                    banner.__catalog.products.push(product);
                     product.priceSelected = product.prices[0];
+                    product.priceSelectedIndex = 0;
+                    banner.__catalog.products.push(product);
                 }
             });
         }
@@ -676,7 +677,8 @@ export class MapPage implements OnInit {
       cssClass: 'boder-radius-modal',
       componentProps: {
           'fair': this.fair,
-          'type': 'Agenda'
+          'type': 'Agenda',
+          '_continue': true
       }
     });
     await this.modalShoppingCart.present();

@@ -205,7 +205,7 @@ export class ProductPage implements OnInit {
   }
   
   addAttribute(){
-    if(this.newAttr.key.length > 0 && this.newAttr.value.length > 0) {
+    if(this.newAttr.name.length > 0 && this.newAttr.value.length > 0) {
       this.product.resources.attributes.push(this.newAttr);
       this.newAttr = null;
       this.editSave = true;
@@ -250,4 +250,36 @@ export class ProductPage implements OnInit {
   onToBack() {
      window.history.back();
   }
+  
+  async presentActionPrice() {
+    const actionSheet = await this.alertCtrl.create({
+      header: 'Precio del producto',
+      message: "Ingresa el precio del producto",
+      inputs: [
+        {
+          name: 'price',
+          value: this.product.price,
+          placeholder: '$ Precio'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: data => {
+            //console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Save',
+          handler: data => {
+            this.product.price = data.price;
+            this.editSave = true;
+          }
+        }
+      ]
+    });
+    await actionSheet.present();
+
+  }
+
 }

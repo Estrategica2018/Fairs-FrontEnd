@@ -332,7 +332,7 @@ body.backdrop-no-scroll {
 
 .product-modal .modal-wrapper {
   --border-radius: 2em !important;
-  --height: 47em;
+  --height: 52em;
 }
 
 .boder-radius-modal .modal-wrapper {
@@ -346,4 +346,16 @@ body.backdrop-no-scroll {
 
 .app-error-alert .popover-content {
   background: red;
+}
+
+.icon-badge {
+  position: absolute;
+  top: -0.37em;
+  right: 8em;
+}
+
+@media (max-width: 767px) {
+  .icon-badge {
+    right: 0.5em;
+  }
 }

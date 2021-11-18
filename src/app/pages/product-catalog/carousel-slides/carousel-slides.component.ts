@@ -34,11 +34,10 @@ export class CarouselSlidesComponent implements OnInit {
   isEnd = false;
 
   ngOnInit() {
-   this.onResize()
+     this.onResize();
      this.product.prices.forEach((price)=>{
-         if(price.resources && price.resources.attributes && price.resources.attributes.color) {
-           this.colors.push({'value': price.resources.attributes.color.value, 'image': price.resources.images});
-           
+         if(price.resources && price.resources.attributes && price.resources.attributes.length > 0 && price.resources.attributes[0].value && price.resources.attributes[0].value.length > 0 ) {
+           this.colors.push({'value': price.resources.attributes[0].value, 'image': price.resources.images});
          }
      }); 
      setTimeout(()=>{
@@ -53,6 +52,9 @@ export class CarouselSlidesComponent implements OnInit {
          else {
             this.onChangeColor(0)
             //this.simpleSlideOpts();
+         }
+         if(this.product.priceSelectedIndex) {
+           this.onChangeColor(this.product.priceSelectedIndex);
          }
      },50);
      
@@ -385,9 +387,9 @@ export class CarouselSlidesComponent implements OnInit {
      this.imageSelected = index;
      this.imagesArray = this.product.prices[index].resources.images; 
      if(this.changePrice) {
-         console.log('changePrice');
        this.product.priceSelected = this.product.prices[index];
-       this.changePrice.emit(this.product);
+       this.product.priceSelectedIndex = index;
+       this.changePrice.emit();
      }
   }    
 
@@ -414,7 +416,7 @@ export class CarouselSlidesComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     if(this.resize)
-    this._factor = window.innerWidth < 598 ? 3.4 : 3.9;
+    this._factor = window.innerWidth < 598 ? 4 : 4.9;
     
   }
 

@@ -1564,6 +1564,7 @@ export class MapEditorPage implements OnInit {
                     product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
                     banner.__catalog.products.push(product);
                     product.priceSelected = product.prices[0];
+                    product.priceSelectedIndex = 0;
                 }
             });
         }
