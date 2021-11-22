@@ -249,7 +249,7 @@ export class MapPage implements OnInit {
      
      this.scene.banners.forEach((banner)=>{
         
-        if( this.scene.render )  {
+        if( !banner.productCatalog && !banner.speakerCatalog )  {
             if(banner.position)  { banner.position.x /= deltaW; banner.position.y /= deltaH; }
             if(banner.size ) {    banner.size.x /= deltaW;banner.size.y /= deltaH;}
             if(banner.fontSize > 0 ) banner.fontSize /= deltaW;
@@ -298,54 +298,18 @@ export class MapPage implements OnInit {
   }
   
   initializeCatalogs(banner) {
-    if(banner.__catalog) {
-        banner.__catalog.original_x = banner.__catalog.original_x || banner.position.x;
+    if(banner.__catalog || banner.speakerCatalog || banner.type === 'Título') {
         for(var i=10;i>0;i--) {
-           if( ( i * banner.size.x <= this.scene.container.w ) || ( ( i - 0.3 ) * banner.size.x <= this.scene.container.w ) )  {
-              banner.__catalog.__factor = i;
-              const menu = document.querySelector < HTMLElement > ('.menu-main-content');
-              const innerWidth = window.innerWidth - menu.offsetWidth;
-              if ( banner.size.x  * banner.__catalog.__factor < innerWidth ) {
-                const left = innerWidth - ( banner.size.x + 10 ) * banner.__catalog.__factor;
-                banner.position.x = left / 2;
-              }
-              else {
-                banner.position.x = innerWidth * 0.05;
-              }
-              break;
+           if( ( i * banner.size.x <= this.scene.container.w ) || ( ( i - 0.5 ) * banner.size.x <= this.scene.container.w ) )  {
+              banner.__factor = i -1 ;
+              banner.__factor = i -1 ;
+              const main = document.querySelector<HTMLElement>('ion-router-outlet');
+              const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+              banner.position.x = left / 2;
+              break;              
            }
         }
-    }
-    else if(banner.speakerCatalog) {
-        banner.original_x = banner.original_x || banner.position.x;
-        for(var i=10;i>0;i--) {
-           if( ( i * banner.size.x <= this.scene.container.w ) || ( ( i - 0.3 ) * banner.size.x <= this.scene.container.w ) )  {
-              banner.__factor = i;
-              const menu = document.querySelector < HTMLElement > ('.menu-main-content');
-              const innerWidth = window.innerWidth - menu.offsetWidth;
-              if ( banner.size.x  * banner.__factor < innerWidth ) {
-                const left = innerWidth - ( banner.size.x + 10 ) * banner.__factor;
-                banner.position.x = left / 2;
-              }
-              else {
-                banner.position.x = innerWidth * 0.05;
-              }
-              break;
-           }
-        }
-    }
-    else if(banner.type === 'Título') {
-        
-        const menu = document.querySelector < HTMLElement > ('.menu-main-content');
-        const innerWidth = window.innerWidth - menu.offsetWidth;
-        if ( banner.size.x  < innerWidth ) {
-          const left = innerWidth - ( banner.size.x + 10 );
-          banner.position.x = left / 2;
-        }
-        else {
-          banner.position.x = innerWidth * 0.05;
-        }
-    
+
     }
   }
 
@@ -363,6 +327,11 @@ export class MapPage implements OnInit {
           this.onResize();
       }, 300);
     });
+    window.addEventListener('window:resize', (user) => {
+      setTimeout(() => {
+       this.onResize();
+      }, 100);
+    }); 
   }
   
   async startAnimation(obj) {
@@ -548,7 +517,8 @@ export class MapPage implements OnInit {
   
   initializeProductCatalogs(banner) {
    
-      banner.__catalog = {"products":[],"__factor": 3 };
+      banner.__catalog = {"products":[]};
+      banner.__factor = 3;
       let remark = banner.productCatalog.list;
         
       let str = remark.split(';')[0];    

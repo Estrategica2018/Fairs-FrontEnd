@@ -69,7 +69,7 @@ export class SessionDetailPage {
   }
 
   ionViewDidEnter() {
-    this.defaultHref = `/app/schedule`;
+    this.defaultHref = `/schedule`;
   }
   
   onSupportClick() {

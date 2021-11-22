@@ -1,4 +1,5 @@
 <div [ngClass]="{ 'content-horizontal': screenSm }">
+  <div (click)="closeModal()" class="close-modal"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
   <div class="card-spaker d-flex">
     <div class="div-avatar" [ngStyle]="{'height': ( screenSm ? '20em' : '25em'), 'background-image': 'url('+speaker.profile_picture+')'}"></div>
     <div class="content">

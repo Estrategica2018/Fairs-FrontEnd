@@ -69,5 +69,10 @@ export class SpeakerDetailComponent implements OnInit {
   onResize() {
       this.screenSm = window.outerWidth < 590;
   }
+
+  closeModal() {
+      this.modalCtrl.dismiss();
+  }
+
   
 }

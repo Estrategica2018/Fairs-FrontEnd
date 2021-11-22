@@ -32,9 +32,13 @@ export class AppComponent implements OnInit {
   showStandDetail: string = null;
   _toolbarHeight = 56;
   profileRole:any;
+  userDataSession: any;
+  menuShowOver = false;
   
   modalShoppingCart: any;
   shoppintCartCount = 0;
+  menuHidden = false;
+  menuHiddenAnt = 0;
   
   constructor(
     private alertCtrl: AlertController,
@@ -76,6 +80,7 @@ export class AppComponent implements OnInit {
     this._toolbarHeight = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
     
     this.usersService.getUser().then((userDataSession: any)=>{
+      this.userDataSession = userDataSession;    
       if(userDataSession && userDataSession.user_roles_fair)  {
         this.profileRole = {};
         userDataSession.user_roles_fair.forEach((role)=>{
@@ -102,24 +107,26 @@ export class AppComponent implements OnInit {
   }
 
   updateLoggedInStatus(user: any) {
-    setTimeout(() => {
-      this.loggedIn = user !== null;
-    }, 300);
+    this.loggedIn = user !== null;
   }
 
   listenForLoginEvents() {
     window.addEventListener('user:login', (user) => {
-      this.updateLoggedInStatus(user);
+      //this.updateLoggedInStatus(user);
+      window.location.reload();
     }); 
     
     window.addEventListener('user:signup', (user) => {
       setTimeout(() => {
-        this.loggedIn = user !== null;
+        //this.loggedIn = user !== null;
+        window.location.reload();
       }, 300);
     }); 
 
     window.addEventListener('user:logout', () => {
-      this.updateLoggedInStatus(null);
+      //this.updateLoggedInStatus(null);
+      //this.getShoppingCart();
+      window.location.reload();
     });
     
     window.addEventListener('user:shoppingCart', () => {
@@ -132,11 +139,13 @@ export class AppComponent implements OnInit {
     window.addEventListener('map:fullscreenOff', (e:any) => {
       setTimeout(() => {
         this.fullScreen = false;
+        this.onShowMenu();
       }, 300);
     });
     window.addEventListener('map:fullscreenIn', (e:any) => {
       setTimeout(() => {
         this.fullScreen = true;
+        this.onHidenMenu();
       }, 300);
     });
   } 
@@ -169,7 +178,7 @@ export class AppComponent implements OnInit {
             
             this.usersService.setUser(null).then(() => {
               window.dispatchEvent(new CustomEvent('user:logout'));
-              this.router.navigateByUrl(`/app/schedule`);
+              this.router.navigateByUrl(`/schedule`);
             });
             
           },
@@ -240,18 +249,20 @@ export class AppComponent implements OnInit {
   
   getShoppingCart() {
       this.loading.present({message:'Cargando...'});
-      this.shoppingCarts.list(this.fair)
-      .then( response => {
-        this.shoppintCartCount = response.length;
-        this.loading.dismiss();
-      }, errors => {
-          this.errors = errors;
-          this.loading.dismiss();
-      })
-     .catch(error => {
-        this.errors = error; 
-        this.loading.dismiss();
-     }); 
+      this.usersService.getUser().then((userDataSession)=>{ 
+          this.shoppingCarts.list(this.fair, userDataSession)
+          .then( response => {
+            this.shoppintCartCount = response.length;
+            this.loading.dismiss();
+          }, errors => {
+              this.errors = errors;
+              this.loading.dismiss();
+          })
+         .catch(error => {
+            this.errors = error; 
+            this.loading.dismiss();
+         }); 
+      });
   }
   
   async openShoppingCart() {
@@ -271,5 +282,30 @@ export class AppComponent implements OnInit {
     if(data) {
     }
   } 
- 
+
+  onHidenMenu() {
+    
+    this.menuHiddenAnt = 0;
+    this.menuShowOver = false;
+    this.menuHidden = true;
+    window.dispatchEvent(new CustomEvent('window:resize'));
+  }
+  
+  onShowMenu() {
+    this.menuHidden = false;
+    window.dispatchEvent(new CustomEvent('window:resize'));
+  } 
+  
+  onMenuOver() {
+   if(this.menuHiddenAnt > 0 ) {
+      this.menuShowOver = true;
+      window.dispatchEvent(new CustomEvent('window:resize'));
+   }
+   else {
+    setTimeout(()=>{
+        this.menuHiddenAnt ++;
+    },400);
+   }
+  }
+  
 }

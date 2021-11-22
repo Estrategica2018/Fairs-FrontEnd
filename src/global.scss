@@ -62,7 +62,7 @@ html {
 
 //*Global Styles*//
 .menu-main-content {
-  margin-top: 59px;
+  margin-top: 5.6em;
 }
 
 
@@ -268,7 +268,10 @@ ion-router-outlet {
   overflow: hidden;
 }
 
-.product-modal .modal-wrapper,
+.product-modal .modal-wrapper {
+  --width: 68em;
+}
+
 .speaker-modal .modal-wrapper,
 .agenda-modal .modal-wrapper {
   --width: 60em;
@@ -285,6 +288,7 @@ ion-router-outlet {
  }
 }
 
+.speaker-modal .modal-wrapper,
 .agenda-modal .modal-wrapper {
   --border-radius: 2em;
 }
@@ -345,3 +349,18 @@ ion-router-outlet {
 }
 
 .capitalize { text-transform: capitalize; }
+
+@media (min-width: 992px) {
+  .ion-hide-lg-up {
+    display: none !important;
+  }
+}
+@media (max-width: 992px) {
+  .ion-hide-lg-down {
+    display: none !important;
+  }
+}
+
+.z-index-1 {
+  z-index: 1;
+}

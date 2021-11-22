@@ -359,3 +359,25 @@ body.backdrop-no-scroll {
     right: 0.5em;
   }
 }
+
+.close-menu-right,
+.close-menu-left {
+  margin-left: 83%!important;
+  z-index: 2;
+  font-size: 1.8em;
+}
+
+.menu-width-none {
+  min-width: 5em !important;
+  max-width: 5em !important;
+}
+
+
+.menu-show-over {
+  position: absolute;
+  z-index: 1;
+}
+.menu-show-over2 {
+    min-width: 5.5em;
+    max-width: 5.5em;
+}

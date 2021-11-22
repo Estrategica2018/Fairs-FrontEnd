@@ -11,13 +11,8 @@ export class CarouselSlidesComponent implements OnInit {
 
   @ViewChild('slides', { static: false }) slides: IonSlides;
   
- /*@ViewChild('slides') set slides(slides: IonSlides) {
-    if(slides) { // initially setter gets called with undefined
-        this.slides = slides;
-    }
- }*/
   
-  _factor = 0.9;
+  _factorWidth = 0.9;
   @Input() product: any;
   @Input() resize: any;
   @Input() imagesPriceWidth: any;
@@ -416,7 +411,7 @@ export class CarouselSlidesComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     if(this.resize)
-    this._factor = window.innerWidth < 598 ? 4 : 4.9;
+    this._factorWidth = window.innerWidth <= 500 ? 4 : window.innerWidth < 670 ? 4.5 : 5.9;
     
   }
 

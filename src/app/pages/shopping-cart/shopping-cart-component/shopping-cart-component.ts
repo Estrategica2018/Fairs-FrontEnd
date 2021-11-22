@@ -20,6 +20,7 @@ export class ShoppingCartComponent implements OnInit {
   shoppingCarts: any;
   url = SERVER_URL;
   totalAmount = 0;
+  userDataSession: any;
   
   constructor(
     private usersService: UsersService,
@@ -33,32 +34,43 @@ export class ShoppingCartComponent implements OnInit {
   ngOnInit() {
     this.loading.present({message:'Cargando...'});
     
-    this.shoppingCartService.list(this.fair)
-    .then((response) => {
-      this.shoppingCarts = response;
-      this.loadShoppingCart();
-      this.loading.dismiss();
-    })
-    .catch(error => {
-      this.loading.dismiss();
-    });
+    this.usersService.getUser()
+      .then((userDataSession)=>{
+        
+        this.userDataSession = userDataSession;
+        
+        if(this.userDataSession) {
 
+            this.shoppingCartService.list(this.fair, userDataSession)
+            .then((response) => {
+              this.shoppingCarts = response;
+              this.loadShoppingCart();
+              this.loading.dismiss();
+            })
+            .catch(error => {
+              this.loading.dismiss();
+            });
+        }
+        else {
+          this.loading.dismiss();
+        }
+      });
   }
   
   loadShoppingCart() {
       this.totalAmount = 0;
-      
-      this.shoppingCarts.forEach((shoppingCart)=>{
-          shoppingCart.product_price.resources.attributesStr = [];
-          this.totalAmount += ( shoppingCart.product_price.price ? shoppingCart.product_price.price * shoppingCart.amount : shoppingCart.amount * shoppingCart.product_price.product.price );
-          for(let attr of shoppingCart.product_price.resources.attributes) {
-             if(attr.value && attr.value.length > 0) {
-               shoppingCart.product_price.resources.attributesStr.push({'label':attr.name,'value':attr.value})
-             }
+      for(let shoppingCart of this.shoppingCarts){
+          this.totalAmount += ( shoppingCart.product_price.price || shoppingCart.product_price.product.price ) * shoppingCart.amount;
+          if(shoppingCart.product_price.resources) {
+            shoppingCart.product_price.resources.attributesStr = [];
+            if(shoppingCart.product_price.resources.attributes && shoppingCart.product_price.resources.attributes.length > 0) 
+            for(let attr of shoppingCart.product_price.resources.attributes) {
+               if(attr.value && attr.value.length > 0) {
+                 shoppingCart.product_price.resources.attributesStr.push({'label':attr.name,'value':attr.value})
+               }
+            }
           }
-          
-          console.log(shoppingCart);
-      });
+      }
   }
   
   
@@ -99,6 +111,7 @@ export class ShoppingCartComponent implements OnInit {
           //this.shoppingCarts.forEach((shoppingCart)=>{
          return sc.id != shoppingCart.id;
       });
+      
       this.loadShoppingCart();
     })
     .catch(error => {
@@ -148,4 +161,29 @@ export class ShoppingCartComponent implements OnInit {
       this.modalCtrl.dismiss();
   }
 
+  addAmount(shoppingCart) {
+    if(shoppingCart.amount < 11) {
+      
+      shoppingCart.amount ++;
+      
+      this.shoppingCartService.updateShoppingCart(shoppingCart)
+      .then( (dataReference: any) => {
+         //this.loading.dismiss();
+         this.loadShoppingCart(); 
+      });
+      
+    }
+  }
+  
+  removeAmount(shoppingCart) {
+    if(shoppingCart.amount > 1 ) {
+
+      shoppingCart.amount --;
+      this.shoppingCartService.updateShoppingCart(shoppingCart)
+      .then( (dataReference: any) => {
+         //this.loading.dismiss();
+         this.loadShoppingCart(); 
+      });
+    }
+  }
 }

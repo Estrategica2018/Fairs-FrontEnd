@@ -7,6 +7,8 @@
        <strong></strong> {{errors}}
       </div>
     </ion-list-header>
+    
+    <div (click)="closeModal()" class="close-modal"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
   
     <ion-grid *ngIf="session" class="mt-4">
       <ion-row>

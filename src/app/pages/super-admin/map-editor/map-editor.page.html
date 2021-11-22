@@ -4,7 +4,7 @@
 <ion-card class="edit-mode-backdrop-text" [hidden]="editModeBackdrop" (click)="onBackdropEditMode()">
   <ion-item class="ion-text-center">
     <ion-icon name="expand-outline" slot="start"></ion-icon>
-    <ion-label>Da click para ingresar al modo editor</ion-label>
+    <ion-label>Has click aquí para ingresar al modo editor</ion-label>
   </ion-item>
 </ion-card>
 
@@ -26,7 +26,7 @@
 
 
 <div class="goto-back-history-button">
-  <ion-button [disabled]="!historyList || historyList.length == 1 || historySel == 0" 
+  <ion-button [disabled]="!historyList || historyList.length < 1 || historySel == 0" 
   color="light" class="tool-tip" 
   class="tool-tip"
   (click)="onHistoryBack()">
@@ -230,8 +230,8 @@
             <div class="card item-{{(i+1)}} {{banner.class}}" *ngFor="let product of banner.__catalog?.products; let i = index;" 
               [ngStyle]="{
                'position': 'absolute',
-               'top': (( number.parseInt( i / banner.__catalog.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__catalog.__factor ) * 0.03) ) + 'px',
-               'left': ( i % banner.__catalog.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__catalog.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+               'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
+               'left': ( (  ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
@@ -327,7 +327,7 @@
               [ngStyle]="{
                'position': 'absolute',
                'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
-               'left': ( i % banner.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+               'left': ( ( ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',

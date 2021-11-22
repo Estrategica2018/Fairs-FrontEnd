@@ -6,6 +6,7 @@ import { LoadingService } from './../../../providers/loading.service';
 import { ToastController } from '@ionic/angular';
 import { UsersService } from '../../../api/users.service';
 import { ShoppingCarts } from '../../../api/shopping-carts.service';
+import { Router } from '@angular/router';
 import { processData, clone } from '../../../providers/process-data';
 
 @Component({
@@ -21,11 +22,13 @@ export class ProductDetailComponent implements OnInit {
   @Input() product: any;
   @Input() _parent: any;
   priceSelected: any;
+  userDataSession: any;
   lockHover: any;
   profileRole: any = null;
   amount = 1;
   attributes = [];
   showConfirmByProduct = false;
+  showRegister = false;
   
   constructor(
     private alertCtrl: AlertController,
@@ -36,7 +39,8 @@ export class ProductDetailComponent implements OnInit {
     private toastController: ToastController,
     private usersService: UsersService,
     private shoppingCarts: ShoppingCarts,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -46,6 +50,7 @@ export class ProductDetailComponent implements OnInit {
     this.changePrice();
     
     this.usersService.getUser().then((userDataSession: any)=>{
+      this.userDataSession = userDataSession;
       if(userDataSession && userDataSession.user_roles_fair)  {
         this.profileRole = {};
         userDataSession.user_roles_fair.forEach((role)=>{
@@ -90,7 +95,7 @@ export class ProductDetailComponent implements OnInit {
          text: 'Agregar', 
          role: 'destructive', 
          handler: (data) => {
-          if(!this.product.resources || !this.product.resources.detail) {
+          if(!this.product.resources || !this.product.resources.detail || !this.product.resources.detail.elements  || this.product.resources.detail.elements.length == 0 ) {
               this.product.resources = { 'detail': { 'elements': [] } };
           }
           this.product.resources.detail.elements.push({'url':data.url,'title':data.title});
@@ -126,7 +131,7 @@ export class ProductDetailComponent implements OnInit {
          role: 'destructive', 
          handler: (data) => {
           
-          if(!this.product.resources || !this.product.resources.detail) {
+          if(!this.product.resources || !this.product.resources.detail || !this.product.resources.detail.elements  || this.product.resources.detail.elements.length == 0 ) {
               this.product.resources = { 'detail': { 'elements': [] } };
           }
           const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(data.videoUrl);
@@ -156,7 +161,7 @@ export class ProductDetailComponent implements OnInit {
          text: 'Agregar', 
          role: 'destructive', 
          handler: (data) => {
-          if(!this.product.resources || !this.product.resources.detail) {
+          if(!this.product.resources || !this.product.resources.detail || !this.product.resources.detail.elements  || this.product.resources.detail.elements.length == 0 ) {
               this.product.resources = { 'detail': { 'elements': [] } };
           }
           this.product.resources.detail.elements.push({'paragraph':data.paragraph});
@@ -240,7 +245,7 @@ export class ProductDetailComponent implements OnInit {
     let value;
     let mbControl = false;
     
-    if(this.priceSelected && this.priceSelected.resources.attributes) {
+    if(this.priceSelected && this.priceSelected.resources && this.priceSelected.resources.attributes && this.priceSelected.resources.attributes.length > 0) {
         for(let attr of this.priceSelected.resources.attributes) {
            mbControl = false;
            value = this.priceSelected.resources.attributes[attr];
@@ -272,14 +277,20 @@ export class ProductDetailComponent implements OnInit {
   }
   
   confirmBuyProduct(product) {
-      this.showConfirmByProduct = true;
+      if(this.userDataSession) {
+        this.showConfirmByProduct = true;
+      }
+      else {
+        this.showRegister = true;  
+      }
   }
   
   onBuyProduct(product) {
       this.loading.present({message:'Cargando...'});
-      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount )
+      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount, this.userDataSession )
       .then((response) => {
         this.loading.dismiss();
+        this.modalCtrl.dismiss();
         this.showConfirmByProduct = false;
         this.presentToast('Producto agredado exitósamente al carrito de compras', 'app-success-alert');
         if(this._parent && this._parent.openShoppingCart) this._parent.openShoppingCart(this.priceSelected);
@@ -292,10 +303,11 @@ export class ProductDetailComponent implements OnInit {
   
   onBuyProductAndClose(product) {
       this.loading.present({message:'Cargando...'});
-      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount )
+      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount, this.userDataSession )
       .then((response) => {
         this.loading.dismiss();
         this.showConfirmByProduct = false;
+        this.presentToast('Producto agredado exitósamente al carrito de compras', 'app-success-alert');
       })
       .catch(error => {
         this.loading.dismiss(); 
@@ -305,6 +317,17 @@ export class ProductDetailComponent implements OnInit {
   
   closeModal() {
       this.modalCtrl.dismiss();
+  }
+  
+  onRegister() {
+    this.modalCtrl.dismiss();
+    this.redirectTo('/signup');
+  }
+  
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
   }
 
 }

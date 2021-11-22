@@ -12,7 +12,7 @@
        <app-carousel-slides [resize]="true" [product]="product" class="mt-5" (changePrice)="changePrice()">
        </app-carousel-slides>
        </div>
-       <div class="attribute-list">
+       <div class="attribute-list" *ngIf="attributes.length > 0">
          <div class="head">
            <div style="height: 2.1em;">
              Características
@@ -38,6 +38,7 @@
        <h2 class="name ion-text-center">{{product?.name}}</h2>
        <h6 class="description ion-text-justify pr-4 pt-2 mb-5"><small>{{product?.description}}</small></h6>
        <h6 class="mb-5">Precio por unidad {{  ( priceSelected.price || product.price )  | currency: '$ ':'symbol':'1.0-2' }}</h6>
+       
        <div *ngFor="let item of product.resources?.detail?.elements; let i = index;" class="item-add" (mouseover)="lockHover = i">
             <ion-thumbnail class="thumbnail" slot="start" *ngIf="item.url">
               <ion-img [src]="item.url"></ion-img>
@@ -69,23 +70,36 @@
              <option value="9"> Cantidad 9 </option>
              <option value="10"> Cantidad 10 </option>
             </select>
-            <ion-button class="button mr-4" color="primary" size="small" (click)="confirmBuyProduct(product)">
+            <ion-button style="margin-top: -0.4em;" class="button mr-4" color="primary" size="small" (click)="confirmBuyProduct(product)">
               Comprar
             </ion-button>
             <h6 style="margin-right:2em" *ngIf="amount>0" slot="end">Total {{ ( ( priceSelected.price || product.price ) * amount ) | currency: '$ ':'symbol':'1.0-0' }}</h6>
         </ion-toolbar>
-        <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 1em;"*ngIf="showConfirmByProduct">
-            <h6 style="margin-right:2em; width: 87%;" slot="start">Confirma para agregar {{ amount }} {{ (amount > 1 ? 'productos': 'producto' )}} por {{ ( ( priceSelected.price || product.price ) * amount ) | currency: '$ ':'symbol':'1.0-0' }}</h6>
+        <div *ngIf="showConfirmByProduct" class="mt-1">
+          <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
+            <h6 style="margin-right:2em; width: 87%;" slot="start">Confirma para agregar {{ amount }} {{ (amount > 1 ? 'productos': 'producto' )}} al carrito de compras por {{ ( ( priceSelected.price || product.price ) * amount ) | currency: '$ ':'symbol':'1.0-0' }}</h6>
             <div (click)="showConfirmByProduct=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
-        </ion-toolbar>
-        <ion-toolbar class="pay-button ml-6 footer-pay" *ngIf="showConfirmByProduct">
+          </ion-toolbar>
+          <ion-toolbar class="pay-button ml-6 footer-pay">
             <ion-button class="button ml-6" color="primary" size="small" (click)="onBuyProductAndClose(product)">
-               Agregar al carrito y continuar comprando
+               Añadir y seguir comprando
             </ion-button>
             <ion-button class="button ml-6" color="primary" size="small" (click)="onBuyProduct(product)">
-               Añadir al carrito
+               Añadir y pagar carrito
             </ion-button>
-        </ion-toolbar>
+          </ion-toolbar>
+        </div>
+        <div  *ngIf="showRegister" class="mt-1">
+          <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
+            <h6 style="margin-right:2em; width: 87%;" slot="start">Para poder comprar este producto primero debes registrarte</h6>
+            <div (click)="showRegister=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
+          </ion-toolbar>        
+          <ion-toolbar class="pay-button ml-6 footer-pay">
+            <ion-button class="button ml-6" color="primary" size="small" (click)="onRegister()">
+               ir a Registro
+            </ion-button>
+          </ion-toolbar>
+        </div>
     </ion-col>
    </ion-row>
   

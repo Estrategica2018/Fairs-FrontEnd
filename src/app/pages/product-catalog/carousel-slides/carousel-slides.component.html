@@ -1,8 +1,13 @@
 <ion-slides #slides pager="true" paginationType="bullets" slidesPerView="1" (ionSlideWillChange)="ionSlideChange($event)"
-[ngStyle]="{'top': ( imageHeight / 15.6 ) + 'px', 'left': ( imageWidth / 35 ) + 'px', 'height': imageWidth ? '100%' : '41%' }"
+[ngStyle]="{'top': ( imageHeight / 15.6 ) + 'px', 'left': ( imageWidth / 35 ) + 'px', 'height': imageWidth ? '100%' : '39%' }"
 [options]="slideOpts" navigation class="container-carousel position-absolute" *ngIf="imagesArray && imagesArray.length > 1">
   <ion-slide *ngFor="let image of imagesArray">
-   <div class="container-img" [ngStyle]="{'background-image': 'url('+image.url_image+')'}">
+   <div class="container-img" [ngStyle]="{
+   'background-image': 'url('+image.url_image+')',
+   'background-size': imageHeight ? '100%': '77%',
+   'margin': imageHeight ? 'auto': '',
+   'margin-left': imageHeight ? 'auto': '3em' 
+   }">
    </div>
   </ion-slide>
 </ion-slides>
@@ -12,19 +17,27 @@
   
   <div (click)="slidePrev()" ion-button class="position-absolute left" 
   [ngClass]="{'active': !isBeginning, 'in-active':isBeginning}"
-  [ngStyle]="{'left': '-' + ( imageWidth / 10 ) + 'px'}">
+  [ngStyle]="{'left': imageWidth ? '-' + ( imageWidth / 10 ) + 'px' : '-7px'}">
   <ion-icon name="chevron-back-outline"></ion-icon>
   </div>
   
   <div (click)="slideNext()" ion-button class="position-absolute right" 
   [ngClass]="{'active': !isEnd, 'in-active':isEnd}"
-  [ngStyle]="{'left': ( imageWidth ? ( imageWidth * _factor ) +'px': ( _factor +'em') ) }"><ion-icon name="chevron-forward-outline"></ion-icon></div>
+  [ngStyle]="{'left': ( imageWidth ? ( imageWidth * _factorWidth ) +'px': _factorWidth + 'em' ) }">
+  <ion-icon name="chevron-forward-outline"></ion-icon>
+  </div>
 
 </div>
 
 <div [ngStyle]="{'top': ( imageHeight / 15.6 ) + 'px', 'left': ( imageWidth / 35 ) + 'px', 'height': imageWidth ? '100%' : '41%'}"
 class="container-carousel position-absolute" *ngIf="imagesArray && imagesArray.length == 1">
-   <div *ngFor="let image of imagesArray" class="container-img" [ngStyle]="{'background-image': 'url('+image.url_image+')'}">
+   <div *ngFor="let image of imagesArray" class="container-img" 
+   [ngStyle]="{
+   'background-image': 'url('+image.url_image+')',
+   'background-size': imageHeight ? '100%': '77%',
+   'margin': imageHeight ? 'auto': '' ,
+   'margin-left': imageHeight ? 'auto': '5.3em' 
+   }">
    </div>
 </div> 
 

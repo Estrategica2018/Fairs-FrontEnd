@@ -120,7 +120,7 @@ export class SignupPage implements OnInit {
         data => {
             const token = data.data;
             this.usersService.setUser(Object.assign(userData,{token:token})).then(() => {
-              this.router.navigateByUrl('/app/schedule');
+              this.router.navigateByUrl('/schedule');
               window.dispatchEvent(new CustomEvent('user:signup'));
             });
         },

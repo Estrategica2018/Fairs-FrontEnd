@@ -1,7 +1,7 @@
-<ion-button color="light" class="full-screen-button" (click)="onToogleFullScreen()">
+<!--ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="full-screen-button" (click)="onToogleFullScreen()">
   <ion-icon name="contract-outline" *ngIf="fullScreen"></ion-icon>
   <ion-icon name="expand-outline" *ngIf="!fullScreen"></ion-icon>
-</ion-button>
+</ion-button-->
 <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-back-button" (click)="onToBackEditor(scene)">
   <ion-icon name="arrow-back-outline"></ion-icon>
 </ion-button>
@@ -204,8 +204,8 @@
               *ngFor="let product of banner.__catalog?.products; let i = index;" 
               [ngStyle]="{
                'position': 'absolute',
-               'top': (( number.parseInt( i / banner.__catalog.__factor ) * banner.    size.y) + (banner.size.y * number.parseInt( i / banner.__catalog.__factor ) * 0.03) ) + 'px',
-               'left': ( i % banner.__catalog.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__catalog.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+               'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
+               'left': ( ( ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': 'url('+banner.image_url+')',
@@ -301,7 +301,7 @@
               [ngStyle]="{
                'position': 'absolute',
                'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
-               'left': ( i % banner.__factor >= 2 ?  banner.size.x * 2.06 : ( i % banner.__factor ) >= 1 ? banner.size.x * 1.03 : 0 ) + 'px',
+               'left': ( ( ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',

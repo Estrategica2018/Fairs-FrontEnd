@@ -143,9 +143,9 @@ export class MapEditorPage implements OnInit {
   } 
   
   ngOnDestroy(): void {
-    if(window.location.href.indexOf('map') < 0) {
-     // window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
-    }
+    //if(window.location.href.indexOf('map') < 0) {
+      window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
+    //}
 
   } 
   ngAfterViewInit() {
@@ -402,52 +402,18 @@ export class MapEditorPage implements OnInit {
   }
   
   initializeCatalogs(banner) {
-    if(banner.__catalog) {
+    if(banner.__catalog || banner.speakerCatalog || banner.type === 'Título') {
         for(var i=10;i>0;i--) {
+            
            if( ( i * banner.size.x <= this.scene.container.w ) || ( ( i - 0.5 ) * banner.size.x <= this.scene.container.w ) )  {
-              banner.__catalog.__factor = i;
-              const menu = document.querySelector < HTMLElement > ('.menu-main-content');
-              const innerWidth = window.innerWidth - menu.offsetWidth;
-              if ( banner.size.x  * banner.__catalog.__factor < innerWidth ) {
-                const left = innerWidth - ( banner.size.x + 10 ) * banner.__catalog.__factor;
-                banner.position.x = left / 2;
-              }
-              else {
-                banner.position.x = innerWidth * 0.05;
-              }
-              break;
-           }
-        }
-    }
-    if(banner.speakerCatalog) {
-        for(var i=10;i>0;i--) {
-           if( ( i * banner.size.x <= this.scene.container.w ) || ( ( i - 0.5 ) * banner.size.x <= this.scene.container.w ) )  {
-              banner.__factor = i;
-              const menu = document.querySelector < HTMLElement > ('.menu-main-content');
-              const innerWidth = window.innerWidth - menu.offsetWidth;
-              if ( banner.size.x  * banner.__factor < innerWidth ) {
-                const left = innerWidth - ( banner.size.x + 10 ) * banner.__factor;
-                banner.position.x = left / 2;
-              }
-              else {
-                banner.position.x = innerWidth * 0.05;
-              }
-              break;
-           }
-        }
-    }
-    else if(banner.type === 'Título') {
-        if(this.scene.render) {
-            const menu = document.querySelector < HTMLElement > ('.menu-main-content');
-            const innerWidth = window.innerWidth - menu.offsetWidth;
-            if ( banner.size.x  < innerWidth ) {
-              const left = innerWidth - ( banner.size.x + 10 );
+              banner.__factor = i -1 ;
+              const main = document.querySelector<HTMLElement>('ion-router-outlet');
+              const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
               banner.position.x = left / 2;
-            }
-            else {
-              banner.position.x = innerWidth * 0.05;
-            }
+              break;              
+           }
         }
+
     }
   }
 
@@ -906,6 +872,8 @@ export class MapEditorPage implements OnInit {
           this.onResize();
       }, 300);
     });
+    
+    
   }
   
   async startAnimation(obj) {
@@ -1546,7 +1514,8 @@ export class MapEditorPage implements OnInit {
   
   initializeProductCatalogs(banner) {
      
-      banner.__catalog = {"products":[],"__factor": 3 };
+      banner.__catalog = {"products":[]};
+      banner.__factor = 3;
       let remark = banner.productCatalog.list;
         
       let str = remark.split(';')[0];    
@@ -1637,6 +1606,7 @@ export class MapEditorPage implements OnInit {
         text: 'Editar producto',
         role: 'destructive',
         handler: () => {
+          window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
           this.goToEditProduct(product);
         }
       }]

@@ -62,29 +62,7 @@ $blue-light-color: #F5F6FF;
   position: relative;
   top: -54px;
   left: -3px;
-}
-
-.select-amount {
-  height: 3em;
-  width: 13em;
-}
-
-.attribute-list {
-  border: 1px solid gray;
-  border-radius: 14px;
-  background: #9d9fa6;
-  font-size: 1.2em;
-  margin-top: 3em;
-  ion-row {
-  
-  }
-  ion-row.par {
-    background: #f4f5f8;
-    width: 107%;
-    margin-left: -0.5em;
-    padding-left: 0.5em;
-  }
-}
+} 
 
 .border-line {
   border-bottom: 1px solid #{$blue-color};
@@ -149,3 +127,10 @@ $blue-light-color: #F5F6FF;
   z-index: 100;
 }
 
+
+
+.buttonAmount {
+  z-index: 2;
+  font-size: 1em;
+  --border-style: initial;
+}

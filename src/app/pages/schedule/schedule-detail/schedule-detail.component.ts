@@ -69,5 +69,8 @@ export class ScheduleDetailComponent {
 
     const { data } = await this.modalSpeaker.onWillDismiss();
   }
-  
+
+  closeModal() {
+      this.modalCtrl.dismiss();
+  }  
 }

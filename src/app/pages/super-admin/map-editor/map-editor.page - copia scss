@@ -447,9 +447,10 @@ ion-tab-button {
 }
 
 .edit-mode-backdrop {
-  opacity: 0.3;
+  opacity: 0.9;
   cursor: initial;
   z-index: 1001;
+  background: #e0e0e0;
 }
 
 .edit-mode-backdrop-text {

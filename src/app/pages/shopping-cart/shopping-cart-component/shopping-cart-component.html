@@ -40,7 +40,17 @@
                 </div-->
               </div>
             </ion-col>
-            <ion-col size="2"> <h6>{{shoppingCart.amount}} </h6></ion-col>
+            <ion-col size="2">
+              <div class="d-flex">
+                <ion-button color="primary" fill="outline" class="buttonAmount" size="small" (click)="removeAmount(shoppingCart)">
+                    <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
+                 </ion-button>
+                 <h6 class="m-2">{{shoppingCart.amount}} </h6>
+                 <ion-button color="primary" fill="outline" class="buttonAmount" size="small" (click)="addAmount(shoppingCart)">
+                    <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+                 </ion-button>
+                </div>
+             </ion-col>
             <ion-col size="3"> <h6> {{ ( shoppingCart.product_price.price || shoppingCart.product_price.product.price ) | currency: '$ ':'symbol':'1.0-0'}} </h6></ion-col>
             <ion-col size="2"> <h6> {{ ( shoppingCart.product_price.price ? shoppingCart.product_price.price * shoppingCart.amount : shoppingCart.amount * shoppingCart.product_price.product.price ) | currency: '$ ':'symbol':'1.0-0' }} </h6></ion-col>
             <ion-col size="1"  class="tool-tip cursor-pointer" (click)="presenterDelete(shoppingCart)"> 
@@ -58,11 +68,11 @@
         <ion-row style="margin-top: 2em;">
             <ion-col class="ion-text-center">
               <ion-toolbar  class="ion-text-right" *ngIf="totalAmount > 0">
-                <ion-button class="button mr-6" color="primary" size="small" (click)="closeModal()" *ngIf="_continue" style="height: 3em; margin-top: -0.5em;">
+                <!--ion-button class="button mr-6" color="primary" size="small" (click)="closeModal()" *ngIf="_continue" style="height: 3em; margin-top: -0.5em;">
                   Agregar más productos 
                   <ion-icon name="cart-outline">
                   </ion-icon>
-                </ion-button>
+                </ion-button-->
                 
                 <button class="button-price" ion-button icon-start (click)="showPaymentButton()">
                   <ion-icon name="bookmark"></ion-icon>
