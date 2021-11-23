@@ -29,6 +29,11 @@ const routes: Routes = [
     loadChildren: () => import('./agenda/agenda.module').then( m => m.AgendaPageModule)
   },
   {
+    path: 'categories-subcategories',
+    loadChildren: () => import('./category/category.module').then( m => m.CategoryPageModule)
+  },
+
+  {
     path: 'speaker',
     loadChildren: () => import('./speaker/speaker.module').then( m => m.SpeakerPageModule)
   },

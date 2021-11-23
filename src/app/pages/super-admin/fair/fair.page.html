@@ -145,9 +145,9 @@
          <ion-img class="ml-auto" [src]="agenda.resources?.url_image"></ion-img>
         </ion-thumbnail>
      </ion-item>
-     
-     
-          
+
+
+
       <ion-item lines="">
         <ion-label slot="start">Categorías</ion-label>
         <ion-buttons class="" slot="end">
@@ -156,12 +156,21 @@
             </ion-button>
         </ion-buttons>
       </ion-item>
-      
+
+      <ion-item lines="">
+        <ion-label slot="start">Crear Categorías - subcategorías</ion-label>
+        <ion-buttons class="" slot="end">
+          <ion-button routerLink="/super-admin/categories-subcategories" routerLinkActive="active" routerDirection="root" detail="false">
+            <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+
       <ion-item *ngFor="let group of groupsCategoryList">
         <ion-label class="mr-3">
           <h2>{{group.label}}</h2>
         </ion-label>
-      </ion-item> 
+      </ion-item>
 
      <ion-item button="true">
         <ion-label> Contacto de soporte </ion-label>

@@ -85,6 +85,10 @@
 
     </ion-row>
   </ion-grid>
+  <ion-button  color="success" size="small" (click)="new()" *ngIf="speaker.id">
+    <ion-label > Nuevo </ion-label>
+    <ion-icon slot="end" name="plus-outline"></ion-icon>
+  </ion-button>
   <ion-item button="true">
     <ion-label> Nombre </ion-label>
     <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.name" name="name"></ion-input>

@@ -145,4 +145,20 @@ export class SpeakerPage implements OnInit {
         this.errors = error;
       });
   }
+  new() {
+    this.speaker =  {
+      id: null ,
+      name: '',
+      user_name: '',
+      last_name: '',
+      profile_picture: '',
+      company_logo: '',
+      description_one: '',
+      description_two: '',
+      position: '',
+      profession: '',
+      email: '',
+      active: '',
+    };
+  }
 }

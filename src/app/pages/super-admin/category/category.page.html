@@ -1,0 +1,180 @@
+<ion-header class="mt-5">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+
+    </ion-buttons>
+
+    <ion-title>Categorías - Subcategorías</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-list-header [hidden]="!success">
+  <div class="alert alert-success fade show alert-dismissible">
+    <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+    <strong></strong> {{success}}
+  </div>
+</ion-list-header>
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-list lines=""  class="padding-container">
+          <ion-grid class="ion-text-center">
+            <ion-row class="ion-margin">
+              <ion-col>
+                <ion-title>
+                  <ion-text color="default">
+                    Categorías
+                  </ion-text>
+                </ion-title>
+              </ion-col>
+            </ion-row>
+            <ion-row class="header-row">
+              <ion-col>
+                <ion-text>Tipo</ion-text>
+              </ion-col>
+
+              <ion-col>
+                <ion-text>Nombre</ion-text>
+              </ion-col>
+
+              <ion-col>
+                <ion-text>Recursos</ion-text>
+              </ion-col>
+
+              <ion-col>
+                <ion-text>Acción</ion-text>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+        </ion-list>
+      </ion-col>
+      <ion-col>
+        <ion-list lines=""  class="padding-container">
+          <ion-grid class="ion-text-center">
+            <ion-row class="ion-margin">
+              <ion-col>
+                <ion-title>
+                  <ion-text color="default">
+                    Subcategoría
+                  </ion-text>
+                </ion-title>
+              </ion-col>
+            </ion-row>
+            <ion-row class="header-row">
+              <ion-col>
+                <ion-text>Categoría</ion-text>
+              </ion-col>
+
+              <ion-col>
+                <ion-text>Tipo</ion-text>
+              </ion-col>
+
+              <ion-col>
+                <ion-text>Nombre</ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>Recursos</ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>Acción</ion-text>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-list lines=""  class="padding-container">
+        <ion-button (click)="showFormCategory=true;showFormSubCategory=false" color="success" size="small">
+          <ion-label > Nueva Categoría</ion-label>
+          <ion-icon slot="end" name="plus-outline"></ion-icon>
+        </ion-button>
+        <ion-button  (click)="showFormCategory=false;showFormSubCategory=true" color="warning" size="small">
+          <ion-label > Nueva Subcategoría </ion-label>
+          <ion-icon slot="end" name="plus-outline"></ion-icon>
+        </ion-button>
+      </ion-list>
+    </ion-row>
+    <ion-row *ngIf="showFormSubCategory">
+      <ion-col>
+        <ion-list lines=""  class="padding-container">
+        <ion-item button="true">
+          <ion-label> Categoría </ion-label>
+          <ion-select>
+            <ion-select-option value="brown">Brown</ion-select-option>
+            <ion-select-option value="blonde">Blonde</ion-select-option>
+            <ion-select-option value="black">Black</ion-select-option>
+            <ion-select-option value="red">Red</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item button="true">
+          <ion-label> Tipo </ion-label>
+          <ion-input class="ml-auto" class="text-right"  name="type"></ion-input>
+        </ion-item>
+        <ion-item button="true">
+          <ion-label> Nombre </ion-label>
+          <ion-input class="ml-auto" class="text-right"  name="name"></ion-input>
+        </ion-item>
+        <ion-item button="true">
+          <ion-label> Color </ion-label>
+          <ion-input class="ml-auto" class="text-right"   name="color"></ion-input>
+        </ion-item>
+          <ion-item button="true">
+            <ion-label> Url imagen </ion-label>
+            <ion-input class="ml-auto" class="text-right"   name="color"></ion-input>
+          </ion-item>
+
+        <div class="ion-padding mt-2">
+          <ion-button (click)="storeSubCategory()" size="small" >
+            <ion-label > Guardar </ion-label>
+            <ion-icon slot="end" name="save-outline"></ion-icon>
+          </ion-button>
+          <ion-button  color="warning" size="small">
+            <ion-label > Editar </ion-label>
+            <ion-icon slot="end" name="pencil-outline"></ion-icon>
+          </ion-button>
+
+        </div>
+      </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="showFormCategory">
+      <ion-col>
+        <ion-list lines=""  class="padding-container">
+          <ion-item button="true">
+            <ion-label> Tipo </ion-label>
+            <ion-input class="ml-auto" class="text-right"  name="type"></ion-input>
+          </ion-item>
+          <ion-item button="true">
+            <ion-label> Nombre </ion-label>
+            <ion-input class="ml-auto" class="text-right"  name="name"></ion-input>
+          </ion-item>
+          <ion-item button="true">
+            <ion-label> Color </ion-label>
+            <ion-input class="ml-auto" class="text-right"   name="color"></ion-input>
+          </ion-item>
+          <ion-item button="true">
+            <ion-label> Url imagen </ion-label>
+            <ion-input class="ml-auto" class="text-right"   name="color"></ion-input>
+          </ion-item>
+
+          <div class="ion-padding mt-2">
+            <ion-button (click)="storeCategory()" size="small" >
+              <ion-label > Guardar </ion-label>
+              <ion-icon slot="end" name="save-outline"></ion-icon>
+            </ion-button>
+            <ion-button  color="warning" size="small">
+              <ion-label > Editar </ion-label>
+              <ion-icon slot="end" name="pencil-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+
