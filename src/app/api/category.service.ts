@@ -16,10 +16,10 @@ export class CategoryService {
   refresTime = null;
   fair = null;
   fairName: string;
-  
+
   constructor(private http: HttpClient) { }
 
-  list(type,fair): any {
+  list(type, fair): any {
     return new Promise((resolve, reject) => {
         this.http.get(`/api/category/to_list/${fair.id}/${type}`)
         .pipe(
@@ -37,7 +37,7 @@ export class CategoryService {
         .subscribe((data : any )=> {
             if(data.success) {
               resolve(processData(data));
-              
+
             }
             else {
               reject(JSON.stringify(data));
@@ -47,7 +47,7 @@ export class CategoryService {
         });
     });
   }
-  
+
   createCategory(category){
     return new Promise((resolve, reject) => {
         this.http.post(`/api/category/create/`,category)
@@ -66,7 +66,7 @@ export class CategoryService {
         .subscribe((data : any )=> {
             if(data.success) {
               resolve(data);
-              
+
             }
             else {
               reject(JSON.stringify(data));
@@ -76,7 +76,7 @@ export class CategoryService {
         });
     });
   }
-    
+
    updateCategory(category){
       return new Promise((resolve, reject) => {
         this.http.post(`/api/category/create/`,category)
@@ -95,7 +95,7 @@ export class CategoryService {
         .subscribe((data : any )=> {
             if(data.success) {
               resolve(data);
-              
+
             }
             else {
               reject(JSON.stringify(data));

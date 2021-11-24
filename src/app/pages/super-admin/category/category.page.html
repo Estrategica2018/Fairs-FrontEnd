@@ -46,6 +46,29 @@
                 <ion-text>Acción</ion-text>
               </ion-col>
             </ion-row>
+            <ion-row *ngFor="let category of categories;let i = index">
+              <ion-col>
+                <ion-text>
+                  {{category.type}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  {{category.name}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  {{category.resources.color}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  <ion-button size="small" style="font-size: 9px;" color="primary">Editar</ion-button>
+                </ion-text>
+              </ion-col>
+
+            </ion-row>
           </ion-grid>
 
         </ion-list>
@@ -81,6 +104,33 @@
                 <ion-text>Acción</ion-text>
               </ion-col>
             </ion-row>
+            <ion-row *ngFor="let subcategory of subCategories;let i = index">
+              <ion-col>
+                <ion-text>
+                  {{subcategory.category.name}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  {{subcategory.type}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  {{subcategory.name}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  {{subcategory.resources.color}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  <ion-button size="small" style="font-size: 9px;" color="primary">Editar</ion-button>
+                </ion-text>
+              </ion-col>
+            </ion-row>
           </ion-grid>
 
         </ion-list>
@@ -103,28 +153,32 @@
         <ion-list lines=""  class="padding-container">
         <ion-item button="true">
           <ion-label> Categoría </ion-label>
-          <ion-select>
-            <ion-select-option value="brown">Brown</ion-select-option>
-            <ion-select-option value="blonde">Blonde</ion-select-option>
-            <ion-select-option value="black">Black</ion-select-option>
-            <ion-select-option value="red">Red</ion-select-option>
+          <ion-select [(ngModel)]="subCategory.id">
+            <ion-select-option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}
+            </ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item button="true">
-          <ion-label> Tipo </ion-label>
-          <ion-input class="ml-auto" class="text-right"  name="type"></ion-input>
+          <ion-item button="true">
+            <ion-label> Tipo </ion-label>
+            <ion-select [(ngModel)]="subCategory.type" name="type">
+              <ion-select-option value="AgendaType">Agenda</ion-select-option>
+              <ion-select-option value="ProductType">Producto</ion-select-option>
+            </ion-select>
+
+          </ion-item>
         </ion-item>
         <ion-item button="true">
           <ion-label> Nombre </ion-label>
-          <ion-input class="ml-auto" class="text-right"  name="name"></ion-input>
+          <ion-input class="ml-auto" class="text-right" [(ngModel)]="subCategory.name"  name="name"></ion-input>
         </ion-item>
         <ion-item button="true">
           <ion-label> Color </ion-label>
-          <ion-input class="ml-auto" class="text-right"   name="color"></ion-input>
+          <ion-input class="ml-auto" class="text-right"   [(ngModel)]="subCategory.resource.color" name="color"></ion-input>
         </ion-item>
           <ion-item button="true">
             <ion-label> Url imagen </ion-label>
-            <ion-input class="ml-auto" class="text-right"   name="color"></ion-input>
+            <ion-input class="ml-auto" class="text-right"  [(ngModel)]="subCategory.resource.image"  name="image"></ion-input>
           </ion-item>
 
         <div class="ion-padding mt-2">
@@ -146,19 +200,22 @@
         <ion-list lines=""  class="padding-container">
           <ion-item button="true">
             <ion-label> Tipo </ion-label>
-            <ion-input class="ml-auto" class="text-right"  name="type"></ion-input>
+            <ion-select [(ngModel)]="category.type">
+              <ion-select-option value="AgendaType">Agenda</ion-select-option>
+              <ion-select-option value="ProductType">Producto</ion-select-option>
+            </ion-select>
           </ion-item>
           <ion-item button="true">
             <ion-label> Nombre </ion-label>
-            <ion-input class="ml-auto" class="text-right"  name="name"></ion-input>
+            <ion-input class="ml-auto" class="text-right" [(ngModel)]="category.name"  name="name"></ion-input>
           </ion-item>
           <ion-item button="true">
             <ion-label> Color </ion-label>
-            <ion-input class="ml-auto" class="text-right"   name="color"></ion-input>
+            <ion-input class="ml-auto" class="text-right" [(ngModel)]="category.resource.color"  name="color"></ion-input>
           </ion-item>
           <ion-item button="true">
             <ion-label> Url imagen </ion-label>
-            <ion-input class="ml-auto" class="text-right"   name="color"></ion-input>
+            <ion-input class="ml-auto" class="text-right" [(ngModel)]="category.resource.image"  name="image"></ion-input>
           </ion-item>
 
           <div class="ion-padding mt-2">
