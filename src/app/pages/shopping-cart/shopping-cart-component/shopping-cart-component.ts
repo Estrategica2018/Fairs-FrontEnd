@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angu
 import { UsersService } from './../../../api/users.service';
 import { FairsService } from './../../../api/fairs.service';
 import { ShoppingCarts } from './../../../api/shopping-carts.service';
+import { PaymentService } from './../../../api/payment.service';
 import { LoadingService } from './../../../providers/loading.service';
 import { AlertController, ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
 import { environment, SERVER_URL } from '../../../../environments/environment';
@@ -24,6 +25,7 @@ export class ShoppingCartComponent implements OnInit {
   
   constructor(
     private usersService: UsersService,
+    private paymentService: PaymentService,
     private alertCtrl: AlertController,
     private fairsService: FairsService,
     private shoppingCartService: ShoppingCarts,
@@ -124,7 +126,7 @@ export class ShoppingCartComponent implements OnInit {
       this.usersService.getUser()
         .then((userDataSession)=>{
           
-         this.usersService.createNewReference({type:'shopping',id: 1},userDataSession)
+         this.paymentService.createNewReference({type:'shopping',id: 1},userDataSession)
          .then( (dataReference: any) => {
              this.loading.dismiss();
              const price = this.totalAmount;

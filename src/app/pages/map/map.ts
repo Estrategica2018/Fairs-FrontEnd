@@ -579,7 +579,7 @@ export class MapPage implements OnInit {
 
   contactSendForm(form){
       let sentToEmail = '';
-	  console.log(form);
+	  
       if(this.template == 'fair') {
           sentToEmail = this.fair.resources.supportContact;
       }

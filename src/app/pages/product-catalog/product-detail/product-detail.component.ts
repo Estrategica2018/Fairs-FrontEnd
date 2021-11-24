@@ -21,7 +21,7 @@ export class ProductDetailComponent implements OnInit {
   @Input() standId: any;
   @Input() product: any;
   @Input() _parent: any;
-  @ViewChild('carouselSlides') carouselSlides: any;
+  @ViewChild('carouselSlides', { static: true }) carouselSlides: any;
   priceSelected: any;
   userDataSession: any;
   lockHover: any;
