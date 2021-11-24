@@ -56,14 +56,14 @@
 }
 
 
-.tabs-menu {
+.tabs-menu-scene {
   position: absolute;
   
   z-index: 11;
 }
 
 @media (max-width: 690px) {
-  .tabs-menu {
+  .tabs-menu-scene {
     
       left: 0;
         ion-button {

@@ -1071,9 +1071,9 @@ export class MapEditorPage implements OnInit {
   onChangeColorTabMenu() {
     let style = document.createElement('style');
     style.type = 'text/css';
-    style.innerHTML = '.tabs-menu.bottom::before, .tabs-menu.bottom::after {box-shadow: 0 -17px 0 0 '+this.tabMenuObj.backgroundColor+' !important}';
-    style.innerHTML += '.tabs-menu .head { background-color: ' + this.tabMenuObj.backgroundColorLogo + '} ';
-    style.innerHTML += '.tabs-menu.bottom .head::before, .tabs-menu.bottom .head::after { box-shadow: 0 -17px 0 0 ' + this.tabMenuObj.backgroundColorLogo + ' !important;}';
+    style.innerHTML = '.tabs-menu-scene.bottom::before, .tabs-menu-scene.bottom::after {box-shadow: 0 -17px 0 0 '+this.tabMenuObj.backgroundColor+' !important}';
+    style.innerHTML += '.tabs-menu-scene .head { background-color: ' + this.tabMenuObj.backgroundColorLogo + '} ';
+    style.innerHTML += '.tabs-menu-scene.bottom .head::before, .tabs-menu-scene.bottom .head::after { box-shadow: 0 -17px 0 0 ' + this.tabMenuObj.backgroundColorLogo + ' !important;}';
     
     document.getElementsByTagName('head')[0].appendChild(style);
     this.onChangeMenuTabs();

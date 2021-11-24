@@ -147,7 +147,7 @@ export class MeetingPage implements OnInit {
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      main.style.top = top + 'px';
      
-     const tabsmenu = document.querySelector<HTMLElement>('.tabs-menu');
+     const tabsmenu = document.querySelector<HTMLElement>('.tabs-menu-scene');
      tabsmenu.style.bottom = top + 'px';
      
      const left = (main.offsetWidth - 406) / 2;

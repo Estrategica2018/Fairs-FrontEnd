@@ -1,20 +1,20 @@
-.tabs-menu {
+.tabs-menu-scene {
   position: absolute;
 }
 
 @media (max-width: 478px) {
-  .tabs-menu ion-button ion-label {
+  .tabs-menu-scene ion-button ion-label {
     font-size: 10px;
   }
 }
 
 
-.tabs-menu {
+.tabs-menu-scene {
    background-color: transparent;
 }
 
 /***** init menu tab position bottom *****/
-.tabs-menu.bottom {
+.tabs-menu-scene.bottom {
   border-top-left-radius: 26px;
   border-top-right-radius: 26px;
   padding-right: 18px;
@@ -25,7 +25,7 @@
   }
 }
 
-.tabs-menu.bottom::before {
+.tabs-menu-scene.bottom::before {
    content: "";
    position: absolute;
    bottom: -4px;
@@ -37,7 +37,7 @@
    transform: rotateZ(270deg) rotateX(180deg);
 }
 
-.tabs-menu.bottom::after {
+.tabs-menu-scene.bottom::after {
     content: "";
     position: absolute;
     bottom: -4px;
@@ -49,7 +49,7 @@
     transform: rotateZ(270deg) rotateX(0deg);
 }
 
-.tabs-menu.bottom .head {
+.tabs-menu-scene.bottom .head {
     position: absolute;
     top: 0px;
     left: 34px;
@@ -65,7 +65,7 @@
         height: 30px;
     }
 }
-.tabs-menu.bottom .head::before {
+.tabs-menu-scene.bottom .head::before {
     content: "";
     position: absolute;
     bottom: 8px;
@@ -75,7 +75,7 @@
     border-top-left-radius: 55px;
     transform: rotateZ(270deg) rotateX(180deg) rotateY(180deg);
 }
-.tabs-menu.bottom .head::after {
+.tabs-menu-scene.bottom .head::after {
     content: "";
     position: absolute;
     bottom: 8px;
@@ -88,7 +88,7 @@
 /***** end menu tab position bottom *****/
 
 /***** init menu tab position top *****/
-.tabs-menu.top {
+.tabs-menu-scene.top {
   border-bottom-left-radius: 26px;
   border-bottom-right-radius: 26px;
   padding-right: 18px;
@@ -99,7 +99,7 @@
   }
 }
 
-.tabs-menu.top::before {
+.tabs-menu-scene.top::before {
     content: "";
     position: absolute;
     top: -14px;
@@ -111,7 +111,7 @@
     transform: rotateZ(90deg) rotateX(180deg);
 }
 
-.tabs-menu.top::after {
+.tabs-menu-scene.top::after {
     content: "";
     position: absolute;
     top: -14px;
@@ -123,7 +123,7 @@
     transform: rotateZ(90deg) rotateX(0deg);
 }
 
-.tabs-menu.top .head {
+.tabs-menu-scene.top .head {
     position: absolute;
     bottom: 0px;
     left: 34px;
@@ -139,7 +139,7 @@
         height: 30px;
     }
 }
-.tabs-menu.top .head::before {
+.tabs-menu-scene.top .head::before {
     content: "";
     position: absolute;
     top: 8px;
@@ -149,7 +149,7 @@
     border-bottom-left-radius: 55px;
     transform: rotateZ(90deg) rotateX(180deg) rotateY(180deg);
 }
-.tabs-menu.top .head::after {
+.tabs-menu-scene.top .head::after {
     content: "";
     position: absolute;
     top: 8px;
@@ -163,7 +163,7 @@
 
 /***** init menu tab position right *****/
 
-.tabs-menu.right {
+.tabs-menu-scene.right {
   border-bottom-left-radius: 26px;
   border-top-left-radius: 26px;
   width: 39px;
@@ -178,7 +178,7 @@
   }
 }
 
-.tabs-menu.right::before {
+.tabs-menu-scene.right::before {
   content: "";
   position: absolute;
   right: 0px;
@@ -190,7 +190,7 @@
   transform: rotateZ(0deg) rotateX(180deg);
 }
 
-.tabs-menu.right::after {
+.tabs-menu-scene.right::after {
   content: "";
   position: absolute;
   top: -39px;
@@ -202,7 +202,7 @@
   transform: rotateZ(0deg) rotateX(0);
 }
 
-.tabs-menu.right .head {
+.tabs-menu-scene.right .head {
   position: absolute;
   top: 35px;
   left: 0px;
@@ -218,7 +218,7 @@
     height: 30px;
   }
 }
-.tabs-menu.right .head::before {
+.tabs-menu-scene.right .head::before {
   content: "";
   position: absolute;
   top: -35px;
@@ -228,7 +228,7 @@
   border-bottom-right-radius: 55px;
   transform: rotateZ(0deg) rotateX(180deg) rotateZ(180deg);
 }
-.tabs-menu.right .head::after {
+.tabs-menu-scene.right .head::after {
   content: "";
   position: absolute;
   bottom: -35px;
@@ -244,7 +244,7 @@
 
 /***** init menu tab position left *****/
 
-.tabs-menu.left {
+.tabs-menu-scene.left {
   border-bottom-right-radius: 26px;
   border-top-right-radius: 26px;
   width: 39px;
@@ -259,7 +259,7 @@
   }
 }
 
-.tabs-menu.left::before {
+.tabs-menu-scene.left::before {
   content: "";
   position: absolute;
   left: 0px;
@@ -271,7 +271,7 @@
   transform: rotateZ(0deg) rotateX(180deg);
 }
 
-.tabs-menu.left::after {
+.tabs-menu-scene.left::after {
   content: "";
   position: absolute;
   top: -39px;
@@ -283,7 +283,7 @@
   transform: rotateZ(0deg) rotateX(0);
 }
 
-.tabs-menu.left .head {
+.tabs-menu-scene.left .head {
   position: absolute;
   top: 32px;
   right: 0px;
@@ -299,7 +299,7 @@
     right: -4px;
   }
 }
-.tabs-menu.left .head::before {
+.tabs-menu-scene.left .head::before {
   content: "";
   position: absolute;
   top: -35px;
@@ -310,7 +310,7 @@
   transform: rotateZ(180deg) rotateX(360deg) rotateZ(180deg);
 }
 
-.tabs-menu.left .head::after {
+.tabs-menu-scene.left .head::after {
   content: "";
   position: absolute;
   bottom: -35px;

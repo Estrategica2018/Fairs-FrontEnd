@@ -52,13 +52,13 @@
 }
 
 
-.tabs-menu {
+.tabs-menu-scene {
   position: absolute;
   z-index: 110;
 }
 
 @media (max-width: 478px) {
-  .tabs-menu ion-button ion-label {
+  .tabs-menu-scene ion-button ion-label {
     font-size: 10px;
   }
 }

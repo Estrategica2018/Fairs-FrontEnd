@@ -579,11 +579,12 @@ export class MapPage implements OnInit {
 
   contactSendForm(form){
       let fromEmail = '';
+	  console.log(form);
       if(this.template == 'fair') {
-          fromEmail = this.fair.resources.supportContact.value;
+          fromEmail = this.fair.resources.supportContact;
       }
       if(this.template == 'stand') {
-          fromEmail = this.stand.merchant.email_contact.value;
+          fromEmail = this.stand.merchant.email_contact;
       }
       const data = { 
         'from': fromEmail,

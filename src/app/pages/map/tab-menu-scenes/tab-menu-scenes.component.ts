@@ -55,15 +55,15 @@ export class TabMenuScenesComponent {
         let style = document.createElement('style');
         style.type = 'text/css';
         style.id = 'newHeadPanelScene';
-        style.innerHTML = '.tabs-menu .head { background-color: ' + tabMenuObj.backgroundColorLogo + '} ';
-        style.innerHTML += '.tabs-menu.bottom::before, .tabs-menu.bottom::after {box-shadow: 0 -17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
-        style.innerHTML += '.tabs-menu.bottom .head::before, .tabs-menu.bottom .head::after { box-shadow: 0 -17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
-        style.innerHTML += '.tabs-menu.top::before, .tabs-menu.top::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
-        style.innerHTML += '.tabs-menu.top .head::before, .tabs-menu.top .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
-        style.innerHTML += '.tabs-menu.right::before, .tabs-menu.right::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
-        style.innerHTML += '.tabs-menu.right .head::before, .tabs-menu.right .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
-        style.innerHTML += '.tabs-menu.left::before, .tabs-menu.left::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
-        style.innerHTML += '.tabs-menu.left .head::before, .tabs-menu.left .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
+        style.innerHTML = '.tabs-menu-scene .head { background-color: ' + tabMenuObj.backgroundColorLogo + '} ';
+        style.innerHTML += '.tabs-menu-scene.bottom::before, .tabs-menu-scene.bottom::after {box-shadow: 0 -17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
+        style.innerHTML += '.tabs-menu-scene.bottom .head::before, .tabs-menu-scene.bottom .head::after { box-shadow: 0 -17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
+        style.innerHTML += '.tabs-menu-scene.top::before, .tabs-menu-scene.top::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
+        style.innerHTML += '.tabs-menu-scene.top .head::before, .tabs-menu-scene.top .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
+        style.innerHTML += '.tabs-menu-scene.right::before, .tabs-menu-scene.right::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
+        style.innerHTML += '.tabs-menu-scene.right .head::before, .tabs-menu-scene.right .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
+        style.innerHTML += '.tabs-menu-scene.left::before, .tabs-menu-scene.left::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
+        style.innerHTML += '.tabs-menu-scene.left .head::before, .tabs-menu-scene.left .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
         if(document.querySelector('#newHeadPanelScene'))
         document.getElementsByTagName('head')[0].removeChild(document.querySelector('#newHeadPanelScene'));
         

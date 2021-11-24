@@ -10,9 +10,8 @@
 </ion-button>
 
 <ion-content id="ionContent" [scrollEvents]="true" scroll-x="0" scroll-y="0" scrollX="true" 
- [ngStyle]="{
-      '--background': scene?.backgroundColor
-      }">
+[ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }"
+>
    <video 
    [ngStyle]="{'opacity': scene?.videoUrl ? 1 : 0, 'position': scene?.videoUrl ? 'block' : 'absolute'}"
    crossOrigin="anonymous"

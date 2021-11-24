@@ -21,6 +21,7 @@ export class ProductDetailComponent implements OnInit {
   @Input() standId: any;
   @Input() product: any;
   @Input() _parent: any;
+  @ViewChild('carouselSlides') carouselSlides: any;
   priceSelected: any;
   userDataSession: any;
   lockHover: any;
@@ -29,6 +30,7 @@ export class ProductDetailComponent implements OnInit {
   attributes = [];
   showConfirmByProduct = false;
   showRegister = false;
+  otherGroup = [];
   
   constructor(
     private alertCtrl: AlertController,
@@ -48,6 +50,40 @@ export class ProductDetailComponent implements OnInit {
     this.product = clone(this.product);
     
     this.changePrice();
+    let index = 0;
+    
+    this.product.prices.forEach((price)=>{
+         let i = 0;
+         let mbFlag = null;
+         for(let attr of price.resources.attributes) {
+             
+            if( i != 0 && attr.value.length > 0 ) {
+                mbFlag = attr;
+            }
+            else if( attr.value.length > 0 ) {
+                //this.otherGroup.push({
+                //   'price': price.price || this.product.price,
+                //   'color': attr.value,
+                //   'priceSelected': price,
+                //   'index': index,
+                //   'name': attr.value +' ' +attr.value, 'image': price.resources.images[0].url_image}
+              //);
+            }
+            
+            i++;    
+         }
+        
+        if(mbFlag) {
+          this.otherGroup.push({
+              'price': price.price || this.product.price,
+            'priceSelected': price,
+            'index': index,
+            'name': mbFlag.value +' ' +mbFlag.value, 'image': price.resources.images[0].url_image}
+          );
+          
+        }
+       index ++;
+    }); 
     
     this.usersService.getUser().then((userDataSession: any)=>{
       this.userDataSession = userDataSession;
@@ -131,7 +167,7 @@ export class ProductDetailComponent implements OnInit {
          role: 'destructive', 
          handler: (data) => {
           
-          if(!this.product.resources || !this.product.resources.detail || !this.product.resources.detail.elements  || this.product.resources.detail.elements.length == 0 ) {
+          if(!this.product.resources || !this.product.resources.detail || !this.product.resources.detail.elements  || !this.product.resources.detail.elements.length || this.product.resources.detail.elements.length == 0 ) {
               this.product.resources = { 'detail': { 'elements': [] } };
           }
           const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(data.videoUrl);
@@ -238,7 +274,13 @@ export class ProductDetailComponent implements OnInit {
     });
     toast.present();
   }
- 
+
+  changeOtherPrice(othGroup){
+    this.product.priceSelected = othGroup.priceSelected;
+    this.changePrice();
+    this.carouselSlides.onChangeColor(othGroup.index);
+  }
+  
   changePrice(){
     this.priceSelected = this.product.priceSelected;
     this.attributes = [];

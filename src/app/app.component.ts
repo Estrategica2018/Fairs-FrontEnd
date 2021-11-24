@@ -33,7 +33,6 @@ export class AppComponent implements OnInit {
   _toolbarHeight = 56;
   profileRole:any;
   userDataSession: any;
-  menuShowOver = false;
   
   modalShoppingCart: any;
   shoppintCartCount = 0;
@@ -139,13 +138,11 @@ export class AppComponent implements OnInit {
     window.addEventListener('map:fullscreenOff', (e:any) => {
       setTimeout(() => {
         this.fullScreen = false;
-        this.onShowMenu();
       }, 300);
     });
     window.addEventListener('map:fullscreenIn', (e:any) => {
       setTimeout(() => {
         this.fullScreen = true;
-        this.onHidenMenu();
       }, 300);
     });
   } 
@@ -284,9 +281,7 @@ export class AppComponent implements OnInit {
   } 
 
   onHidenMenu() {
-    
     this.menuHiddenAnt = 0;
-    this.menuShowOver = false;
     this.menuHidden = true;
     window.dispatchEvent(new CustomEvent('window:resize'));
   }
@@ -298,7 +293,6 @@ export class AppComponent implements OnInit {
   
   onMenuOver() {
    if(this.menuHiddenAnt > 0 ) {
-      this.menuShowOver = true;
       window.dispatchEvent(new CustomEvent('window:resize'));
    }
    else {

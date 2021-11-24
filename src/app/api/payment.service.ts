@@ -19,6 +19,66 @@ export class PaymentService {
   
   constructor(private http: HttpClient) { }
 
+  createNewReference( data ,userDataSession) {
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization':  'Bearer ' + userDataSession.token
+      })
+    };
+    return new Promise((resolve, reject) => {
+        this.http.post(`/api/payment/generate`,data,httpOptions)
+        .pipe(
+          timeout(30000),
+          catchError((e: any) => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de pagos realizados: ${e.status} - ${e.statusText}`);    
+            }
+            else {
+              throw new Error(`Consultando el servicio de pagos realizados`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+            resolve(data);
+        },error => {
+            reject(error)
+        });   
+    });
+  }
+
+
+
+  updateReference( data ,userDataSession) {
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization':  'Bearer ' + userDataSession.token
+      })
+    };
+    return new Promise((resolve, reject) => {
+        this.http.post(`/api/payment/generate`,data,httpOptions)
+        .pipe(
+          timeout(30000),
+          catchError((e: any) => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de pagos realizados: ${e.status} - ${e.statusText}`);    
+            }
+            else {
+              throw new Error(`Consultando el servicio de pagos realizados`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+            resolve(data);
+        },error => {
+            reject(error)
+        });   
+    });
+  }
+
  
   
   

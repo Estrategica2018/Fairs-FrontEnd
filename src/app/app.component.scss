@@ -367,17 +367,27 @@ body.backdrop-no-scroll {
   font-size: 1.8em;
 }
 
-.menu-width-none {
-  min-width: 5em !important;
-  max-width: 5em !important;
+.show-menu-mini {
+
+}
+
+@media (min-width: 992px) {
+  .show-menu-mini {
+    min-width: 6.5em;
+    max-width: 6.5em;
+  }
+
 }
 
 
-.menu-show-over {
-  position: absolute;
-  z-index: 1;
+
+.p-0 {
+  --padding-start: 0 !important;
+  --padding-end: 0 !important;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
 }
-.menu-show-over2 {
-    min-width: 5.5em;
-    max-width: 5.5em;
+
+.width-icon {
+  min-width: 23em;
 }

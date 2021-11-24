@@ -9,7 +9,7 @@
     <ion-col size="5" >
        <!--img src="https://res.cloudinary.com/deueufyac/image/upload/v1631835507/sublimacion/productos/otros_productos/imgProducto2-08_ozf01b.png"-->
        <div class="container-carousel-slide">
-       <app-carousel-slides [resize]="true" [product]="product" class="mt-5" (changePrice)="changePrice()">
+       <app-carousel-slides #carouselSlides [resize]="true" [product]="product" class="mt-5" (changePrice)="changePrice()">
        </app-carousel-slides>
        </div>
        <div class="attribute-list" *ngIf="attributes.length > 0">
@@ -38,8 +38,25 @@
        <h2 class="name ion-text-center">{{product?.name}}</h2>
        <h6 class="description ion-text-justify pr-4 pt-2 mb-5"><small>{{product?.description}}</small></h6>
        <h6 class="mb-5">Precio por unidad {{  ( priceSelected.price || product.price )  | currency: '$ ':'symbol':'1.0-2' }}</h6>
+       <h6 class="mb-1">
+         <ion-grid>
+           <ion-row>
+               <ion-col *ngFor="let othGroup of otherGroup"  class="group-container mr-3 ml-3" 
+               [ngClass]="{'selected': product.priceSelected == othGroup.priceSelected }"
+               (click)="changeOtherPrice(othGroup)">
+                 <div class="d-flex">
+                    <img [src]="othGroup.image" class="group-image" [hidden]="othGroup.color"/>
+                   <div class="group-background-color" [ngStyle]="{'background': othGroup.color}" *ngIf="othGroup.color"></div>
+                   <div>
+                     <small class="group-price"> {{othGroup.price | currency: '$ ':'symbol':'1.0-2' }}</small>
+                   </div>
+                 </div>
+               </ion-col>
+           </ion-row>
+         </ion-grid>
+       </h6>
        
-       <div *ngFor="let item of product.resources?.detail?.elements; let i = index;" class="item-add" (mouseover)="lockHover = i">
+       <div *ngFor="let item of product.resources?.detail?.elements; let i = index;" class="item-add mt-3" (mouseover)="lockHover = i">
             <ion-thumbnail class="thumbnail" slot="start" *ngIf="item.url">
               <ion-img [src]="item.url"></ion-img>
             </ion-thumbnail>

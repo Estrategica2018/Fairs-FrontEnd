@@ -143,3 +143,44 @@ $blue-light-color: #F5F6FF;
   height: 18em;
   overflow: auto;
 }
+
+.group-container {
+  padding: 0.5em;
+  border: 1px solid lightgray;
+  border-radius: 0.3em;
+  min-width: 6.3em;
+  max-width: 6.3em;
+  cursor: pointer;
+  div {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.group-container.selected,
+.group-container:hover {
+  background: rgb(197, 293, 225,0.1);
+  border: 1px solid black;
+}
+
+
+.group-price {
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+}
+
+.group-background-color {
+  border: 1px solid;
+  border-radius: 0.4em;
+  width: 1.5em !important;
+  min-width: 1.5em !important;
+  min-height: 1.5em !important;
+}
+
+.group-image {
+  width: 2em !important;
+  min-width: 2em !important;
+  min-height: 1.7em;
+}

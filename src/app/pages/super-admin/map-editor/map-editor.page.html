@@ -49,6 +49,7 @@
 
 <ion-content id="ionContent" [scrollEvents]="true" 
    style="background-repeat: no-repeat" 
+   [ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }"
    scroll-x="0" scroll-y="0" scrollX="true" 
    cdkDropList class="content-boundary">
    <ion-item [hidden]="!errors">
@@ -70,10 +71,10 @@
       }" (ionScroll)="logScrolling($event)"
       *ngIf="scene && scene.url_image">
       </div>
-      <!--Scene Background Image-->
-      <!--div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
+      <!--Scene Background Color-->
+      <div [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
       *ngIf="scene && scene.backgroundColor && !scene.url_image">
-      </div-->
+      </div>
    </div>
    <!--End Scene Background Image / Background Color -->
    

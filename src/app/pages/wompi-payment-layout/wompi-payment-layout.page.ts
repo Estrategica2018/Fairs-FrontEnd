@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { UsersService } from '../../api/users.service';
 import { LoadingService } from './../../providers/loading.service';
 import { FairsService } from './../../api/fairs.service';
+import { PaymentService } from './../../api/payment.service';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { environment, SERVER_URL } from '../../../environments/environment';
@@ -29,6 +30,7 @@ export class WompiPaymentLayoutPage implements OnInit {
      private usersService: UsersService,
      private loading: LoadingService,
      private fairsService: FairsService,
+     private paymentService: PaymentService,
      private router: Router,
      private modalCtrl: ModalController
   ) { }
@@ -73,7 +75,7 @@ export class WompiPaymentLayoutPage implements OnInit {
   
   showPaymentButton() {
          this.loading.present({message:'Cargando...'});
-         this.usersService.createNewReference({type:this.type,id: this.objPrice.id},this.userDataSession)
+         this.paymentService.createNewReference({type:this.type,id: this.objPrice.id},this.userDataSession)
          .then( (dataReference: any) => {
              this.loading.dismiss();
              this.errors = null;
@@ -115,14 +117,18 @@ export class WompiPaymentLayoutPage implements OnInit {
            
             checkout.open(function ( result ) {
                const transaction = result.transaction;
-               console.log('Transaction ID: ', transaction.id)
-               console.log('Transaction object: ', result)
+			   console.log('Transaction ID: ', transaction.id)
+               console.log('Transaction object: ', result);
+			   
+			   this.paymentService.updateReference(transaction)
+				.then( fair => {
+				   
+				},error => {
+				  
+				});
            })
          },
          error => {
-              this.loading.dismiss();
-              this.errors = error;
-              this.success = null;
          });
   }
   
