@@ -578,16 +578,16 @@ export class MapPage implements OnInit {
   }
 
   contactSendForm(form){
-      let fromEmail = '';
+      let sentToEmail = '';
 	  console.log(form);
       if(this.template == 'fair') {
-          fromEmail = this.fair.resources.supportContact;
+          sentToEmail = this.fair.resources.supportContact;
       }
       if(this.template == 'stand') {
-          fromEmail = this.stand.merchant.email_contact;
+          sentToEmail = this.stand.merchant.email_contact;
       }
       const data = { 
-        'from': fromEmail,
+        'send_to': sentToEmail,
         'name': form.value.name,
         'email': form.value.email,
         'subject': form.value.subject,
