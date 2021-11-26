@@ -117,15 +117,15 @@ export class WompiPaymentLayoutPage implements OnInit {
            
             checkout.open(function ( result ) {
                const transaction = result.transaction;
-			   console.log('Transaction ID: ', transaction.id)
+               console.log('Transaction ID: ', transaction.id)
                console.log('Transaction object: ', result);
-			   
-			   this.paymentService.updateReference(transaction)
-				.then( fair => {
-				   
-				},error => {
-				  
-				});
+               
+               this.paymentService.updateReference(transaction,null)
+                .then( fair => {
+                   
+                },error => {
+                  
+                });
            })
          },
          error => {

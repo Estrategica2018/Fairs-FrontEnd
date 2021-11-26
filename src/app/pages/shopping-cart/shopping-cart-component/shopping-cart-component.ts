@@ -113,7 +113,7 @@ export class ShoppingCartComponent implements OnInit {
           //this.shoppingCarts.forEach((shoppingCart)=>{
          return sc.id != shoppingCart.id;
       });
-      
+      window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
       this.loadShoppingCart();
     })
     .catch(error => {
@@ -147,10 +147,23 @@ export class ShoppingCartComponent implements OnInit {
               }
             });
            
+            let _self = this;
             checkout.open(function ( result ) {
-               const transaction = result.transaction;
-               console.log('Transaction ID: ', transaction.id)
-               console.log('Transaction object: ', result)
+                const transaction = result.transaction;
+                console.log('Transaction ID: ', transaction.id)
+                console.log('Transaction object: ', result)
+                _self.loading.present({message:'Cargando...'});
+                
+                _self.paymentService.updateReference(transaction,_self.userDataSession)
+                .then((response) => {
+                  alert(JSON.stringify(response));
+                  _self.loading.dismiss();
+                  window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
+                  
+                })
+                .catch(error => {
+                  _self.loading.dismiss();
+                });    
            })
          },
          error => {

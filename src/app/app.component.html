@@ -33,12 +33,14 @@
     
     (mouseover)="onMenuOver()"
     >
+
+      <ion-buttons class="ion-hide-lg-down"  [hidden]="menuHidden">
+        <ion-button class="close-menu-left ion-hide-lg-down" (click)="onHidenMenu()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+
       <ion-content class="scroll-container" [hidden]="menuHidden">
-        <ion-buttons class=".ion-hide-lg-down">
-          <ion-button class="close-menu-left ion-hide-lg-down" (click)="onHidenMenu()">
-            <ion-icon name="chevron-back-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
 
         <ion-list lines="none" class="border-botton" *ngIf="profileRole && profileRole.admin">
           <ion-list-header>Super Administrador </ion-list-header>
@@ -232,13 +234,14 @@
         </ion-list>
       </ion-content>
 
-
-      <ion-content class="menu-content-mini" *ngIf="menuHidden">
-        <ion-buttons>
+        <ion-buttons *ngIf="menuHidden">
           <ion-button style="margin-left: 3% !important;" class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </ion-button> 
         </ion-buttons>
+
+      <ion-content class="menu-content-mini" *ngIf="menuHidden">
+
 
         <ion-list lines="none" class="border-botton" *ngIf="profileRole && profileRole.admin">
           <ion-list-header></ion-list-header>

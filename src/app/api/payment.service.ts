@@ -5,14 +5,14 @@ import { map, timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
 import { processData } from '../providers/process-data';
-
+import { environment, SERVER_URL } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentService {
 
-  url = '';
+  url= SERVER_URL;
   refresTime = null;
   fair = null;
   fairName: string;
@@ -48,8 +48,6 @@ export class PaymentService {
     });
   }
 
-
-
   updateReference( data ,userDataSession) {
 
     const httpOptions = {
@@ -57,8 +55,8 @@ export class PaymentService {
         'Authorization':  'Bearer ' + userDataSession.token
       })
     };
-    return new Promise((resolve, reject) => {
-        this.http.post(`/api/payment/generate`,data,httpOptions)
+    return new Promise((resolve, reject) => { 
+        this.http.post(`${this.url}/wompi/auth/${data.id}`,data,httpOptions)
         .pipe(
           timeout(30000),
           catchError((e: any) => {
@@ -79,7 +77,4 @@ export class PaymentService {
     });
   }
 
- 
-  
-  
 }

@@ -55,6 +55,7 @@ export class ProductDetailComponent implements OnInit {
     this.product.prices.forEach((price)=>{
          let i = 0;
          let mbFlag = null;
+         if(price.resources && price.resources.attributes && price.resources.attributes.length > 0)
          for(let attr of price.resources.attributes) {
              
             if( i != 0 && attr.value.length > 0 ) {
@@ -311,7 +312,7 @@ export class ProductDetailComponent implements OnInit {
         }
     }
      
-    if(this.product && this.product.resources && this.product.resources.attributes) {
+    if(this.product && this.product.resources && this.product.resources.attributes && this.product.resources.attributes.length > 0) {
       for(let attr of this.product.resources.attributes) {
         this.attributes.push({'name':( attr.name || attr.key ), 'value': attr.value});
       }
@@ -319,10 +320,13 @@ export class ProductDetailComponent implements OnInit {
   }
   
   confirmBuyProduct(product) {
+      console.log(this.userDataSession);
       if(this.userDataSession) {
         this.showConfirmByProduct = true;
+        this.showRegister = false;
       }
       else {
+        this.showConfirmByProduct = false;
         this.showRegister = true;  
       }
   }
