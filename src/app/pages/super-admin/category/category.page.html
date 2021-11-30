@@ -64,7 +64,7 @@
               </ion-col>
               <ion-col>
                 <ion-text>
-                  <ion-button size="small" style="font-size: 9px;" color="primary">Editar</ion-button>
+                  <ion-button size="small" style="font-size: 9px;" color="primary" (click)="getCategory(category.id)">Editar</ion-button>
                 </ion-text>
               </ion-col>
 
@@ -107,22 +107,22 @@
             <ion-row *ngFor="let subcategory of subCategories;let i = index">
               <ion-col>
                 <ion-text>
-                  {{subcategory.category.name}}
-                </ion-text>
-              </ion-col>
-              <ion-col>
-                <ion-text>
-                  {{subcategory.type}}
-                </ion-text>
-              </ion-col>
-              <ion-col>
-                <ion-text>
                   {{subcategory.name}}
                 </ion-text>
               </ion-col>
               <ion-col>
                 <ion-text>
-                  {{subcategory.resources.color}}
+                  {{subcategory.category.type}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  {{subcategory.category.name}}
+                </ion-text>
+              </ion-col>
+              <ion-col>
+                <ion-text>
+                  {{subcategory.category.resources.color}}
                 </ion-text>
               </ion-col>
               <ion-col>
@@ -138,7 +138,7 @@
     </ion-row>
     <ion-row>
       <ion-list lines=""  class="padding-container">
-        <ion-button (click)="showFormCategory=true;showFormSubCategory=false" color="success" size="small">
+        <ion-button (click)="showFormCategory=true;showFormSubCategory=false;clearCategory()" color="success" size="small">
           <ion-label > Nueva Categoría</ion-label>
           <ion-icon slot="end" name="plus-outline"></ion-icon>
         </ion-button>
@@ -153,20 +153,17 @@
         <ion-list lines=""  class="padding-container">
         <ion-item button="true">
           <ion-label> Categoría </ion-label>
-          <ion-select [(ngModel)]="subCategory.id">
+          <ion-select [(ngModel)]="subCategory.category_id">
             <ion-select-option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}
             </ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item button="true">
-          <ion-item button="true">
             <ion-label> Tipo </ion-label>
             <ion-select [(ngModel)]="subCategory.type" name="type">
               <ion-select-option value="AgendaType">Agenda</ion-select-option>
               <ion-select-option value="ProductType">Producto</ion-select-option>
             </ion-select>
-
-          </ion-item>
         </ion-item>
         <ion-item button="true">
           <ion-label> Nombre </ion-label>
@@ -182,11 +179,11 @@
           </ion-item>
 
         <div class="ion-padding mt-2">
-          <ion-button (click)="storeSubCategory()" size="small" >
+          <ion-button (click)="storeSubCategory()" size="small" [hidden]="subCategory.id">
             <ion-label > Guardar </ion-label>
             <ion-icon slot="end" name="save-outline"></ion-icon>
           </ion-button>
-          <ion-button  color="warning" size="small">
+          <ion-button  color="warning" size="small" *ngIf="subCategory.id">
             <ion-label > Editar </ion-label>
             <ion-icon slot="end" name="pencil-outline"></ion-icon>
           </ion-button>
@@ -202,7 +199,7 @@
             <ion-label> Tipo </ion-label>
             <ion-select [(ngModel)]="category.type">
               <ion-select-option value="AgendaType">Agenda</ion-select-option>
-              <ion-select-option value="ProductType">Producto</ion-select-option>
+              <ion-select-option value="ProductCategory">Producto</ion-select-option>
             </ion-select>
           </ion-item>
           <ion-item button="true">
@@ -219,11 +216,11 @@
           </ion-item>
 
           <div class="ion-padding mt-2">
-            <ion-button (click)="storeCategory()" size="small" >
+            <ion-button (click)="storeCategory()" size="small" [hidden]="category.id">
               <ion-label > Guardar </ion-label>
               <ion-icon slot="end" name="save-outline"></ion-icon>
             </ion-button>
-            <ion-button  color="warning" size="small">
+            <ion-button  (click)="updateCategory()" color="warning" size="small" *ngIf="category.id" >
               <ion-label > Editar </ion-label>
               <ion-icon slot="end" name="pencil-outline"></ion-icon>
             </ion-button>

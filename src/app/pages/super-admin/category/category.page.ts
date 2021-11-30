@@ -57,6 +57,7 @@ export class CategoryPage implements OnInit {
         this.categoryService.list('all', fair).then((categories) => {
           this.categories = categories.data_category;
           this.subCategories = categories.data_subcategory;
+          console.log(this.subCategories)
           this.loading.dismiss();
           this.errors = null;
         }).catch(error => {
@@ -90,7 +91,26 @@ export class CategoryPage implements OnInit {
   }
   storeSubCategory() {
     this.loading.present({message: 'Cargando...'});
-    console.log(this.subCategory);
+    this.fairsService.getCurrentFair()
+      .then((fair) => {
+        this.subCategory.fair_id = fair.id
+        this.categoryService.createSubCategory(this.subCategory)
+          .then((subCategory) => {
+            this.categoryService.list('all', fair).then((categories) => {
+              console.log(categories.data_subcategory)
+              this.categories = categories.data_category;
+              this.subCategories = categories.data_subcategory;
+              this.loading.dismiss();
+              this.clearCategory()
+              this.success = `Subcategoría creado exitosamente`;
+              this.errors = null;
+            });
+          })
+          .catch(error => {
+            this.loading.dismiss();
+            this.errors = error;
+          });
+      });
   }
   clearCategory() {
     this.category = {
@@ -101,5 +121,43 @@ export class CategoryPage implements OnInit {
         url_image: ''
       }
     };
+  }
+  getCategory(categoryId) {
+    this.loading.present({message: 'Cargando...'});
+    this.categoryService.getCategory(categoryId).then((category) => {
+      console.log(category)
+      this.category.id = category.data.id;
+      this.category.name = category.data.name;
+      this.category.type = category.data.type;
+      this.category.resource.color = category.data.resources.color
+      this.category.resource.url_image = category.data.resources.url_image
+      this.category.fair_id = category.data.fair_id
+      this.loading.dismiss();
+      this.success = `Categoría consultada`;
+    } ).catch(error => {
+      this.loading.dismiss();
+      this.errors = error;
+    });
+  }
+  updateCategory() {
+    this.loading.present({message: 'Cargando...'});
+    this.categoryService.updateCategory(this.category).then((category) => {
+      this.fairsService.getCurrentFair()
+        .then((fair) => {
+          this.categoryService.list('all', fair).then((categories) => {
+            this.categories = categories.data_category;
+            this.subCategories = categories.data_subcategory;
+            this.loading.dismiss();
+            this.success = `Categoría editada`;
+            this.errors = null;
+          }).catch(error => {
+            this.loading.dismiss();
+            this.errors = error;
+          });
+        });
+    } ).catch(error => {
+      this.loading.dismiss();
+      this.errors = error;
+    });
   }
 }

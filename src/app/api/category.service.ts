@@ -47,7 +47,6 @@ export class CategoryService {
         });
     });
   }
-
   createCategory(category){
     return new Promise((resolve, reject) => {
         this.http.post(`/api/category/create/`,category)
@@ -76,10 +75,9 @@ export class CategoryService {
         });
     });
   }
-
-   updateCategory(category){
-      return new Promise((resolve, reject) => {
-        this.http.post(`/api/category/create/`,category)
+  createSubCategory(subCategory) {
+    return new Promise((resolve, reject) => {
+      this.http.post(`/api/subcategory/create/`, subCategory)
         .pipe(
           timeout(30000),
           catchError((e: any) => {
@@ -93,16 +91,72 @@ export class CategoryService {
           })
         )
         .subscribe((data : any )=> {
-            if(data.success) {
-              resolve(data);
+          if(data.success) {
+            resolve(data);
 
+          }
+          else {
+            reject(JSON.stringify(data));
+          }
+        },error => {
+          reject(error)
+        });
+    });
+  }
+  updateCategory(category) {
+      return new Promise((resolve, reject) => {
+        this.http.post(`/api/category/update/`, category)
+        .pipe(
+          timeout(30000),
+          catchError((e: any) => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de editar categoría: ${e.status} - ${e.statusText}`);
             }
             else {
+              throw new Error(`Consultando el servicio de editar categorías`);
+            }
+          })
+        )
+        .subscribe(( data: any ) => {
+            if (data.success) {
+              resolve(data);
+
+            } else {
               reject(JSON.stringify(data));
             }
         },error => {
             reject(error)
         });
       });
-    }
+  }
+  getCategory( categoryId: string): any {
+    return new Promise((resolve, reject) => {
+      this.http.get(`/api/category/get/${categoryId}`)
+        .pipe(
+          timeout(30000),
+          catchError((e: any) => {
+            console.log(e);
+            if(e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de categorías: ${e.status} - ${e.statusText}`);
+            }
+            else {
+              throw new Error(`Consultando el servicio de categorías`);
+            }
+          })
+        )
+        .subscribe((data : any )=> {
+          if(data.success) {
+            resolve(processData(data));
+
+          }
+          else {
+            //reject(JSON.stringify(data));
+            throw new Error(`Consultando el servicio de categorías ` + JSON.stringify(data));
+          }
+        },error => {
+          reject(error)
+        });
+    });
+  }
 }

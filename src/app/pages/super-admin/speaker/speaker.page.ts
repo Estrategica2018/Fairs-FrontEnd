@@ -88,7 +88,7 @@ export class SpeakerPage implements OnInit {
         this.speakersService.list().then((speakers) => {
           this.speakers = speakers;
           this.loading.dismiss();
-          this.success = `Conferencista creado exitosamente`;
+          this.success = `Conferencista actualizado exitosamente`;
           this.errors = null;
           this.speaker = speaker;
           this.speakersService.get(speaker.id).then((speakerGet) => {
