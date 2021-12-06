@@ -12,6 +12,9 @@ import { SpeakerDetailComponent } from './pages/speaker-list/speaker-detail/spea
 import { BannerEditorComponent } from './pages/super-admin/map-editor/banner-editor/banner-editor.component';
 import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-component/shopping-cart-component';
 import { ScheduleDetailComponent } from './pages/schedule/schedule-detail/schedule-detail.component';
+import { SignupComponent } from './pages/signup/signup.component';
+import { LoginComponent } from './pages/login/login.component';
+import { TermsPage } from './pages/terms/terms.page';
 
 @NgModule({
   imports: [
@@ -30,7 +33,10 @@ import { ScheduleDetailComponent } from './pages/schedule/schedule-detail/schedu
     SpeakerDetailComponent,
     BannerEditorComponent,
     ShoppingCartComponent,
-    ScheduleDetailComponent
+    ScheduleDetailComponent,
+    SignupComponent,
+    LoginComponent,
+    TermsPage
   ],
   exports: [
     TabMenuScenesComponent,
@@ -42,7 +48,10 @@ import { ScheduleDetailComponent } from './pages/schedule/schedule-detail/schedu
     SpeakerDetailComponent,
     BannerEditorComponent,
     ShoppingCartComponent,
-    ScheduleDetailComponent
+    ScheduleDetailComponent,
+    SignupComponent,
+    LoginComponent,
+    TermsPage
   ]
   
 })

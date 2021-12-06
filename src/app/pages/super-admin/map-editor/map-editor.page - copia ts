@@ -871,7 +871,7 @@ export class MapEditorPage implements OnInit {
     aux.select();
     document.execCommand("copy");
     document.body.removeChild(aux);
-    const toast = await this.toastController.create({
+    const toast = await this.toastCtrl.create({
       message: itemList.length > 1 ? `${itemList.length} Objetos copiados en el portapapeles` : ` 1 Objeto copiado en el portapapeles`,
       duration: 2000
     });
@@ -1108,9 +1108,9 @@ export class MapEditorPage implements OnInit {
   onChangeColorTabMenu() {
     let style = document.createElement('style');
     style.type = 'text/css';
-    style.innerHTML = '.tabs-menu.bottom::before, .tabs-menu.bottom::after {box-shadow: 0 -17px 0 0 '+this.tabMenuObj.backgroundColor+' !important}';
-    style.innerHTML += '.tabs-menu .head { background-color: ' + this.tabMenuObj.backgroundColorLogo + '} ';
-    style.innerHTML += '.tabs-menu.bottom .head::before, .tabs-menu.bottom .head::after { box-shadow: 0 -17px 0 0 ' + this.tabMenuObj.backgroundColorLogo + ' !important;}';
+    style.innerHTML = '.tabs-menu-scene.bottom::before, .tabs-menu-scene.bottom::after {box-shadow: 0 -17px 0 0 '+this.tabMenuObj.backgroundColor+' !important}';
+    style.innerHTML += '.tabs-menu-scene .head { background-color: ' + this.tabMenuObj.backgroundColorLogo + '} ';
+    style.innerHTML += '.tabs-menu-scene.bottom .head::before, .tabs-menu-scene.bottom .head::after { box-shadow: 0 -17px 0 0 ' + this.tabMenuObj.backgroundColorLogo + ' !important;}';
     
     document.getElementsByTagName('head')[0].appendChild(style);
     this.onChangeMenuTabs();
@@ -1250,7 +1250,7 @@ export class MapEditorPage implements OnInit {
         //Add element into scene
         this.onPasteBannerBtn();
         
-        const toast = await this.toastController.create({
+        const toast = await this.toastCtrl.create({
           message: itemList.length > 1 ? `${itemList.length} objetos adicionados en la escena` : `1 objeto adicionado en la escena`,
           duration: 2000
         });

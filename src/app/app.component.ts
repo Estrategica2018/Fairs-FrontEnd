@@ -13,6 +13,9 @@ import { PavilionsService } from './api/pavilions.service';
 import { AlertController } from '@ionic/angular';
 import { Title } from '@angular/platform-browser';
 import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-component/shopping-cart-component';
+import { SignupComponent } from './pages/signup/signup.component';
+import { LoginComponent } from './pages/login/login.component';
+import { TermsPage } from './pages/terms/terms.page';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +25,6 @@ import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-compo
 })
 export class AppComponent implements OnInit {
   
-  title = 'angulartitle';
   loggedIn = false;
   dark = false;
   errors: string = null;
@@ -34,10 +36,10 @@ export class AppComponent implements OnInit {
   profileRole:any;
   userDataSession: any;
   
-  modalShoppingCart: any;
   shoppintCartCount = 0;
   menuHidden = false;
   menuHiddenAnt = 0;
+  modal = null;
   
   constructor(
     private alertCtrl: AlertController,
@@ -56,7 +58,7 @@ export class AppComponent implements OnInit {
     private pavilionsService: PavilionsService,
     private titleService: Title,
     private menuCtrl: MenuController,
-    private modalCtrl: ModalController,
+    private modalCtrl: ModalController
   ) {
     this.initializeApp();
     this.initializeFair();
@@ -72,6 +74,10 @@ export class AppComponent implements OnInit {
       },(e: any)=> console.log(e));
   }
 
+  ngOnDestroy(): void {
+     if(this.modal) { this.modal.dismiss(); }
+  }
+  
   ngOnInit() {
     this.checkLoginStatus();
     this.listenForLoginEvents();
@@ -80,8 +86,8 @@ export class AppComponent implements OnInit {
     
     this.usersService.getUser().then((userDataSession: any)=>{
       this.userDataSession = userDataSession;    
+      this.profileRole = {};
       if(userDataSession && userDataSession.user_roles_fair)  {
-        this.profileRole = {};
         userDataSession.user_roles_fair.forEach((role)=>{
             if(role.id == 1) { //"super_administrador"
                this.profileRole.admin = true;
@@ -106,7 +112,7 @@ export class AppComponent implements OnInit {
   }
 
   updateLoggedInStatus(user: any) {
-    this.loggedIn = user !== null;
+    this.loggedIn = ( user !== null );
   }
 
   listenForLoginEvents() {
@@ -182,6 +188,10 @@ export class AppComponent implements OnInit {
           error => {
             this.loading.dismiss();
             this.errors = error;
+            this.usersService.setUser(null).then(() => {
+              window.dispatchEvent(new CustomEvent('user:logout'));
+              this.router.navigateByUrl(`/schedule`);
+            });
          }
         ); 
     });
@@ -264,7 +274,9 @@ export class AppComponent implements OnInit {
   
   async openShoppingCart() {
 
-    this.modalShoppingCart = await this.modalCtrl.create({
+    if(this.modal) { this.modal.dismiss(); }
+  
+    this.modal = await this.modalCtrl.create({
       component: ShoppingCartComponent,
       cssClass: 'boder-radius-modal',
       componentProps: {
@@ -273,8 +285,8 @@ export class AppComponent implements OnInit {
           '_continue': false
       }
     });
-    await this.modalShoppingCart.present();
-    const { data } = await this.modalShoppingCart.onWillDismiss();
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
 
     if(data) {
     }
@@ -302,4 +314,48 @@ export class AppComponent implements OnInit {
    }
   }
   
+  async presenterLogin() {
+    
+    //if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: LoginComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+  
+  async presenterSignup() {
+    
+    //if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: SignupComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_patern': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+
+  async presentTermsModal() {
+    const modal = await this.modalCtrl.create({
+      component: TermsPage,
+      swipeToClose: true,
+      //presentingElement: this.routerOutlet.nativeEl
+    });
+    await modal.present();
+  }
 }

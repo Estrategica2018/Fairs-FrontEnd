@@ -23,7 +23,7 @@
   z-index: 18;
 }
 
-.tabs-menu {
+.tabs-menu-scene {
   position: absolute;
   bottom: 20px;
   left: calc(22% - 10px);
@@ -31,7 +31,7 @@
 }
 
 @media (max-width: 690px) {
-  .tabs-menu {
+  .tabs-menu-scene {
       right: calc(0% - 10px);
       left: 0;
       ion-button {
@@ -154,13 +154,13 @@ ion-tab-button {
   color: #fff;
 }
 
-.tabs-menu {
+.tabs-menu-scene {
   position: absolute;
   z-index: 11;
 }
 
 @media (max-width: 690px) {
-  .tabs-menu {
+  .tabs-menu-scene {
       left: 0;
       ion-button {
          font-size: 10px;
@@ -286,7 +286,7 @@ ion-tab-button {
    overflow-y: scroll; 
 }
 
-.modify-tabs-menu-style {
+.modify-tabs-menu-scene-style {
     border: 1px solid gray;
     border-radius: 56px;
 }

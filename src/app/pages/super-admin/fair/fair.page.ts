@@ -3,11 +3,12 @@ import { FairsService } from '../../../api/fairs.service';
 import { AgendasService } from './../../../api/agendas.service';
 import { CategoryService } from './../../../api/category.service';
 import { AdminFairsService } from './../../../api/admin/fairs.service';
+import { UsersService } from './../../../api/users.service';
 import { DatePipe } from '@angular/common';
-import { ToastController,AlertController } from '@ionic/angular';
+import { ActionSheetController, ToastController,AlertController, ModalController } from '@ionic/angular';
 import { processData } from '../../../providers/process-data';
-import { ActionSheetController } from '@ionic/angular';
 import { LoadingService } from '../../../providers/loading.service';
+import { LoginComponent } from '../../login/login.component';
 
 @Component({
   selector: 'app-fair',
@@ -30,7 +31,9 @@ export class FairPage implements OnInit {
   initPickerOptions: any;
   endPickerOptions: any;
   groupsCategoryList = [];
-
+  modal: any;
+  userDataSession: any;
+  profileRole: any;
 
   constructor(
     private fairsService: FairsService,
@@ -38,9 +41,11 @@ export class FairPage implements OnInit {
     private categoryService: CategoryService,
     private adminFairsService: AdminFairsService,
     private datepipe: DatePipe,
-    private toastController: ToastController,
     private alertCtrl: AlertController,
-    private loading: LoadingService
+    private loading: LoadingService,
+    private modalCtrl: ModalController,
+    private usersService: UsersService,
+    private toastCtrl: ToastController,
   ) { 
   
    
@@ -83,55 +88,72 @@ export class FairPage implements OnInit {
   }
  
   ngOnInit() { 
-      this.loading.present({message:'Cargando...'});  
-      this.fairsService.getCurrentFair().
-      then( fair => {
-        this.fair = fair;
-        this.setBackground();
-        this.pavilions = fair.pavilions;
-        this.setPavilionBackground();
-        this.showPrice = fair.price > 0;
-        
-        
-        this.agendasService.list()
-        .then((agendas) => {
-            this.agendas = agendas;
-            this.agendas.forEach((agenda)=>{
-                agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
-                agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
-                agenda.location = agenda.room ? agenda.room.name : '';
-            });
-            
-            this.categoryService.list('all', this.fair)
-            .then((response) => {
-                this.groupsCategoryList = [ { "label":"Categorías para agenda", "name": "AgendaType", "values":[] },{ "label":"Categorías para productos", "name": "ProductCategory", "values":[] }];
-                if(response.success == 201 ) {
-                   response.data.forEach((category)=>{
-                      if(category.type=='AgendaType') { this.groupsCategoryList[0].values.push(category); }
-                      else if(category.type=='ProductCategory') { this.groupsCategoryList[1].values.push(category); }
-                   });
+
+    
+      this.usersService.getUser()
+      .then((userDataSession: any)=>{
+        this.userDataSession = userDataSession;
+        if(this.userDataSession) {
+            this.profileRole = {};
+            if(userDataSession && userDataSession.user_roles_fair)  {
+              userDataSession.user_roles_fair.forEach((role)=>{
+                if(role.id == 1) { //"super_administrador"
+                   this.profileRole.admin = true;
                 }
-                this.loading.dismiss();
+              });
+            }
+            
+          this.loading.present({message:'Cargando...'});  
+          this.fairsService.getCurrentFair().
+          then( fair => {
+            this.fair = fair;
+            this.setBackground();
+            this.pavilions = fair.pavilions;
+            this.setPavilionBackground();
+            this.showPrice = fair.price > 0;
+            
+            
+            this.agendasService.list()
+            .then((agendas) => {
+                this.agendas = agendas;
+                this.agendas.forEach((agenda)=>{
+                    agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+                    agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
+                    agenda.location = agenda.room ? agenda.room.name : '';
+                });
+                
+                this.categoryService.list('all', this.fair)
+                .then((response) => {
+                    this.groupsCategoryList = [ { "label":"Categorías para agenda", "name": "AgendaType", "values":[] },{ "label":"Categorías para productos", "name": "ProductCategory", "values":[] }];
+                    if(response.success == 201 ) {
+                       response.data.forEach((category)=>{
+                          if(category.type=='AgendaType') { this.groupsCategoryList[0].values.push(category); }
+                          else if(category.type=='ProductCategory') { this.groupsCategoryList[1].values.push(category); }
+                       });
+                    }
+                    this.loading.dismiss();
+                 })
+                 .catch(error => {
+                    this.loading.dismiss(); 
+                    this.errors = `Consultando el servicio para categorias: ${error}`;
+                 });
+                
+                this.loading.dismiss(); 
+                
              })
              .catch(error => {
                 this.loading.dismiss(); 
-                this.errors = `Consultando el servicio para categorias: ${error}`;
+                this.errors = `Consultando el servicio para agenda: ${error}`;
              });
-            
-            this.loading.dismiss(); 
-            
-         })
-         .catch(error => {
-            this.loading.dismiss(); 
-            this.errors = `Consultando el servicio para agenda: ${error}`;
-         });
-      }, errors => {
-          this.errors = errors;
-          this.loading.dismiss();     
-      })
-      .catch(error => {
-          this.loading.dismiss();
-          this.errors = `Consultando el servicio para agenda: ${error}`;
+          }, errors => {
+              this.errors = errors;
+              this.loading.dismiss();     
+          })
+          .catch(error => {
+              this.loading.dismiss();
+              this.errors = `Consultando el servicio para agenda: ${error}`;
+          });
+        }
       });
   }
   
@@ -171,7 +193,7 @@ export class FairPage implements OnInit {
     aux.select();
     document.execCommand("copy");
     document.body.removeChild(aux);
-    const toast = await this.toastController.create({
+    const toast = await this.toastCtrl.create({
       message: 'Texto copiado en el portapapeles', 
       duration: 2000
     });
@@ -206,7 +228,7 @@ export class FairPage implements OnInit {
     });
     await actionAlert.present();
 
-  }  
+  }
   
   async presentActionIcons() {
     const actionAlert = await this.alertCtrl.create({
@@ -231,7 +253,7 @@ export class FairPage implements OnInit {
     });
     await actionAlert.present();
 
-  }  
+  }
   
   setBackground() {
       let i=0;
@@ -257,4 +279,26 @@ export class FairPage implements OnInit {
         });
       });
   }
+  
+  async presenterTerms() {
+    
+    if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: LoginComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this,
+        'showMenu': 'terms',
+        'admin': this.userDataSession
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  }
+
+
 } 

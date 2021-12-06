@@ -12,6 +12,9 @@ import { UsersService } from './../../api/users.service';
 import { WompiPaymentLayoutPage } from '../wompi-payment-layout/wompi-payment-layout.page';
 import { ScheduleDetailComponent } from './schedule-detail/schedule-detail.component';
 import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
+import { SignupComponent } from '../signup/signup.component';
+import { LoginComponent } from '../login/login.component';
+import { TermsPage } from '../terms/terms.page';
 
 @Component({
   selector: 'page-schedule',
@@ -310,6 +313,7 @@ export class SchedulePage implements OnInit {
       component: ScheduleDetailComponent,
       cssClass: 'agenda-modal',
       componentProps: {
+        '_parent': this,
         'agenda': session,
         'speakerDetailComponent': this.speakerDetailComponent,
         'type': 'Agenda'
@@ -322,4 +326,48 @@ export class SchedulePage implements OnInit {
     }
   } 
   
+  async presenterLogin() {
+    
+    //if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: LoginComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+  
+  async presenterSignup() {
+    
+    //if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: SignupComponent,  
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+
+  async presentTermsModal() {
+    const modal = await this.modalCtrl.create({
+      component: TermsPage,
+      swipeToClose: true,
+      //presentingElement: this.routerOutlet.nativeEl
+    });
+    await modal.present();
+  }
 }

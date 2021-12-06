@@ -12,8 +12,8 @@
   margin-bottom: 0;
 }
 
-.font-18px {
-  font-size: 21px;
+.invalid-feedback {
+  font-size: 1.4em;
 }
 
 ion-item.item-has-focus > ion-label{
@@ -21,5 +21,38 @@ ion-item.item-has-focus > ion-label{
 }
 
 ion-input {
-  font-size: 14px;
+  font-size: 1em;
 }
+
+.back-button {
+  position: absolute;
+  left: 2.5em;
+  top: 0.5em;
+  font-size: 1.7em;
+  ion-icon {
+    font-size: 1.5em;
+  }
+  
+  div {
+    position: absolute;
+    top: 0em;
+    width: 100vw;
+    left: 1.7em;
+  }
+}
+
+
+.title-modal {
+  margin-top: 1.5em;
+}
+
+.min-height {
+  min-height: 50em;
+}
+
+
+.delete-terms { 
+  left: 1.4em;
+  position: absolute;
+}
+

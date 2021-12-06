@@ -294,4 +294,67 @@ export class UsersService {
         });   
     });
   }
+  
+  findEmail(email: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        this.http.get(`${this.url}/api/user/find/${email}`)
+       .pipe(
+          timeout(2000),
+          catchError((e: any) => {
+               if(e.status && e.statusText) {
+                  throw new Error(`Consultando el servicio para validación del usuario: ${e.status} - ${e.statusText}`);
+               }
+               else {
+                   throw new Error(`Consultando el servicio para validación del usuario`);
+               }
+          })
+        )
+        .subscribe((data : any )=> {
+            resolve(data);
+        },error => reject(error));
+
+    });
+  }
+
+  sendSignConfirm(email: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        this.http.get(`${this.url}/api/user/sendSignConfirm/${email}`)
+       .pipe(
+          timeout(2000),
+          catchError((e: any) => {
+               if(e.status && e.statusText) {
+                  throw new Error(`Consultando el servicio para validación del usuario: ${e.status} - ${e.statusText}`);
+               }
+               else {
+                   throw new Error(`Consultando el servicio para validación del usuario`);
+               }
+          })
+        )
+        .subscribe((data : any )=> {
+            resolve(data);
+        },error => reject(error));
+
+    });
+  }
+  
+  singupValidate(email: string, code: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        this.http.get(`${this.url}/api/user/sendSignConfirm/${email}/${code}`)
+       .pipe(
+          timeout(2000),
+          catchError((e: any) => {
+               if(e.status && e.statusText) {
+                  throw new Error(`Consultando el servicio para validación del usuario: ${e.status} - ${e.statusText}`);
+               }
+               else {
+                   throw new Error(`Consultando el servicio para validación del usuario`);
+               }
+          })
+        )
+        .subscribe((data : any )=> {
+            resolve(data);
+        },error => reject(error));
+
+    });
+  }
 }

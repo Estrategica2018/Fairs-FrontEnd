@@ -16,6 +16,8 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
 import { SpeakersService } from '../../api/speakers.service';
 import { ShoppingCartComponent } from '../shopping-cart/shopping-cart-component/shopping-cart-component';
+import { LoginComponent } from '../login/login.component';
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 @Component({
   selector: 'page-map',
@@ -24,7 +26,7 @@ import { ShoppingCartComponent } from '../shopping-cart/shopping-cart-component/
 })
 export class MapPage implements OnInit {
 
-  url: any;
+  url = SERVER_URL;
   number = Number;
   @ViewChild('menuTabs', { static: true }) menuTabs: TabMenuScenesComponent;  
   @ViewChildren('carousels') carousels: any;
@@ -53,8 +55,7 @@ export class MapPage implements OnInit {
   modalSpeaker: any;
   offsetHeight: 0;
   sceneId: any = '0';
-  modalShoppingCart: any;
-  modalProduct: any;
+  modal: any;
   
   constructor(
     private standService: StandsService,                                    
@@ -72,7 +73,6 @@ export class MapPage implements OnInit {
     private toastCtrl: ToastController,
     private speakersService: SpeakersService) {
         
-      this.url = window.location.origin;
       this.listenForFullScreenEvents();
       this.usersService.getUser().then((userDataSession: any)=>{
           if(userDataSession && userDataSession.user_roles_fair)  {
@@ -96,8 +96,7 @@ export class MapPage implements OnInit {
      if(window.location.href.indexOf('map') < 0) {
        window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
      }
-     if(this.modalShoppingCart) { this.modalShoppingCart.dismiss(); }
-     if(this.modalProduct) { this.modalProduct.dismiss(); }
+     if(this.modal) { this.modal.dismiss(); }
   }
   
   ngAfterViewInit() {
@@ -402,17 +401,15 @@ export class MapPage implements OnInit {
     const pavilionId = this.route.snapshot.paramMap.get('pavilionId');
     const standId = this.route.snapshot.paramMap.get('standId');
     const sceneId = this.route.snapshot.paramMap.get('sceneId');
-    const urlBase = window.location.href.split('#')[0];
     
     if(this.template === 'fair') {
-      window.location.href = urlBase + "#/super-admin/map-editor/fair/"+sceneId;
+      this.redirectTo(`/super-admin/map-editor/fair/${sceneId}`);
     }
     else if(this.template === 'pavilion') {
-      window.location.href = urlBase + "#/super-admin/map-editor/pavilion/"+pavilionId+"/"+sceneId;
+      this.redirectTo(`/super-admin/map-editor/pavilion/${pavilionId}/${sceneId}`);
     }
     else if(this.template === 'stand') {
-      window.location.href = urlBase + "#/super-admin/map-editor/stand/"+pavilionId+"/"+standId+"/"+sceneId;
-      
+      this.redirectTo(`/super-admin/map-editor/stand/${pavilionId}/${standId}/${sceneId}`);
     } 
   }
   
@@ -489,7 +486,10 @@ export class MapPage implements OnInit {
   }*/
   
   async onShowProduct(product) {
-    this.modalProduct = await this.modalCtrl.create({
+    
+    if(this.modal) { this.modal.dismiss(); }
+
+    this.modal = await this.modalCtrl.create({
       component: ProductDetailComponent,
       swipeToClose: false, 
       cssClass: 'product-modal',
@@ -498,9 +498,9 @@ export class MapPage implements OnInit {
       '_parent': this,
       'fair': this.fair, 'pavilionId': product.stand.pavilion_id, 'standId': product.stand_id, 'product': product }
     });
-    await this.modalProduct.present();
+    await this.modal.present();
 
-    const { data } = await this.modalProduct.onWillDismiss();
+    const { data } = await this.modal.onWillDismiss();
     if (data) {
         
     }
@@ -579,7 +579,7 @@ export class MapPage implements OnInit {
 
   contactSendForm(form){
       let sentToEmail = '';
-	  
+      
       if(this.template == 'fair') {
           sentToEmail = this.fair.resources.supportContact;
       }
@@ -605,6 +605,25 @@ export class MapPage implements OnInit {
       });
   }  
 
+  async presenterLogin() {
+    
+    //if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: LoginComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+  
+  
   async presenterSpeakerModal(speaker) {
     
     this.modalSpeaker = await this.modalCtrl.create({
@@ -643,7 +662,8 @@ export class MapPage implements OnInit {
 
   async openShoppingCart(productPrice) {
 
-    this.modalShoppingCart = await this.modalCtrl.create({
+    if(this.modal) { this.modal.dismiss(); }
+    this.modal = await this.modalCtrl.create({
       component: ShoppingCartComponent,
       cssClass: 'boder-radius-modal',
       componentProps: {
@@ -652,8 +672,8 @@ export class MapPage implements OnInit {
           '_continue': true
       }
     });
-    await this.modalShoppingCart.present();
-    const { data } = await this.modalShoppingCart.onWillDismiss();
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
 
     if(data) {
     }

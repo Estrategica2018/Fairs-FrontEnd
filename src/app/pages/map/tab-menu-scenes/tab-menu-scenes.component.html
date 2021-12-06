@@ -1,4 +1,5 @@
-<div class="tabs-menu-scene {{position}}" 
+<div class="tabs-menu-scene {{position}}"
+[ngClass]="{'no-icon': !menuTabs || !menuTabs.icon || menuTabs.icon.length == 0}"
 *ngIf="position !== 'none'"
 [ngStyle]="{
    'background-color': menuTabs?.backgroundColor, 
@@ -13,7 +14,7 @@
     *ngFor="let tab of menuTabs?.actions;let i = index">
       <ion-icon [slot]="tab?.title !== '' && ( position=='bottom' || position=='top' ) ? 'start': 'icon-only'" 
       [name]="tab?.icon"></ion-icon>
-      <div *ngIf="position=='bottom' || position=='top'" >{{tab?.title}} </div>
+      <div *ngIf="position=='bottom' || position=='top'"> {{tab?.title}}</div>
     </ion-button>
 
     <div class="head">
@@ -21,4 +22,3 @@
     </div>
 
   </div>
-

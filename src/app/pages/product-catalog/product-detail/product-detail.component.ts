@@ -9,6 +9,7 @@ import { ShoppingCarts } from '../../../api/shopping-carts.service';
 import { Router } from '@angular/router';
 import { processData, clone } from '../../../providers/process-data';
 
+
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
@@ -38,7 +39,7 @@ export class ProductDetailComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private adminProductsService: AdminProductsService,
     private loading: LoadingService,
-    private toastController: ToastController,
+    private toastCtrl: ToastController,
     private usersService: UsersService,
     private shoppingCarts: ShoppingCarts,
     private modalCtrl: ModalController,
@@ -267,7 +268,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   async presentToast(msg,cssClass) {
-    const toast = await this.toastController.create({
+    const toast = await this.toastCtrl.create({
       message: msg,
       cssClass: cssClass,
       duration: 1000,
@@ -333,7 +334,7 @@ export class ProductDetailComponent implements OnInit {
   
   onBuyProduct(product) {
       this.loading.present({message:'Cargando...'});
-      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount, this.userDataSession )
+      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
       .then((response) => {
         this.loading.dismiss();
         this.modalCtrl.dismiss();
@@ -349,7 +350,7 @@ export class ProductDetailComponent implements OnInit {
   
   onBuyProductAndClose(product) {
       this.loading.present({message:'Cargando...'});
-      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, this.amount, this.userDataSession )
+      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
       .then((response) => {
         this.loading.dismiss();
         this.showConfirmByProduct = false;
@@ -365,9 +366,13 @@ export class ProductDetailComponent implements OnInit {
       this.modalCtrl.dismiss();
   }
   
-  onRegister() {
-    this.modalCtrl.dismiss();
-    this.redirectTo('/signup');
+  onLogin() {
+    //this.modalCtrl.dismiss();
+    //this.redirectTo('/login');
+    if(this._parent.presenterLogin ) { 
+      this._parent.presenterLogin(); 
+    }
+    
   }
   
   redirectTo(uri:string){

@@ -12,6 +12,8 @@ export class TabMenuScenesComponent {
     @Input() editor: any;
     @Input() position: any;
     marginMenuTabs: any;
+    _backgroundColorLogo = null;
+    _backgroundColor = null;
 
     constructor(
         private router: Router,
@@ -23,7 +25,7 @@ export class TabMenuScenesComponent {
         const top = document.querySelector < HTMLElement > ('.app-toolbar-header').offsetHeight;
         const offsetHeight = window.innerHeight - top;
 
-        let offsetSizeTab = 174; //px
+        let offsetSizeTab = ( tabMenuObj.icon ) ? 174 : 74; //px
         if (tabMenuObj.actions) {
             tabMenuObj.actions.forEach((action) => {
                 offsetSizeTab += 50;
@@ -52,22 +54,34 @@ export class TabMenuScenesComponent {
                 "y": ((offsetHeight - offsetSizeTab + 30)) + 'px'
             };
         }
-        let style = document.createElement('style');
-        style.type = 'text/css';
-        style.id = 'newHeadPanelScene';
-        style.innerHTML = '.tabs-menu-scene .head { background-color: ' + tabMenuObj.backgroundColorLogo + '} ';
-        style.innerHTML += '.tabs-menu-scene.bottom::before, .tabs-menu-scene.bottom::after {box-shadow: 0 -17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
-        style.innerHTML += '.tabs-menu-scene.bottom .head::before, .tabs-menu-scene.bottom .head::after { box-shadow: 0 -17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
-        style.innerHTML += '.tabs-menu-scene.top::before, .tabs-menu-scene.top::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
-        style.innerHTML += '.tabs-menu-scene.top .head::before, .tabs-menu-scene.top .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
-        style.innerHTML += '.tabs-menu-scene.right::before, .tabs-menu-scene.right::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
-        style.innerHTML += '.tabs-menu-scene.right .head::before, .tabs-menu-scene.right .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
-        style.innerHTML += '.tabs-menu-scene.left::before, .tabs-menu-scene.left::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
-        style.innerHTML += '.tabs-menu-scene.left .head::before, .tabs-menu-scene.left .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
-        if(document.querySelector('#newHeadPanelScene'))
-        document.getElementsByTagName('head')[0].removeChild(document.querySelector('#newHeadPanelScene'));
         
-        document.getElementsByTagName('head')[0].appendChild(style);
+        if(this._backgroundColorLogo != tabMenuObj.backgroundColorLogo || this._backgroundColor != tabMenuObj.backgroundColor)  {
+            
+            this._backgroundColorLogo = tabMenuObj.backgroundColorLogo;
+            this._backgroundColor = tabMenuObj.backgroundColor;
+            
+            let style = document.createElement('style');
+            style.type = 'text/css';
+            style.id = 'newHeadPanelScene';
+            if(tabMenuObj.icon) {
+              style.innerHTML = '.tabs-menu-scene .head { background-color: ' + tabMenuObj.backgroundColorLogo + '} ';
+            }
+            else {
+              style.innerHTML = '.tabs-menu-scene .head { display: none; } ';
+            }
+            style.innerHTML += '.tabs-menu-scene.bottom::before, .tabs-menu-scene.bottom::after {box-shadow: 0 -17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
+            style.innerHTML += '.tabs-menu-scene.bottom .head::before, .tabs-menu-scene.bottom .head::after { box-shadow: 0 -17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
+            style.innerHTML += '.tabs-menu-scene.top::before, .tabs-menu-scene.top::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
+            style.innerHTML += '.tabs-menu-scene.top .head::before, .tabs-menu-scene.top .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
+            style.innerHTML += '.tabs-menu-scene.right::before, .tabs-menu-scene.right::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
+            style.innerHTML += '.tabs-menu-scene.right .head::before, .tabs-menu-scene.right .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
+            style.innerHTML += '.tabs-menu-scene.left::before, .tabs-menu-scene.left::after {box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColor + ' !important}';
+            style.innerHTML += '.tabs-menu-scene.left .head::before, .tabs-menu-scene.left .head::after { box-shadow: 0 17px 0 0 ' + tabMenuObj.backgroundColorLogo + ' !important;}';
+            if(document.querySelector('#newHeadPanelScene'))
+            document.getElementsByTagName('head')[0].removeChild(document.querySelector('#newHeadPanelScene'));
+            
+            document.getElementsByTagName('head')[0].appendChild(style);
+        }
     
     }
 

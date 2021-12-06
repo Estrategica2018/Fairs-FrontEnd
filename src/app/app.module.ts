@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from "@angular/core";
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -17,6 +17,11 @@ import { DatePipe } from '@angular/common';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi-payment-layout.module';
 import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-component/shopping-cart-component';
+import { SignupComponent } from './pages/signup/signup.component';
+import { LoginComponent } from './pages/login/login.component';
+import localeEs from "@angular/common/locales/es";
+import { registerLocaleData } from "@angular/common";
+registerLocaleData(localeEs, "es");
 
 
 @NgModule({
@@ -35,16 +40,16 @@ import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-compo
     ComponentsModule
   ],
   declarations: [AppComponent],
-  entryComponents: [ ShoppingCartComponent ],
+  entryComponents: [ ShoppingCartComponent, LoginComponent, SignupComponent ],
   providers: [
     InAppBrowser, 
     SplashScreen, 
     StatusBar, 
     DatePipe,
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    //{provide: LocationStrategy, useClass: HashLocationStrategy},
     Title,
-    //{provide: APP_BASE_HREF, useValue: 'http://'+window.location.hostname+'/Fair-website/'}
-    
+    { provide: LOCALE_ID, useValue: "es" }
+    //{provide: APP_BASE_HREF, useValue: 'http://'+window.location.hostname+'/Fair-website/'}    
   ],
   bootstrap: [AppComponent]
 })

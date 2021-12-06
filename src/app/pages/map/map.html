@@ -265,7 +265,7 @@
                       'top': banner.productCatalog.priceTop + 'px',
                       'left': banner.productCatalog.priceLeft + 'px',
                       'font-weight':  banner.productCatalog.priceFontWeight
-                     }">{{ ( product.priceSelected.price || product.price ) | currency: '$ ':'symbol':'1.0-0' }}</div>
+                     }">$ {{ ( product.priceSelected.price || product.price ) | currency: ' ':' ':'1.0-0' }}</div>
                      </div></div> 
                 </ion-row>
                </ion-grid>

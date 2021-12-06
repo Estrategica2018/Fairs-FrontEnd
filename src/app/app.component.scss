@@ -1,3 +1,4 @@
+
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }
@@ -337,6 +338,35 @@ body.backdrop-no-scroll {
 
 .boder-radius-modal .modal-wrapper {
   --border-radius: 2em !important;
+}
+
+.card {
+ height: 100%;
+ .info {
+    position: absolute;
+    background-color: var(--white);
+    width: 4.6em;
+    height: 4.6em;
+    border-bottom-right-radius: 3em;
+    top: -1px;
+    left: -1px;
+    z-index: 58;
+    -webkit-box-shadow: 0px 2px 9px -1px rgb(0 0 0 / 37%);
+    ion-icon {
+       font-size: 3.2em;
+       margin: 0.14em;
+       --ion-color-base: #004782 !important;
+    }
+  } 
+  .close-modal {
+    cursor: pointer; 
+    position: absolute;
+    right: 0.7em;
+    top: 0;
+    font-size: 2.5em;
+    color: darkgray;
+    z-index: 100;
+  }
 }
 
 /* pass "app-success-alert" in cssClass for the ion-toast component */

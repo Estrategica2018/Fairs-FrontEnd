@@ -37,7 +37,7 @@
         <ion-buttons>
           <ion-chip [color]="productPrice.resources && productPrice.resources.mainPrice ? 'primary' : ''" (click)="changeMainPrice()">
              <ion-icon name="checkmark-circle"></ion-icon>
-             <ion-label> {{product?.price  | currency: '$ ':'symbol':'1.0-0'}}</ion-label>
+             <ion-label> $ {{product?.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
           </ion-chip>
         </ion-buttons>
       </ion-item>
@@ -45,7 +45,7 @@
       <ion-item button="true" (click)="presentActionPrice()" [disabled]="productPrice.resources.mainPrice">
        <ion-label> Precio por referencia </ion-label>
        <ion-buttons>
-          <ion-label slot="end" [hidden]="productPrice.resources.mainPrice"> {{productPrice.price  | currency: '$ ':'symbol':'1.0-0'}}</ion-label>
+          <ion-label slot="end" [hidden]="productPrice.resources.mainPrice"> $ {{productPrice.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
         </ion-buttons>
       </ion-item>
 

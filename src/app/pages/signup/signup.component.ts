@@ -1,23 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AbstractControl, ValidatorFn, FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Config, ModalController, NavParams } from '@ionic/angular';
-import { AlertController, IonRouterOutlet } from '@ionic/angular';
-
-
+//import { IonRouterOutlet } from '@ionic/angular';
 import { UsersService } from '../../api/users.service';
 import { FairsService } from '../../api/fairs.service';
 import { LoadingService } from './../../providers/loading.service';
-import { TermsPage } from './../terms/terms.page';
+
 
 @Component({
   selector: 'page-signup',
   templateUrl: 'signup.html',
   styleUrls: ['./signup.scss'],
 })
-export class SignupPage implements OnInit {
+export class SignupComponent implements OnInit {
     
+  @Input() _patern: any;
   errors = null;
   dark = false; 
   registerForm: FormGroup;
@@ -28,18 +27,14 @@ export class SignupPage implements OnInit {
     private usersService: UsersService,
     private loading: LoadingService,
     private modalCtrl: ModalController,
-    private routerOutlet: IonRouterOutlet,
+    //private routerOutlet: IonRouterOutlet,
     private fairsService: FairsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder 
   ) {
     
-    this.listenForDarkModeEvents();
+    //this.listenForDarkModeEvents();
  }
  
- ngDoCheck(){
-   document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
- }
-  
  ngOnInit() {
      this.registerForm = this.formBuilder.group({
             name: ['', Validators.required],
@@ -129,13 +124,14 @@ export class SignupPage implements OnInit {
       });
   }
   
-  async presentTermsModal() {
-    const modal = await this.modalCtrl.create({
-      component: TermsPage,
-      swipeToClose: true,
-      presentingElement: this.routerOutlet.nativeEl
-    });
-    await modal.present();
+  presentTermsModal() {
+    alert('asd');
+    console.log('asd');
+    this._patern.presentTermsModal();
+  }
+  
+  closeModal() {
+    this.modalCtrl.dismiss();
   }
 }
 

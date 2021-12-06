@@ -35,7 +35,7 @@
       <ion-item button="true" (click)="presentActionPrice()">
        <ion-label> Precio base</ion-label>
        <ion-buttons>
-          <ion-label slot="end"> {{product.price  | currency: '$ ':'symbol':'1.0-0'}}</ion-label>
+          <ion-label slot="end"> $ {{product.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
         </ion-buttons>
       </ion-item>
       

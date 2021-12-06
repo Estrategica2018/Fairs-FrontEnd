@@ -125,7 +125,7 @@ export class MapEditorPage implements OnInit {
     private adminPavilionsService: AdminPavilionsService,
     private adminStandsService: AdminStandsService,
     private adminProductsService: AdminProductsService,
-    private toastController: ToastController,
+    private toastCtrl: ToastController,
     private sanitizer: DomSanitizer,
     private productsService: ProductsService,
     private popoverCtrl: PopoverController,
@@ -832,7 +832,7 @@ export class MapEditorPage implements OnInit {
     aux.select();
     document.execCommand("copy");
     document.body.removeChild(aux);
-    const toast = await this.toastController.create({
+    const toast = await this.toastCtrl.create({
       message: itemList.length > 1 ? `${itemList.length} Objetos copiados en el portapapeles` : ` 1 Objeto copiado en el portapapeles`,
       duration: 2000
     });
@@ -1213,7 +1213,7 @@ export class MapEditorPage implements OnInit {
         //Add element into scene
         this.onPasteBannerBtn();
         
-        const toast = await this.toastController.create({
+        const toast = await this.toastCtrl.create({
           message: itemList.length > 1 ? `${itemList.length} objetos adicionados en la escena` : `1 objeto adicionado en la escena`,
           duration: 2000
         });

@@ -4,7 +4,7 @@ import { FairsService } from './../../../api/fairs.service';
 import { ShoppingCarts } from './../../../api/shopping-carts.service';
 import { PaymentService } from './../../../api/payment.service';
 import { LoadingService } from './../../../providers/loading.service';
-import { AlertController, ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { environment, SERVER_URL } from '../../../../environments/environment';
  
 declare var WidgetCheckout: any;
@@ -46,6 +46,7 @@ export class ShoppingCartComponent implements OnInit {
             this.shoppingCartService.list(this.fair, userDataSession)
             .then((response) => {
               this.shoppingCarts = response;
+              
               this.loadShoppingCart();
               this.loading.dismiss();
             })
@@ -61,9 +62,19 @@ export class ShoppingCartComponent implements OnInit {
   
   loadShoppingCart() {
       this.totalAmount = 0;
+      let price = 0;
       for(let shoppingCart of this.shoppingCarts){
-          this.totalAmount += ( shoppingCart.product_price.price || shoppingCart.product_price.product.price ) * shoppingCart.amount;
-          if(shoppingCart.product_price.resources) {
+          price = 0;
+          if(shoppingCart.product_price) {
+              price = shoppingCart.product_price.price || shoppingCart.product_price.product.price;
+          }
+          else if(shoppingCart.agenda) {
+              price = shoppingCart.agenda.price;
+          }
+          
+          this.totalAmount += price * shoppingCart.amount;
+          
+          if(shoppingCart.product_price && shoppingCart.product_price.resources) {
             shoppingCart.product_price.resources.attributesStr = [];
             if(shoppingCart.product_price.resources.attributes && shoppingCart.product_price.resources.attributes.length > 0) 
             for(let attr of shoppingCart.product_price.resources.attributes) {
@@ -156,13 +167,12 @@ export class ShoppingCartComponent implements OnInit {
                 
                 _self.paymentService.updateReference(transaction,_self.userDataSession)
                 .then((response) => {
-                  alert(JSON.stringify(response));
                   _self.loading.dismiss();
+                  _self.ngOnInit();
                   window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
-                  
                 })
                 .catch(error => {
-                  _self.loading.dismiss();
+                     _self.loading.dismiss();
                 });    
            })
          },
@@ -173,7 +183,7 @@ export class ShoppingCartComponent implements OnInit {
   }
   
   closeModal() {
-      this.modalCtrl.dismiss();
+    this.modalCtrl.dismiss();
   }
 
   addAmount(shoppingCart) {
@@ -183,7 +193,7 @@ export class ShoppingCartComponent implements OnInit {
       
       this.shoppingCartService.updateShoppingCart(shoppingCart)
       .then( (dataReference: any) => {
-         //this.loading.dismiss();
+         //this.loading.dismiss();  
          this.loadShoppingCart(); 
       });
       

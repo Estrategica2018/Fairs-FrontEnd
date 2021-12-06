@@ -95,8 +95,18 @@ html {
   display: flex;
 }
 
+.scroll-90{
+ height: 90%;
+ overflow: scroll;
+}
+
+.scroll-80{
+ height: 80%;
+ overflow: scroll;
+}
+
 .padding-container {
-  padding: 53px 10% 0 10%;
+  padding: 5em 10% 0 10%;
 }
 
 @media (min-width: 600px) {
@@ -280,6 +290,7 @@ ion-router-outlet {
 
 .boder-radius-modal .modal-wrapper {
   --width: 60em;
+  --height: 60em;
 }
 
 @media (min-width: 768px) {
@@ -363,4 +374,28 @@ ion-router-outlet {
 
 .z-index-1 {
   z-index: 1;
+}
+
+.fs-1 {
+  font-size: 1.5em;
+}
+
+.fs-0 {
+  font-size: 1em;
+}
+
+.no-border {
+  --border-color: none;
+  --border-width: 0px !important;
+}
+
+.thumbnail {
+  --size: 1;
+}
+
+.message-success-alert {
+  --background: red;
+  --background-color: red;
+  background-color: red;
+  background: red;
 }

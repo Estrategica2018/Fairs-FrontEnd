@@ -4,6 +4,11 @@
     "changeOrigin": true,
     "secure": false
   },
+  "/wompi/*": {
+    "target": "http://localhost:8000",
+    "changeOrigin": true,
+    "secure": false
+  },
   "/viewerZoom/*": {
     "target": "http://localhost:8000",
     "changeOrigin": true,

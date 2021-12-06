@@ -24,17 +24,21 @@
           </div>
           <ion-list>
             <!--ion-item routerLink="/meeting/{{session.id}}" routerLinkActive="selected" routerDirection="root" -->
-            <ion-item (click)="sessionClick('gotoSession')" button>
-              <ion-label color="primary">Entrar al evento</ion-label>
+            <ion-item [hidden]="userDataSession" (click)="onRegister()" button>
+              <ion-label color="primary">Registrate o Inicia sesión</ion-label>
             </ion-item>
-            <ion-item (click)="sessionClick('add to calendar')" button>
-              <ion-label color="primary">Agregar al calendario</ion-label>
+
+            <ion-item [hidden]="!userDataSession" *ngIf="loaded && ( agenda.audience_config == 4 && !eventPayment)"
+            (click)="onBuyProduct()" button>
+              <ion-label color="primary">Pagar evento $ {{agenda.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
             </ion-item>
-            <ion-item (click)="sessionClick('download video')" button>
-              <ion-label color="primary">Descargar Video</ion-label>
-              <ion-icon slot="end" color="primary" size="small" name="cloud-download"></ion-icon>
+            
+            <ion-item [hidden]="!userDataSession" *ngIf="loaded && ( ( eventPayment && agenda.audience_config == 4 ) || agenda.audience_config == 1 )" 
+            (click)="sessionClick('gotoSession')" button>
+              <ion-label color="primary">Entrar al evento </ion-label>
             </ion-item>
-            <ion-item (click)="onSupportClick()" button>
+            
+            <ion-item  [hidden]="!userDataSession"  (click)="onSupportClick()" button>
               <ion-label color="primary">Dejar un comentario</ion-label>
             </ion-item>
           </ion-list>

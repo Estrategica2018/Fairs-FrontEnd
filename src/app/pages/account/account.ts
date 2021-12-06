@@ -4,6 +4,8 @@ import { AlertController } from '@ionic/angular';
 import { UsersService } from '../../api/users.service';
 import { LoadingService } from './../../providers/loading.service';
 import { environment, SERVER_URL } from '../../../environments/environment';
+import { LoginComponent } from '../login/login.component';
+import { ToastController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'page-account',
@@ -19,12 +21,14 @@ export class AccountPage implements AfterViewInit {
   errors: string = null;
   SERVER_PATH = SERVER_URL;
   url_image: string = null;
+  modal: any;
 
   constructor(
     private alertCtrl: AlertController,
     private router: Router,
     private loading: LoadingService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private modalCtrl: ModalController,
   ) { }
   
   ngDoCheck(){
@@ -33,6 +37,10 @@ export class AccountPage implements AfterViewInit {
 
   ngAfterViewInit() {
     this.getUser();
+  }
+  
+  ngOnDestroy(): void {
+     if(this.modal) { this.modal.dismiss(); }
   }
 
   onSelectFile(event) {
@@ -127,20 +135,18 @@ export class AccountPage implements AfterViewInit {
     });
     await alert.present();
   }
+  
   getUser() {
     this.usersService.getUser().then((userData) => {
-      this.userData = userData;
-      this.url_image =  this.userData.url_image;
+      if(userData) {     
+        this.userData = userData;
+        this.url_image =  this.userData.url_image;
+      }
     });
   }
 
   changePassword() {
     
-  }
-
-  logout() {
-    this.userData.logout();
-    this.router.navigateByUrl('/login');
   }
 
   support() {
@@ -177,4 +183,70 @@ export class AccountPage implements AfterViewInit {
       });
     });
   }
+  
+  async presentLogout() {
+    const alert = await this.alertCtrl.create({
+      subHeader: 'Confirma para cerrar la sesión',
+      buttons: [
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Cerrar Sesión',
+          handler: (data: any) => {
+             this.logout();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  logout() {
+    this.loading.present({message:'Cargando...'});
+    this.usersService.getUser().then(userDataSession=>{
+        this.usersService.logout(userDataSession)
+        .subscribe(
+          data => {
+            this.loading.dismiss();
+            
+            this.usersService.setUser(null).then(() => {
+              window.dispatchEvent(new CustomEvent('user:logout'));
+              this.router.navigateByUrl(`/schedule`);
+            });
+            
+          },
+          error => {
+            this.loading.dismiss();
+            this.errors = error;
+            this.usersService.setUser(null).then(() => {
+              window.dispatchEvent(new CustomEvent('user:logout'));
+              this.router.navigateByUrl(`/schedule`);
+            });
+
+         }
+        ); 
+    });
+  }
+  
+  async presenterRecovery() {
+    
+    //if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: LoginComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this,
+        'showMenu': 'recovery',
+        'email_recovery': this.userData.email
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+
 }

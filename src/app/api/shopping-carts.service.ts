@@ -51,7 +51,7 @@ export class ShoppingCarts {
   }
    
   
-  addShoppingCart(fair: any, product: any, productPrice: any, amount: number, userDataSession : any): any {
+  addShoppingCart(fair: any, product: any, productPrice: any, agenda: any, amount: number, userDataSession : any): any {
     
     return new Promise((resolve, reject) => {
         
@@ -63,8 +63,9 @@ export class ShoppingCarts {
        
        const data = {
            "fair_id": fair.id,
-           "product_id": product.id,
-           "product_price_id": productPrice.id, 
+           "product_id": (product ? product.id : null),
+           "product_price_id": (productPrice ? productPrice.id : null), 
+           "agenda_id": (agenda ? agenda.id : null), 
            "amount": amount  
        };
        
