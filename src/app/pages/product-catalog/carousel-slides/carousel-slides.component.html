@@ -43,7 +43,7 @@ class="container-carousel position-absolute" *ngIf="imagesArray && imagesArray.l
 
 <div [ngStyle]="{'top': ( imageHeight * 1.3 ) + 'px', 'left': ( imageWidth / 35 ) + 'px'}"
   class="color-container position-absolute w-100" *ngIf="colors.length >= 1">
- <div class="w-100 h-100 d-flex" [ngClass]="{'select': i == imageSelected}">
+ <div class="color-container-size d-flex" [ngClass]="{'select': i == imageSelected}">
     <div class="cont-attr" *ngFor="let color of colors; let i = index;"
     [ngClass]="{'select': i == imageSelected}">
        <div class="color-attr"  

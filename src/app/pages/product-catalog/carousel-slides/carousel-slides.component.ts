@@ -34,9 +34,10 @@ export class CarouselSlidesComponent implements OnInit {
          if(price.resources && price.resources.attributes && price.resources.attributes.length > 0 && price.resources.attributes[0].value && price.resources.attributes[0].value.length > 0 ) {
            this.colors.push({'value': price.resources.attributes[0].value, 'image': price.resources.images});
          }
-     }); 
+     });
+     
      setTimeout(()=>{
-         
+
          //this.slides = <IonSlides>document.getElementById("slides");
          
          if(this.colors.length >= 1) {
@@ -380,11 +381,13 @@ export class CarouselSlidesComponent implements OnInit {
     
   onChangeColor(index) {
      this.imageSelected = index;
-     this.imagesArray = this.product.prices[index].resources.images; 
-     if(this.changePrice) {
+     if(this.product.prices[index]) {
+       this.imagesArray = this.product.prices[index].resources.images; 
        this.product.priceSelected = this.product.prices[index];
        this.product.priceSelectedIndex = index;
-       this.changePrice.emit();
+       if(this.changePrice) {
+         this.changePrice.emit();
+       }
      }
   }    
 

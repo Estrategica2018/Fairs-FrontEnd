@@ -32,6 +32,7 @@ export class ProductDetailComponent implements OnInit {
   showConfirmByProduct = false;
   showRegister = false;
   otherGroup = [];
+  attributeSelect = [];
   
   constructor(
     private alertCtrl: AlertController,
@@ -50,41 +51,40 @@ export class ProductDetailComponent implements OnInit {
     
     this.product = clone(this.product);
     
+    if(this.product.resources && this.product.resources.attributes && this.product.resources.attributes.length > 0) {
+        
+        for(let attr of this.product.resources.attributes) {
+          if(attr.value.split('|').length>1) {
+            let list = [];
+            attr.value.split('|').forEach((item)=>{
+              list.push(item);
+            });
+            this.attributeSelect.push({list: list, label:attr.name})
+          }
+        }
+    }
+      
+    
     this.changePrice();
     let index = 0;
     
     this.product.prices.forEach((price)=>{
-         let i = 0;
-         let mbFlag = null;
-         if(price.resources && price.resources.attributes && price.resources.attributes.length > 0)
-         for(let attr of price.resources.attributes) {
-             
-            if( i != 0 && attr.value.length > 0 ) {
-                mbFlag = attr;
-            }
-            else if( attr.value.length > 0 ) {
-                //this.otherGroup.push({
-                //   'price': price.price || this.product.price,
-                //   'color': attr.value,
-                //   'priceSelected': price,
-                //   'index': index,
-                //   'name': attr.value +' ' +attr.value, 'image': price.resources.images[0].url_image}
-              //);
-            }
-            
-            i++;    
-         }
-        
-        if(mbFlag) {
-          this.otherGroup.push({
-              'price': price.price || this.product.price,
-            'priceSelected': price,
-            'index': index,
-            'name': mbFlag.value +' ' +mbFlag.value, 'image': price.resources.images[0].url_image}
-          );
-          
+      let i = 0;
+      let mbFlag = null;
+      if(price.resources && price.resources.attributes && price.resources.attributes.length > 0) { 
+        price.attributeSelect = price.attributeSelect || [];
+        for(let attr of price.resources.attributes) {
+          if(attr.value.split('|').length>1) {
+            let list = [];
+            attr.value.split('|').forEach((item)=>{
+              list.push(item);
+            });
+            price.attributeSelect.push({list: list, label:attr.name})
+          }
+          i++;
         }
-       index ++;
+      }
+      index ++;
     }); 
     
     this.usersService.getUser().then((userDataSession: any)=>{
@@ -100,15 +100,14 @@ export class ProductDetailComponent implements OnInit {
       }
     });
     
-      if(this.product && this.product.resources && this.product.resources && this.product.resources.detail && this.product.resources.detail.elements && this.product.resources.detail.elements.length >0 ) {
-        this.product.resources.detail.elements.forEach((item)=>{
-          if(item.video) { 
+    if(this.product && this.product.resources && this.product.resources && this.product.resources.detail && this.product.resources.detail.elements && this.product.resources.detail.elements.length >0 ) {
+      this.product.resources.detail.elements.forEach((item)=>{
+        if(item.video) { 
             const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(item.video.videoUrl);
             item.video.sanitizer = sanitizer;
           }
-        })
-      }
-      
+      })
+    }
   }
 
   async onAddImg(){

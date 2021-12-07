@@ -37,8 +37,21 @@
     <ion-col size="7" class="col-max scroll-light" *ngIf="product && priceSelected">
        <h2 class="name ion-text-center">{{product?.name}}</h2>
        <h6 class="description ion-text-justify pr-4 pt-2 mb-5"><small>{{product?.description}}</small></h6>
+       <h6 *ngFor="let attr of attributeSelect" class="">
+         {{ attr.label}}
+         <select [(ngModel)]="attr.selected" class="w-90 ml-3 mt-2 w-90">
+           <option *ngFor="let item of attr.list" value="{{item}}"><h6>{{item}}</h6></option>
+         </select>
+       </h6>
+       <h6 *ngFor="let attr of priceSelected.attributeSelect">
+         {{ attr.label}}
+         <select [(ngModel)]="attr.selected" class="w-90 ml-3 mt-2 w-90">
+           <option *ngFor="let item of attr.list" value="{{item}}"><h6>{{item}}</h6></option>
+         </select>
+       </h6>
+
        <h6 class="mb-5">Precio por unidad $ {{  ( priceSelected.price || product.price )  | currency: ' ':' ':'1.0-0' }}</h6>
-       <h6 class="mb-1">
+       <h6 class="mb-1" *ngIf="otherGroup">
          <ion-grid>
            <ion-row>
                <ion-col *ngFor="let othGroup of otherGroup"  class="group-container mr-3 ml-3" 
