@@ -36,6 +36,7 @@ export class LoginComponent  implements OnInit {
   profileRole: any;
   singupConfirmMsg: any;
   emailActivateError: any;
+  emailSingConfirm: any;
 
   constructor(
     private router: Router,
@@ -206,7 +207,8 @@ export class LoginComponent  implements OnInit {
       else {
         this.emailActivateError = false;
         //this.loading.dismiss();
-        this.onSendSignConfirm(this.registerForm.value['email']);
+		this.emailSingConfirm = this.registerForm.value['email'];
+        this.onSendSignConfirm(this.emailSingConfirm);
       }
     },
     error => {
@@ -478,13 +480,13 @@ export class LoginComponent  implements OnInit {
     });
   }
 
-  onSingupValidate(email) {
+  onSingupValidate() {
     
     this.loading.present({message:'Cargando...'});
     
     let code = this.singupConfirmForm.value['item1'] + this.singupConfirmForm.value['item2'] + this.singupConfirmForm.value['item3'] + this.singupConfirmForm.value['item4'] + this.singupConfirmForm.value['item5'] + this.singupConfirmForm.value['item6'];
     console.log(code);
-    this.usersService.singupValidate(email, code)
+    this.usersService.singupValidate(this.emailSingConfirm, code)
     .then(data => {
         if(data.success === 201) {
             //this.loading.dismiss();

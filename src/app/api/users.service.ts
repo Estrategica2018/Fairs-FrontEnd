@@ -23,7 +23,7 @@ export class UsersService {
   login(email: string, password: string, fair_id: string): Observable<any> {
     return this.http.post(`${this.url}/api/login`, {email: email, password: password, fair_id: fair_id})
    .pipe(
-      timeout(2000),
+      timeout(10000),
       catchError((e: any) => {
         if(e.status === 422) {
            throw new Error(`Usuario o contraseña incorrectos`);
