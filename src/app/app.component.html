@@ -21,7 +21,7 @@
         <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
          Acceder
       </ion-button>
-      <ion-button class="d-none d-md-flex" *ngIf="loggedIn" routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
+      <ion-button class="d-none d-md-flex" *ngIf="loggedIn" (click)="presentAccount()">
         <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
          Cuenta
       </ion-button>
@@ -154,7 +154,7 @@
         </ion-list>
         <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
           <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
+            <ion-item (click)="presentAccount()">
               <ion-icon slot="start" name="person"></ion-icon>
               <ion-label>
                 Cuenta
@@ -306,7 +306,7 @@
         <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
           
           <ion-menu-toggle autoHide="false">
-            <ion-item class="width-icon p-0" routerLink="/account" routerLinkActive="active" routerDirection="root" detail="false">
+            <ion-item class="width-icon p-0" (click)="presentAccount()">
               <ion-icon slot="start" name="person"></ion-icon>
               <ion-label>
                 Cuenta

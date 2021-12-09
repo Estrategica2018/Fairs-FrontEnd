@@ -320,7 +320,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
         this.http.get(`${this.url}/api/user/sendSignConfirm/${email}`)
        .pipe(
-          timeout(2000),
+          timeout(12000),
           catchError((e: any) => {
                if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para validación del usuario: ${e.status} - ${e.statusText}`);
@@ -339,7 +339,7 @@ export class UsersService {
   
   singupValidate(email: string, code: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        this.http.get(`${this.url}/api/user/sendSignConfirm/${email}/${code}`)
+        this.http.get(`${this.url}/api/user/sendSignConfirm/validate/${email}/${code}`)
        .pipe(
           timeout(2000),
           catchError((e: any) => {

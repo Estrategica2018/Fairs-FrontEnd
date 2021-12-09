@@ -12,7 +12,7 @@ import { ToastController, ModalController } from '@ionic/angular';
   templateUrl: 'account.html',
   styleUrls: ['./account.scss'],
 })
-export class AccountPage implements AfterViewInit {
+export class AccountComponent implements AfterViewInit {
   
   userData: any;
   onChangeImag = false;
@@ -22,6 +22,7 @@ export class AccountPage implements AfterViewInit {
   SERVER_PATH = SERVER_URL;
   url_image: string = null;
   modal: any;
+  showEdit = false;
 
   constructor(
     private alertCtrl: AlertController,
@@ -248,5 +249,9 @@ export class AccountPage implements AfterViewInit {
     if(data) {
     }
   } 
+  
+  closeModal() {
+    this.modalCtrl.dismiss();
+  }
 
 }

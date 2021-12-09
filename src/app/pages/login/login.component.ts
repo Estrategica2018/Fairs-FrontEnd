@@ -134,8 +134,8 @@ export class LoginComponent  implements OnInit {
     this.router.navigateByUrl('/recoverPassword');
   }
 
-  presenterSignup() {
-    this._parent.presenterSignup();
+  presentSignup() {
+    this._parent.presentSignup();
   } 
 
   closeModal() {
@@ -198,14 +198,16 @@ export class LoginComponent  implements OnInit {
       
     this.usersService.findEmail(this.registerForm.value['email'])
     .then( response => {
+		
       if(response.status === 201) {
         this.emailActivateError = true;
         this.loading.dismiss();
       }
-        else {
-          //this.loading.dismiss();
-          this.onSendSignConfirm(this.registerForm.value['email']);
-        }
+      else {
+        this.emailActivateError = false;
+        //this.loading.dismiss();
+        this.onSendSignConfirm(this.registerForm.value['email']);
+      }
     },
     error => {
       this.loading.dismiss();
@@ -453,9 +455,10 @@ export class LoginComponent  implements OnInit {
   onSendSignConfirm(email) {
     
     //this.loading.present({message:'Cargando...'});
-    
+    console.log(email);
     this.usersService.sendSignConfirm(email)
     .then(data => {
+			
         if(data.success === 201) {
             this.loading.dismiss();
             this.showMenu = 'singupConfirm';
@@ -469,6 +472,7 @@ export class LoginComponent  implements OnInit {
         }
     },
     error => {
+		alert('err'+JSON.stringify(error));
         this.loading.dismiss();
         this.errors = error;
     });
@@ -478,8 +482,8 @@ export class LoginComponent  implements OnInit {
     
     this.loading.present({message:'Cargando...'});
     
-    let code = this.singupConfirmForm.value['item1'] || this.singupConfirmForm.value['item2'] || this.singupConfirmForm.value['item3'] || this.singupConfirmForm.value['item4'] || this.singupConfirmForm.value['item5'] || this.singupConfirmForm.value['item6'];
-    
+    let code = this.singupConfirmForm.value['item1'] + this.singupConfirmForm.value['item2'] + this.singupConfirmForm.value['item3'] + this.singupConfirmForm.value['item4'] + this.singupConfirmForm.value['item5'] + this.singupConfirmForm.value['item6'];
+    console.log(code);
     this.usersService.singupValidate(email, code)
     .then(data => {
         if(data.success === 201) {

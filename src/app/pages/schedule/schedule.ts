@@ -344,7 +344,7 @@ export class SchedulePage implements OnInit {
     }
   } 
   
-  async presenterSignup() {
+  async presentSignup() {
     
     //if(this.modal) { this.modal.dismiss(); }
     

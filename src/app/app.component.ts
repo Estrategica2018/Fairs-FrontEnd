@@ -16,6 +16,7 @@ import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-compo
 import { SignupComponent } from './pages/signup/signup.component';
 import { LoginComponent } from './pages/login/login.component';
 import { TermsPage } from './pages/terms/terms.page';
+import { AccountComponent } from './pages/account/account.component';
 
 @Component({
   selector: 'app-root',
@@ -332,7 +333,7 @@ export class AppComponent implements OnInit {
     }
   } 
   
-  async presenterSignup() {
+  async presentSignup() {
     
     //if(this.modal) { this.modal.dismiss(); }
     
@@ -358,4 +359,21 @@ export class AppComponent implements OnInit {
     });
     await modal.present();
   }
+
+  async presentAccount() {
+    
+    this.modal = await this.modalCtrl.create({
+      component: AccountComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_patern': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  }   
+  
 }

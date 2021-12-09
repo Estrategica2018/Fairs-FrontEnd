@@ -18,6 +18,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { WompiPaymentLayoutPageModule } from './pages/wompi-payment-layout/wompi-payment-layout.module';
 import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-component/shopping-cart-component';
 import { SignupComponent } from './pages/signup/signup.component';
+import { AccountComponent } from './pages/account/account.component';
 import { LoginComponent } from './pages/login/login.component';
 import localeEs from "@angular/common/locales/es";
 import { registerLocaleData } from "@angular/common";
@@ -40,7 +41,7 @@ registerLocaleData(localeEs, "es");
     ComponentsModule
   ],
   declarations: [AppComponent],
-  entryComponents: [ ShoppingCartComponent, LoginComponent, SignupComponent ],
+  entryComponents: [ ShoppingCartComponent, LoginComponent, SignupComponent, AccountComponent ],
   providers: [
     InAppBrowser, 
     SplashScreen, 

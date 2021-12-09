@@ -14,6 +14,7 @@ import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart-compo
 import { ScheduleDetailComponent } from './pages/schedule/schedule-detail/schedule-detail.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { LoginComponent } from './pages/login/login.component';
+import { AccountComponent } from './pages/account/account.component';
 import { TermsPage } from './pages/terms/terms.page';
 
 @NgModule({
@@ -36,6 +37,7 @@ import { TermsPage } from './pages/terms/terms.page';
     ScheduleDetailComponent,
     SignupComponent,
     LoginComponent,
+	AccountComponent,
     TermsPage
   ],
   exports: [
@@ -51,6 +53,7 @@ import { TermsPage } from './pages/terms/terms.page';
     ScheduleDetailComponent,
     SignupComponent,
     LoginComponent,
+	AccountComponent,
     TermsPage
   ]
   

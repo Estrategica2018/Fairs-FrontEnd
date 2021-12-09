@@ -1,10 +1,19 @@
-
-<ion-content fullscreen="true">
+<div class="card w-100">
+  <div class="info">
+    <ion-icon color="primary" name="person-outline"></ion-icon>
+  </div>
+  <div class="info-background">
+  </div>
+  <div (click)="closeModal() " class="close-modal">
+  <ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
+    
+  <h2 class="name ion-text-center title-modal">Cuenta de usuario </h2>
   
-  <div *ngIf="userData" class="padding-container ion-text-center">
+  <div *ngIf="userData" class="ion-text-center min-height" [ngClass]="{'padding-container': !showEdit}">
     <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar mt-4" *ngIf="!userData.url_image">
     <img [src]="SERVER_PATH + userData.url_image" class="avatar mt-4" *ngIf="userData.url_image">
     <h2>{{userData.name}} {{userData.last_name}}</h2>
+	<label class="mt-2 label-uploadInput" [hidden]="showEdit" (click)="showEdit=true">Editar datos</label>
 
     <ion-item [hidden]="!errors" class="not-found">
        <div class="alert alert-danger alert-dismissible">
@@ -13,7 +22,7 @@
        </div>
     </ion-item>
     <ion-list inset>
-      <ion-item>
+      <ion-item *ngIf="showEdit">
         <ion-grid>
         <ion-row>
         <ion-col class="text-center">
@@ -74,4 +83,7 @@
 
     </ion-list>
   </div>
-</ion-content>
+
+</div>
+
+  
