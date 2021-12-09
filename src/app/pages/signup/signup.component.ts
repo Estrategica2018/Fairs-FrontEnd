@@ -125,8 +125,6 @@ export class SignupComponent implements OnInit {
   }
   
   presentTermsModal() {
-    alert('asd');
-    console.log('asd');
     this._patern.presentTermsModal();
   }
   
