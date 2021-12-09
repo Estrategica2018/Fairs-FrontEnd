@@ -474,8 +474,7 @@ export class LoginComponent  implements OnInit {
         }
     },
     error => {
-		alert('err'+JSON.stringify(error));
-        this.loading.dismiss();
+		this.loading.dismiss();
         this.errors = error;
     });
   }
