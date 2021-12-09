@@ -32,7 +32,7 @@ export class ProductDetailComponent implements OnInit {
   showConfirmByProduct = false;
   showRegister = false;
   otherGroup = [];
-  attributeSelect = [];
+  
   
   constructor(
     private alertCtrl: AlertController,
@@ -53,17 +53,18 @@ export class ProductDetailComponent implements OnInit {
     
     if(this.product.resources && this.product.resources.attributes && this.product.resources.attributes.length > 0) {
         
+        this.product.attributeSelect = this.product.attributeSelect || [];
+        
         for(let attr of this.product.resources.attributes) {
           if(attr.value.split('|').length>1) {
             let list = [];
             attr.value.split('|').forEach((item)=>{
               list.push(item);
             });
-            this.attributeSelect.push({list: list, label:attr.name})
+            this.product.attributeSelect.push({list: list, label:attr.name});
           }
         }
-    }
-      
+    }    
     
     this.changePrice();
     let index = 0;
@@ -242,8 +243,8 @@ export class ProductDetailComponent implements OnInit {
   }
   
   onDeleteItemAdded(index){
-      this.product.resources.detail.elements = this.product.resources.detail.elements.filter((item, ind)=>{
-          return ind != index;
+     this.product.resources.detail.elements = this.product.resources.detail.elements.filter((item, ind)=>{
+        return ind != index;
      });
      this.saveProduct('Borrar elemento');
   }
@@ -320,10 +321,14 @@ export class ProductDetailComponent implements OnInit {
   }
   
   confirmBuyProduct(product) {
-      console.log(this.userDataSession);
+      
       if(this.userDataSession) {
-        this.showConfirmByProduct = true;
-        this.showRegister = false;
+          
+        if(!this.hasEmptyAttributes(this.priceSelected.attributeSelect) && 
+          !this.hasEmptyAttributes(product.attributeSelect)) {
+            this.showConfirmByProduct = true;
+            this.showRegister = false;
+        }
       }
       else {
         this.showConfirmByProduct = false;
@@ -332,22 +337,35 @@ export class ProductDetailComponent implements OnInit {
   }
   
   onBuyProduct(product) {
-      this.loading.present({message:'Cargando...'});
-      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
-      .then((response) => {
-        this.loading.dismiss();
-        this.modalCtrl.dismiss();
-        this.showConfirmByProduct = false;
-        this.presentToast('Producto agredado exitósamente al carrito de compras', 'app-success-alert');
-        if(this._parent && this._parent.openShoppingCart) this._parent.openShoppingCart(this.priceSelected);
-      })
-      .catch(error => {
-        this.loading.dismiss(); 
-        this.presentToast('Ocurrió un error al agregar al carrito de compras: ['+ error +']', 'app-error-alert');
-      });
+        this.loading.present({message:'Cargando...'});
+        this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
+        .then((response) => {
+          this.loading.dismiss();
+          this.modalCtrl.dismiss();
+          this.showConfirmByProduct = false;
+          this.presentToast('Producto agredado exitósamente al carrito de compras', 'app-success-alert');
+          if(this._parent && this._parent.openShoppingCart) this._parent.openShoppingCart(this.priceSelected);
+        })
+        .catch(error => {
+          this.loading.dismiss(); 
+          this.presentToast('Ocurrió un error al agregar al carrito de compras: ['+ error +']', 'app-error-alert');
+        });
+  }
+  
+  hasEmptyAttributes(attributeSelect) {
+   for(let attr of attributeSelect) {
+       if(attr.list && !attr.selected) {
+         attr.error = true;
+         this.presentToast('Debe seleccionar un valor para el atributo ' + attr.label, 'app-error-alert');
+         return true;
+       } else {attr.error = false;}
+   }
+   
+   return false;
   }
   
   onBuyProductAndClose(product) {
+      
       this.loading.present({message:'Cargando...'});
       this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
       .then((response) => {

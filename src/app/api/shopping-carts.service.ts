@@ -61,12 +61,88 @@ export class ShoppingCarts {
           })
         };
        
+       let detail = '';
+       let price = null;
+       
+       if(product && productPrice) {
+           let attributes = [];
+           let attrStr = '';
+           if(productPrice.attributeSelect) {
+             productPrice.attributeSelect.forEach((attr)=>{
+               attributes.push(attr);
+             });
+           }
+           if(product.attributeSelect) {
+             product.attributeSelect.forEach((attr)=>{
+              attributes.push(attr);
+             });
+           }
+           if(productPrice.resources.attributes) {
+             productPrice.resources.attributes.forEach((attr)=>{
+               if(attr.value && attr.value.split('|').length <= 1 && attributes.length < 5) {
+                 attributes.push(attr);
+               }
+             });
+           }
+           if(product.resources.attributes) {
+             product.resources.attributes.forEach((attr)=>{
+               if(attr.value && attr.value.split('|').length <= 1 && attributes.length < 5) {
+                 attributes.push(attr);
+               }
+             });
+           }
+           
+           /*let attr = null;
+           detail = '<table style="border-radius: 5px; border: 1px solid gray; width: 121.833%; height: 60px;">' +
+                    '   <tbody>' +
+                    '      <tr style="height: 29px; min-width: 12em;">' +
+                    '         <td style="width: 33.3333%; min-width: 12em; height: 60px;" rowspan="100"><img style="display: block; margin-left: auto; margin-right: auto;" src="'+productPrice.resources.images[0].url_image+'" width="99" height="98" /></td>' +
+                    '         <td style="width: 90.5011%; min-width: 12em; height: 33px; font-size: 20.3333px; font-family: YoutubeSansMedium; color: #004782; font-weight: 600; top: 8.84056px; left: 60.9998px;" colspan="3">&nbsp; &nbsp; '+product.name+'</td>' +
+                    '      </tr>' +
+                    '      <tr style="height: 10px;">' +
+                    '         <td style="width: 35.0759%; min-width: 12em; height: 10px;">Color: Rosado</td>' +
+                    '         <td style="display: block; width: 53.8252%; min-width: 12em; height: 10px;" rowspan="1000">' +
+                    '            &nbsp; <span style="font-weight: bold;">Cantidad:</span> ' + amount +
+                    '            <br/>' +
+                    '            <br/>' +
+                    '            <div><span style="font-weight: bold;">&nbsp; Precio:</span> $' + ( productPrice.price || product.price ) +'</div>' +
+                    '         </td>' +
+                    '      </tr>';
+                    
+           for(let i=0; i<attributes.length; i++) {
+             attr = attributes[i];
+             detail += 
+                    '      <tr style="height: 17px;">' +
+                    '         <td style="width: 35.0759%; min-width: 12em; height: 17px;">  &nbsp;  &nbsp; ' + ( attr.label || attr.name )+ ' : &nbsp; '+ ( attr.selected || attr.value ) + '</td>' +
+                    '      </tr>';
+           }
+           
+           detail += '   </tbody>' +
+                    '</table>'; */
+
+           price = ( productPrice.price || product.price );
+           
+           detail = '<div>';
+           for(let i=0, attr = null; i<attributes.length; i++) {
+             attr = attributes[i];
+             detail += 
+                    '      <div>' +
+                       ( attr.label || attr.name )+ ' : &nbsp; '+ ( attr.selected || attr.value ) +
+                    '      </div>';
+           }
+           detail += '</div>';
+       }
+       else if(agenda){
+          price = ( agenda.price ); 
+       }
        const data = {
            "fair_id": fair.id,
            "product_id": (product ? product.id : null),
            "product_price_id": (productPrice ? productPrice.id : null), 
-           "agenda_id": (agenda ? agenda.id : null), 
-           "amount": amount  
+           "agenda_id": (agenda ? agenda.id : null),
+           "detail": detail,
+           "price": '$ '+ price,
+           "amount": amount
        };
        
        this.http.post(`/api/store/shopping-cart/${fair.id}`,data,httpOptions)

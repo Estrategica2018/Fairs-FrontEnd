@@ -37,15 +37,22 @@
     <ion-col size="7" class="col-max scroll-light" *ngIf="product && priceSelected">
        <h2 class="name ion-text-center">{{product?.name}}</h2>
        <h6 class="description ion-text-justify pr-4 pt-2 mb-5"><small>{{product?.description}}</small></h6>
-       <h6 *ngFor="let attr of attributeSelect" class="">
+       <h6 *ngFor="let attr of product.attributeSelect" class="">
          {{ attr.label}}
-         <select [(ngModel)]="attr.selected" class="w-90 ml-3 mt-2 w-90">
+         <select 
+         [ngClass]="{ 'is-invalid': attr.error }" 
+         [(ngModel)]="attr.selected" class="form-control w-90 ml-3 mt-2 w-90 p-0" style="font-size: 0.8em">
            <option *ngFor="let item of attr.list" value="{{item}}"><h6>{{item}}</h6></option>
          </select>
+          <div *ngIf="attr.error" class="invalid-feedback">
+            <div>Campo requerido</div>
+         </div>
        </h6>
        <h6 *ngFor="let attr of priceSelected.attributeSelect">
          {{ attr.label}}
-         <select [(ngModel)]="attr.selected" class="w-90 ml-3 mt-2 w-90">
+         <select 
+         [ngClass]="{ 'is-invalid': attr.error }" 
+         [(ngModel)]="attr.selected" class="form-control w-90 ml-3 mt-2 w-90 p-0" style="font-size: 0.8em">
            <option *ngFor="let item of attr.list" value="{{item}}"><h6>{{item}}</h6></option>
          </select>
        </h6>
