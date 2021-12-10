@@ -56,7 +56,7 @@ export class PaymentService {
       })
     };
     return new Promise((resolve, reject) => { 
-        this.http.post(`/wompi/auth/${data.id}`,data,httpOptions)
+        this.http.post(`${this.url}/wompi/auth/${data.id}`,data,httpOptions)
         .pipe(
           timeout(30000),
           catchError((e: any) => {
