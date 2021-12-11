@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { UsersService } from './../../../api/users.service';
 import { FairsService } from './../../../api/fairs.service';
-import { ShoppingCarts } from './../../../api/shopping-carts.service';
+import { ShoppingCartsService } from './../../../api/shopping-carts.service';
 import { PaymentService } from './../../../api/payment.service';
 import { LoadingService } from './../../../providers/loading.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import { environment, SERVER_URL } from '../../../../environments/environment';
+import { Router } from '@angular/router';
  
 declare var WidgetCheckout: any;
 
@@ -22,15 +23,18 @@ export class ShoppingCartComponent implements OnInit {
   url = SERVER_URL;
   totalAmount = 0;
   userDataSession: any;
+  success = null;
+  errors = null;
   
   constructor(
     private usersService: UsersService,
     private paymentService: PaymentService,
     private alertCtrl: AlertController,
     private fairsService: FairsService,
-    private shoppingCartService: ShoppingCarts,
+    private shoppingCartsService: ShoppingCartsService,
     private loading: LoadingService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -43,12 +47,13 @@ export class ShoppingCartComponent implements OnInit {
         
         if(this.userDataSession) {
 
-            this.shoppingCartService.list(this.fair, userDataSession)
+            this.shoppingCartsService.list(this.fair, userDataSession)
             .then((response) => {
               this.shoppingCarts = response;
               
               this.loadShoppingCart();
               this.loading.dismiss();
+              
             })
             .catch(error => {
               this.loading.dismiss();
@@ -117,7 +122,7 @@ export class ShoppingCartComponent implements OnInit {
   
   onDeleteShoppingCart(shoppingCart) {
     this.loading.present({message:'Cargando...'});
-    this.shoppingCartService.removeShoppingCart(shoppingCart)
+    this.shoppingCartsService.removeShoppingCart(shoppingCart)
     .then((response) => {
       this.loading.dismiss();
       this.shoppingCarts = this.shoppingCarts.filter((sc,indx)=>{
@@ -159,6 +164,8 @@ export class ShoppingCartComponent implements OnInit {
             });
            
             let _self = this;
+            _self.success = null;
+            _self.errors = null;
             checkout.open(function ( result ) {
                 const transaction = result.transaction;
                 console.log('Transaction ID: ', transaction.id)
@@ -170,10 +177,25 @@ export class ShoppingCartComponent implements OnInit {
                   _self.loading.dismiss();
                   _self.ngOnInit();
                   window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
+                  if(transaction.status == 'APPROVED') {
+                    //_self.success = 'Tu pago ha sido registrado exitósamente, te enviamos un correo con el resumen de tu compra';
+                    console.log('this.redirectTo(transaction.reference)');
+                    _self.redirectTo('payment/'+transaction.reference);
+                  }
+                  else { 
+                     _self.errors = 'La transacción de pago ha sido rechazada';
+                  }
                 })
                 .catch(error => {
-                     _self.loading.dismiss();
-                });    
+                  _self.loading.dismiss();
+                  if(transaction.status == 'APPROVED') {
+                    //_self.success = 'Tu pago ha sido registrado exitósamente, en breves minutos te enviamos un correo con el resumen de tu compra';
+                    _self.redirectTo('payment/'+transaction.reference);
+                  }
+                  else { 
+                     _self.errors = 'La transacción de pago ha sido rechazada';
+                  }
+                })    
            })
          },
          error => {
@@ -191,7 +213,7 @@ export class ShoppingCartComponent implements OnInit {
       
       shoppingCart.amount ++;
       
-      this.shoppingCartService.updateShoppingCart(shoppingCart)
+      this.shoppingCartsService.updateShoppingCart(shoppingCart)
       .then( (dataReference: any) => {
          //this.loading.dismiss();  
          this.loadShoppingCart(); 
@@ -204,11 +226,18 @@ export class ShoppingCartComponent implements OnInit {
     if(shoppingCart.amount > 1 ) {
 
       shoppingCart.amount --;
-      this.shoppingCartService.updateShoppingCart(shoppingCart)
+      this.shoppingCartsService.updateShoppingCart(shoppingCart)
       .then( (dataReference: any) => {
          //this.loading.dismiss();
          this.loadShoppingCart(); 
       });
     }
   }
+  
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
+  }
+
 }

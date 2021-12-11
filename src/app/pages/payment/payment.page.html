@@ -1,9 +1,69 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>payment</ion-title>
+<ion-header no-shadow no-border class="ion-header">
+  <ion-toolbar style="--background: transparent">
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content fullscreen="true">
+
+  <h2 class="title ion-text-center"> Detalle del pago  </h2>
+  <ion-grid class="padding-container">
+  
+        <ion-item *ngIf="success" class="not-found" lines="none">
+         <div class="alert alert-success alert-dismissible">
+          <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+          <strong></strong> {{success}}
+         </div>
+        </ion-item>
+        <ion-item *ngIf="errors" class="not-found" lines="none">
+         <div class="alert alert-danger alert-dismissible">
+          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+          <strong></strong> {{errors}}
+         </div>
+        </ion-item>
+        <ion-row class="name border-line ion-text-center">
+          <ion-col size="4"  class="ion-text-center"> <h6 class="ml-2">Producto </h6></ion-col>
+          <ion-col size="2"> <h6>Cantidad </h6></ion-col>
+          <ion-col size="3"> <h6>Precio por ud. </h6></ion-col>
+          <ion-col size="2"> <h6>Subtotal </h6></ion-col>
+          <ion-col size="1"> <h6> </h6></ion-col>
+        </ion-row>
+        <div class="grid-shopping-cart scroll-light">
+          <div *ngFor="let shoppingCart of shoppingCarts">
+           <ion-row class="name border-line ion-text-center mb-3" *ngIf="shoppingCart.product_price">
+            <ion-col size="4" class="d-flex" style="justify-content: center">
+              <img class="product-image" [src]="shoppingCart.product_price.resources.images[0].url_image">
+              <div class="ion-text-left ml-4">
+                <div> 
+                    {{ shoppingCart.product_price.product.name}}
+                </div>
+                <div [innerHTML]="shoppingCart.detail"></div>
+                  
+              </div>
+            </ion-col>
+            <ion-col size="2">
+              <h6 class="m-2">{{shoppingCart.amount}} </h6>
+             </ion-col>
+            <ion-col size="3"> <h6> $ {{ ( shoppingCart.product_price.price || shoppingCart.product_price.product.price ) | currency: ' ':' ':'1.0-0'}} </h6></ion-col>
+            <ion-col size="2"> <h6> $ {{ ( shoppingCart.product_price.price ? shoppingCart.product_price.price * shoppingCart.amount : shoppingCart.amount * shoppingCart.product_price.product.price ) | currency: ' ':' ':'1.0-0' }} </h6></ion-col>
+            
+           </ion-row>
+            
+           <ion-row class="name border-line ion-text-center mb-3" *ngIf="shoppingCart.agenda">
+            <ion-col size="4" class="d-flex">
+              <img class="product-image" [src]="shoppingCart.agenda.resources.url_image">
+              <div class="ion-text-left ml-4">
+                  {{ shoppingCart.agenda.title}}
+              </div>
+            </ion-col>
+            <ion-col size="2">
+               <h6 class="m-2">{{shoppingCart.amount}} </h6>
+            </ion-col>
+            <ion-col size="3"> <h6> $ {{ ( shoppingCart.agenda.price ) | currency: ' ':' ':'1.0-0'}} </h6></ion-col>
+            <ion-col size="2"> <h6> $ {{ ( shoppingCart.agenda.price * shoppingCart.amount ) | currency: ' ':' ':'1.0-0'}} </h6></ion-col>
+            </ion-row>
+          </div>
+        </div>
+  </ion-grid>
+  
 
 </ion-content>

@@ -37,7 +37,7 @@ import { TermsPage } from './pages/terms/terms.page';
     ScheduleDetailComponent,
     SignupComponent,
     LoginComponent,
-	AccountComponent,
+    AccountComponent,
     TermsPage
   ],
   exports: [
@@ -53,7 +53,7 @@ import { TermsPage } from './pages/terms/terms.page';
     ScheduleDetailComponent,
     SignupComponent,
     LoginComponent,
-	AccountComponent,
+    AccountComponent,
     TermsPage
   ]
   

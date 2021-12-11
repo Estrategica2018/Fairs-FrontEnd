@@ -119,7 +119,7 @@ const routes: Routes = [
     path: 'meeting/:meetingId',
     loadChildren: () => import('./pages/meeting/meeting.module').then( m => m.MeetingPageModule)
   },  {
-    path: 'payment',
+    path: 'payment/:referenceId',
     loadChildren: () => import('./pages/payment/payment.module').then( m => m.PaymentPageModule)
   },
   {

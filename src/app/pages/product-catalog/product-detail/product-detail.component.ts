@@ -5,7 +5,7 @@ import { AdminProductsService } from './../../../api/admin/products.service';
 import { LoadingService } from './../../../providers/loading.service';
 import { ToastController } from '@ionic/angular';
 import { UsersService } from '../../../api/users.service';
-import { ShoppingCarts } from '../../../api/shopping-carts.service';
+import { ShoppingCartsService } from '../../../api/shopping-carts.service';
 import { Router } from '@angular/router';
 import { processData, clone } from '../../../providers/process-data';
 
@@ -42,7 +42,7 @@ export class ProductDetailComponent implements OnInit {
     private loading: LoadingService,
     private toastCtrl: ToastController,
     private usersService: UsersService,
-    private shoppingCarts: ShoppingCarts,
+    private shoppingCartsService: ShoppingCartsService,
     private modalCtrl: ModalController,
     private router: Router
   ) { }
@@ -338,7 +338,7 @@ export class ProductDetailComponent implements OnInit {
   
   onBuyProduct(product) {
         this.loading.present({message:'Cargando...'});
-        this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
+        this.shoppingCartsService.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
         .then((response) => {
           this.loading.dismiss();
           this.modalCtrl.dismiss();
@@ -353,6 +353,7 @@ export class ProductDetailComponent implements OnInit {
   }
   
   hasEmptyAttributes(attributeSelect) {
+   if(attributeSelect)
    for(let attr of attributeSelect) {
        if(attr.list && !attr.selected) {
          attr.error = true;
@@ -367,7 +368,7 @@ export class ProductDetailComponent implements OnInit {
   onBuyProductAndClose(product) {
       
       this.loading.present({message:'Cargando...'});
-      this.shoppingCarts.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
+      this.shoppingCartsService.addShoppingCart(this.fair, this.product, this.priceSelected, null, this.amount, this.userDataSession )
       .then((response) => {
         this.loading.dismiss();
         this.showConfirmByProduct = false;

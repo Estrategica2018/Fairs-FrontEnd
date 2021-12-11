@@ -199,7 +199,7 @@ export class LoginComponent  implements OnInit {
       
     this.usersService.findEmail(this.registerForm.value['email'])
     .then( response => {
-		
+        
       if(response.status === 201) {
         this.emailActivateError = true;
         this.loading.dismiss();
@@ -207,7 +207,7 @@ export class LoginComponent  implements OnInit {
       else {
         this.emailActivateError = false;
         //this.loading.dismiss();
-		this.emailSingConfirm = this.registerForm.value['email'];
+        this.emailSingConfirm = this.registerForm.value['email'];
         this.onSendSignConfirm(this.emailSingConfirm);
       }
     },
@@ -460,7 +460,7 @@ export class LoginComponent  implements OnInit {
     console.log(email);
     this.usersService.sendSignConfirm(email)
     .then(data => {
-			
+            
         if(data.success === 201) {
             this.loading.dismiss();
             this.showMenu = 'singupConfirm';
@@ -474,7 +474,7 @@ export class LoginComponent  implements OnInit {
         }
     },
     error => {
-		this.loading.dismiss();
+        this.loading.dismiss();
         this.errors = error;
     });
   }

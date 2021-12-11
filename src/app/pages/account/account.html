@@ -13,7 +13,7 @@
     <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar mt-4" *ngIf="!userData.url_image">
     <img [src]="SERVER_PATH + userData.url_image" class="avatar mt-4" *ngIf="userData.url_image">
     <h2>{{userData.name}} {{userData.last_name}}</h2>
-	<label class="mt-2 label-uploadInput" [hidden]="showEdit" (click)="showEdit=true">Editar datos</label>
+    <label class="mt-2 label-uploadInput" [hidden]="showEdit" (click)="showEdit=true">Editar datos</label>
 
     <ion-item [hidden]="!errors" class="not-found">
        <div class="alert alert-danger alert-dismissible">

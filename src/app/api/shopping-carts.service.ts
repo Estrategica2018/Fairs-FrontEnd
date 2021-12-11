@@ -10,7 +10,7 @@ import { UsersService } from '../api/users.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ShoppingCarts {
+export class ShoppingCartsService {
 
   url = '';
   refresTime = null;
@@ -29,7 +29,8 @@ export class ShoppingCarts {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };     
-            this.http.get(`/api/list/shopping-cart/list?fair_id=${fair.id}`,httpOptions)
+            
+            this.http.get(`/api/list/shopping-cart/${fair.id}`,httpOptions)
             .pipe(
               timeout(30000),
               catchError((e: any) => {
@@ -77,14 +78,14 @@ export class ShoppingCarts {
               attributes.push(attr);
              });
            }
-           if(productPrice.resources.attributes) {
+           if(productPrice.resources.attributes && productPrice.resources.attributes.length> 0) {
              productPrice.resources.attributes.forEach((attr)=>{
                if(attr.value && attr.value.split('|').length <= 1 && attributes.length < 5) {
                  attributes.push(attr);
                }
              });
            }
-           if(product.resources.attributes) {
+           if(product.resources.attributes && product.resources.attributes.length > 0) {
              product.resources.attributes.forEach((attr)=>{
                if(attr.value && attr.value.split('|').length <= 1 && attributes.length < 5) {
                  attributes.push(attr);
@@ -92,45 +93,19 @@ export class ShoppingCarts {
              });
            }
            
-           /*let attr = null;
-           detail = '<table style="border-radius: 5px; border: 1px solid gray; width: 121.833%; height: 60px;">' +
-                    '   <tbody>' +
-                    '      <tr style="height: 29px; min-width: 12em;">' +
-                    '         <td style="width: 33.3333%; min-width: 12em; height: 60px;" rowspan="100"><img style="display: block; margin-left: auto; margin-right: auto;" src="'+productPrice.resources.images[0].url_image+'" width="99" height="98" /></td>' +
-                    '         <td style="width: 90.5011%; min-width: 12em; height: 33px; font-size: 20.3333px; font-family: YoutubeSansMedium; color: #004782; font-weight: 600; top: 8.84056px; left: 60.9998px;" colspan="3">&nbsp; &nbsp; '+product.name+'</td>' +
-                    '      </tr>' +
-                    '      <tr style="height: 10px;">' +
-                    '         <td style="width: 35.0759%; min-width: 12em; height: 10px;">Color: Rosado</td>' +
-                    '         <td style="display: block; width: 53.8252%; min-width: 12em; height: 10px;" rowspan="1000">' +
-                    '            &nbsp; <span style="font-weight: bold;">Cantidad:</span> ' + amount +
-                    '            <br/>' +
-                    '            <br/>' +
-                    '            <div><span style="font-weight: bold;">&nbsp; Precio:</span> $' + ( productPrice.price || product.price ) +'</div>' +
-                    '         </td>' +
-                    '      </tr>';
-                    
-           for(let i=0; i<attributes.length; i++) {
-             attr = attributes[i];
-             detail += 
-                    '      <tr style="height: 17px;">' +
-                    '         <td style="width: 35.0759%; min-width: 12em; height: 17px;">  &nbsp;  &nbsp; ' + ( attr.label || attr.name )+ ' : &nbsp; '+ ( attr.selected || attr.value ) + '</td>' +
-                    '      </tr>';
-           }
-           
-           detail += '   </tbody>' +
-                    '</table>'; */
-
            price = ( productPrice.price || product.price );
            
-           detail = '<div>';
-           for(let i=0, attr = null; i<attributes.length; i++) {
-             attr = attributes[i];
-             detail += 
+           if(attributes) {
+             detail = '<div>';
+             for(let i=0, attr = null; i<attributes.length; i++) {
+               attr = attributes[i];
+               detail += 
                     '      <div>' +
                        ( attr.label || attr.name )+ ' : &nbsp; '+ ( attr.selected || attr.value ) +
                     '      </div>';
+             }
+             detail += '</div>';
            }
-           detail += '</div>';
        }
        else if(agenda){
           price = ( agenda.price ); 
@@ -247,5 +222,36 @@ export class ShoppingCarts {
         });
     });
   }
+
+  find(fair: any, referenceId: string, userDataSession: any): Promise<any> {
+    
+        return new Promise((resolve, reject) => {
+            const httpOptions = {
+                headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };     
+            console.log('/api/find/shopping');
+            this.http.get(`/api/find/shopping-cart/${fair.id}/${referenceId}`,httpOptions)
+            .pipe(
+              timeout(30000),
+              catchError((e: any) => {
+                console.log(e);
+                if(e.status && e.statusText) {
+                  throw new Error(`Consultando el servicio de carrito de compras: ${e.status} - ${e.statusText}`);    
+                }
+                else {
+                  throw new Error(`Consultando el servicio de carrito de compras`);    
+                }
+              })
+            )
+            .subscribe((data : any )=> {
+                resolve(processData(data.data));
+            },error => {
+                reject(error)
+            });
+        });
+  }
+   
   
 }

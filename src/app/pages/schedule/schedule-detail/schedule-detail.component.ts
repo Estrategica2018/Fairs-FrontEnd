@@ -10,7 +10,7 @@ import { LoadingService } from '../../../providers/loading.service';
 import { SpeakerDetailComponent } from '../../speaker-list/speaker-detail/speaker-detail.component';
 import { ModalController, ToastController } from '@ionic/angular';
 import { UsersService } from '../../../api/users.service';
-import { ShoppingCarts } from '../../../api/shopping-carts.service';
+import { ShoppingCartsService } from '../../../api/shopping-carts.service';
 import { FairsService } from '../../../api/fairs.service';
 
 
@@ -44,7 +44,7 @@ export class ScheduleDetailComponent {
     private router: Router,
     private loading: LoadingService,
     //private routerOutlet: IonRouterOutlet,
-    private shoppingCarts: ShoppingCarts,
+    private shoppingCartsService: ShoppingCartsService,
     private usersService: UsersService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
@@ -163,7 +163,7 @@ export class ScheduleDetailComponent {
   
   onBuyProduct() {
       this.loading.present({message:'Cargando...'});
-      this.shoppingCarts.addShoppingCart(this.fair, null, null, this.agenda, 1, this.userDataSession )
+      this.shoppingCartsService.addShoppingCart(this.fair, null, null, this.agenda, 1, this.userDataSession )
       .then((response) => {
         this.loading.dismiss();
         this.showConfirmByProduct = false;

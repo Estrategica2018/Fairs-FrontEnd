@@ -1,0 +1,63 @@
+ion-list-header.not-found {
+    display: block;
+    text-align: center;
+    left: 36%;
+    position: absolute;
+}
+
+
+.card-schedule {
+  width: 44em;
+  height: 27em;
+  margin: auto;
+}
+
+.container-card {
+  border-radius: 2em;
+  box-shadow: rgb(207 207 207) 1px 0px 4px 1px;
+  height: 23em;
+}
+
+.border-card {
+  height: 14em;
+  margin-left: 0em;
+  z-index: 10;
+  margin-top: 3em;
+}
+
+.container-schedule {
+  height: 14em;    
+  width: 30em;
+  margin-left: 5em;
+  margin-left: auto;
+}
+
+ion-header::after {
+  background-image: none;
+}
+
+.title {
+  color: #98A000;
+  font-size: 3em;
+  text-align: center;
+}
+
+
+.product-image {
+  width: 5em;
+  height: 5em;
+}
+
+.border-line {
+  border-bottom: 1px solid #004782;
+}
+
+.padding-container {
+  padding: 0px 10%; 
+}
+  
+@media (max-width: 758px) {
+  .padding-container {
+    padding: 0px 0.3em; 
+  }
+}

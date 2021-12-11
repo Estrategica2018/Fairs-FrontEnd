@@ -8,7 +8,7 @@ import { UsersService } from './api/users.service';
 import { MenuController, Platform, ToastController, ModalController } from '@ionic/angular';
 import { LoadingService } from './providers/loading.service';
 import { FairsService } from './api/fairs.service';
-import { ShoppingCarts } from './api/shopping-carts.service';
+import { ShoppingCartsService } from './api/shopping-carts.service';
 import { PavilionsService } from './api/pavilions.service';
 import { AlertController } from '@ionic/angular';
 import { Title } from '@angular/platform-browser';
@@ -55,7 +55,7 @@ export class AppComponent implements OnInit {
     private toastCtrl: ToastController,
     private loading: LoadingService,
     private fairsService: FairsService,
-    private shoppingCarts: ShoppingCarts,
+    private shoppingCartsService: ShoppingCartsService,
     private pavilionsService: PavilionsService,
     private titleService: Title,
     private menuCtrl: MenuController,
@@ -258,7 +258,7 @@ export class AppComponent implements OnInit {
   getShoppingCart() {
       this.loading.present({message:'Cargando...'});
       this.usersService.getUser().then((userDataSession)=>{ 
-          this.shoppingCarts.list(this.fair, userDataSession)
+          this.shoppingCartsService.list(this.fair, userDataSession)
           .then( response => {
             this.shoppintCartCount = response.length;
             this.loading.dismiss();

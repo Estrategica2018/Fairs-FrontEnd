@@ -9,8 +9,20 @@
   </div>
   
   <h2 class="name ion-text-center">Carrito de compras </h2>
-  
       <ion-grid style="padding-left: 1.2em; margin: 0px;">
+  
+        <ion-item *ngIf="success" class="not-found">
+         <div class="alert alert-success alert-dismissible">
+          <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+          <strong></strong> {{success}}
+         </div>
+        </ion-item>
+        <ion-item *ngIf="errors" class="not-found">
+         <div class="alert alert-danger alert-dismissible">
+          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+          <strong></strong> {{errors}}
+         </div>
+        </ion-item>
         <ion-row class="name border-line ion-text-center">
           <ion-col size="4"  class="ion-text-center"> <h6 class="ml-2">Producto </h6></ion-col>
           <ion-col size="2"> <h6>Cantidad </h6></ion-col>
