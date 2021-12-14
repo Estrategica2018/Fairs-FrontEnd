@@ -21,55 +21,127 @@
   </ion-item>
 
     <ion-list lines="" *ngIf="agenda" class="padding-container">
-      <ion-item button="true">
-        <ion-label> Título </ion-label>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="agenda.title" name="name"></ion-input>
-      </ion-item>
-      <ion-item button="true">
-        <ion-label> Descripción </ion-label>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="agenda.description" name="description"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Fecha de inicio</ion-label>
-        <ion-datetime min="2019" max="2025" (ionChange)="onChangeStartTime()" display-format="DD/MM/YYYY HH:mm" picker-format="DD/MM/YYYY HH:mm" [(ngModel)]="agenda.start_at_str"></ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label> Zona horaria </ion-label>
-        <ion-select [(ngModel)]="agenda.timezone" >
-            <ion-select-option *ngFor="let timezone of timezones" value="{{timezone.name}}">{{timezone.name}}
-            </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label> Duración </ion-label>
-        <ion-select [(ngModel)]="agenda.duration_time" >
-            <ion-select-option *ngFor="let duration of durations" value="{{duration.id}}">{{duration.name}}
-            </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label> Categoría</ion-label>
-        <ion-select [(ngModel)]="agenda.category.id" >
-            <ion-select-option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}
-            </ion-select-option>
-        </ion-select>
-      </ion-item>
-            
-      <ion-item>
-        <ion-label> Tipo de público </ion-label>
-        <ion-select [(ngModel)]="agenda.audience_config" >
-            <ion-select-option *ngFor="let audience of audiences" value="{{audience.id}}">{{audience.name}}
-            </ion-select-option>
-        </ion-select>
-      </ion-item>
+     <form [formGroup]="agendaForm" (ngSubmit)="onSave()"  [ngClass]="{'mt-3': !errors && !success }">
+	  <ion-grid>
+	    <ion-row>
+		  <ion-col size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Título <span class="required"> (*) </span>
+			</ion-label>
+			<input type="text" formControlName="title" maxlength="191" class="fs-0 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.title.errors }" />
+			<div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+			<div *ngIf="f.title.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
+		  <ion-col size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Descripción <span class="required"> (*) </span>
+			</ion-label>
+			<input type="text" formControlName="description"  class="fs-0 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" />
+			<div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+			<div *ngIf="f.description.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
+		  <ion-col size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Fecha de inicio <span class="required"> (*) </span>
+			</ion-label>
+			<ion-datetime class="fs-0 mt-3 form-control" min="2019" max="2030" formControlName="date" 
+			[ngClass]="{ 'is-invalid': submitted && f.date.errors }"
+			(ionChange)="onChangeStartTime()" display-format="DD/MM/YYYY" picker-format="DD/MM/YYYY"></ion-datetime>
+			<div *ngIf="submitted && f.date.errors" class="invalid-feedback">
+			<div *ngIf="f.date.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
+		  <ion-col size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Hora de inicio <span class="required"> (*) </span>
+			</ion-label>
+			<ion-datetime class="fs-0 mt-3 form-control" formControlName="hour" 
+			[ngClass]="{ 'is-invalid': submitted && f.hour.errors }"
+			(ionChange)="onChangeStartTime()" display-format="HH:mm" picker-format="HH:mm"></ion-datetime>
+			<div *ngIf="submitted && f.hour.errors" class="invalid-feedback">
+			<div *ngIf="f.hour.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
+		  <ion-col  size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Zona horaria <span class="required"> (*) </span>
+			</ion-label>
+			<select class="fs-0 mt-3 form-control" formControlName="timezone" 
+			[ngClass]="{ 'is-invalid': submitted && f.timezone.errors }"
+			>
+              <option *ngFor="let timezone of timezones" value="{{timezone.name}}">{{timezone.name}}
+              </option>
+            </select>
+			<div *ngIf="submitted && f.timezone.errors" class="invalid-feedback">
+			<div *ngIf="f.timezone.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
+		  
+		  <ion-col  size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Duración <span class="required"> (*) </span>
+			</ion-label>
+			<select class="fs-0 mt-3 form-control" formControlName="duration_time" 
+			[ngClass]="{ 'is-invalid': submitted && f.duration_time.errors }"
+			>
+              <option *ngFor="let duration of durations" value="{{duration.id}}">{{duration.name}}
+              </option>
+            </select>
+			<div *ngIf="submitted && f.duration_time.errors" class="invalid-feedback">
+			<div *ngIf="f.duration_time.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
       
-     <ion-item *ngIf="agenda.audience_config == 4" button="true" (click)="presentActionPrice()">
-       <ion-label> Precio por evento </ion-label>
-       <ion-buttons>
-          <ion-label slot="end"> $ {{agenda.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
-        </ion-buttons>
-      </ion-item>
-      
+		  <ion-col  size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Categoría <span class="required"> (*) </span>
+			</ion-label>
+			<ion-select interface="popover" class="fs-0 mt-3 form-control" formControlName="category"
+			[ngClass]="{ 'is-invalid': submitted && f.category.errors }"
+			>
+              <ion-select-option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}
+              </ion-select-option>
+            </ion-select>
+			<div *ngIf="submitted && f.category.errors" class="invalid-feedback">
+			<div *ngIf="f.category.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
+		   
+		  <ion-col  size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Tipo de público <span class="required"> (*) </span>
+			</ion-label>
+			<ion-select  interface="popover" class="fs-0 mt-3 form-control" formControlName="audience_config" 
+			[ngClass]="{ 'is-invalid': submitted && f.audience_config.errors }"
+			>
+              <ion-select-option *ngFor="let audience of audiences" value="{{audience.id}}">{{audience.name}}
+              </ion-select-option>
+            </ion-select>
+			<div *ngIf="submitted && f.audience_config.errors" class="invalid-feedback">
+			<div *ngIf="f.audience_config.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
+		  
+		  <ion-col size="12" *ngIf="agenda.audience_config == 4" button="true" (click)="presentActionPrice()">
+			<ion-label position="stacked">
+			    Precio por evento <span class="required"> (*) </span>
+			</ion-label>
+            <ion-buttons>
+              <ion-label slot="end"> $ {{agenda.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
+            </ion-buttons>
+		  </ion-col>
+        </ion-row>
+		<ion-row>
+		   <ion-button [disabled]="initSubmitted" type="submit" (click)="onSave()" class="w-100">
+            <ion-label > {{ action==='update' ? 'Guardar Cambios': 'Crear Agenda'}}  </ion-label>
+              <ion-icon slot="end" name="save-outline"></ion-icon>
+            </ion-button>
+		</ion-row>
+      </ion-grid>
+    </form>  
+	
       <ion-item *ngIf="action==='update' && agenda.audience_config === '2'">
        <ion-toolbar>
         <ion-buttons slot="secondary">
@@ -96,18 +168,7 @@
           </span>
         </div>
       </ion-item>
-      
-      <div class="ion-padding">
-        <ion-button  (click)="onUpdateAgenda()" *ngIf="action==='update'"  expand="block">
-         <ion-label > Guardar Cambios </ion-label>
-            <ion-icon slot="end" name="save-outline"></ion-icon>
-        </ion-button>
-        <ion-button *ngIf="action==='create'" (click)="onCreateAgenda()" expand="block">
-         <ion-label > Crear Agenda </ion-label>
-          <ion-icon slot="end" name="save-outline"></ion-icon>
-        </ion-button>
-      </div>
-
+       
       <ion-list-header [hidden]="!errors">
         <div class="alert alert-danger fade show alert-dismissible">
          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>

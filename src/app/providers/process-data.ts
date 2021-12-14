@@ -8,10 +8,18 @@ export function processData(obj){
     else if(typeof obj == 'object') {
         
         if(obj.resources && typeof obj.resources == 'string') {
-          obj.resources = JSON.parse(obj.resources );
+          try { 
+		     obj.resources = JSON.parse(obj.resources );
+		  }catch(e) {
+			 console.log(e);
+		  }
         }
         if(obj.social_media && typeof obj.social_media == 'string') {
-          obj.social_media = JSON.parse(obj.social_media );
+          try { 
+		     obj.social_media = JSON.parse(obj.social_media);
+		  }catch(e) {
+			 console.log(e);
+		  }
         }
         let objItem = null;
         for (let key of Object.keys(obj)) {

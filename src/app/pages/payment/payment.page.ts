@@ -16,8 +16,8 @@ export class PaymentPage implements OnInit {
   referenceId: any;
   userDataSession: any;
   fair: any;
-  shoppintCartCount: any;
-  shoppintCarts: any;
+  shoppingCartCount: any;
+  shoppingCarts: any;
   errors: any;
   success: any;
   
@@ -47,7 +47,7 @@ export class PaymentPage implements OnInit {
         this.usersService.getUser().then((userDataSession)=>{ 
             this.shoppingCartsService.find(this.fair, this.referenceId, userDataSession)
             .then( response => {
-              this.shoppintCartCount = response.length;
+              this.shoppingCartCount = response.length;
               this.success = 'Tu pago ha sido registrado exitósamente, te enviamos un correo con el resumen de tu compra';
 
               this.shoppingCarts = response;

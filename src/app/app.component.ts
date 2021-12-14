@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
   profileRole:any;
   userDataSession: any;
   
-  shoppintCartCount = 0;
+  shoppingCartCount = 0;
   menuHidden = false;
   menuHiddenAnt = 0;
   modal = null;
@@ -260,7 +260,7 @@ export class AppComponent implements OnInit {
       this.usersService.getUser().then((userDataSession)=>{ 
           this.shoppingCartsService.list(this.fair, userDataSession)
           .then( response => {
-            this.shoppintCartCount = response.length;
+            this.shoppingCartCount = response.length;
             this.loading.dismiss();
           }, errors => {
               this.errors = errors;

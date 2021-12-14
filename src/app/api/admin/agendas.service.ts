@@ -43,7 +43,7 @@ export class AdminAgendasService {
                 )
                 .subscribe((data : any )=> {
                     if(data.success) {
-                      resolve(processData(data));
+                      resolve(processData(data.agenda));
                     }
                     else {
                         reject(JSON.stringify(data));
@@ -78,10 +78,10 @@ export class AdminAgendasService {
                 )
                 .subscribe((data : any )=> {
                     if(data.success) {
-                      resolve(processData(data));
+                      resolve(processData(data.agenda));
                     }
                     else {
-                        reject(JSON.stringify(data));
+                      reject(JSON.stringify(data));
                     }
                 },error => {
                     reject(error)

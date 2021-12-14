@@ -14,7 +14,7 @@
       <ion-button (click)="openShoppingCart()" *ngIf="userDataSession">
         <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
       </ion-button>
-      <ion-badge class="icon-badge" color="danger"  *ngIf="userDataSession && shoppintCartCount > 0" >{{shoppintCartCount}}</ion-badge>
+      <ion-badge class="icon-badge" color="danger"  *ngIf="userDataSession && shoppingCartCount > 0" >{{shoppingCartCount}}</ion-badge>
       <ion-button class="d-none d-md-flex end-menu-button" color="secondary" 
       (click)="presenterLogin()"
       *ngIf="!loggedIn" fill="outline" shape="round">
