@@ -8,6 +8,7 @@ import { ComponentsModule } from '../../components.module';
 import { ProductDetailComponent } from '../product-catalog/product-detail/product-detail.component';
 import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
 import { ShoppingCartComponent } from '../shopping-cart/shopping-cart-component/shopping-cart-component';
+import { ScheduleDetailComponent } from '../schedule/schedule-detail/schedule-detail.component';
 import { LoginComponent } from '../login/login.component';
 
 @NgModule({
@@ -23,7 +24,7 @@ import { LoginComponent } from '../login/login.component';
     MapPage
   ],
   entryComponents: [
-    ProductDetailComponent, SpeakerDetailComponent, ShoppingCartComponent, LoginComponent
+    ProductDetailComponent, SpeakerDetailComponent, ShoppingCartComponent, LoginComponent, ScheduleDetailComponent
   ]
 })
 export class MapModule { }

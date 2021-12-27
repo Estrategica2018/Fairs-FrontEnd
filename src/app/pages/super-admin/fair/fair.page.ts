@@ -117,7 +117,7 @@ export class FairPage implements OnInit {
             .then((agendas) => {
                 this.agendas = agendas;
                 this.agendas.forEach((agenda)=>{
-                    agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+					agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
                     agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
                     agenda.location = agenda.room ? agenda.room.name : '';
                 });

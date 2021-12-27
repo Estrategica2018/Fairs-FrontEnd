@@ -136,10 +136,11 @@ export class MapEditorPage implements OnInit {
       this.initializePanel();
       //this.url = SERVER_URL;
       this.url = window.location.origin;
+	  window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
   }
 
   ngOnInit() {
-    window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
+    
   } 
   
   ngOnDestroy(): void {
@@ -471,18 +472,17 @@ export class MapEditorPage implements OnInit {
               this.loading.dismiss();
               this.success= `Escena modificada correctamentes`;
               this.fairsService.refreshCurrentFair();
+              this.editSave = false;
+			  this.errors = null;
               if(!this.sceneId) {
                   this.resources = processData(response.data_fair.resources);
                   this.sceneId = this.resources.scenes.length - 1;
                   this.editMenuTabSave = null;
-                  this.editSave = null;
                   this.showPanelTool = false
                   this.bannerSelect = null;
                   this.redirectTo('/super-admin/map-editor/fair/'+this.sceneId);
                   //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${this.sceneId}`);
               }
-              this.ngOnInit();
-              this.errors = null;
            })
            .catch(error => {
                this.loading.dismiss();
@@ -502,7 +502,7 @@ export class MapEditorPage implements OnInit {
               this.fairsService.refreshCurrentFair();
               this.pavilionsService.refreshCurrentPavilion();
               this.editMenuTabSave = null;
-              this.editSave = null;
+              this.editSave = false;
               this.showPanelTool = false
               this.bannerSelect = null;
               //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
@@ -526,7 +526,7 @@ export class MapEditorPage implements OnInit {
               this.pavilionsService.refreshCurrentPavilion();
               this.errors = null;
               this.editMenuTabSave = null;
-              this.editSave = null;
+              this.editSave = false;
               this.showPanelTool = false
               this.bannerSelect = null;
               this.redirectTo('/super-admin/map-editor/stand/' + this.pavilion.id + '/' + this.stand.id + '/' + this.sceneId);
@@ -548,7 +548,7 @@ export class MapEditorPage implements OnInit {
               }
               this.errors = null;
               this.editMenuTabSave = null;
-              this.editSave = null;
+              this.editSave = false;
               this.showPanelTool = false
               this.bannerSelect = null;
               //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);

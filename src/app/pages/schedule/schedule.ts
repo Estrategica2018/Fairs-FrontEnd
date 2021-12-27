@@ -46,6 +46,9 @@ export class SchedulePage implements OnInit {
   userPaidAllfair: boolean = false;
   loaded = 0;
   speakerDetailComponent = SpeakerDetailComponent;
+  showConfirmByProduct: any;
+  showRegister: any;
+  userDataSession: any;
 
   constructor(
     private alertCtrl: AlertController,
@@ -83,14 +86,16 @@ export class SchedulePage implements OnInit {
     this.fairsService.getCurrentFair().
       then( fair => {
         this.fair = fair;
-        if(this.fair.price > 0) {
           this.usersService.getUser().then(userDataSession=> {
+		  this.userDataSession = userDataSession;
+          if(this.fair.price > 0) {
             if(userDataSession){
                   this.usersService.getPaymentUser({type:"Fair",id:this.fair.id},userDataSession).
                   then( (payment:any) => {
                       if(payment.success) {
                         this.userPaidAllfair = true;
                         this.showPaymentFair = false;
+						
                      } else {
                          this.showPaymentFair = true;
                      }
@@ -102,14 +107,15 @@ export class SchedulePage implements OnInit {
             }
             else {
                 this.showPaymentFair = true;
+				
                 this.onFinishLoad();
             }
             
-         });
-        }
-        else {
-          this.onFinishLoad();
-        }
+          }
+          else {
+            this.onFinishLoad();
+          }
+        });
 
         this.agendasService.list()
         .then((data) => {
@@ -370,4 +376,6 @@ export class SchedulePage implements OnInit {
     });
     await modal.present();
   }
+  
+
 }

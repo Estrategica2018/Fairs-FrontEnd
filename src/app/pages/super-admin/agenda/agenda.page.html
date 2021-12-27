@@ -15,15 +15,34 @@
     
 <ion-content fullscreen="true">
 
-     
-  <ion-item class="padding-container agenda-logo mt-4" *ngIf="agenda" button="true" (click)="onChangeImage()">
-    <img [src]="agenda?.resources?.url_image" *ngIf="agenda.resources?.url_image">
-  </ion-item>
-
     <ion-list lines="" *ngIf="agenda" class="padding-container">
-     <form [formGroup]="agendaForm" (ngSubmit)="onSave()"  [ngClass]="{'mt-3': !errors && !success }">
+      <form [formGroup]="agendaForm" (ngSubmit)="onSave()"  [ngClass]="{'mt-3': !errors && !success }">
+
+      <ion-item class="padding-container agenda-logo mt-4" *ngIf="agenda && agenda.category" button="true">
+        <img [src]="agenda?.category?.resources?.image" *ngIf="agenda.category.resources && agenda.category.resources.image">
+      </ion-item>
+	  
 	  <ion-grid>
 	    <ion-row>
+		  <ion-col  size="12" class="fs-1">
+			<ion-label position="stacked">
+			    Categoría <span class="required"> (*) </span>
+			</ion-label>
+			<ion-select interface="popover" class="fs-0 mt-3 form-control" formControlName="category"
+			(change)="changeCategory()"
+			(ionChange)="changeCategory()"
+			[ngClass]="{ 'is-invalid': submitted && f.category.errors }"
+			>
+              <ion-select-option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}
+              </ion-select-option>
+            </ion-select>
+			<div *ngIf="submitted && f.category.errors" class="invalid-feedback">
+			<div *ngIf="f.category.errors.required">Campo requerido</div>
+			</div>
+		  </ion-col>
+		  
+
+
 		  <ion-col size="12" class="fs-1">
 			<ion-label position="stacked">
 			    Título <span class="required"> (*) </span>
@@ -94,26 +113,12 @@
 			</div>
 		  </ion-col>
       
-		  <ion-col  size="12" class="fs-1">
-			<ion-label position="stacked">
-			    Categoría <span class="required"> (*) </span>
-			</ion-label>
-			<ion-select interface="popover" class="fs-0 mt-3 form-control" formControlName="category"
-			[ngClass]="{ 'is-invalid': submitted && f.category.errors }"
-			>
-              <ion-select-option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}
-              </ion-select-option>
-            </ion-select>
-			<div *ngIf="submitted && f.category.errors" class="invalid-feedback">
-			<div *ngIf="f.category.errors.required">Campo requerido</div>
-			</div>
-		  </ion-col>
 		   
 		  <ion-col  size="12" class="fs-1">
 			<ion-label position="stacked">
 			    Tipo de público <span class="required"> (*) </span>
 			</ion-label>
-			<ion-select  interface="popover" class="fs-0 mt-3 form-control" formControlName="audience_config" 
+			<ion-select (ionChange)="changeAudienceConfig()" interface="popover" class="fs-0 mt-3 form-control" formControlName="audience_config" 
 			[ngClass]="{ 'is-invalid': submitted && f.audience_config.errors }"
 			>
               <ion-select-option *ngFor="let audience of audiences" value="{{audience.id}}">{{audience.name}}
@@ -124,14 +129,16 @@
 			</div>
 		  </ion-col>
 		  
-		  <ion-col size="12" *ngIf="agenda.audience_config == 4" button="true" (click)="presentActionPrice()">
+		  <ion-col size="12" class="fs-1" *ngIf="agenda.audience_config == 4" (click)="presentActionPrice()">
 			<ion-label position="stacked">
 			    Precio por evento <span class="required"> (*) </span>
 			</ion-label>
-            <ion-buttons>
-              <ion-label slot="end"> $ {{agenda.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
-            </ion-buttons>
+			<input type="text" value="${{agenda.price  | currency: ' ':' ':'1.0-0'}}" readonly class="fs-0 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && !(agenda.price > 0 ) }" />
+			<div class="invalid-feedback">
+			<div *ngIf="submitted && !(agenda.price > 0 )">Campo requerido</div>
+			</div>
 		  </ion-col>
+
         </ion-row>
 		<ion-row>
 		   <ion-button [disabled]="initSubmitted" type="submit" (click)="onSave()" class="w-100">
@@ -201,7 +208,7 @@
               class="d-flex pavilion-button" button="true" 
               routerLink="/super-admin/agenda/{{agenda.id}}" routerLinkActive="active" routerDirection="root" detail="false">
                 <ion-avatar class="mr-3">
-                  <img [src]="invited_speaker.speaker?.resources?.url_image">
+                  <img [src]="invited_speaker.speaker?.profile_picture">
                 </ion-avatar>
                 <ion-label>
                   <h2>{{invited_speaker.speaker.user.name + ' ' + invited_speaker.speaker.user.last_name}}</h2>

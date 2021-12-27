@@ -47,7 +47,7 @@ registerLocaleData(localeEs, "es");
     SplashScreen, 
     StatusBar, 
     DatePipe,
-    //{provide: LocationStrategy, useClass: HashLocationStrategy},
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
     Title,
     { provide: LOCALE_ID, useValue: "es" }
     //{provide: APP_BASE_HREF, useValue: 'http://'+window.location.hostname+'/Fair-website/'}    

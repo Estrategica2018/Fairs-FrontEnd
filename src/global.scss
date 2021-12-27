@@ -285,6 +285,7 @@ ion-router-outlet {
 .speaker-modal .modal-wrapper,
 .agenda-modal .modal-wrapper {
   --width: 60em;
+  border: 1px solid lightgray;
 }
 
 

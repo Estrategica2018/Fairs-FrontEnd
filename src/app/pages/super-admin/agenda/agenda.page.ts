@@ -51,30 +51,19 @@ export class AgendaPage implements OnInit {
     private actionSheetController: ActionSheetController,
 	private formBuilder: FormBuilder
     ) { 
-        this.agenda = { 'category':{}, 'audience_config':1, 'resources': { 'url_image': 'https://dummyimage.com/620x348/EFEFEF/000.png' } };
-    }
+        
+  }
     
   ngDoCheck(){
     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
   }
 
-  ngOnInit() {
-	 
-	this.agendaForm = this.formBuilder.group({
-	  title: ['', [Validators.required]],
-	  description: ['', [Validators.required]],
-	  date: ['', [Validators.required]],
-	  hour: ['', [Validators.required]],
-	  duration_time: ['', [Validators.required]],
-	  timezone: ['', [Validators.required]],
-	  category: ['', [Validators.required]],
-	  audience_config: ['', [Validators.required]]
-    });
-  }
-  
   get f() { return this.agendaForm.controls; }
   
-  ionViewWillEnter() {
+  ngOnInit() {
+	  
+	this.loading.present({message:'Cargando...'});
+	
     this.invited_speakers = [];
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
@@ -94,16 +83,18 @@ export class AgendaPage implements OnInit {
         this.categoryService.list('AgendaType',this.fair).then((response)=>{
             if(response.success == 201) {
                 this.categories = response.data;
+				
                 const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
                 if(agendaId ) {
                   this.action = 'update';
-                  this.loading.present({message:'Cargando...'});
+                  
                   this.agendasService.get(agendaId)
                    .then((agenda) => {
                       this.loading.dismiss();
                       this.invited_speakers = [];
                       agenda.invited_speakers.forEach((speaker)=>{
                          this.invited_speakers.push(Object.assign({},speaker));
+						 console.log(speaker);
                       });
                       agenda.invited_speakers = null;
                       this.errors = null;
@@ -134,6 +125,21 @@ export class AgendaPage implements OnInit {
                 }
                 else { 
                   this.action = 'create';
+				  this.agendaForm = this.formBuilder.group({
+				    title: ['', [Validators.required]],
+				    description: ['', [Validators.required]],
+				    date: ['', [Validators.required]],
+				    hour: ['', [Validators.required]],
+				    duration_time: ['', [Validators.required]],
+				    timezone: ['', [Validators.required]],
+				    category: [this.categories[0].id, [Validators.required]],
+				    audience_config: [1, [Validators.required]]
+				  });
+				  
+				  this.agenda = { 
+				    //'category':this.categories[0]
+				  };
+				  this.loading.dismiss();
                 }
             }
             else {
@@ -187,6 +193,7 @@ export class AgendaPage implements OnInit {
     this.loading.present({message:'Cargando...'});
 	
 	const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'].substr(11,5) + ':00Z';
+	
 	//const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').valueOf();
 	
     const data = { 
@@ -197,7 +204,7 @@ export class AgendaPage implements OnInit {
 	  'timezone': this.agendaForm.value['timezone'],
 	  'category_id': this.agendaForm.value['category'],
 	  'fair_id': this.fair.id,
-      'resources': this.agenda.resources,
+      'resources': '{"url_image":'+this.agenda.category.resources.image+'}',
 	  'audience_config': this.agendaForm.value['audience_config'],
 	  'price': this.agenda.price
     };
@@ -229,7 +236,7 @@ export class AgendaPage implements OnInit {
 
   onUpdateAgenda() {
     this.loading.present({message:'Cargando...'});
-    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'].substr(11,5) + ':00Z';
+    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'] + ':00Z';
 	//const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').valueOf();
 	
 	const data = { 
@@ -241,7 +248,7 @@ export class AgendaPage implements OnInit {
 	  'timezone': this.agendaForm.value['timezone'],
 	  'category_id': this.agendaForm.value['category'],
 	  'fair_id': this.fair.id,
-      'resources': this.agenda.resources,
+      'resources': '{"url_image":'+this.agenda.category.resources.image+'}',
 	  'audience_config': this.agendaForm.value['audience_config'],
 	  'zoom_code': this.agenda.zoom_code,
 	  'price': this.agenda.price
@@ -522,6 +529,18 @@ export class AgendaPage implements OnInit {
 	    }
 	  }
   }
+
+  changeCategory() {
+	  
+	this.categories.forEach((category)=>{
+	  if(category.id == this.agendaForm.value['category']) {
+		 this.agenda.category = category;
+	  }
+	});
+  }
   
+  changeAudienceConfig() {
+	  this.agenda.audience_config = this.agendaForm.value['audience_config'];
+  }
 }
 

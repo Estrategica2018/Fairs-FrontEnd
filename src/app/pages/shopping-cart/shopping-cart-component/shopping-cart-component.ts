@@ -50,6 +50,7 @@ export class ShoppingCartComponent implements OnInit {
             this.shoppingCartsService.list(this.fair, userDataSession)
             .then((response) => {
               this.shoppingCarts = response;
+			  
               
               this.loadShoppingCart();
               this.loading.dismiss();
@@ -75,6 +76,7 @@ export class ShoppingCartComponent implements OnInit {
           }
           else if(shoppingCart.agenda) {
               price = shoppingCart.agenda.price;
+			  console.log(shoppingCart.agenda);
           }
           
           this.totalAmount += price * shoppingCart.amount;

@@ -26,6 +26,7 @@ export class ScheduleDetailComponent {
   modalSpeaker: any;
   @Input() _parent: any;
   @Input() agenda: any;
+  @Input() speakerModal = false;
   @Input() speakerDetailComponent: any;
   userDataSession = null;
   loggedIn = false;
@@ -34,6 +35,7 @@ export class ScheduleDetailComponent {
   fair: any;
   loaded = false;
   showConfirmByProduct : any;
+  showRegister = false;
   
   constructor(
     private dataProvider: ConferenceData,
@@ -129,14 +131,21 @@ export class ScheduleDetailComponent {
      this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
   }
 
+  onSpeaker(speaker) {
+    if(!this.speakerModal) {
+	  this.presenterSpeakerModal(speaker);
+	}
+  }
+
   async presenterSpeakerModal(speaker) {
       
+	  
     this.modalSpeaker = await this.modalCtrl.create({
       component: this.speakerDetailComponent,
       cssClass: 'speaker-modal',
       swipeToClose: true,
       //presentingElement: this.routerOutlet.nativeEl,
-      componentProps: { speaker: speaker }
+      componentProps: { speaker: speaker, scheduleMode: true }
     });
     await this.modalSpeaker.present();
 
@@ -161,7 +170,7 @@ export class ScheduleDetailComponent {
     this.loggedIn = ( user !== null );
   }
   
-  onBuyProduct() {
+  onBuyAgenda() {
       this.loading.present({message:'Cargando...'});
       this.shoppingCartsService.addShoppingCart(this.fair, null, null, this.agenda, 1, this.userDataSession )
       .then((response) => {
@@ -183,6 +192,37 @@ export class ScheduleDetailComponent {
       position: 'bottom'
     });
     toast.present();
+  }
+  
+    sessionClick() {
+	 if(this.userDataSession) {
+		this.redirectTo(`/meeting/${this.agenda.id}`);
+		this.closeModal();
+	 }
+	 else {
+		 this.showRegister = true;
+	 }
+  }
+  
+  onAgendaPrice() {
+	  console.log('this.onBuyAgenda()');
+	 if(this.userDataSession) {
+		if(this.eventPayment) {
+		  
+		}
+        else { 
+		  this.showConfirmByProduct = true;
+		}
+	 }
+	 else {
+		this.showRegister = true;
+	 }
+  }
+  
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
   }
  
 }
