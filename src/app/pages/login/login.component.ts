@@ -443,7 +443,7 @@ export class LoginComponent  implements OnInit {
       //color: color,
       duration: 1000,
       position: 'bottom'
-    });
+    });  
     toast.present();
   }
   

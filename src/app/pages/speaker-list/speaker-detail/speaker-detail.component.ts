@@ -58,36 +58,36 @@ export class SpeakerDetailComponent implements OnInit {
   }
   
   onAgenda(agenda) {
-	if(!this.scheduleMode) {
-		
-		this.agendasService.get(agenda.id)
-	   .then((agenda) => {
+    if(!this.scheduleMode) {
+        
+        this.agendasService.get(agenda.id)
+       .then((agenda) => {
            this.presenterAgendaModal(agenda);
-  	    })
-	     .catch(error => {
-			 console.log(error);
-	    });
+          })
+         .catch(error => {
+             console.log(error);
+        });
     }
   }
   
   async presenterAgendaModal(agenda) {
-	  
-	  const modal = await this.modalCtrl.create({
-	  component: ScheduleDetailComponent,
-	  cssClass: 'agenda-modal',
-	  componentProps: {
-		'_parent': this,
-		'agenda': agenda,
-		'speakerDetailComponent': this,
-		'type': 'Agenda',
-		'speakerModal': true
-	  }
-	});
-	await modal.present();
-	const { data } = await modal.onWillDismiss();
+      
+      const modal = await this.modalCtrl.create({
+      component: ScheduleDetailComponent,
+      cssClass: 'agenda-modal',
+      componentProps: {
+        '_parent': this,
+        'agenda': agenda,
+        'speakerDetailComponent': this,
+        'type': 'Agenda',
+        'speakerModal': true
+      }
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
 
-	if(data) {
-	}
+    if(data) {
+    }
 
       
 

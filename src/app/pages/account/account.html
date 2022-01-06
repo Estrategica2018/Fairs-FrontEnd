@@ -7,11 +7,23 @@
   <div (click)="closeModal() " class="close-modal">
   <ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
     
+
+ <div *ngIf="showEditPhoto" class="ion-text-center">
+  <div>
+    <img id="image" src="">
+  </div>
+
+  <ion-button  (click)="onCropperImage()">
+     recortar
+  </ion-button>
+ </div>
+ 
+ <div [hidden]="showEditPhoto">
   <h2 class="name ion-text-center title-modal">Cuenta de usuario </h2>
   
   <div *ngIf="userData" class="ion-text-center min-height" [ngClass]="{'padding-container': !showEdit}">
     <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar mt-4" *ngIf="!userData.url_image">
-    <img [src]="SERVER_PATH + userData.url_image" class="avatar mt-4" *ngIf="userData.url_image">
+    <img [src]="userData.url_image" class="avatar mt-4" *ngIf="userData.url_image">
     <h2>{{userData.name}} {{userData.last_name}}</h2>
     <label class="mt-2 label-uploadInput" [hidden]="showEdit" (click)="showEdit=true">Editar datos</label>
 
@@ -28,7 +40,7 @@
         <ion-col class="text-center">
           <ion-thumbnail class="m-auto">
              <img src="https://www.gravatar.com/avatar?d=mm&s=140" *ngIf="! userData.url_image">
-             <img [src]="SERVER_PATH +  userData.url_image" *ngIf=" userData.url_image">
+             <img [src]="userData.url_image" *ngIf="userData.url_image">
           </ion-thumbnail>
         
         <label class="mt-2 label-uploadInput" for="uploadInput">Cambiar Imagen</label>
@@ -83,7 +95,7 @@
 
     </ion-list>
   </div>
-
+ </div>
 </div>
 
   

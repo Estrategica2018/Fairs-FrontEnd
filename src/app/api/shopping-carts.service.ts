@@ -47,6 +47,7 @@ export class ShoppingCartsService {
                 resolve(processData(data.data));
             },error => {
                 reject(error)
+                
             });
         });
   }
@@ -116,7 +117,7 @@ export class ShoppingCartsService {
            "product_price_id": (productPrice ? productPrice.id : null), 
            "agenda_id": (agenda ? agenda.id : null),
            "detail": detail,
-           "price": '$ '+ price,
+           "price": price,
            "amount": amount
        };
        

@@ -49,7 +49,7 @@ export class AgendaPage implements OnInit {
     private modalCtrl: ModalController,
     private routerOutlet: IonRouterOutlet,
     private actionSheetController: ActionSheetController,
-	private formBuilder: FormBuilder
+    private formBuilder: FormBuilder
     ) { 
         
   }
@@ -61,9 +61,9 @@ export class AgendaPage implements OnInit {
   get f() { return this.agendaForm.controls; }
   
   ngOnInit() {
-	  
-	this.loading.present({message:'Cargando...'});
-	
+      
+    this.loading.present({message:'Cargando...'});
+    
     this.invited_speakers = [];
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
@@ -83,7 +83,7 @@ export class AgendaPage implements OnInit {
         this.categoryService.list('AgendaType',this.fair).then((response)=>{
             if(response.success == 201) {
                 this.categories = response.data;
-				
+                
                 const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
                 if(agendaId ) {
                   this.action = 'update';
@@ -94,7 +94,7 @@ export class AgendaPage implements OnInit {
                       this.invited_speakers = [];
                       agenda.invited_speakers.forEach((speaker)=>{
                          this.invited_speakers.push(Object.assign({},speaker));
-						 console.log(speaker);
+                         console.log(speaker);
                       });
                       agenda.invited_speakers = null;
                       this.errors = null;
@@ -103,20 +103,20 @@ export class AgendaPage implements OnInit {
                       if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
                       const start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
                       this.agenda.start_at_str = this.agenda.start_time;
-					   
-					  const date = start_time.substr(0,10); 
-					  const hour = start_time.substr(11,5); 
-					  this.agendaForm = this.formBuilder.group({
-						  title: [this.agenda.title, [Validators.required]],
-						  description: [this.agenda.description, [Validators.required]],
-						  date: [date, [Validators.required]],
-						  hour: [hour, [Validators.required]],
-						  duration_time: [this.agenda.duration_time, [Validators.required]],
-						  timezone: [this.agenda.timezone, [Validators.required]],
-						  category: [this.agenda.category.id, [Validators.required]],
-						  audience_config: [this.agenda.audience_config, [Validators.required]]
-					  });
-					  
+                       
+                      const date = start_time.substr(0,10); 
+                      const hour = start_time.substr(11,5); 
+                      this.agendaForm = this.formBuilder.group({
+                          title: [this.agenda.title, [Validators.required]],
+                          description: [this.agenda.description, [Validators.required]],
+                          date: [date, [Validators.required]],
+                          hour: [hour, [Validators.required]],
+                          duration_time: [this.agenda.duration_time, [Validators.required]],
+                          timezone: [this.agenda.timezone, [Validators.required]],
+                          category: [this.agenda.category.id, [Validators.required]],
+                          audience_config: [this.agenda.audience_config, [Validators.required]]
+                      });
+                      
                   })
                   .catch(error => {
                      this.loading.dismiss();
@@ -125,21 +125,21 @@ export class AgendaPage implements OnInit {
                 }
                 else { 
                   this.action = 'create';
-				  this.agendaForm = this.formBuilder.group({
-				    title: ['', [Validators.required]],
-				    description: ['', [Validators.required]],
-				    date: ['', [Validators.required]],
-				    hour: ['', [Validators.required]],
-				    duration_time: ['', [Validators.required]],
-				    timezone: ['', [Validators.required]],
-				    category: [this.categories[0].id, [Validators.required]],
-				    audience_config: [1, [Validators.required]]
-				  });
-				  
-				  this.agenda = { 
-				    //'category':this.categories[0]
-				  };
-				  this.loading.dismiss();
+                  this.agendaForm = this.formBuilder.group({
+                    title: ['', [Validators.required]],
+                    description: ['', [Validators.required]],
+                    date: ['', [Validators.required]],
+                    hour: ['', [Validators.required]],
+                    duration_time: ['', [Validators.required]],
+                    timezone: ['', [Validators.required]],
+                    category: [this.categories[0].id, [Validators.required]],
+                    audience_config: [1, [Validators.required]]
+                  });
+                  
+                  this.agenda = { 
+                    //'category':this.categories[0]
+                  };
+                  this.loading.dismiss();
                 }
             }
             else {
@@ -168,8 +168,8 @@ export class AgendaPage implements OnInit {
     { id: 120,name: '2 horas'},
     { id: 150,name: '2 horas y 30 min'},
     { id: 180,name: '3 horas'},
-	{ id: 210,name: '3 horas y 30 min'},
-	{ id: 240,name: '4 horas'}
+    { id: 210,name: '3 horas y 30 min'},
+    { id: 240,name: '4 horas'}
   ];
   
   timezones: any[] = [
@@ -191,69 +191,69 @@ export class AgendaPage implements OnInit {
     this.errors = null;
     this.success = null;
     this.loading.present({message:'Cargando...'});
-	
-	const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'].substr(11,5) + ':00Z';
-	
-	//const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').valueOf();
-	
+    
+    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'].substr(11,5) + ':00Z';
+    
+    //const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').valueOf();
+    
     const data = { 
-	  'topic': this.agendaForm.value['title'],
-	  'agenda': this.agendaForm.value['description'],
-	  'start_time': startTimeStr,
-	  'duration_time': this.agendaForm.value['duration_time'],
-	  'timezone': this.agendaForm.value['timezone'],
-	  'category_id': this.agendaForm.value['category'],
-	  'fair_id': this.fair.id,
+      'topic': this.agendaForm.value['title'],
+      'agenda': this.agendaForm.value['description'],
+      'start_time': startTimeStr,
+      'duration_time': this.agendaForm.value['duration_time'],
+      'timezone': this.agendaForm.value['timezone'],
+      'category_id': this.agendaForm.value['category'],
+      'fair_id': this.fair.id,
       'resources': '{"url_image":'+this.agenda.category.resources.image+'}',
-	  'audience_config': this.agendaForm.value['audience_config'],
-	  'price': this.agenda.price
+      'audience_config': this.agendaForm.value['audience_config'],
+      'price': this.agenda.price
     };
 
     
     this.adminAgendasService.create(data)
       .then((agenda) => {
         this.loading.dismiss();
-		this.agenda = agenda;    
-		this.fairsService.refreshCurrentFair();
-		this.agendasService.refreshCurrentAgenda();
-		this.success = `Agenda creada exitosamente`;
-		this.redirectTo(`/super-admin/agenda/${this.agenda.id}`);
-		this.initSubmitted = false;
+        this.agenda = agenda;    
+        this.fairsService.refreshCurrentFair();
+        this.agendasService.refreshCurrentAgenda();
+        this.success = `Agenda creada exitosamente`;
+        this.redirectTo(`/super-admin/agenda/${this.agenda.id}`);
+        this.initSubmitted = false;
       },
       (error) => {
           this.loading.dismiss();
           console.log(error);
-		  this.errors = `Ha ocurrido un error al crear la agenda`;
-		  this.initSubmitted = false;
+          this.errors = `Ha ocurrido un error al crear la agenda`;
+          this.initSubmitted = false;
       })
     .catch(error => {
         this.loading.dismiss();
         console.log(error);
-		this.errors = `Ha ocurrido un error al crear la agenda`;
-		this.initSubmitted = false;
+        this.errors = `Ha ocurrido un error al crear la agenda`;
+        this.initSubmitted = false;
      });    
   }
 
   onUpdateAgenda() {
     this.loading.present({message:'Cargando...'});
     const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'] + ':00Z';
-	//const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').valueOf();
-	
-	const data = { 
-	  'id': this.agenda.id,
-	  'topic': this.agendaForm.value['title'],
-	  'agenda': this.agendaForm.value['description'],
-	  'start_time': startTimeStr,
-	  'duration_time': this.agendaForm.value['duration_time'],
-	  'timezone': this.agendaForm.value['timezone'],
-	  'category_id': this.agendaForm.value['category'],
-	  'fair_id': this.fair.id,
+    //const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').valueOf();
+    
+    const data = { 
+      'id': this.agenda.id,
+      'topic': this.agendaForm.value['title'],
+      'agenda': this.agendaForm.value['description'],
+      'start_time': startTimeStr,
+      'duration_time': this.agendaForm.value['duration_time'],
+      'timezone': this.agendaForm.value['timezone'],
+      'category_id': this.agendaForm.value['category'],
+      'fair_id': this.fair.id,
       'resources': '{"url_image":'+this.agenda.category.resources.image+'}',
-	  'audience_config': this.agendaForm.value['audience_config'],
-	  'zoom_code': this.agenda.zoom_code,
-	  'price': this.agenda.price
+      'audience_config': this.agendaForm.value['audience_config'],
+      'zoom_code': this.agenda.zoom_code,
+      'price': this.agenda.price
     };
-	
+    
     this.errors = null;
     this.success = null;
     
@@ -263,7 +263,7 @@ export class AgendaPage implements OnInit {
         this.agendasService.get(this.agenda.id)
         .then((agenda) => {
            this.agenda = agenda;
-		   this.initSubmitted = false;
+           this.initSubmitted = false;
            
            this.agenda.duration_time = this.agenda.duration_time.toString();
            if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
@@ -275,14 +275,14 @@ export class AgendaPage implements OnInit {
         .catch(error => {
            this.loading.dismiss();
            console.log(error);
-		   this.initSubmitted = false;
-		   this.errors = `Ha ocurrido un error al modificar la agenda`;
+           this.initSubmitted = false;
+           this.errors = `Ha ocurrido un error al modificar la agenda`;
         });
       },
       (error) => {
          console.log(error);
-		 this.initSubmitted = false;
-		 this.errors = `Ha ocurrido un error al modificar la agenda`;
+         this.initSubmitted = false;
+         this.errors = `Ha ocurrido un error al modificar la agenda`;
          this.loading.dismiss();
       })
     .catch(error => {
@@ -317,11 +317,11 @@ export class AgendaPage implements OnInit {
               },
               (error) => {
                  console.log(error);
-		         this.errors = `Ha ocurrido un error al modificar la agenda`;
+                 this.errors = `Ha ocurrido un error al modificar la agenda`;
               })
             .catch(error => {
                 console.log(error);
-		        this.errors = `Ha ocurrido un error al modificar la agenda`;
+                this.errors = `Ha ocurrido un error al modificar la agenda`;
              });        
     
           }
@@ -412,7 +412,7 @@ export class AgendaPage implements OnInit {
               .catch(error => {
                  this.loading.dismiss();
                  console.log(error);
-		         this.errors = `Error modificando los conferencistas en la feria`;
+                 this.errors = `Error modificando los conferencistas en la feria`;
               });
             }
             else {
@@ -422,7 +422,7 @@ export class AgendaPage implements OnInit {
         })
         .catch(error => {
             console.log(error);
-		    this.errors = `Error modificando los conferencistas en la feria`;
+            this.errors = `Error modificando los conferencistas en la feria`;
         });
         
     }
@@ -460,7 +460,7 @@ export class AgendaPage implements OnInit {
         })
         .catch(error => {
             this.errors = error;
-			this.errors = `Error modificando la lista de correos`;
+            this.errors = `Error modificando la lista de correos`;
         });
         
     }
@@ -513,34 +513,34 @@ export class AgendaPage implements OnInit {
   }
   
   onSave() {
-	  this.submitted = true;
-	  // stop here if form is invalid
+      this.submitted = true;
+      // stop here if form is invalid
       if (this.agendaForm.invalid) {
         return;
       } 
-	  
-	  if(!this.initSubmitted) {
-	    this.initSubmitted = true;
-	    if(this.agenda.id) {
-  		  this.onUpdateAgenda();
-	    }
-	    else {
- 		  this.onCreateAgenda();  
-	    }
-	  }
+      
+      if(!this.initSubmitted) {
+        this.initSubmitted = true;
+        if(this.agenda.id) {
+            this.onUpdateAgenda();
+        }
+        else {
+           this.onCreateAgenda();  
+        }
+      }
   }
 
   changeCategory() {
-	  
-	this.categories.forEach((category)=>{
-	  if(category.id == this.agendaForm.value['category']) {
-		 this.agenda.category = category;
-	  }
-	});
+      
+    this.categories.forEach((category)=>{
+      if(category.id == this.agendaForm.value['category']) {
+         this.agenda.category = category;
+      }
+    });
   }
   
   changeAudienceConfig() {
-	  this.agenda.audience_config = this.agendaForm.value['audience_config'];
+      this.agenda.audience_config = this.agendaForm.value['audience_config'];
   }
 }
 

@@ -87,6 +87,7 @@ export class AppComponent implements OnInit {
     
     this.usersService.getUser().then((userDataSession: any)=>{
       this.userDataSession = userDataSession;    
+      
       this.profileRole = {};
       if(userDataSession && userDataSession.user_roles_fair)  {
         userDataSession.user_roles_fair.forEach((role)=>{
@@ -137,6 +138,10 @@ export class AppComponent implements OnInit {
     
     window.addEventListener('user:shoppingCart', () => {
       this.getShoppingCart();
+    });
+
+    window.addEventListener('open:shoppingCart', () => {
+      this.openShoppingCart();
     }); 
 
   }

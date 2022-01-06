@@ -12,6 +12,7 @@ import { ModalController, ToastController } from '@ionic/angular';
 import { UsersService } from '../../../api/users.service';
 import { ShoppingCartsService } from '../../../api/shopping-carts.service';
 import { FairsService } from '../../../api/fairs.service';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -36,6 +37,8 @@ export class ScheduleDetailComponent {
   loaded = false;
   showConfirmByProduct : any;
   showRegister = false;
+  showSupportDetail = false;
+  contactForm: FormGroup;
   
   constructor(
     private dataProvider: ConferenceData,
@@ -52,7 +55,44 @@ export class ScheduleDetailComponent {
     private toastController: ToastController,
     private fairsService: FairsService,
     private toastCtrl: ToastController,
-  ) { }
+    private formBuilder: FormBuilder,
+  ) { 
+  
+     this.contactForm = this.formBuilder.group({
+        name: ['', Validators.required],
+        email: ['', Validators.required],
+        message: ['', Validators.required],
+        subject: ['', Validators.required]
+      });
+         
+  }
+  
+  get f() { return this.contactForm.controls; }
+  
+  contactSendForm(form){
+      
+      console.log(this.fair);
+      const sentToEmail = this.fair.resources.supportContact;
+      const data = { 
+        'send_to': sentToEmail,
+        'name': form.value.name,
+        'email': form.value.email,
+        'subject': form.value.subject,
+        'message': form.value.message
+      };
+      
+      this.loading.present({message:'Cargando...'});
+      this.fairsService.sendMessage(data)
+      .then((response)=>{
+         this.presentToast(response.message);
+         this.errors = null;
+         this.loading.dismiss();
+      }, error => {
+        this.loading.dismiss();
+        this.errors = error;
+        this.presentToast(this.errors);
+      });
+  }  
   
   ionViewWillEnter() {
     
@@ -76,6 +116,18 @@ export class ScheduleDetailComponent {
           userDataSession.user_roles_fair.forEach((role)=>{
             if(role.id == 1) { //"super_administrador"
                this.profileRole.admin = true;
+            }
+            if(role.id == 6) { //"conferencista"
+               this.agendasService.get(this.agenda.id)
+                .then( (agenda)=>{
+                  if(agenda.invited_speakers) {
+                      agenda.invited_speakers.forEach((invited_speaker)=>{
+                          if(invited_speaker.speaker.user.email ==  this.userDataSession.email) {
+                            this.profileRole.speaker = true;
+                          }
+                      });
+                  }
+                });  
             }
           }); 
         }
@@ -128,18 +180,19 @@ export class ScheduleDetailComponent {
   
   onSupportClick() {
      //     this.router.navigateByUrl('/support');
-     this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
+     //this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
+     this.showSupportDetail = true;    
   }
 
   onSpeaker(speaker) {
     if(!this.speakerModal) {
-	  this.presenterSpeakerModal(speaker);
-	}
+      this.presenterSpeakerModal(speaker);
+    }
   }
 
   async presenterSpeakerModal(speaker) {
       
-	  
+      
     this.modalSpeaker = await this.modalCtrl.create({
       component: this.speakerDetailComponent,
       cssClass: 'speaker-modal',
@@ -176,18 +229,21 @@ export class ScheduleDetailComponent {
       .then((response) => {
         this.loading.dismiss();
         this.showConfirmByProduct = false;
-        this.presentToast('Producto agredado exitósamente al carrito de compras', 'app-success-alert');
+        this.presentToast('Producto agredado exitósamente al carrito de compras');
+        this.closeModal();
+        window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
+        window.dispatchEvent(new CustomEvent( 'open:shoppingCart'));
       })
       .catch(error => {
         this.loading.dismiss(); 
-        this.presentToast('Ocurrió un error al agregar al carrito de compras: ['+ error +']', 'app-error-alert');
+        this.presentToast('Ocurrió un error al agregar al carrito de compras: ['+ error +']'); 
       });
   }
 
-  async presentToast(msg,cssClass) {
+  async presentToast(msg) {
     const toast = await this.toastCtrl.create({
       message: msg,
-      cssClass: cssClass,
+      //cssClass: cssClass,
       duration: 1000,
       position: 'bottom'
     });
@@ -195,28 +251,28 @@ export class ScheduleDetailComponent {
   }
   
     sessionClick() {
-	 if(this.userDataSession) {
-		this.redirectTo(`/meeting/${this.agenda.id}`);
-		this.closeModal();
-	 }
-	 else {
-		 this.showRegister = true;
-	 }
+     if(this.userDataSession) {
+        this.redirectTo(`/meeting/${this.agenda.id}`);
+        this.closeModal();
+     }
+     else {
+         this.showRegister = true;
+     }
   }
   
   onAgendaPrice() {
-	  console.log('this.onBuyAgenda()');
-	 if(this.userDataSession) {
-		if(this.eventPayment) {
-		  
-		}
+      
+     if(this.userDataSession) {
+        if(this.eventPayment) {
+          
+        }
         else { 
-		  this.showConfirmByProduct = true;
-		}
-	 }
-	 else {
-		this.showRegister = true;
-	 }
+          this.showConfirmByProduct = true;
+        }
+     }
+     else {
+        this.showRegister = true;
+     }
   }
   
   redirectTo(uri:string){
@@ -224,5 +280,6 @@ export class ScheduleDetailComponent {
       this.router.navigate([uri])
     });
   }
+  
  
 }

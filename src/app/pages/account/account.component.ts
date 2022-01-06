@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { UsersService } from '../../api/users.service';
@@ -6,6 +6,8 @@ import { LoadingService } from './../../providers/loading.service';
 import { environment, SERVER_URL } from '../../../environments/environment';
 import { LoginComponent } from '../login/login.component';
 import { ToastController, ModalController } from '@ionic/angular';
+import Cropper from 'cropperjs';
+import Croppie from 'croppie';
 
 @Component({
   selector: 'page-account',
@@ -15,14 +17,18 @@ import { ToastController, ModalController } from '@ionic/angular';
 export class AccountComponent implements AfterViewInit {
   
   userData: any;
-  onChangeImag = false;
+  showChangeImageBtn = false;
   keyUpdate: string = null;
   objectUpdate: string = null;
   errors: string = null;
-  SERVER_PATH = SERVER_URL;
   url_image: string = null;
   modal: any;
   showEdit = false;
+  showEditPhoto = false;
+  
+  imageCropper: any;
+  cropper: any;
+  vanilla: any;
 
   constructor(
     private alertCtrl: AlertController,
@@ -45,16 +51,79 @@ export class AccountComponent implements AfterViewInit {
   }
 
   onSelectFile(event) {
+      
+    this.showEditPhoto = true;  
+    const _self = this;
     if (event.target.files && event.target.files[0]) {
       var reader = new FileReader();
 
       reader.readAsDataURL(event.target.files[0]); // read file as data url
 
-      reader.onload = (event: any) => { // called once readAsDataURL is completed
-        this.onChangeImag = true;
+      /*reader.onload = (event: any) => { // called once readAsDataURL is completed
+        this.showChangeImageBtn = true;
         this.url_image = event.target.result;
         this.updateImage();
-      }
+      }*/
+        
+        
+        reader.onload = function(evt: any) {
+           
+           _self.url_image = evt.target.result;
+           //const img = new Image();
+           const imageCropper = document.querySelector<HTMLImageElement>('#image');
+           //const context = document.querySelector('#canvas').getContext("2d");
+           imageCropper.src = evt.target.result;
+             //context.canvas.height = img.height;
+             //context.canvas.width  = img.width;
+             //context.drawImage(img, 0, 0);
+             
+           _self.showChangeImageBtn = true;
+           
+           imageCropper.onload = function() {
+            //_self.cropper = new Cropper(imageCropper, {
+            //  aspectRatio: 9 / 9,
+            //  autoCropArea: 1,
+            //  cropend(evtCr) {
+            //    //_self.url_image = evtCr.currentTarget.cropper.crossOriginUrl;
+            //    _self.url_image = imageCropper.getCroppedCanvas().toDataURL("image/png");
+            //  },
+            //});
+            
+            
+            _self.vanilla = new Croppie(imageCropper, {
+                viewport: { width: 200, height: 200 },
+                boundary: { width: 300, height: 300 },
+                showZoomer: true
+                
+                
+            });
+            _self.vanilla.bind({
+                url: 'demo/demo-2.jpg',
+                orientation: 4
+            });
+            //on button click
+            _self.vanilla.result('base64').then(function(blob) {
+                // do something with cropped blob
+                console.log(blob);
+            });
+            
+            
+            
+            
+             
+             
+             //$('#btnCrop').click(function() {
+             //   // Get a string base 64 data url
+             //   var croppedImageDataURL = canvas.cropper('getCroppedCanvas').toDataURL("image/png"); 
+             //   $result.append( $('<img>').attr('src', croppedImageDataURL) );
+             //});
+             //$('#btnRestore').click(function() {
+             //  canvas.cropper('reset');
+             //  $result.empty();
+             //});
+           };
+        };
+        
     }
   }
   
@@ -161,6 +230,7 @@ export class AccountComponent implements AfterViewInit {
     const dt = {};
     this.errors = null;
     dt[this.keyUpdate] = this.objectUpdate;
+    
     this.usersService.getUser().then((userDataSession: any)=>{
        this.usersService.updateUser(userDataSession,dt)
        .subscribe(
@@ -168,9 +238,10 @@ export class AccountComponent implements AfterViewInit {
             
             this.loading.dismiss();
             if(data.success == 201 ) {
-              this.userData = Object.assign(dt,data.data);
-              this.userData = Object.assign({token:userDataSession.token},data.data);
-              this.url_image =  this.userData.url_image;
+              this.userData.url_image = data.data.url_image;
+              this.userData.name = data.data.name;
+              this.userData.last_name = data.data.last_name;
+              this.url_image = this.userData.url_image;
               this.usersService.setUser(this.userData).then((data) => {
                 console.log('guardado Exitosamente',data);
               });
@@ -253,5 +324,17 @@ export class AccountComponent implements AfterViewInit {
   closeModal() {
     this.modalCtrl.dismiss();
   }
+
+  onCropperImage() {
+    //this.url_image = event.currentTarget.cropper.crossOriginUrl;
+    const _self = this;
+    this.showEditPhoto = false;
+    this.vanilla.result('base64').then(function(blob) {
+        // do something with cropped blob
+        _self.url_image = blob;
+        _self.updateImage();
+    });
+  }
+  
 
 }

@@ -136,7 +136,7 @@ export class MapEditorPage implements OnInit {
       this.initializePanel();
       //this.url = SERVER_URL;
       this.url = window.location.origin;
-	  window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
+      window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
   }
 
   ngOnInit() {
@@ -473,7 +473,7 @@ export class MapEditorPage implements OnInit {
               this.success= `Escena modificada correctamentes`;
               this.fairsService.refreshCurrentFair();
               this.editSave = false;
-			  this.errors = null;
+              this.errors = null;
               if(!this.sceneId) {
                   this.resources = processData(response.data_fair.resources);
                   this.sceneId = this.resources.scenes.length - 1;

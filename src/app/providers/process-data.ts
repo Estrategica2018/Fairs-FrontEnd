@@ -9,17 +9,17 @@ export function processData(obj){
         
         if(obj.resources && typeof obj.resources == 'string') {
           try { 
-		     obj.resources = JSON.parse(obj.resources );
-		  }catch(e) {
-			 console.log(e);
-		  }
+             obj.resources = JSON.parse(obj.resources );
+          }catch(e) {
+             console.log(e);
+          }
         }
         if(obj.social_media && typeof obj.social_media == 'string') {
           try { 
-		     obj.social_media = JSON.parse(obj.social_media);
-		  }catch(e) {
-			 console.log(e);
-		  }
+             obj.social_media = JSON.parse(obj.social_media);
+          }catch(e) {
+             console.log(e);
+          }
         }
         let objItem = null;
         for (let key of Object.keys(obj)) {

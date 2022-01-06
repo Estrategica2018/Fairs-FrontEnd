@@ -87,7 +87,7 @@ export class SchedulePage implements OnInit {
       then( fair => {
         this.fair = fair;
           this.usersService.getUser().then(userDataSession=> {
-		  this.userDataSession = userDataSession;
+          this.userDataSession = userDataSession;
           if(this.fair.price > 0) {
             if(userDataSession){
                   this.usersService.getPaymentUser({type:"Fair",id:this.fair.id},userDataSession).
@@ -95,7 +95,7 @@ export class SchedulePage implements OnInit {
                       if(payment.success) {
                         this.userPaidAllfair = true;
                         this.showPaymentFair = false;
-						
+                        
                      } else {
                          this.showPaymentFair = true;
                      }
@@ -107,7 +107,7 @@ export class SchedulePage implements OnInit {
             }
             else {
                 this.showPaymentFair = true;
-				
+                
                 this.onFinishLoad();
             }
             
