@@ -353,7 +353,7 @@ export class ProductDetailComponent implements OnInit {
   }
   
   hasEmptyAttributes(attributeSelect) {
-   if(attributeSelect)
+   if(attributeSelect && attributeSelect.length > 0)
    for(let attr of attributeSelect) {
        if(attr.list && !attr.selected) {
          attr.error = true;
