@@ -187,37 +187,37 @@
                 <ion-grid>
                   <ion-row>
                     <ion-col>
-                        <input maxlength="1" type="text" formControlName="item1" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item1.errors }" />
+                        <input maxlength="1" (paste)="paste($event)" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item1" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item1.errors }" />
                         <div *ngIf="submitted && sc.item1.errors" class="invalid-feedback">
                             <div *ngIf="sc.item1.errors.required">Campo requerido</div>
                         </div>
                       </ion-col>
                     <ion-col>
-                        <input maxlength="1" type="text" formControlName="item2" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item2.errors }" />
+                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item2" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item2.errors }" />
                         <div *ngIf="submitted && sc.item2.errors" class="invalid-feedback">
                             <div *ngIf="sc.item2.errors.required">Campo requerido</div>
                         </div>
                       </ion-col>
                     <ion-col>
-                        <input maxlength="1" type="text" formControlName="item3" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item3.errors }" />
+                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item3" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item3.errors }" />
                         <div *ngIf="submitted && sc.item3.errors" class="invalid-feedback">
                             <div *ngIf="sc.item3.errors.required">Campo requerido</div>
                         </div>
                       </ion-col>
                     <ion-col>
-                        <input maxlength="1" type="text" formControlName="item4" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item4.errors }" />
+                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item4" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item4.errors }" />
                         <div *ngIf="submitted && sc.item4.errors" class="invalid-feedback">
                             <div *ngIf="sc.item4.errors.required">Campo requerido</div>
                         </div>
                       </ion-col>
                     <ion-col>
-                        <input maxlength="1" type="text" formControlName="item5" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item5.errors }" />
+                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item5" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item5.errors }" />
                         <div *ngIf="submitted && sc.item5.errors" class="invalid-feedback">
                             <div *ngIf="sc.item5.errors.required">Campo requerido</div>
                         </div>
                       </ion-col>
                     <ion-col>
-                        <input maxlength="1" type="text" formControlName="item6" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item6.errors }" />
+                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item6" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item6.errors }" />
                         <div *ngIf="submitted && sc.item6.errors" class="invalid-feedback">
                             <div *ngIf="sc.item6.errors.required">Campo requerido</div>
                         </div>

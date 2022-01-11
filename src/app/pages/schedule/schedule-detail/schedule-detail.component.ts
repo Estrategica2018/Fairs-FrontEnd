@@ -13,7 +13,8 @@ import { UsersService } from '../../../api/users.service';
 import { ShoppingCartsService } from '../../../api/shopping-carts.service';
 import { FairsService } from '../../../api/fairs.service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-
+import { DomSanitizer } from '@angular/platform-browser';
+import { environment, SERVER_URL } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-schedule-detail',
@@ -39,6 +40,7 @@ export class ScheduleDetailComponent {
   showRegister = false;
   showSupportDetail = false;
   contactForm: FormGroup;
+  url = SERVER_URL;
   
   constructor(
     private dataProvider: ConferenceData,
@@ -56,22 +58,14 @@ export class ScheduleDetailComponent {
     private fairsService: FairsService,
     private toastCtrl: ToastController,
     private formBuilder: FormBuilder,
-  ) { 
-  
-     this.contactForm = this.formBuilder.group({
-        name: ['', Validators.required],
-        email: ['', Validators.required],
-        message: ['', Validators.required],
-        subject: ['', Validators.required]
-      });
-         
+	private dom:DomSanitizer,
+  ) {   
   }
   
   get f() { return this.contactForm.controls; }
   
   contactSendForm(form){
       
-      console.log(this.fair);
       const sentToEmail = this.fair.resources.supportContact;
       const data = { 
         'send_to': sentToEmail,
@@ -111,6 +105,7 @@ export class ScheduleDetailComponent {
     this.usersService.getUser().then((userDataSession: any)=>{
       this.userDataSession = userDataSession;    
       if(userDataSession)  {
+      
         this.profileRole = {};
         if(userDataSession.user_roles_fair) {
           userDataSession.user_roles_fair.forEach((role)=>{
@@ -156,8 +151,21 @@ export class ScheduleDetailComponent {
             this.loaded = true;
             this.loading.dismiss();
         }
+      
+         this.contactForm = this.formBuilder.group({
+            name: [this.userDataSession.name  + ' '  + this.userDataSession.last_name, Validators.required],
+            email: [this.userDataSession.email, Validators.required],
+            message: ['', Validators.required],
+            subject: ['', Validators.required]
+          });
       }
       else {
+          this.contactForm = this.formBuilder.group({
+            name: ['', Validators.required],
+            email: ['', Validators.required],
+            message: ['', Validators.required],
+            subject: ['', Validators.required]
+          });
           this.loading.dismiss();
           this.errors = null;
           this.loaded = true;
@@ -181,7 +189,7 @@ export class ScheduleDetailComponent {
   onSupportClick() {
      //     this.router.navigateByUrl('/support');
      //this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
-     this.showSupportDetail = true;    
+     this.showSupportDetail = true;
   }
 
   onSpeaker(speaker) {
@@ -250,16 +258,6 @@ export class ScheduleDetailComponent {
     toast.present();
   }
   
-    sessionClick() {
-     if(this.userDataSession) {
-        this.redirectTo(`/meeting/${this.agenda.id}`);
-        this.closeModal();
-     }
-     else {
-         this.showRegister = true;
-     }
-  }
-  
   onAgendaPrice() {
       
      if(this.userDataSession) {
@@ -280,6 +278,26 @@ export class ScheduleDetailComponent {
       this.router.navigate([uri])
     });
   }
-  
+
+  onViewerMeeting() {
+    const fair_id = this.fair.id;
+    const meeting_id = this.agenda.id;
+      
+    if(this.userDataSession!=null) {
+        const email = this.userDataSession.email;
+        this.agendasService.generateVideoToken(fair_id, meeting_id, this.userDataSession)
+        .then( response => {
+          const token = response.data;                  
+          const url = `${this.url}/viewerZoom/meetings/${token}`;
+          //this.link = this.dom.bypassSecurityTrustResourceUrl(url);
+          //window.open(url, '_blank').focus();
+          const windowReference = window.open();
+          windowReference.location.href = url;
+        },error => {
+           this.errors = error;
+        });
+    }
+      
+  }  
  
 }

@@ -50,8 +50,6 @@ export class ShoppingCartComponent implements OnInit {
             this.shoppingCartsService.list(this.fair, userDataSession)
             .then((response) => {
               this.shoppingCarts = response;
-              
-              
               this.loadShoppingCart();
               this.loading.dismiss();
               
@@ -165,38 +163,18 @@ export class ShoppingCartComponent implements OnInit {
               }
             });
            
+            this.success = null;
+            this.errors = null;
             let _self = this;
-            _self.success = null;
-            _self.errors = null;
             checkout.open(function ( result ) {
-                const transaction = result.transaction;
-                console.log('Transaction ID: ', transaction.id)
-                console.log('Transaction object: ', result)
                 _self.loading.present({message:'Cargando...'});
-                
+                const transaction = result.transaction;
                 _self.paymentService.updateReference(transaction,_self.userDataSession)
                 .then((response) => {
-                  _self.loading.dismiss();
-                  _self.ngOnInit();
-                  window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
-                  if(transaction.status == 'APPROVED') {
-                    //_self.success = 'Tu pago ha sido registrado exitósamente, te enviamos un correo con el resumen de tu compra';
-                    console.log('this.redirectTo(transaction.reference)');
-                    _self.redirectTo('payment/'+transaction.reference);
-                  }
-                  else { 
-                     _self.errors = 'La transacción de pago ha sido rechazada';
-                  }
+                   _self.goToPaymentPage(transaction);
                 })
                 .catch(error => {
-                  _self.loading.dismiss();
-                  if(transaction.status == 'APPROVED') {
-                    //_self.success = 'Tu pago ha sido registrado exitósamente, en breves minutos te enviamos un correo con el resumen de tu compra';
-                    _self.redirectTo('payment/'+transaction.reference);
-                  }
-                  else { 
-                     _self.errors = 'La transacción de pago ha sido rechazada';
-                  }
+                  _self.goToPaymentPage(transaction);
                 })    
            })
          },
@@ -209,7 +187,20 @@ export class ShoppingCartComponent implements OnInit {
   closeModal() {
     this.modalCtrl.dismiss();
   }
-
+  
+  goToPaymentPage(transaction){
+      this.loading.dismiss();
+      window.dispatchEvent(new CustomEvent( 'user:shoppingCart'));
+      if(transaction.status == 'APPROVED') {
+        //_self.success = 'Tu pago ha sido registrado exitósamente, te enviamos un correo con el resumen de tu compra';
+        this.closeModal();
+        this.redirectTo('payment/'+transaction.reference);
+      }
+      else { 
+         this.errors = 'La transacción de pago ha sido rechazada';
+      }
+  }
+  
   addAmount(shoppingCart) {
     if(shoppingCart.amount < 11) {
       

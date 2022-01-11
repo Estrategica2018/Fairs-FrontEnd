@@ -116,9 +116,6 @@ const routes: Routes = [
         loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
   {
-    path: 'meeting/:meetingId',
-    loadChildren: () => import('./pages/meeting/meeting.module').then( m => m.MeetingPageModule)
-  },  {
     path: 'payment/:referenceId',
     loadChildren: () => import('./pages/payment/payment.module').then( m => m.PaymentPageModule)
   },
@@ -127,16 +124,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/speaker-list/speaker-list.module').then(m => m.SpeakerListModule)
   },
   {
-    path: 'speakers/session/:sessionId',
-    loadChildren: () => import('./pages/session-detail/session-detail.module').then(m => m.SessionDetailModule)
-  },
-  {
     path: 'speakers/speaker-details/:speakerId',
     loadChildren: () => import('./pages/speaker-detail/speaker-detail.module').then(m => m.SpeakerDetailModule)
-  },
-  {
-    path: 'schedule/session/:sessionId',
-    loadChildren: () => import('./pages/session-detail/session-detail.module').then(m => m.SessionDetailModule)
   },
   {
     path: 'news',

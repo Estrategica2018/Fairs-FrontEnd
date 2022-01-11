@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsersService } from './../../api/users.service';
@@ -37,6 +37,8 @@ export class LoginComponent  implements OnInit {
   singupConfirmMsg: any;
   emailActivateError: any;
   emailSingConfirm: any;
+  
+  @ViewChildren('digitSix') digitSix: any;
 
   constructor(
     private router: Router,
@@ -266,6 +268,7 @@ export class LoginComponent  implements OnInit {
   }
 
   onLogin(userData, fair_id) {
+	  this.loading.present({message:'Cargando...'});
       this.usersService.login(userData.email,userData.password, fair_id)
       .subscribe(
         data => {
@@ -276,6 +279,7 @@ export class LoginComponent  implements OnInit {
             });
         },
         error => {
+			this.loading.dismiss();
             this.errors = error;
       });
   }
@@ -484,13 +488,18 @@ export class LoginComponent  implements OnInit {
     this.loading.present({message:'Cargando...'});
     
     let code = this.singupConfirmForm.value['item1'] + this.singupConfirmForm.value['item2'] + this.singupConfirmForm.value['item3'] + this.singupConfirmForm.value['item4'] + this.singupConfirmForm.value['item5'] + this.singupConfirmForm.value['item6'];
-    console.log(code);
+    
     this.usersService.singupValidate(this.emailSingConfirm, code)
     .then(data => {
-        if(data.success === 201) {
+		if(data.error ) {
+			this.loading.dismiss();
+			this.errors = data.message;
+		}
+        else if(data.success === 201) {
             //this.loading.dismiss();
             this.errors = null;
-            this.success = 'Codigo validado exitósamente';
+            this.success = 'Código validado exitósamente';
+			
             this.onSingup();
         }
         else {
@@ -527,7 +536,7 @@ export class LoginComponent  implements OnInit {
               this.errors = 'Correo electrónico ya registrado';
             }
             else {
-                this.errors = 'Consultando el servicio para creación del usuario';
+              this.errors = 'Consultando el servicio para creación del usuario';
             }
         }
     },
@@ -535,6 +544,51 @@ export class LoginComponent  implements OnInit {
         this.loading.dismiss();
         this.errors = error;
     });
+  }
+  
+  paste(event){
+    
+    let clipboardData = event.clipboardData || (<any>window).clipboardData; //typecasting to any
+    let pastedText = clipboardData.getData('text');	
+	
+	if(pastedText.length == 6 ) {
+       this.singupConfirmForm = this.formBuilder.group({
+          item1: [pastedText[0], [Validators.required, Validators.maxLength(1)]],
+          item2: [pastedText[1], [Validators.required, Validators.maxLength(1)]],
+          item3: [pastedText[2], [Validators.required, Validators.maxLength(1)]],
+          item4: [pastedText[3], [Validators.required, Validators.maxLength(1)]],
+          item5: [pastedText[4], [Validators.required, Validators.maxLength(1)]],
+          item6: [pastedText[5], [Validators.required, Validators.maxLength(1)]]
+       });
+	}
+	 
+  }
+  
+  onDigitInput(event){
+
+	let element;
+    
+    if (event.code !== 'Backspace') {
+        
+		if(this.digitSix.last.nativeElement !== event.srcElement ) {
+		   
+			for(let i=0; i < this.digitSix._results.length; i++) {
+			  if(event.srcElement == this.digitSix._results[i].nativeElement) {
+				 element = this.digitSix._results[i+1].nativeElement;
+				 break;
+			  }
+			}
+		}
+	}
+    if (event.code === 'Backspace') {
+        element = event.srcElement.previousElementSibling;
+	}
+    if(element == null) {
+        return;
+	}
+    else {
+        element.focus();
+	}
   }
 
 }

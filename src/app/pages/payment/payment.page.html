@@ -50,7 +50,7 @@
             
            <ion-row class="name border-line ion-text-center mb-3" *ngIf="shoppingCart.agenda">
             <ion-col size="4" class="d-flex">
-              <img class="product-image" [src]="shoppingCart.agenda.resources.url_image">
+              <img class="product-image" [src]="shoppingCart.agenda.category.resources.image">
               <div class="ion-text-left ml-4">
                   {{ shoppingCart.agenda.title}}
               </div>
