@@ -152,7 +152,7 @@ export class SchedulePage implements OnInit {
         for (let agenda of this.dataInitMeetings) {
             agenda.hide  = false;
             const time = this.datepipe.transform(new Date( agenda.start_at ), 'yyyy-MM-dd');
-            const month = Number(this.datepipe.transform(new Date( agenda.start_at ), 'MM'))  - 1;
+            const month = Number(this.datepipe.transform(new Date( agenda.start_at ), 'MM'));
             const hour = new Date( agenda.start_at ).getHours();
             const strHour = hour > 12 ? ( hour - 12 < 10 ? '0'+(hour-12) : (hour - 12 )) : ( hour < 10 ? '0'+hour : hour);
             const strSignature = hour > 12 ? 'PM' : 'AM';
