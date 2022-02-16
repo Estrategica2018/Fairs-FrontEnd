@@ -313,6 +313,7 @@ export class AgendaPage implements OnInit {
               .then((response) => {
                 this.success = `Agenda borrada exitosamente`;
                 this.fairsService.refreshCurrentFair();
+				this.agendasService.refreshCurrentAgenda();
                 this.redirectTo(`/super-admin/fair`);
               },
               (error) => {
