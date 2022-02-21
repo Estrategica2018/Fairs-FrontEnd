@@ -21,7 +21,7 @@ export class UsersService {
   }
 
   login(email: string, password: string, fair_id: string): Observable<any> {
-    return this.http.post(`${this.url}/api/login`, {email: email, password: password, fair_id: fair_id})
+    return this.http.post(`/api/login`, {email: email, password: password, fair_id: fair_id})
    .pipe(
       timeout(10000),
       catchError((e: any) => {
@@ -64,7 +64,7 @@ export class UsersService {
       })
     };
 
-    return this.http.post(`${this.url}/api/logout`,{},httpOptions)
+    return this.http.post(`/api/logout`,{},httpOptions)
    .pipe(
       timeout(2000),
       catchError((e: any) => {
@@ -84,7 +84,7 @@ export class UsersService {
   signup(userData: any): Promise<any> {
     return new Promise((resolve, reject) => {
         userData.origin = window.location.origin;
-        this.http.post(`${this.url}/api/user/create`,userData)
+        this.http.post(`/api/user/create`,userData)
        .pipe(
           timeout(2000),
           catchError((e: any) => {
@@ -139,7 +139,7 @@ export class UsersService {
       })
     };
 
-    return this.http.post(`${this.url}/api/user/update`,userData, httpOptions)
+    return this.http.post(`/api/user/update`,userData, httpOptions)
    .pipe(
       timeout(2000),
       catchError((e: any) => {
@@ -160,7 +160,7 @@ export class UsersService {
 
   recoverPassword(data): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.post(`${this.url}/api/password/create`,data)
+      this.http.post(`/api/password/create`,data)
        .pipe(
           timeout(30000),
           catchError((e: any) => {
@@ -198,7 +198,7 @@ export class UsersService {
 
   findPassword(token): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.get(`${this.url}/api/password/find/${token}`)
+      this.http.get(`/api/password/find/${token}`)
        .pipe(
           timeout(30000),
           catchError((e: any) => {
@@ -233,7 +233,7 @@ export class UsersService {
 
   resetPassword(data): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.post(`${this.url}/api/password/reset`,data)
+      this.http.post(`/api/password/reset`,data)
         .pipe(
           timeout(30000),
           catchError((e: any) => {
@@ -297,7 +297,7 @@ export class UsersService {
   
   findEmail(email: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        this.http.get(`${this.url}/api/user/find/${email}`)
+        this.http.get(`/api/user/find/${email}`)
        .pipe(
           timeout(2000),
           catchError((e: any) => {
@@ -318,7 +318,7 @@ export class UsersService {
 
   sendSignConfirm(email: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        this.http.get(`${this.url}/api/user/sendSignConfirm/${email}`)
+        this.http.get(`/api/user/sendSignConfirm/${email}`)
        .pipe(
           timeout(12000),
           catchError((e: any) => {
@@ -339,7 +339,7 @@ export class UsersService {
   
   singupValidate(email: string, code: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        this.http.get(`${this.url}/api/user/sendSignConfirm/validate/${email}/${code}`)
+        this.http.get(`/api/user/sendSignConfirm/validate/${email}/${code}`)
        .pipe(
           timeout(2000),
           catchError((e: any) => {

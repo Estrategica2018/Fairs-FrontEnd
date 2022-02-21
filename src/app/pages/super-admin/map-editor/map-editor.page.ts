@@ -372,8 +372,9 @@ export class MapEditorPage implements OnInit {
                if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
                if(banner.productCatalog.titleTop > 0) banner.productCatalog.titleTop /= deltaW;
                if(banner.productCatalog.descTop > 0) banner.productCatalog.descTop /= deltaW;
-               if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
+			   if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
                if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
+			   if(banner.productCatalog.descHeigth > 0) banner.productCatalog.descHeigth /= deltaW;
                if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
                //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
                
@@ -643,7 +644,9 @@ export class MapEditorPage implements OnInit {
       case 'SpeakerCatalog':
           banner = { "size":{"x":428,"y":237},
             "position": this.getNewPosition({"x":64,"y":29}),
-            "speakerCatalog":{"nameFontSize":24,"nameFontColor":"#ffffff","nameTop":26,"nameLeft":225,"nameFontFamily":"YoutubeSansMedium","nameFontWeight":"100","descTop":139,"descLeft":198,"descWidth":208,"descFontSize":14,"descTextAlign":"justify","lineHeightMili":0,"lineHeightUnit":1,"lineHeight":1,"descFontFamily":"YoutubeSansLight","descFontWeight":100,"titleFontColor":"#000","titleFontFamily":"YoutubeSansMedium","titleFontSize":19,"titleFontWeight":"bold","titleLeft":0,"titleTop":113,"imagesTop":0,"imagesLeft":0,"imagesWidth":187,"imagesHeight":224,"imagesPriceWidth":16,"imagestitleWidth":null,"priceTop":38,"priceLeft":27,"priceFontColor":"#ff1a1a","nameWidth":177,"nameHeight":0,"logoLeft":142,"logoTop":26,"logoWidth":74,"logoHeight":69,"professionFontColor":"#ffffff","professionTop":97,"professionLeft":199,"descFontColor":"","professionFontSize":15},"backgroundColor":"#109be0",
+            "speakerCatalog":{"nameFontSize":24,"nameFontColor":"#ffffff","nameTop":26,"nameLeft":225,"nameFontFamily":"YoutubeSansMedium","nameFontWeight":"100",
+			"descHeigth": 69,
+			"descTop":139,"descLeft":198,"descWidth":208,"descFontSize":14,"descTextAlign":"justify","lineHeightMili":0,"lineHeightUnit":1,"lineHeight":1,"descFontFamily":"YoutubeSansLight","descFontWeight":100,"titleFontColor":"#000","titleFontFamily":"YoutubeSansMedium","titleFontSize":19,"titleFontWeight":"bold","titleLeft":0,"titleTop":113,"imagesTop":0,"imagesLeft":0,"imagesWidth":187,"imagesHeight":224,"imagesPriceWidth":16,"imagestitleWidth":null,"priceTop":38,"priceLeft":27,"priceFontColor":"#ff1a1a","nameWidth":177,"nameHeight":0,"logoLeft":142,"logoTop":26,"logoWidth":74,"logoHeight":69,"professionFontColor":"#ffffff","professionTop":97,"professionLeft":199,"descFontColor":"","professionFontSize":15},"backgroundColor":"#109be0",
             "class":"rounded-withradius grayscale cursor-pointer","fontColor":"#ffffff"};
           banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
       break;

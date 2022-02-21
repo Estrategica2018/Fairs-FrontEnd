@@ -374,7 +374,8 @@
                  [ngStyle]="{
                   'font-size': banner.speakerCatalog.descFontSize + 'px',
                   'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
-                  
+                  'height': banner.speakerCatalog.descHeigth + 'px',
+				  'overflow': 'hidden',
                   'top': banner.speakerCatalog.descTop + 'px',
                   'left': banner.speakerCatalog.descLeft + 'px',
                   'width': banner.speakerCatalog.descWidth + 'px',
@@ -1180,6 +1181,17 @@
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
+          <ion-toolbar>
+             <ion-buttons slot="start">
+                <ion-card-subtitle> Largo </ion-card-subtitle>
+             </ion-buttons>
+             <ion-buttons slot="end">
+                <ion-card-subtitle>
+                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="bannerSelect.speakerCatalog.descHeigth"/> px
+                </ion-card-subtitle>
+             </ion-buttons>
+          </ion-toolbar>
+
           <ion-toolbar>
              <ion-buttons slot="start">
                 <ion-card-subtitle> Tamaño de letra 

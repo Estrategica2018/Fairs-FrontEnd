@@ -297,6 +297,9 @@ export class ScheduleDetailComponent {
            this.errors = error;
         });
     }
+	else {
+		this.showRegister = true;
+	}
       
   }  
  

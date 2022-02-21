@@ -59,7 +59,9 @@ export class FairsService {
         return new Promise((resolve, reject) => {
             try {
                 if(environment.production ) {
-                     this.fairName = window.location.href.split('.')[0].replace('http://','').replace('https://','');
+					 let url = window.location.href;
+					 url = url.replace('https:','').replace('http:','').replace('//www.','').replace('//','');
+					 this.fairName = url.split('.')[0];
                 }
                 else {
                    this.fairName = environment.fairName;
@@ -139,7 +141,8 @@ export class FairsService {
                   resolve(data);
                 }
                 else {
-                  reject(JSON.stringify(data));
+				  console.log(data);	
+                  reject("Error enviando el mensaje al correo electrónico");
                 }
             },error => {
                 reject(error)

@@ -17,6 +17,7 @@ import { SignupComponent } from './pages/signup/signup.component';
 import { LoginComponent } from './pages/login/login.component';
 import { TermsPage } from './pages/terms/terms.page';
 import { AccountComponent } from './pages/account/account.component';
+import { AgendasService } from './api/agendas.service';
 
 @Component({
   selector: 'app-root',
@@ -41,6 +42,7 @@ export class AppComponent implements OnInit {
   menuHidden = false;
   menuHiddenAnt = 0;
   modal = null;
+  showAgenda = false;
   
   constructor(
     private alertCtrl: AlertController,
@@ -59,7 +61,8 @@ export class AppComponent implements OnInit {
     private pavilionsService: PavilionsService,
     private titleService: Title,
     private menuCtrl: MenuController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+	private agendasService: AgendasService
   ) {
     this.initializeApp();
     this.initializeFair();
@@ -72,6 +75,14 @@ export class AppComponent implements OnInit {
         this.fair = fair;
         this.getShoppingCart();
         this.titleService.setTitle(this.fair.description);
+		
+		this.agendasService.list()
+        .then((data) => {
+			this.showAgenda = data.length > 0;
+         }, error => {
+            this.showAgenda = false;
+         });
+		
       },(e: any)=> console.log(e));
   }
 
@@ -205,9 +216,9 @@ export class AppComponent implements OnInit {
   }
 
   openTutorial() {
-    this.menu.enable(false);
-    this.storage.set('ion_did_tutorial', false);
-    this.router.navigateByUrl(`/tutorial`);
+    //this.menu.enable(false);
+    this.storage.set('ion_did_tutorial', true);
+    //this.router.navigateByUrl(`/tutorial`);
   }
   
   onChangeDarkModel() {

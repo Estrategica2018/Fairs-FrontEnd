@@ -124,7 +124,7 @@
         </ion-menu-toggle>
         </ion-list>
         <ion-list lines="none" class="border-botton">
-          <ion-menu-toggle autoHide="false">
+          <ion-menu-toggle autoHide="false" *ngIf="showAgenda">
             <ion-item 
             (click)="showPavilionDetail = null"
             routerLink="/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
@@ -144,13 +144,13 @@
               </ion-label>
             </ion-item>
           </ion-menu-toggle-->
-          <ion-menu-toggle auto-hide="false">
+          <!--ion-menu-toggle auto-hide="false">
             <ion-item (click)="showPavilionDetail = null"
             routerLink="/news" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" name="newspaper-outline"></ion-icon>
               <ion-label class="menu-label">Noticias</ion-label>
             </ion-item>
-          </ion-menu-toggle>
+          </ion-menu-toggle-->
         </ion-list>
         <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
           <ion-menu-toggle autoHide="false">
@@ -185,7 +185,7 @@
         </ion-list>
         
         <!--ion-list class="border-botton ion-text-center nav-title"-->
-        <ion-list lines="none" class="border-botton">
+        <!--ion-list lines="none" class="border-botton">
           <ion-menu-toggle auto-hide="false">
             <ion-item routerLink="/app/tabs/library" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" name="albums-sharp"></ion-icon>
@@ -204,9 +204,9 @@
               <ion-label class="menu-label">Lo mejor de la feria</ion-label>
             </ion-item>
           </ion-menu-toggle>
-        </ion-list>
+        </ion-list-->
         
-        <ion-list lines="none">
+        <!--ion-list lines="none">
           <ion-list-header>
             Tutorial
           </ion-list-header>
@@ -227,7 +227,7 @@
                 
           </ion-menu-toggle>
 
-        </ion-list>
+        </ion-list-->
       
         <ion-list class="border-botton ion-text-center">  
           <ion-item>
@@ -292,14 +292,14 @@
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
+          <!--ion-menu-toggle auto-hide="false">
             <ion-item (click)="showPavilionDetail = null"
             class="width-icon p-0"
             routerLink="/news" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" name="newspaper-outline"></ion-icon>
               <ion-label class="menu-label">Noticias</ion-label>
             </ion-item>
-          </ion-menu-toggle>
+          </ion-menu-toggle-->
         </ion-list>
         
 
@@ -338,7 +338,7 @@
         </ion-list>
         
         <!--ion-list class="border-botton ion-text-center nav-title"-->
-        <ion-list lines="none" class="border-botton">
+        <!--ion-list lines="none" class="border-botton">
           <ion-menu-toggle auto-hide="false">
             <ion-item routerLink="/app/tabs/library" routerLinkActive="selected" routerDirection="root" detail="false">
               <ion-icon slot="start" name="albums-sharp"></ion-icon>
@@ -357,7 +357,7 @@
               <ion-label class="menu-label">Lo mejor de la feria</ion-label>
             </ion-item>
           </ion-menu-toggle>
-        </ion-list>
+        </ion-list-->
       </ion-content>
       
     </ion-menu>
