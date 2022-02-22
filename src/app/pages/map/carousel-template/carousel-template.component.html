@@ -28,10 +28,8 @@
 
 
 <!--div class="dsc-carousel" [ngStyle]="{'min-height': finalHeight}"-->
-<div class="dsc-carousel">
+<!--div class="dsc-carousel">
     <div class="dsc-carousel__btns">
-        <!--i class="fa fa-chevron-circle-left" (click)="setBack()"></i>
-        <i class="fa fa-chevron-circle-right" (click)="setNext()"></i-->
     </div>
     <div class="dsc-carousel__content">
         <ng-container *ngFor="let section of items; let i = index;">
@@ -50,4 +48,34 @@
             *ngFor="let item of items" (click)="setCurrentPosition(item.id)">
         </div>
     </div>
+</div-->
+
+
+
+<div class="swiper">
+  <!-- Additional required wrapper -->
+  <div class="swiper-wrapper">
+    <!-- Slides -->
+    <div class="swiper-slide" *ngFor="let item of items">
+	
+	  <img *ngIf="item.url" src="{{item.url}}" alt=""/>
+      <div *ngIf="item.product" class="product" (click)="goToProduct(item.product)" >
+        <img src="{{item.product.url_image}}" alt="" [ngStyle]="{'height': banner.size.y + 'px'}"/>
+        <div class="position-absolute" style="top:0px; left: 0px;" [ngStyle]="{'color': banner.fontColor}">
+          {{item.product.name}}
+         </div>
+      </div>
+	
+	</div>
+    
+  </div>
+  <!-- If we need pagination -->
+  <div class="swiper-pagination"></div>
+
+  <!-- If we need navigation buttons -->
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+
+  <!-- If we need scrollbar -->
+  <div class="swiper-scrollbar"></div>
 </div>

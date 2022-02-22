@@ -3,6 +3,8 @@ import {Output, EventEmitter} from '@angular/core';
 import { ProductsService } from '../../../api/products.service';
 import { IonSlides } from "@ionic/angular";
 
+declare var Swiper;
+
 @Component({
   selector: 'app-carousel-template',
   templateUrl: './carousel-template.component.html',
@@ -26,6 +28,26 @@ export class CarouselTemplateComponent {
   constructor(private productsService: ProductsService) { }
 
   initialize() {
+	  
+	  
+	  
+const swiper = new Swiper('.swiper', {
+  // Optional parameters
+  direction: 'horizontal',
+  loop: true,
+
+  // If we need pagination
+  pagination: {
+    el: '.swiper-pagination',
+  },
+
+  // Navigation arrows
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+
+});
       
     if(this.ionSlides) this.ionSlides.update();
     this.items = [];

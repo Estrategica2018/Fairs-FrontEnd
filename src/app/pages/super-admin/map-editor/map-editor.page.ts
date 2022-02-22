@@ -1012,7 +1012,7 @@ export class MapEditorPage implements OnInit {
     let scene, pavilion, stand;
     for(let i=0; i<this.fair.resources.scenes.length; i++) {
         scene = this.fair.resources.scenes[i];
-        this.internalUrlList.fair.push({'label':'Escena - ' + (i+1), 'value':`/map/fair/${i}`});
+        this.internalUrlList.fair.push({'label':'Escena - ' + (i+1) + ': ' + scene.title, 'value':`/map/fair/${i}`});
     }
     for(let i=0; i<this.fair.pavilions.length; i++) {
         pavilion = this.fair.pavilions[i];

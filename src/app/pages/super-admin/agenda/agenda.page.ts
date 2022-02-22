@@ -236,14 +236,14 @@ export class AgendaPage implements OnInit {
 
   onUpdateAgenda() {
     this.loading.present({message:'Cargando...'});
-    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'] + ':00Z';
-    //const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').valueOf();
+    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'];
+    const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').add(-5, 'hours').format('YYYY-MM-DDTHH:mm');
     
     const data = { 
       'id': this.agenda.id,
       'topic': this.agendaForm.value['title'],
       'agenda': this.agendaForm.value['description'],
-      'start_time': startTimeStr,
+      'start_time': startTime,
       'duration_time': this.agendaForm.value['duration_time'],
       'timezone': this.agendaForm.value['timezone'],
       'category_id': this.agendaForm.value['category'],
