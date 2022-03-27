@@ -58,7 +58,7 @@ export class ScheduleDetailComponent {
     private fairsService: FairsService,
     private toastCtrl: ToastController,
     private formBuilder: FormBuilder,
-	private dom:DomSanitizer,
+    private dom:DomSanitizer,
   ) {   
   }
   
@@ -174,13 +174,14 @@ export class ScheduleDetailComponent {
     
     const strDay = this.datepipe.transform(new Date(agenda.start_at), 'EEEE, MMMM d, y');
     const startHour = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
-    const endHour = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
+    const endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
+  
     const location = agenda.room ? agenda.room.name : '';
         
     this.session = Object.assign({
       "strDay": strDay,
-      "timeStart": startHour,
-      "timeEnd": endHour,
+      "startTime": startHour,
+      "endTime": endTime,
       "location": location
     },agenda);
     
@@ -297,9 +298,9 @@ export class ScheduleDetailComponent {
            this.errors = error;
         });
     }
-	else {
-		this.showRegister = true;
-	}
+    else {
+        this.showRegister = true;
+    }
       
   }  
  

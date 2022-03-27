@@ -17,7 +17,7 @@
                   <ion-row>
                     <ion-col>
                       <div>
-                        <img [src]="session.category?.resources?.image"/>
+                        <img [src]="session.category?.resources?.url_image"/>
                         <br/>
                         <ion-item [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color,'color': session.category?.color}"> 
                         <ion-label class="ml-4 text-uppercase"> {{session?.category?.name}}</ion-label>
@@ -62,7 +62,7 @@
                           <ion-text color="medium" style="text-transform: capitalize;">
                           {{session.strDay}}
                           <br />
-                          {{session.timeStart}} &ndash; {{session.timeEnd}}
+                          {{session.startTime}} &ndash; {{session.endTime}}
                           <span>{{session.timezone}}</span>
                           <br /> {{session.location}}
                            </ion-text>
@@ -127,29 +127,29 @@
               </ion-row>
               <ion-row>
                 <ion-col>
-                  <h6 class="name ion-text-center mt-5">Dejar comentario</h6> 
+                  <h6 class="name ion-text-center mt-3">Deja tu comentario</h6> 
 
                   <form [formGroup]="contactForm" (ngSubmit)="contactSendForm(contactForm)" 
                   style="font-size: 1.3em;"
                   class="ion-text-center">
                     <p class="d-flex ml-8">
                       <span style="color: rgb(224, 62, 45);">*</span> 
-                      <span> Nombre </span>
+                      <span style="font-weight: 500;"> Nombre </span>
                     </p>
                     <input formControlName="name" type="text" class="ion-text-start ml-4  w-80">
                     <div class="contact-line"></div>
                     <p class="d-flex ml-8 mt-4">
                       <span style="color: rgb(224, 62, 45);">*</span> 
-                      <span> Correo electrónico </span>
+                      <span style="font-weight: 500;"> Correo electrónico </span>
                     </p>
                     <input formControlName="email" type="text" class="ion-text-start ml-4  w-80" >
                     <div class="contact-line"></div>
                     
                     <p class="d-flex ml-8 mt-4">
                       <span style="color: rgb(224, 62, 45);">*</span> 
-                      <span> Asunto </span>
+                      <span style="font-weight: 500;"> Asunto </span>
+					  <input formControlName="subject" type="text" class=" ion-text-start ml-4" style="width: 78%;">
                     </p>
-                    <input formControlName="subject" type="text" class=" ion-text-start ml-4  w-80">
                     <div class="contact-line"></div>
                     
                     <textarea placeholder="Mensaje" type="text" 
@@ -161,7 +161,7 @@
                     class="ml-8" style="text-align: left;"
                     > caracteres {{contactForm?.value?.message?.length}} / 500</div>
                     
-						<ion-button color="primary" type="submit" [disabled]="!contactForm?.valid" style="margin-top: -10px;">
+                    <ion-button color="primary" type="submit" [disabled]="!contactForm?.valid" style="margin-top: -10px;">
                       <ion-label> Enviar Mensaje</ion-label>
                       <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
                     </ion-button>

@@ -1,0 +1,59 @@
+<ion-grid [ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }">
+  
+  <ion-row *ngFor="let row of scene?.rows; let indexRow = index" style="min-height: 6em;">
+    <ion-col size="{{ ( windowScreenSm ? '12' : row.cols.length == 2 && windowScreenLg ? '6' : '' ) }}" 
+	*ngFor="let col of row.cols; let indexCol = index" 
+	class="d-flex" [ngClass]="{'center':col.align=='center'}" 
+	[ngStyle]="{
+		'background-color': scene.styles?.backgroundColor,
+		'width': scene.styles?.width + 'em',
+		'height': scene.styles?.height + 'em',
+		'margin-top': scene.styles?.marginTop + 'em'
+    }">
+	    <div *ngFor="let banner of col.banners" 
+		  [ngStyle]="{
+		    'background-color': banner.styles?.backgroundColor,
+		    'width': ( !banner.styles || banner.styles && ( !banner.styles.width || banner.styles.width === '100%' ) ) ? '100%' : banner.styles?.width + 'em',
+			'height': ( !banner.styles || banner.styles && ( !banner.styles.height || banner.styles.height === '100%' ) ) ? '100%' : banner.styles?.height + 'em',
+			'margin-top': banner.styles?.marginTop + 'em',
+			'margin-left': banner.styles?.marginLeft + 'em',
+			'text-align': banner.styles?.textAlign,
+			'position': banner.styles?.position?.type,
+			'top': banner.styles?.position?.top + 'em',
+			'left': banner.styles?.position?.left + 'em'
+		  }">
+		  
+           <img *ngIf="banner.image" [src]="banner.image.src" 
+		   [ngClass]="{'cursor-pointer':editMode}"
+		   [ngStyle]="{
+		    'width': ( !banner.styles || banner.styles && ( !banner.styles.width || banner.styles.width === '100%' ) ) ? '100%' : banner.styles?.width + 'em',
+		    'height': auto,
+			'height': banner.styles?.height + 'em',
+			'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : banner.style?.opacity
+		   }"
+	       (click)="goToOnHoverBanner(banner,scene)">
+		   
+		   <h1 *ngIf="banner.text"
+		   [ngClass]="{'cursor-pointer':editMode}"
+		   [ngStyle]="{
+		     'font-size': banner.text?.fontSize + em,
+		     'color': banner.text?.color,
+			 'width': '100%',
+			 'height': banner.styles?.height + 'em',
+			 'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : banner.style?.opacity,
+		     'padding': banner.text?.padding + em
+		   }" (click)="goToOnHoverBanner(banner,scene)">
+		   {{ banner.text?.value }}
+		   </h1>
+           <app-scene-component 
+		     *ngFor="let subChild of banner?.scenes"
+		     [editMode]="editMode"
+		     [scene]="subChild" 
+		     [windowScreenSm]="windowScreenSm" 
+             [bannerSelectHover]="bannerSelectHover" 
+             (onHoverBanner)="goToOnHoverBannerReciclyer($event)">
+           </app-scene-component>
+        </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>

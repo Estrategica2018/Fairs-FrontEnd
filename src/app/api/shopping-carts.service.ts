@@ -32,7 +32,7 @@ export class ShoppingCartsService {
             
             this.http.get(`/api/list/shopping-cart/${fair.id}`,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
@@ -123,7 +123,7 @@ export class ShoppingCartsService {
        
        this.http.post(`/api/store/shopping-cart/${fair.id}`,data,httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -161,7 +161,7 @@ export class ShoppingCartsService {
            const data = {'id': shoppingCart.id, 'state':'A'};
            this.http.post(`/api/update/shopping-cart/`,data,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
@@ -199,7 +199,7 @@ export class ShoppingCartsService {
            const data = {'id': shoppingCart.id, 'amount':shoppingCart.amount};
            this.http.post(`/api/update/shopping-cart/`,data,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
@@ -235,7 +235,7 @@ export class ShoppingCartsService {
             console.log('/api/find/shopping');
             this.http.get(`/api/find/shopping-cart/${fair.id}/${referenceId}`,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {

@@ -18,7 +18,8 @@ export class AdminFairsService {
     private usersService: UsersService
   ) { }
 
-  create(agenda): Promise<any> {
+  
+  allList(): Promise<any> {
 
     return new Promise((resolve, reject) => {
         this.usersService.getUser().then((userDataSession: any)=>{ 
@@ -28,9 +29,9 @@ export class AdminFairsService {
               })
             };
 
-            this.http.post(`/api/meetings`,processDataToString(agenda),httpOptions)
+            this.http.get(`/api/fair/list_all`,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
@@ -55,8 +56,8 @@ export class AdminFairsService {
         });
     });
   }
-  
-  update(fair: any): any {
+    
+  updateFair(fair: any): any {
     return new Promise((resolve, reject) => {
         this.usersService.getUser().then((userDataSession: any)=>{
             const httpOptions = {
@@ -67,7 +68,7 @@ export class AdminFairsService {
             const newFair = processDataToString(fair);
             this.http.post(`/api/fair/update/${fair.id}`,newFair,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 const msg = (e.error && e.error.message) ? e.error.message : e.status + ' - ' + e.statusText;
                 throw new Error(`${msg}`);
@@ -85,27 +86,55 @@ export class AdminFairsService {
             });
         });
     });
-  }
-  
-  delete(agenda: any): any {
+  }  
+
+  deleteFair(fair: any): any {
+	  
     return new Promise((resolve, reject) => {
-         this.usersService.getUser().then((userDataSession: any)=>{
+        this.usersService.getUser().then((userDataSession: any)=>{
             const httpOptions = {
               headers: new HttpHeaders({
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };
-            this.http.delete(`/api/meetings/${agenda.zoom_code}`,httpOptions)
+            const newFair = processDataToString(fair);
+            this.http.post(`/api/fair/delete/${fair.id}`,newFair,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
-                console.log(e);
-                if(e.status && e.statusText) {
-                  throw new Error(`Consultando el servicio para modificar agenda: ${e.status} - ${e.statusText}`);    
+                const msg = (e.error && e.error.message) ? e.error.message : e.status + ' - ' + e.statusText;
+                throw new Error(`${msg}`);
+              })
+            )
+            .subscribe((data : any )=> {
+                if(data.success) {
+                  resolve(processData(data));
                 }
                 else {
-                  throw new Error(`Consultando el servicio para modificar agenda`);    
+                    reject(JSON.stringify(data));
                 }
+            },error => {
+                reject(error)
+            });
+        });
+    });
+  }  
+    
+  createFair(newFair: any): any {
+    return new Promise((resolve, reject) => {
+        this.usersService.getUser().then((userDataSession: any)=>{
+            const httpOptions = {
+              headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };
+            
+            this.http.post(`/api/fair/create/`,newFair,httpOptions)
+            .pipe(
+              timeout(60000),
+              catchError((e: any) => {
+                const msg = (e.error && e.error.message) ? e.error.message : e.status + ' - ' + e.statusText;
+                throw new Error(`${msg}`);
               })
             )
             .subscribe((data : any )=> {
@@ -121,5 +150,4 @@ export class AdminFairsService {
         });
     });
   }
-  
 }

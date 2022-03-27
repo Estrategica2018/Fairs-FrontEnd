@@ -29,7 +29,7 @@ export class PaymentService {
     return new Promise((resolve, reject) => {
         this.http.post(`/api/payment/generate`,data,httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -58,7 +58,7 @@ export class PaymentService {
     return new Promise((resolve, reject) => { 
         this.http.post(`/api/wompi/auth/${data.id}`,data,httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {

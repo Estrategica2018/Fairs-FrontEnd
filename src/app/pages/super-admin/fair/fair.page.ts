@@ -9,6 +9,7 @@ import { ActionSheetController, ToastController,AlertController, ModalController
 import { processData } from '../../../providers/process-data';
 import { LoadingService } from '../../../providers/loading.service';
 import { LoginComponent } from '../../login/login.component';
+import { NewSceneComponent } from './new-scene/new-scene.component';
 
 @Component({
   selector: 'app-fair',
@@ -116,8 +117,9 @@ export class FairPage implements OnInit {
             this.agendasService.list()
             .then((agendas) => {
                 this.agendas = agendas;
+				if(agendas)
                 this.agendas.forEach((agenda)=>{
-                    agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+					agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
                     agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
                     agenda.location = agenda.room ? agenda.room.name : '';
                 });
@@ -260,7 +262,7 @@ export class FairPage implements OnInit {
       this.fair.resources.scenes.forEach((scene)=>{
          let style = document.createElement('style');
          style.type = 'text/css';
-         style.innerHTML = '.customSceneCSSClass' + i + '{--ion-item-background: '+scene.backgroundColor+'}';
+         style.innerHTML = '.customSceneCSSClass' + i + '{--ion-item-background: '+scene.backgroundColor+'; background-color: '+scene.backgroundColor+'}';
          document.getElementsByTagName('head')[0].appendChild(style);
          i++;
       });
@@ -291,6 +293,26 @@ export class FairPage implements OnInit {
         '_parent': this,
         'showMenu': 'terms',
         'admin': this.userDataSession
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  }
+
+  async presentNewScene() {
+	  
+
+    if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: NewSceneComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this,
+        'userDataSession': this.userDataSession
       }
     });
     await this.modal.present();

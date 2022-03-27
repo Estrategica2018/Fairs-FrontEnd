@@ -375,7 +375,7 @@
                   'font-size': banner.speakerCatalog.descFontSize + 'px',
                   'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
                   'height': banner.speakerCatalog.descHeigth + 'px',
-				  'overflow': 'hidden',
+                  'overflow': 'hidden',
                   'top': banner.speakerCatalog.descTop + 'px',
                   'left': banner.speakerCatalog.descLeft + 'px',
                   'width': banner.speakerCatalog.descWidth + 'px',
@@ -559,7 +559,7 @@
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
-         <ion-toolbar>
+         <ion-toolbar *ngIf="scene.container">
             <ion-buttons slot="start">
                <ion-card-subtitle> Tamaño horizontal del lienzo </ion-card-subtitle>
             </ion-buttons>
@@ -569,7 +569,7 @@
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
-         <ion-toolbar>
+         <ion-toolbar *ngIf="scene.container">
             <ion-buttons slot="start">
                <ion-card-subtitle> Tamaño Vertical del lienzo </ion-card-subtitle>
             </ion-buttons>

@@ -84,7 +84,6 @@ export class AgendaPage implements OnInit {
             if(response.success == 201) {
                 this.categories = response.data;
                 
-                const agendaId = this.routeActivated.snapshot.paramMap.get('agendaId');
                 if(agendaId ) {
                   this.action = 'update';
                   
@@ -92,20 +91,21 @@ export class AgendaPage implements OnInit {
                    .then((agenda) => {
                       this.loading.dismiss();
                       this.invited_speakers = [];
-                      agenda.invited_speakers.forEach((speaker)=>{
+					  this.errors = null;
+                      this.agenda = Object.assign({},agenda);
+					  this.agenda.invited_speakers.forEach((speaker)=>{
                          this.invited_speakers.push(Object.assign({},speaker));
-                         console.log(speaker);
                       });
-                      agenda.invited_speakers = null;
-                      this.errors = null;
-                      this.agenda = agenda;
+                      this.agenda.invited_speakers = null;
                       this.agenda.duration_time = this.agenda.duration_time.toString();
                       if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
                       const start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
+                      
                       this.agenda.start_at_str = this.agenda.start_time;
                        
                       const date = start_time.substr(0,10); 
                       const hour = start_time.substr(11,5); 
+					  console.log(hour)
                       this.agendaForm = this.formBuilder.group({
                           title: [this.agenda.title, [Validators.required]],
                           description: [this.agenda.description, [Validators.required]],
@@ -125,6 +125,7 @@ export class AgendaPage implements OnInit {
                 }
                 else { 
                   this.action = 'create';
+				  
                   this.agendaForm = this.formBuilder.group({
                     title: ['', [Validators.required]],
                     description: ['', [Validators.required]],
@@ -192,19 +193,18 @@ export class AgendaPage implements OnInit {
     this.success = null;
     this.loading.present({message:'Cargando...'});
     
-    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'].substr(11,5) + ':00Z';
-    
-    //const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').valueOf();
+    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'].substr(11,5);
+    const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').format('YYYY-MM-DDTHH:mm');
     
     const data = { 
       'topic': this.agendaForm.value['title'],
       'agenda': this.agendaForm.value['description'],
-      'start_time': startTimeStr,
+      'start_time': startTime,
       'duration_time': this.agendaForm.value['duration_time'],
       'timezone': this.agendaForm.value['timezone'],
       'category_id': this.agendaForm.value['category'],
       'fair_id': this.fair.id,
-      'resources': '{"url_image":'+this.agenda.category.resources.image+'}',
+      'resources': '{}',
       'audience_config': this.agendaForm.value['audience_config'],
       'price': this.agenda.price
     };
@@ -236,9 +236,9 @@ export class AgendaPage implements OnInit {
 
   onUpdateAgenda() {
     this.loading.present({message:'Cargando...'});
-    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'];
-    const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').add(-5, 'hours').format('YYYY-MM-DDTHH:mm');
-    
+    const startTimeStr = this.agendaForm.value['date'].substr(0,10) + 'T' + this.agendaForm.value['hour'] + ':00';
+    const startTime = moment(startTimeStr,'YYYY-MM-DDTHH:mm').format('YYYY-MM-DDTHH:mm');
+  
     const data = { 
       'id': this.agenda.id,
       'topic': this.agendaForm.value['title'],
@@ -248,7 +248,7 @@ export class AgendaPage implements OnInit {
       'timezone': this.agendaForm.value['timezone'],
       'category_id': this.agendaForm.value['category'],
       'fair_id': this.fair.id,
-      'resources': '{"url_image":'+this.agenda.category.resources.image+'}',
+      'resources': '{}',
       'audience_config': this.agendaForm.value['audience_config'],
       'zoom_code': this.agenda.zoom_code,
       'price': this.agenda.price
@@ -268,6 +268,7 @@ export class AgendaPage implements OnInit {
            this.agenda.duration_time = this.agenda.duration_time.toString();
            if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
            this.agenda.start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
+           
            this.agenda.start_at_str = this.agenda.start_time;
            this.success = `Agenda modificada exitosamente`;
            this.loading.dismiss();
@@ -313,7 +314,7 @@ export class AgendaPage implements OnInit {
               .then((response) => {
                 this.success = `Agenda borrada exitosamente`;
                 this.fairsService.refreshCurrentFair();
-				this.agendasService.refreshCurrentAgenda();
+                this.agendasService.refreshCurrentAgenda();
                 this.redirectTo(`/super-admin/fair`);
               },
               (error) => {

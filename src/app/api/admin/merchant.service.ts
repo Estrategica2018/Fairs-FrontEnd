@@ -34,7 +34,7 @@ export class AdminMerchantsService {
 
       this.http.post(`/api/merchant/create`, processDataToString(data),httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             if(e.status && e.statusText) {
               const statusText = e.statusText + (e.error ? e.error.message : '');
@@ -63,7 +63,7 @@ export class AdminMerchantsService {
     return new Promise((resolve, reject) => {
       this.http.post(`/api/merchant/get_merchant`, processDataToString(data))
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             if (e.status && e.statusText) {
               const statusText = e.statusText + (e.error ? e.error.message : '');
@@ -89,7 +89,7 @@ export class AdminMerchantsService {
     return new Promise((resolve, reject) => {
       this.http.post(`/api/merchant/update`, processDataToString(data))
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             if (e.status && e.statusText) {
               const statusText = e.statusText + (e.error ? e.error.message : '');

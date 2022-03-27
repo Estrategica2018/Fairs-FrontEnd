@@ -12,6 +12,8 @@ export function processData(obj){
              obj.resources = JSON.parse(obj.resources );
           }catch(e) {
              console.log(e);
+             console.log(obj.resources);
+			 console.log(obj);
           }
         }
         if(obj.social_media && typeof obj.social_media == 'string') {
@@ -19,6 +21,8 @@ export function processData(obj){
              obj.social_media = JSON.parse(obj.social_media);
           }catch(e) {
              console.log(e);
+			 console.log(obj.social_media);
+			 console.log(obj);
           }
         }
         let objItem = null;

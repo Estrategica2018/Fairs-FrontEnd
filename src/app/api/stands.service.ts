@@ -42,7 +42,7 @@ export class StandsService {
       return new Promise((resolve, reject) => {
             this.http.get(`/api/products/find_by/?fair_id=${fairId}&pavilion_id=${pavilionId}&stand_id=${standId}&product_id=${productId}`)
                 .pipe(
-                  timeout(30000),
+                  timeout(60000),
                   catchError((e: any) => {
                     console.log(e);
                     if(e.status && e.statusText) {
@@ -68,7 +68,7 @@ export class StandsService {
 
       this.http.post(`/api/stand/contactsupport/notification`, messageData)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if ( e.status == 422) {

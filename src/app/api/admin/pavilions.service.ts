@@ -34,7 +34,7 @@ export class AdminPavilionsService {
         };
         this.http.post(`/api/pavilion/create2`, processDataToString(data),httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -72,7 +72,7 @@ export class AdminPavilionsService {
 
         this.http.post(`/api/pavilion/update/${pavilion.id}`, processDataToString(pavilion),httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -108,7 +108,7 @@ export class AdminPavilionsService {
         };
         this.http.post(`/api/pavilion/delete/${pavilion.id}`, {pavilion_id: pavilion.id},httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {

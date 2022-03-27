@@ -284,7 +284,7 @@ export class AccountComponent implements AfterViewInit {
             
             this.usersService.setUser(null).then(() => {
               window.dispatchEvent(new CustomEvent('user:logout'));
-              this.router.navigateByUrl(`/schedule`);
+              //this.router.navigateByUrl(`/schedule`);
             });
             
           },
@@ -293,7 +293,7 @@ export class AccountComponent implements AfterViewInit {
             this.errors = error;
             this.usersService.setUser(null).then(() => {
               window.dispatchEvent(new CustomEvent('user:logout'));
-              this.router.navigateByUrl(`/schedule`);
+              //this.router.navigateByUrl(`/schedule`);
             });
 
          }

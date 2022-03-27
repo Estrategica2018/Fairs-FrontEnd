@@ -1,0 +1,44 @@
+.panel-scene-select {
+  position: absolute;
+  top: 0px;
+  right: 52px;
+  width: 425px;
+  z-index: 1002;
+}
+
+.close {
+  position: absolute;
+  z-index: 2;
+  right: 19px;
+  top: 14px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--color-selected);
+}
+
+.fixed {
+  position: absolute;
+  cursor: pointer;
+  z-index: 2;
+  left: 13px;
+  top: 8px;
+  font-size: 21px;
+}
+
+.fixed:hover {
+  color: var(--color-selected);
+}
+
+.legendImgContainer {
+  cursor: pointer;
+}
+
+.legendImg {
+  display: none;
+}
+
+legendImgContainer:hover + .legendImg { display: block; }
+legendImgContainer:hover ~ .legendImg { display: block; }
+legendImgContainer:hover > .legendImg { display: block; }

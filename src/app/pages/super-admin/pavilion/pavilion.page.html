@@ -4,9 +4,23 @@
       <ion-back-button defaultHref="/super-admin/fair"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end" *ngIf="pavilion?.id">
+      <ion-button color="primary" [disabled]="!editSave" (click)="updatePavilion()">
+        Guardar
+        <ion-icon slot="start" name="save"></ion-icon>
+      </ion-button>
+
       <ion-button color="danger" (click)="deletePavilion()">
         <ion-icon slot="start" name="trash-outline"></ion-icon>
         Borrar
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" [hidden]="pavilion?.id">
+      <ion-button color="primary" [disabled]="!editSave" (click)="updatePavilion()">
+        Crear
+        <ion-icon slot="start" name="save"></ion-icon>
+      </ion-button>
+      <ion-button color="medium" (click)="cancel()">
+        Cancelar
       </ion-button>
     </ion-buttons>
     <ion-title>Administrar Pabellón</ion-title>
@@ -82,11 +96,6 @@
          <strong></strong> {{success}}
         </div>
       </ion-item>
-      
-      <ion-button class="mt-4" expand="block" [disabled]="!editSave" (click)="updatePavilion()">
-        {{this.pavilion.id? 'Guardar cambios':'Crear Pabellón'}}
-        <ion-icon slot="start" name="save"></ion-icon>
-      </ion-button>
     
     </ion-list>
 

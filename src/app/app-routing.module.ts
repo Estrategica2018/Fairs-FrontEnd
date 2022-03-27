@@ -29,9 +29,9 @@ const routes: Routes = [
     loadChildren: () => import('./pages/tabs-page/tabs-page.module').then(m => m.TabsModule)
   },
   {
-    path: 'tutorial',
-    loadChildren: () => import('./pages/tutorial/tutorial.module').then(m => m.TutorialModule),
-    canLoad: [CheckTutorial]
+    path: 'admin',
+    loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule)
+    //canLoad: [CheckTutorial]
   },
   {
     path: 'super-admin',
@@ -147,7 +147,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: false })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

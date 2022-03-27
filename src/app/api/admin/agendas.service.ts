@@ -29,7 +29,7 @@ export class AdminAgendasService {
                 };
                 this.http.post(`/api/meetings`,processDataToString(agenda),httpOptions)
                 .pipe(
-                  timeout(30000),
+                  timeout(60000),
                   catchError((e: any) => {
                     console.log(e);
                     if(e.status && e.statusText) {
@@ -65,7 +65,7 @@ export class AdminAgendasService {
                 };
                 this.http.patch(`/api/meetings/${agenda.zoom_code}`,processDataToString(agenda), httpOptions)
                 .pipe(
-                  timeout(30000),
+                  timeout(60000),
                   catchError((e: any) => {
                     console.log(e);
                     if(e.status && e.statusText) {
@@ -100,7 +100,7 @@ export class AdminAgendasService {
             };
             this.http.delete(`/api/meetings/${agenda.zoom_code}`,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
@@ -136,7 +136,7 @@ export class AdminAgendasService {
 
             this.http.get(`/api/agenda/getEmails/${fairId}/${agendaId}`,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
@@ -173,7 +173,7 @@ export class AdminAgendasService {
 
             this.http.post(`/api/speakers/meetings?fair_id=${fairId}&meeting_id=${meeting_id}`, data, httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {
@@ -209,7 +209,7 @@ export class AdminAgendasService {
 
             this.http.post(`/api/audience/meetings?fair_id=${fairId}&meeting_id=${meeting_id}`, data, httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {

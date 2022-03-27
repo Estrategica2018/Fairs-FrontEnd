@@ -24,7 +24,7 @@ export class FairsService {
     return new Promise((resolve, reject) => {
         this.http.get(`/api/fair/to_list`)
        .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText && e.statusText.indexOf('Gateway Timeout') >= 0) {
@@ -59,9 +59,9 @@ export class FairsService {
         return new Promise((resolve, reject) => {
             try {
                 if(environment.production ) {
-					 let url = window.location.href;
-					 url = url.replace('https:','').replace('http:','').replace('//www.','').replace('//','');
-					 this.fairName = url.split('.')[0];
+                     let url = window.location.href;
+                     url = url.replace('https:','').replace('http:','').replace('//www.','').replace('//','');
+                     this.fairName = url.split('.')[0];
                 }
                 else {
                    this.fairName = environment.fairName;
@@ -73,8 +73,13 @@ export class FairsService {
 
             this.list()
              .then((data) => {
-                if(data && data.success == 201 && data.data )
-                for(let fair of data.data ) {
+				 
+                if(data && data.success == 201 && data.data ) {
+				  if(this.fairName.toUpperCase() == 'ADMIN') {
+					resolve({ 'name':'admin'});
+				  }
+				  else
+                  for(let fair of data.data ) {
 
                     if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
                       this.refresTime = moment();
@@ -96,7 +101,8 @@ export class FairsService {
                       resolve(this.fair);
                       return;
                     }
-                }
+                  }
+				}
                 reject(`No se encontraron datos para la feria: ${this.fairName}`);
                 //window.location.href = SERVER_URL;
               },error => {
@@ -118,22 +124,13 @@ export class FairsService {
 
             this.http.post(`/api/fair/contactsupport/notification`,messageData)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
-                if(e.status == 422) {
-                   const error = JSON.stringify(e.error);
-                   throw new Error(`Consultando el servicio para envío de mensajes: ${error}`);
-                }
-                else if(e.error && e.error.message) {
-                  throw new Error(`Consultando el servicio para envío de mensajes: ${e.error.message}`);
-                }
-                else if(e.status && e.statusText) {
+                /*if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para envío de mensajes: ${e.status} - ${e.statusText}`);
-                }
-                else {
-                  throw new Error(`Consultando el servicio para envío de mensajes`);
-                }
+                }*/
+                throw new Error(`Consultando el servicio para envío de mensajes`);
               })
             )
             .subscribe((data : any )=> {
@@ -141,7 +138,7 @@ export class FairsService {
                   resolve(data);
                 }
                 else {
-				  console.log(data);	
+                  console.log(data);    
                   reject("Error enviando el mensaje al correo electrónico");
                 }
             },error => {
@@ -164,7 +161,7 @@ export class FairsService {
     return new Promise((resolve, reject) => {
         this.http.get(`/api/category/to_list/${type}`)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -192,7 +189,7 @@ export class FairsService {
     return new Promise((resolve, reject) => {
         this.http.post(`/api/category/create/`,category)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -220,7 +217,7 @@ export class FairsService {
         return new Promise((resolve, reject) => {
             this.http.post(`/api/category/create/`,category)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {

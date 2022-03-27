@@ -66,7 +66,7 @@ export class UsersService {
 
     return this.http.post(`/api/logout`,{},httpOptions)
    .pipe(
-      timeout(2000),
+      timeout(60000),
       catchError((e: any) => {
         if(e.status !== 401) {
            if(e.status){
@@ -141,7 +141,7 @@ export class UsersService {
 
     return this.http.post(`/api/user/update`,userData, httpOptions)
    .pipe(
-      timeout(2000),
+      timeout(3000),
       catchError((e: any) => {
         if(e.status == 401) {
            throw new Error(`Usuario ya existe`);
@@ -162,7 +162,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
       this.http.post(`/api/password/create`,data)
        .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             if(e.status == 422) {
               const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
@@ -200,7 +200,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
       this.http.get(`/api/password/find/${token}`)
        .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             if(e.status == 422) {
               const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
@@ -235,7 +235,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
       this.http.post(`/api/password/reset`,data)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             if(e.status == 422) {
               const message = e.error ? JSON.stringify(e.error) : `${e.status} - ${e.statusText}`;
@@ -276,7 +276,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
         this.http.post(`/api/payment/user/fair`,data,httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -299,7 +299,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
         this.http.get(`/api/user/find/${email}`)
        .pipe(
-          timeout(2000),
+          timeout(60000),
           catchError((e: any) => {
                if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para validación del usuario: ${e.status} - ${e.statusText}`);
@@ -320,7 +320,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
         this.http.get(`/api/user/sendSignConfirm/${email}`)
        .pipe(
-          timeout(12000),
+          timeout(60000),
           catchError((e: any) => {
                if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para validación del usuario: ${e.status} - ${e.statusText}`);
@@ -341,7 +341,7 @@ export class UsersService {
     return new Promise((resolve, reject) => {
         this.http.get(`/api/user/sendSignConfirm/validate/${email}/${code}`)
        .pipe(
-          timeout(2000),
+          timeout(60000),
           catchError((e: any) => {
                if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para validación del usuario: ${e.status} - ${e.statusText}`);

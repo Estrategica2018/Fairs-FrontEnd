@@ -90,6 +90,7 @@ export class MapPage implements OnInit {
   ngOnInit() {
     const div = document.querySelector<HTMLElement>('.div-container');
     //div.addEventListener('scroll', this.logScrolling);
+	this.initializeScreen();
   } 
   
   ngOnDestroy(): void {
@@ -100,7 +101,7 @@ export class MapPage implements OnInit {
   }
   
   ngAfterViewInit() {
-     this.initializeScreen();
+     //this.initializeScreen();
   }
   
   ngDoCheck(){
@@ -118,6 +119,10 @@ export class MapPage implements OnInit {
 
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
+		if(!this.fair.resources) {
+			this.loading.dismiss();
+			return;
+		}
         if(this.router.url.indexOf('/fair') >=0 ) {
             this.template = 'fair';
             this.scene = fair.resources.scenes[this.sceneId];
@@ -154,6 +159,11 @@ export class MapPage implements OnInit {
           });
         }
         
+		if(!this.scene) { 
+		   this.loading.dismiss();
+           this.errors = `Algo malo ha ocurrido`;
+		   return;
+		}
         this.scene.banners = this.scene.banners || [];
         this.onChangeBackgroundStyle();
         
@@ -178,10 +188,10 @@ export class MapPage implements OnInit {
         });
         
         setTimeout(() => {
+          this.loading.dismiss();
           this.initializeHtmlTexts(this.scene.banners);
           this.initializeCarousels();
-          this.loading.dismiss();
-        }, 15);
+        }, 1000);
         
         if(this.scene.menuTabs.showMenuParent) {
            this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
@@ -190,6 +200,7 @@ export class MapPage implements OnInit {
             this.tabMenuObj = this.scene.menuTabs;
         }
         
+		this.scene.container = this.scene.container || { 'w': window.innerWidth , 'h': window.innerHeight }
         this.onResize();
         
     }, error => {
@@ -586,7 +597,7 @@ export class MapPage implements OnInit {
       if(this.template == 'stand') {
           sentToEmail = this.stand.merchant.email_contact;
       }
-      const data = { 
+      const data = {
         'send_to': sentToEmail,
         'name': form.value.name,
         'email': form.value.email,

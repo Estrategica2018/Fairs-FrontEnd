@@ -15,6 +15,7 @@ import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-d
 import { SignupComponent } from '../signup/signup.component';
 import { LoginComponent } from '../login/login.component';
 import { TermsPage } from '../terms/terms.page';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'page-schedule',
@@ -139,7 +140,7 @@ export class SchedulePage implements OnInit {
          this.loading.dismiss();
       }
   }
-  
+
   
   transformSchedule() {
   
@@ -151,18 +152,17 @@ export class SchedulePage implements OnInit {
         
         for (let agenda of this.dataInitMeetings) {
             agenda.hide  = false;
-            const time = this.datepipe.transform(new Date( agenda.start_at ), 'yyyy-MM-dd');
-            const month = Number(this.datepipe.transform(new Date( agenda.start_at ), 'MM'));
-            const hour = new Date( agenda.start_at ).getHours();
-            const strHour = hour > 12 ? ( hour - 12 < 10 ? '0'+(hour-12) : (hour - 12 )) : ( hour < 10 ? '0'+hour : hour);
-            const strSignature = hour > 12 ? 'PM' : 'AM';
-            const minutes = new Date( agenda.start_at ).getMinutes();
-            const strMinutes = minutes < 10 ? '0'+minutes : minutes;
-            //const strMonth = this.datepipe.transform(new Date(agenda.start_at), 'EEEE, MMMM d, y');
+			
+			const timeZone = moment(agenda.start_at);
+			const strHour = Number(timeZone.format('HH')) === 0 ? "12" : timeZone.format('HH');
+			const strMinutes = timeZone.format('mm');
+			
+			const time = timeZone.format('YYYY-MM-DD');
+            const month = Number(timeZone.format('MM'));
+			const strSignature = Number(timeZone.format('HH')) > 12 ? 'PM' : 'AM';
+			const strYear = timeZone.format('YYYY');
             const strMonth = months[month-1];
-            const strYear = this.datepipe.transform(new Date(agenda.start_at), 'y');
-            const day = new Date( agenda.start_at ).getDate();
-            const strDay = day < 10 ? '0'  + day : day;
+            const strDay = timeZone.format('DD');
             
             let groupTemp = null;
             for (let group of this.groups) {
@@ -180,8 +180,9 @@ export class SchedulePage implements OnInit {
                 };
                 this.groups.push(groupTemp);
             }
-            const startHour = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
-            const endHour = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
+            
+            const endHour = moment(agenda.start_at).add(agenda.duration_time, 'milliseconds').format('hh:mm a');
+			
             const location = agenda.room ? agenda.room.name : '';
             
             let categoryTemp = null; 
@@ -218,8 +219,8 @@ export class SchedulePage implements OnInit {
             groupTemp.sessions.push(
                 Object.assign({
                   name: agenda.title,
-                  timeStart: startHour,
-                  timeEnd: endHour,
+                  startTime: strHour + ':' +strMinutes,
+                  endTime: endHour,
                   time: time,
                   hour: strHour,
                   minutes: strMinutes,

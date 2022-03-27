@@ -33,7 +33,7 @@ export class AdminStandsService {
             };
             this.http.post(`/api/stand/create`,processDataToString(data), httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 if(e.status && e.statusText) {
                   const statusText = e.statusText + (e.error ? e.error.message : '');
@@ -68,7 +68,7 @@ export class AdminStandsService {
             };
             this.http.post(`/api/stand/update/${stand.id}`,processDataToString(stand), httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 if(e.status && e.statusText) {
                   throw new Error(`Ejecutando el servicio para modificar local comercial: ${e.status} - ${e.statusText}`);    
@@ -102,7 +102,7 @@ export class AdminStandsService {
             };
             this.http.post(`/api/stand/delete/${stand.id}`, stand, httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {

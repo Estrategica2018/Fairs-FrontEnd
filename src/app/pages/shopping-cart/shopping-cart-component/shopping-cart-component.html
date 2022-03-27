@@ -78,13 +78,13 @@
             
            <ion-row class="name border-line ion-text-center" *ngIf="shoppingCart.agenda">
             <ion-col size="4" class="horizontal-widget">
-              <img class="product-image" [src]="shoppingCart.agenda.category?.resources.image || shoppingCart.agenda.resources?.url_image">
+              <img class="product-image" [src]="shoppingCart.agenda.category?.resources.url_image || shoppingCart.agenda.resources?.url_image">
               <div class="ion-text-left ml-4" style="font-size: 1.4em;">
                   {{ shoppingCart.agenda.title}}
               </div>
             </ion-col>
             <ion-col size="4" class="vertical-widget">
-              <img class="product-image" [src]="shoppingCart.agenda.category?.resources.image || shoppingCart.agenda.resources?.url_image">
+              <img class="product-image" [src]="shoppingCart.agenda.category?.resources.url_image || shoppingCart.agenda.resources?.url_image">
               <div class="ion-text-center mt-4" style="font-size: 1.4em;">
                 <div> 
                   {{ shoppingCart.agenda.title}}

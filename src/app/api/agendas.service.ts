@@ -30,7 +30,7 @@ export class AgendasService {
               then( fair => {
                 this.http.get(`/api/agenda/list?fair_id=${fair.id}`)
                 .pipe(
-                  timeout(30000),
+                  timeout(60000),
                   catchError((e: any) => {
                     console.log(e);
                     if(e.status && e.statusText) {
@@ -90,7 +90,7 @@ export class AgendasService {
   
        this.http.get(`/api/meeting/generate-video-token/${fair_id}/${meeting_id}`,httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {

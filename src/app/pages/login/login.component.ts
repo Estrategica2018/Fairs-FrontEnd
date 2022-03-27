@@ -165,7 +165,8 @@ export class LoginComponent  implements OnInit {
       then( fair => {
           const password = this.loginForm.value['password'];
           const email = this.loginForm.value['email'];
-          this.usersService.login(email,password, this.fair.id)
+		  const fairId = this.fair.id || this.fair.name;
+          this.usersService.login(email,password, fairId)
           .subscribe(
             data => {
                 this.loading.dismiss();
@@ -268,7 +269,7 @@ export class LoginComponent  implements OnInit {
   }
 
   onLogin(userData, fair_id) {
-	  this.loading.present({message:'Cargando...'});
+      this.loading.present({message:'Cargando...'});
       this.usersService.login(userData.email,userData.password, fair_id)
       .subscribe(
         data => {
@@ -279,7 +280,7 @@ export class LoginComponent  implements OnInit {
             });
         },
         error => {
-			this.loading.dismiss();
+            this.loading.dismiss();
             this.errors = error;
       });
   }
@@ -491,15 +492,15 @@ export class LoginComponent  implements OnInit {
     
     this.usersService.singupValidate(this.emailSingConfirm, code)
     .then(data => {
-		if(data.error ) {
-			this.loading.dismiss();
-			this.errors = data.message;
-		}
+        if(data.error ) {
+            this.loading.dismiss();
+            this.errors = data.message;
+        }
         else if(data.success === 201) {
             //this.loading.dismiss();
             this.errors = null;
             this.success = 'Código validado exitósamente';
-			
+            
             this.onSingup();
         }
         else {
@@ -549,9 +550,9 @@ export class LoginComponent  implements OnInit {
   paste(event){
     
     let clipboardData = event.clipboardData || (<any>window).clipboardData; //typecasting to any
-    let pastedText = clipboardData.getData('text');	
-	
-	if(pastedText.length == 6 ) {
+    let pastedText = clipboardData.getData('text');    
+    
+    if(pastedText.length == 6 ) {
        this.singupConfirmForm = this.formBuilder.group({
           item1: [pastedText[0], [Validators.required, Validators.maxLength(1)]],
           item2: [pastedText[1], [Validators.required, Validators.maxLength(1)]],
@@ -560,35 +561,35 @@ export class LoginComponent  implements OnInit {
           item5: [pastedText[4], [Validators.required, Validators.maxLength(1)]],
           item6: [pastedText[5], [Validators.required, Validators.maxLength(1)]]
        });
-	}
-	 
+    }
+     
   }
   
   onDigitInput(event){
 
-	let element;
+    let element;
     
     if (event.code !== 'Backspace') {
         
-		if(this.digitSix.last.nativeElement !== event.srcElement ) {
-		   
-			for(let i=0; i < this.digitSix._results.length; i++) {
-			  if(event.srcElement == this.digitSix._results[i].nativeElement) {
-				 element = this.digitSix._results[i+1].nativeElement;
-				 break;
-			  }
-			}
-		}
-	}
+        if(this.digitSix.last.nativeElement !== event.srcElement ) {
+           
+            for(let i=0; i < this.digitSix._results.length; i++) {
+              if(event.srcElement == this.digitSix._results[i].nativeElement) {
+                 element = this.digitSix._results[i+1].nativeElement;
+                 break;
+              }
+            }
+        }
+    }
     if (event.code === 'Backspace') {
         element = event.srcElement.previousElementSibling;
-	}
+    }
     if(element == null) {
         return;
-	}
+    }
     else {
         element.focus();
-	}
+    }
   }
 
 }

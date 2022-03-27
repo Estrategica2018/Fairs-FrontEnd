@@ -19,7 +19,7 @@
       <form [formGroup]="agendaForm" (ngSubmit)="onSave()"  [ngClass]="{'mt-3': !errors && !success }">
 
       <ion-item class="padding-container agenda-logo mt-4" *ngIf="agenda && agenda.category" button="true">
-        <img [src]="agenda?.category?.resources?.image" *ngIf="agenda.category.resources && agenda.category.resources.image">
+        <img [src]="agenda?.category?.resources?.url_image" *ngIf="agenda.category.resources && agenda.category.resources.url_image">
       </ion-item>
       
       <ion-grid>

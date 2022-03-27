@@ -19,6 +19,7 @@ export class PavilionPage implements OnInit {
   success: string = null;
   editSave = false;
   fair = null;
+  url: string;
   
   constructor(
     private pavilionsService: PavilionsService,
@@ -28,7 +29,11 @@ export class PavilionPage implements OnInit {
     private alertCtrl: AlertController,
     private fairsService: FairsService,
     private router: Router
-    ) { }
+    ) { 
+	
+	this.url = window.location.origin;
+	
+	}
 
   ngDoCheck(){
     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
@@ -50,9 +55,7 @@ export class PavilionPage implements OnInit {
                 this.stands.push(Object.assign({},stand)); 
               });
               
-              console.log(this.stands);
               this.fair = response.fair;
-              
               this.loading.dismiss();
           })
           .catch(error => {
@@ -93,17 +96,7 @@ export class PavilionPage implements OnInit {
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
           //this.redirectTo(`/super-admin/pavilion/${pavilion.id}`);
-          this.pavilionsService.get(pavilion.id)
-           .then((response) => {
-              this.pavilion = response.pavilion;
-              this.stands = this.pavilion.stands;
-              this.fair = response.fair;
-              this.loading.dismiss();
-          })
-          .catch(error => {
-             this.loading.dismiss();
-             this.errors = error;
-          });
+          window.location.replace(`${this.url}/Fair-website/#/super-admin/pavilion/${pavilion.id}`);
       })
       .catch(error => {
         this.loading.dismiss();
@@ -121,8 +114,10 @@ export class PavilionPage implements OnInit {
           this.success = `Pabellón creado exitosamente`;
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
-          this.redirectTo(`/super-admin/pavilion/${pavilion.id}`);
+          //this.redirectTo(`/super-admin/pavilion/${pavilion.id}`);
           //window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
+		  const detail = {'type': 'scenePavilion', 'iScene': pavilion.id };
+		  window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
       })
       .catch(error => {
          this.loading.dismiss();
@@ -157,9 +152,10 @@ export class PavilionPage implements OnInit {
                    this.fair.pavilions = this.fair.pavilions.filter((pavilion)=>{
                         return pavilion.id != this.pavilion.id;
                    });
-                    
-                   const tab = `/super-admin/fair`;
-                   this.redirectTo(tab);
+                   //const tab = `/super-admin/fair`;
+				   //this.redirectTo(tab);
+				   const detail = {'type': 'sceneFair', 'iScene': this.pavilion.id };
+                   window.dispatchEvent(new CustomEvent('removeScene:menu',{ detail: detail }));
                 
               },
               (error) => {
@@ -194,5 +190,9 @@ export class PavilionPage implements OnInit {
                'menuTabs': {'showMenuParent':true, 'position':'none' }}
   }
 
+  cancel() {
+	const tab = `/super-admin/fair`;
+    this.redirectTo(tab);
+  }
 
 }

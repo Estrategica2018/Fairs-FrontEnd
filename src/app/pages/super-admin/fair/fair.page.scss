@@ -41,6 +41,8 @@ ion-item {
 
 .scene-icon-mini {
   min-width: 100px; 
+  width: 5em;
+  height: 3em;
 }
 
 .scene-icon-pavilion {
@@ -72,4 +74,21 @@ ion-item {
 /* Handle on hover */
 .scroll-container::-webkit-scrollbar-thumb:hover {
   background: #555; 
+}
+
+.scene-icon-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 7em;
+}
+
+.scene-select {
+  text-align: center;
+  cursor: pointer;
+}
+
+.scene-select:hover {
+  border: 1px solid gray;
+  border-radius: 1em;
 }

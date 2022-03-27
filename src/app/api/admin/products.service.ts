@@ -33,7 +33,7 @@ export class AdminProductsService {
             };
             this.http.post(`/api/product/create`, processDataToString(dataProduct),httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 if(e.status && e.statusText) {
                   const statusText = e.statusText + (e.error ? e.error.message : '');
@@ -68,7 +68,7 @@ export class AdminProductsService {
             };
             this.http.post(`/api/product/update/${product.id}`,processDataToString(product),httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 if(e.status && e.statusText) {
                   throw new Error(`Ejecutando el servicio para modificar el producto: ${e.status} - ${e.statusText}`);    
@@ -103,7 +103,7 @@ export class AdminProductsService {
             
             this.http.post(`/api/product/delete/${product.id}`, product,httpOptions)
             .pipe(
-              timeout(30000),
+              timeout(60000),
               catchError((e: any) => {
                 console.log(e);
                 if(e.status && e.statusText) {

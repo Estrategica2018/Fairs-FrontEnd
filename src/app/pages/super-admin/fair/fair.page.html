@@ -1,6 +1,5 @@
 <ion-header>
   <ion-toolbar>
-     <ion-menu-button slot="start" auto-hide="false"></ion-menu-button>
      <ion-title slot="start">Administrar Feria</ion-title>
   </ion-toolbar>
 
@@ -28,15 +27,16 @@
       <ion-item lines="none" class="mt-3">
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
           <div class="d-flex ml-auto scroll-container" style="overflow-x: scroll;" >
-              <ion-item  *ngFor="let scene of fair?.resources?.scenes;let i = index" class="scene-icon-mini customSceneCSSClass{{i}}"
-              button="true" routerLink="/super-admin/map-editor/fair/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
-               <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2" alt="escena" style="width: 77px;">
-               <h2 [hidden]="scene && scene.url_image" style="width: 82px; height: 41px;"><small>{{scene.title}}</small></h2>
-              </ion-item>
+              <ion-col  *ngFor="let scene of fair?.resources?.scenes;let i = index"  class="scene-select"
+			  button="true" routerLink="/super-admin/map-editor/fair/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+			    <div [hidden]="scene && scene.url_image" class="scene-icon-mini customSceneCSSClass{{i}}"></div>
+                <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2 " alt="escena" style="width: 77px;">
+			    <label class="scene-icon-label">{{scene.title}}</label>
+			  </ion-col>
             </div>
 
          <ion-buttons slot="end">
-            <ion-button routerLink="/super-admin/map-editor/fair/" routerLinkActive="active" routerDirection="root" detail="false">
+            <ion-button (click)="presentNewScene()">
               <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
             </ion-button>
          </ion-buttons>
@@ -142,7 +142,7 @@
           </p>
         </ion-label>
         <ion-thumbnail slot="start">
-         <ion-img class="ml-auto" [src]="agenda.category?.resources?.image"></ion-img>
+         <ion-img class="ml-auto" [src]="agenda.category?.resources?.url_image"></ion-img>
         </ion-thumbnail>
      </ion-item>
      

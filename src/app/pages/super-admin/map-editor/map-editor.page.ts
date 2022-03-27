@@ -56,7 +56,7 @@ export class MapEditorPage implements OnInit {
   showTools = null;
   editSave = false;
   editMenuTabSave = false;
-  panelPos = { x: '27px', y: '0px' };
+  panelPos: any = { x: '27px', y: '0px' };
   mainObj = null;
   resources = null;
   sceneId = null;
@@ -230,6 +230,13 @@ export class MapEditorPage implements OnInit {
   }
   
   initializeScene(){
+	  
+		if(!this.scene) { 
+		   this.loading.dismiss();
+           this.errors = `Algo malo ha ocurrido`;
+		   return;
+		}
+ 
     this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
     this.resources.menuTabs = this.resources.menuTabs || {};
 
@@ -372,9 +379,9 @@ export class MapEditorPage implements OnInit {
                if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
                if(banner.productCatalog.titleTop > 0) banner.productCatalog.titleTop /= deltaW;
                if(banner.productCatalog.descTop > 0) banner.productCatalog.descTop /= deltaW;
-			   if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
+               if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
                if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
-			   if(banner.productCatalog.descHeigth > 0) banner.productCatalog.descHeigth /= deltaW;
+               if(banner.productCatalog.descHeigth > 0) banner.productCatalog.descHeigth /= deltaW;
                if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
                //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
                
@@ -471,7 +478,7 @@ export class MapEditorPage implements OnInit {
           this.adminFairsService.update(this.fair)
           .then((response) => {
               this.loading.dismiss();
-              this.success= `Escena modificada correctamentes`;
+              this.success= `Escena modificada correctamente`;
               this.fairsService.refreshCurrentFair();
               this.editSave = false;
               this.errors = null;
@@ -481,9 +488,14 @@ export class MapEditorPage implements OnInit {
                   this.editMenuTabSave = null;
                   this.showPanelTool = false
                   this.bannerSelect = null;
-                  this.redirectTo('/super-admin/map-editor/fair/'+this.sceneId);
+				  const detail = {'type': 'sceneFair', 'iScene': this.sceneId };
+				  window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
+                  //this.redirectTo('/super-admin/map-editor/fair/'+this.sceneId);
                   //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${this.sceneId}`);
               }
+			  else {
+				  window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${this.sceneId}`);
+			  }
            })
            .catch(error => {
                this.loading.dismiss();
@@ -499,16 +511,15 @@ export class MapEditorPage implements OnInit {
               if(!this.sceneId) {
                   this.resources = processData(pavilion.resources);
                   this.sceneId = this.resources.scenes.length - 1;
+				  const detail = {'type': 'scenePavilions', 'iScene': this.sceneId, 'pavilionId': this.pavilion.id  };
+			      window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
               }
-              this.fairsService.refreshCurrentFair();
-              this.pavilionsService.refreshCurrentPavilion();
-              this.editMenuTabSave = null;
-              this.editSave = false;
-              this.showPanelTool = false
-              this.bannerSelect = null;
-              //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
-              //this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
-              this.redirectTo('/super-admin/map-editor/pavilion/' + this.pavilion.id + '/' + this.sceneId);
+              else { 
+                //this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+                //this.redirectTo('/super-admin/map-editor/pavilion/' + this.pavilion.id + '/' + this.sceneId);
+			    window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+			  }
+			  
            })
            .catch(error => {
                this.loading.dismiss();
@@ -530,9 +541,10 @@ export class MapEditorPage implements OnInit {
               this.editSave = false;
               this.showPanelTool = false
               this.bannerSelect = null;
-              this.redirectTo('/super-admin/map-editor/stand/' + this.pavilion.id + '/' + this.stand.id + '/' + this.sceneId);
-              //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+              //this.redirectTo('/super-admin/map-editor/stand/' + this.pavilion.id + '/' + this.stand.id + '/' + this.sceneId);
+              window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+			  
            })
            .catch(error => {
                this.loading.dismiss(); 
@@ -555,6 +567,7 @@ export class MapEditorPage implements OnInit {
               //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
               this.redirectTo('/super-admin/map-editor/product/' + this.pavilion.id + '/' + this.stand.id + '/' + this.product.id + '/' + this.sceneId);
               //this.router.navigateByUrl(`/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
+			  
            })
            .catch(error => {
                this.loading.dismiss(); 
@@ -645,8 +658,8 @@ export class MapEditorPage implements OnInit {
           banner = { "size":{"x":428,"y":237},
             "position": this.getNewPosition({"x":64,"y":29}),
             "speakerCatalog":{"nameFontSize":24,"nameFontColor":"#ffffff","nameTop":26,"nameLeft":225,"nameFontFamily":"YoutubeSansMedium","nameFontWeight":"100",
-			"descHeigth": 69,
-			"descTop":139,"descLeft":198,"descWidth":208,"descFontSize":14,"descTextAlign":"justify","lineHeightMili":0,"lineHeightUnit":1,"lineHeight":1,"descFontFamily":"YoutubeSansLight","descFontWeight":100,"titleFontColor":"#000","titleFontFamily":"YoutubeSansMedium","titleFontSize":19,"titleFontWeight":"bold","titleLeft":0,"titleTop":113,"imagesTop":0,"imagesLeft":0,"imagesWidth":187,"imagesHeight":224,"imagesPriceWidth":16,"imagestitleWidth":null,"priceTop":38,"priceLeft":27,"priceFontColor":"#ff1a1a","nameWidth":177,"nameHeight":0,"logoLeft":142,"logoTop":26,"logoWidth":74,"logoHeight":69,"professionFontColor":"#ffffff","professionTop":97,"professionLeft":199,"descFontColor":"","professionFontSize":15},"backgroundColor":"#109be0",
+            "descHeigth": 69,
+            "descTop":139,"descLeft":198,"descWidth":208,"descFontSize":14,"descTextAlign":"justify","lineHeightMili":0,"lineHeightUnit":1,"lineHeight":1,"descFontFamily":"YoutubeSansLight","descFontWeight":100,"titleFontColor":"#000","titleFontFamily":"YoutubeSansMedium","titleFontSize":19,"titleFontWeight":"bold","titleLeft":0,"titleTop":113,"imagesTop":0,"imagesLeft":0,"imagesWidth":187,"imagesHeight":224,"imagesPriceWidth":16,"imagestitleWidth":null,"priceTop":38,"priceLeft":27,"priceFontColor":"#ff1a1a","nameWidth":177,"nameHeight":0,"logoLeft":142,"logoTop":26,"logoWidth":74,"logoHeight":69,"professionFontColor":"#ffffff","professionTop":97,"professionLeft":199,"descFontColor":"","professionFontSize":15},"backgroundColor":"#109be0",
             "class":"rounded-withradius grayscale cursor-pointer","fontColor":"#ffffff"};
           banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
       break;
@@ -941,7 +954,9 @@ export class MapEditorPage implements OnInit {
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
+					   const detail = {'type': 'sceneFair', 'iScene': sceneId };
+                       window.dispatchEvent(new CustomEvent('removeScene:menu',{ detail: detail }));
+					   //window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
                        //this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
@@ -1034,8 +1049,7 @@ export class MapEditorPage implements OnInit {
       const main = document.querySelector<HTMLElement>('ion-router-outlet');
       resources.scenes = resources.scenes || [];
       
-      return { 'url_image': 'https://dummyimage.com/1092x768/EFEFEF/000.png', 
-               'banners': [], 
+      return { 'banners': [], 
                'container':  { 'w': 1092, 'h': 768 },
                'show': true,
                'menuIcon': 'map-outline', 

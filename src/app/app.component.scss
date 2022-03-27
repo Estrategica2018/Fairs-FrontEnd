@@ -392,7 +392,7 @@ body.backdrop-no-scroll {
 
 .close-menu-right,
 .close-menu-left {
-  margin-left: 83%!important;
+  margin-left: 51% !important;
   z-index: 2;
   font-size: 1.8em;
 }
@@ -420,4 +420,19 @@ body.backdrop-no-scroll {
 
 .width-icon {
   min-width: 23em;
+}
+
+.icon-up,
+.icon-down {
+    font-size: 1.5em;
+    height: 1.4em;
+    width: 0;
+    padding: 0;
+    margin: 0.4em !important;
+}
+
+.label-scene-move {
+  flex-wrap: revert;
+  overflow: hidden;
+  white-space: nowrap !important;
 }

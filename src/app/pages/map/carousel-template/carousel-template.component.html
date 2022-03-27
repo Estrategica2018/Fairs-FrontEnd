@@ -57,16 +57,16 @@
   <div class="swiper-wrapper">
     <!-- Slides -->
     <div class="swiper-slide" *ngFor="let item of items">
-	
-	  <img *ngIf="item.url" src="{{item.url}}" alt=""/>
+    
+      <img *ngIf="item.url" src="{{item.url}}" alt=""/>
       <div *ngIf="item.product" class="product" (click)="goToProduct(item.product)" >
         <img src="{{item.product.url_image}}" alt="" [ngStyle]="{'height': banner.size.y + 'px'}"/>
         <div class="position-absolute" style="top:0px; left: 0px;" [ngStyle]="{'color': banner.fontColor}">
           {{item.product.name}}
          </div>
       </div>
-	
-	</div>
+    
+    </div>
     
   </div>
   <!-- If we need pagination -->

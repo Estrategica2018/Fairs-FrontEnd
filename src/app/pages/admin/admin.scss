@@ -12,8 +12,6 @@ ion-toolbar {
 }
 
 .slide-image {
-  max-height: 30%;
-  max-width: 21%;
   margin: 36px 0;
   pointer-events: none;
 }
@@ -31,4 +29,35 @@ p {
   b {
     color: var(--ion-text-color, #000000);
   }
+}
+
+
+.delete-btn {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  display: flex;
+}
+
+
+ion-toggle {
+  --handle-background-checked: #fff url(/assets/power-icon.png) no-repeat center / contain;
+}
+
+
+.show-fair {
+  padding: 0em;
+  border-radius: 1em;
+}
+
+.hide-fair {
+  border: 1px solid #F8F8F8;
+  padding: 0em;
+  border-radius: 1em;
+  opacity: 0.3;
+}
+
+
+ion-slides {
+  height: 48em;
 }

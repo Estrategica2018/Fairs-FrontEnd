@@ -28,7 +28,7 @@ export class MerchantsService {
               then( fair => {
                     this.http.get(`/api/merchant/to_list/${fair.id}`)
                    .pipe(
-                      timeout(30000),
+                      timeout(60000),
                       catchError((e: any) => {
                         if(e.status && e.statusText) {
                           throw new Error(`Ejecutando el servicio consulta de comercios: ${e.status} - ${e.statusText}`);    

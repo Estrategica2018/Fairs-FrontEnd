@@ -1,0 +1,40 @@
+.layout-col {
+  background-color: rgb(177, 173, 235);
+  border: 0.4em solid rgb(72 62 217);
+  opacity: 0.7;
+}
+
+.layout-col:hover {
+  opacity: 1;
+}
+
+.add-row,
+.add-col {
+  display: none;
+  font-size: 3em;
+  position: absolute;
+  z-index: 1000000;
+  opacity: 0.6;
+  
+}
+.add-col {
+  right: -0.5em;
+  top: 10%;
+}
+.add-row {
+  right: 50%;
+  bottom: -0.9em;
+}
+.layout-col:hover > .add-row,
+.layout-col:hover > .add-col {
+   display: block;
+}
+
+.add-row:hover,
+.add-col:hover {
+  opacity: 1;
+}
+
+.layout-selected {
+  background-color: red;
+}

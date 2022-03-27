@@ -23,7 +23,7 @@ export class CategoryService {
     return new Promise((resolve, reject) => {
         this.http.get(`/api/category/to_list/${fair.id}/${type}`)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -51,7 +51,7 @@ export class CategoryService {
     return new Promise((resolve, reject) => {
         this.http.post(`/api/category/create/`,category)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -79,7 +79,7 @@ export class CategoryService {
     return new Promise((resolve, reject) => {
       this.http.post(`/api/subcategory/create/`, subCategory)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -107,7 +107,7 @@ export class CategoryService {
       return new Promise((resolve, reject) => {
         this.http.post(`/api/category/update/`, category)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {
@@ -134,7 +134,7 @@ export class CategoryService {
     return new Promise((resolve, reject) => {
       this.http.get(`/api/category/get/${categoryId}`)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError((e: any) => {
             console.log(e);
             if(e.status && e.statusText) {

@@ -35,7 +35,7 @@ export class AdminSpeakersService {
 
       this.http.post(`/api/speakers/create`, processDataToString(data),httpOptions)
         .pipe(
-          timeout(30000),
+          timeout(60000),
           catchError(e => {
             if (e.status && e.statusText) {
               const statusText = e.statusText + (e.error ? e.error.message : '');
@@ -68,7 +68,7 @@ export class AdminSpeakersService {
         };
         this.http.post(`/api/speakers/update`, processDataToString(data), httpOptions)
           .pipe(
-            timeout(30000),
+            timeout(60000),
             catchError(e => {
               if (e.status && e.statusText) {
                 const statusText = e.statusText + (e.error ? e.error.message : '');
@@ -101,7 +101,7 @@ export class AdminSpeakersService {
         };
         this.http.post(`/api/speakers/delete`, processDataToString(data), httpOptions)
           .pipe(
-            timeout(30000),
+            timeout(60000),
             catchError(e => {
               if (e.status && e.statusText) {
                 const statusText = e.statusText + (e.error ? e.error.message : '');

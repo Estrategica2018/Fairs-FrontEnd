@@ -1,6 +1,6 @@
 <!--ion-app [class.dark-theme]="dark"-->
 <ion-app>
-<ion-header translucent="true">
+<ion-header translucent="true" [hidden]="fairAdminMode">
   <ion-toolbar 
   color="light" [ngClass]="{'full-screen': fullScreen}" class="app-toolbar-header">
     <ion-buttons slot="start">
@@ -32,12 +32,25 @@
 
     <ion-menu class="scroll-container" contentId="main-content" class="menu-main-content" 
     [ngClass]="{ 'show-menu-mini': menuHidden, 'd-none': fullScreen }"
-    
+    [hidden]="fairAdminMode"
     (mouseover)="onMenuOver()"
     >
 
       <ion-buttons class="ion-hide-lg-down"  [hidden]="menuHidden">
-        <ion-button class="close-menu-left ion-hide-lg-down" (click)="onHidenMenu()">
+        <ion-button class="w-100" slot="start" color="primary" (click)="onEditMenuClick()" *ngIf="profileRole && profileRole.admin" [hidden]="editMenu">
+		   Editar Menú
+		</ion-button>
+		<ion-button class="w-100"  slot="start" (click)="updateSceneMenu(null)" *ngIf="profileRole && profileRole.admin && editMenu" 
+		   [color]="editMenu ? 'primary' : 'medium'">
+		   Guardar Menú
+		   <ion-icon slot="end" name="save-outline"></ion-icon> 
+		</ion-button>
+		<ion-button class="w-100"  slot="end" (click)="onCancelEditMenuClick()" *ngIf="profileRole && profileRole.admin && editMenu" 
+		   color="medium">
+		   Cancelar
+		</ion-button>
+	    
+        <ion-button slot="end" style="margin-left: auto;" class="ion-hide-lg-down" (click)="onHidenMenu()" [hidden]="profileRole && profileRole.admin && editMenu">
           <ion-icon name="chevron-back-outline"></ion-icon>
         </ion-button>
       </ion-buttons>
@@ -56,72 +69,87 @@
           </ion-menu-toggle>
         </ion-list>
         <ion-list lines="none">
-          <ion-menu-toggle autoHide="false">
-            <div *ngFor="let scene of fair?.resources?.scenes;let i = index">
-              <div *ngIf="scene.show || (profileRole && profileRole.admin)">
-                <ion-item (click)="onClickFairScene(i)" button="true">
-                  <ion-icon slot="start" [name]="scene.menuIcon"></ion-icon>
-                  <ion-label class="ion-text-wrap">
-                    {{scene.title}}
-                  </ion-label>
-                </ion-item>
-              </div>
-            </div>
-            <div *ngFor="let pavilion of fair?.pavilions;let i = index">
-            <!-- (click)="onClickPavilion(pavilion)" -->
-              <ion-item (click)="onClickPavilion(pavilion)"
-                      class="pavilions-menu"
-                      button="true"
-                      lines="none">
-                <ion-icon slot="start" name="albums-outline"></ion-icon>
-                <ion-label class="menu-label ion-text-wrap">{{pavilion.name}}</ion-label>
-                <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionDetail !== 'pavilion_id_'+pavilion.id"></ion-icon>
-                <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionDetail === 'pavilion_id_'+pavilion.id"></ion-icon>
-              </ion-item> 
-            <!--[routerLink]="'/map/pavilion'+(i+1)+'/'+pavilion.id+'/'+k" routerLinkActive="selected" routerDirection="root" -->
-              <div *ngIf="showPavilionDetail ==='pavilion_id_'+pavilion.id">
-                <div *ngFor="let scene of pavilion.resources.scenes; let k = index;" >
-                  <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
-                          (click)="onClickPavilionScene(pavilion,k)"
-                          lines="none"
-                          button="true"
-                          class="sub-menu">
-                    <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
-                    <ion-label class="menu-label ml-4 ion-text-wrap"> {{ scene.title}} </ion-label>
-                  </ion-item>
-                </div>
-                <ion-item (click)="onClickPavilionLocal(pavilion)"
-                          lines="none"
-                          button="true"
-                          class="sub-menu"
-                          *ngIf="pavilion.stands.length > 0" >
-                  <ion-label class="menu-label ml-4">Locales comerciales </ion-label>
-                  <ion-icon slot="end" name="chevron-down-outline" size="small" [hidden]="pavilion.showStandDetail"></ion-icon>
-                  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="pavilion.showStandDetail"></ion-icon>
-                </ion-item>
-                <div *ngIf="pavilion.showStandDetail">
-                    <div *ngFor="let stand of pavilion.stands;let i_stand = index">
-                      <ion-item (click)="onClickPavilionStand(pavilion,stand)"
-                              button="true" lines="none" class="sub-menu-stand">
-                        <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
-                        <ion-label class="menu-label ml-6 ion-text-wrap" style="margin-left: 2em;">{{stand.merchant.name}}</ion-label>
-                      </ion-item>
-                      <div *ngIf="stand.standShowSelect && stand.resources.scenes.length > 1">
-                        <div *ngFor="let scene of stand.resources.scenes;let i_scene = index">
-                          <ion-item *ngIf="profileRole && profileRole.admin"
-                              (click)="onClickPavilionStandScene(pavilion,stand,i_scene)"
-                              button="true"
-                              lines="none" class="sub-menu-stand">
-                            <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                            <ion-label class="menu-label ion-text-wrap" style="margin-left: 2em;">{{scene.title || 'Escena #' + ( i_scene + 1 ) }}</ion-label>
-                          </ion-item>
-                         </div>
-                       </div>
-                    </div>
-                </div>
-             </div>
-          </div>
-        </ion-menu-toggle>
+          <ion-menu-toggle autoHide="false" 
+		  *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index">
+
+            <!-- If its fair scene -->
+			<ion-item (click)="onClickFairScene(sceneLayout.iScene)"  button="true" *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )">
+			  <ion-icon
+			  slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
+			  <ion-label (click)="onClickFairScene(sceneLayout.iScene)" class="ion-text-wrap"  style="min-width: 11em;"
+			  [ngClass]="{'label-scene-move': (editMenu && profileRole && profileRole.admin)}">
+				{{sceneLayout.scene.title}}
+			  </ion-label>
+			  <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
+					 <ion-button (click)="goToSceneUp(sceneLayout, iLayout + 1, fair)" *ngIf="iLayout > 0" class="icon-up"> &#8593; </ion-button>
+					 <ion-button (click)="goToSceneDown(sceneLayout, iLayout + 1, fair)" *ngIf="iLayout + 1 < lTotal" class="icon-down"> &#8595; </ion-button>
+			  </ion-buttons>
+			</ion-item>
+			
+			<!-- If its pavilion scene-->
+			<div *ngIf="sceneLayout.type == 'scenePavilion'">
+			  <ion-item class="pavilions-menu" button="true" lines="none" (click)="onClickPavilion(sceneLayout.pavilion)">
+				<ion-icon  slot="start" name="albums-outline"></ion-icon>
+				<ion-label class="menu-label ion-text-wrap">
+				{{sceneLayout.pavilion.name}}
+				</ion-label>
+				<ion-buttons class="m-0" slot="end" 
+				  [hidden]="profileRole && profileRole.admin && editMenu">
+				  <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionDetail !== 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
+				  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionDetail === 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
+			    </ion-buttons>
+				
+                <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
+					 <ion-button (click)="goToSceneUp(sceneLayout, iLayout + 1, sceneLayout.pavilion)" *ngIf="iLayout > 0" class="icon-up"> &#8593; </ion-button>
+					 <ion-button (click)="goToSceneDown(sceneLayout, iLayout + 1, sceneLayout.pavilion)" *ngIf="iLayout + 1 < lTotal" class="icon-down"> &#8595; </ion-button>
+			    </ion-buttons>
+				
+			  </ion-item>
+
+			  <div *ngIf="showPavilionDetail ==='pavilion_id_'+sceneLayout.pavilion.id">
+				<div *ngFor="let scene of sceneLayout.pavilion.resources.scenes; let k = index;" >
+				  <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
+						  (click)="onClickPavilionScene(sceneLayout.pavilion,k)"
+						  lines="none"
+						  button="true"
+						  class="sub-menu">
+					<ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
+					<ion-label class="menu-label ml-4 ion-text-wrap"> {{ scene.title}} </ion-label>
+				  </ion-item>
+				</div>
+				<ion-item (click)="onClickPavilionLocal(sceneLayout.pavilion)"
+						  lines="none"
+						  button="true"
+						  class="sub-menu"
+						  *ngIf="sceneLayout.pavilion.stands.length > 0" >
+				  <ion-label class="menu-label ml-4">Locales comerciales </ion-label>
+				  <ion-icon slot="end" name="chevron-down-outline" size="small" [hidden]="sceneLayout.pavilion.showStandDetail"></ion-icon>
+				  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="sceneLayout.pavilion.showStandDetail"></ion-icon>
+				</ion-item>
+				<div *ngIf="sceneLayout.pavilion.showStandDetail">
+					<div *ngFor="let stand of sceneLayout.pavilion.stands;let i_stand = index">
+					  <ion-item (click)="onClickPavilionStand(sceneLayout.pavilion,stand)"
+							  button="true" lines="none" class="sub-menu-stand">
+						<ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
+						<ion-label class="menu-label ml-6 ion-text-wrap" style="margin-left: 2em;">{{stand.merchant.name}}</ion-label>
+					  </ion-item>
+					  <div *ngIf="stand.standShowSelect && stand.resources.scenes.length > 1">
+						<div *ngFor="let scene of stand.resources.scenes;let i_scene = index">
+						  <ion-item *ngIf="profileRole && profileRole.admin"
+							  (click)="onClickPavilionStandScene(sceneLayout.pavilion,stand,i_scene)"
+							  button="true"
+							  lines="none" class="sub-menu-stand">
+							<ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+							<ion-label class="menu-label ion-text-wrap" style="margin-left: 2em;">{{scene.title }}</ion-label>
+						  </ion-item>
+						 </div>
+					   </div>
+					</div>
+				</div>
+			 </div>
+			</div>
+
+          </ion-menu-toggle>
         </ion-list>
         <ion-list lines="none" class="border-botton">
           <ion-menu-toggle autoHide="false" *ngIf="showAgenda">
@@ -237,7 +265,7 @@
       </ion-content>
 
         <ion-buttons *ngIf="menuHidden">
-          <ion-button style="margin-left: 3% !important;" class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
+          <ion-button class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </ion-button> 
         </ion-buttons>

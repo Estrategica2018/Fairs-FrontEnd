@@ -45,6 +45,20 @@ const routes: Routes = [
     path: 'map-editor/fair',
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
   },
+  //<-- Map Site Editor
+  {
+    path: 'map-site-editor/fair/template/:template',
+    loadChildren: () => import('./map-site-editor/map-site-editor.module').then( m => m.MapSiteEditorPageModule)
+  },
+  {
+    path: 'map-site-editor/fair/:sceneId',
+    loadChildren: () => import('./map-site-editor/map-site-editor.module').then( m => m.MapSiteEditorPageModule)
+  },
+  {
+    path: 'map-site-editor/pavilion/:sceneId',
+    loadChildren: () => import('./map-site-editor/map-site-editor.module').then( m => m.MapSiteEditorPageModule)
+  },
+  // Map Site Editor -->
   {
     path: 'map-editor/fair/:sceneId',
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
@@ -96,7 +110,11 @@ const routes: Routes = [
   {
     path: 'product-price/:pavilionId/:standId/:productId/:productPriceId',
     loadChildren: () => import('./product-price/product-price.module').then( m => m.ProductPricePageModule)
+  },  {
+    path: 'map-site-editor',
+    loadChildren: () => import('./map-site-editor/map-site-editor.module').then( m => m.MapSiteEditorPageModule)
   }
+
 ];
 
 @NgModule({
