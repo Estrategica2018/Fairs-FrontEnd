@@ -238,29 +238,30 @@
       </ion-toolbar>
    </ion-card-content>
    <ion-card-content *ngIf="tabSelect == 'background'">
-      <ion-toolbar *ngIf="banner.image">
+      <ion-toolbar *ngIf="banner.styles.image">
          <ion-card-subtitle slot="start"> Imagen de Fondo </ion-card-subtitle>
-         
+         <img  slot="end" class="imagen-src" [src]="banner.styles.image.src">
       </ion-toolbar>
-      <ion-toolbar *ngIf="banner.image">
+      <ion-toolbar *ngIf="banner.styles.image">
 	  <ion-grid>
 	  <ion-row>
-	     <ion-col size="3">
-           <img style="width:5em; height:auto;" [src]="banner.image.src">
-		 </ion-col>
+	     <!--ion-col size="3">
+           <img style="width:5em; height:auto;" [src]="banner.styles.image.src">
+		 </ion-col-->
 		 
 		 <ion-col size="9">
-  		   <label class="legendImgContainer"> {{ banner.image.src }}</label>
-		   <span class="legendImg" style="position:absolute; bottom: 2em; right:0;">
+  		   <label class="legendImgContainer"> {{ banner.styles.image.src }}</label>
+  		   <input class="inputImage" [(ngModel)]="banner.styles.image.src">
+		   <span class="legendImg2">
 		     <ion-button size="small" color="light" style="opacity:0.8">  
 			   <ion-icon slot="start" name="copy"></ion-icon>
-               Copiar
+               Copiar Link
 			 </ion-button>
 		   </span>
 		   <ion-button size="small">
 		     Cambiar
 		   </ion-button>
-		   <ion-button size="small"color="danger" style="opacity:0.8" (click)="banner.image.src=''">
+		   <ion-button size="small"color="danger" style="opacity:0.8" (click)="banner.styles.image.src=''">
 			 <ion-icon slot="start" name="close-outline"></ion-icon>
              Limpiar
 		   </ion-button>
@@ -369,7 +370,7 @@
              </ion-buttons>
              <ion-buttons slot="end">
                 <ion-card-subtitle>
-                   <input class="mt-2 ml-2" type="number" (change)="onChangeItem()" [(ngModel)]="banner.speakerCatalog.nameTop"/> px
+                   <input class="mt-2 ml-2" type="number" (change)="goToOnChangeItem()" [(ngModel)]="banner.speakerCatalog.nameTop"/> px
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -1244,7 +1245,7 @@
   
   </ion-list>
    </ion-card-content>
-   <ion-card-content *ngIf="tabSelect == 'font' && banner.text">
+   <ion-card-content *ngIf="tabSelect == 'font' && banner.styles.text">
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle> Texto 
@@ -1252,10 +1253,10 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <ion-button (click)="onClickOpenHtml(banner,'text')"> html
+               <ion-button (click)="onClickOpenHtml(banner.styles.text,'value')"> html
                </ion-button>
-               <input [hidden]="banner.isHtml" class="mt-2 ml-2" type="text" (change)="onChangeItem()" [(ngModel)]="banner.text.value"/>
-               <input *ngIf="banner.isHtml" (click)="onClickOpenHtml(banner,'text')" class="mt-2 ml-2" type="text" readonly [(ngModel)]="banner.text"/>
+               <input [hidden]="banner.isHtml" class="mt-2 ml-2" type="text" (change)="onChangeItem()" [(ngModel)]="banner.styles.text.value"/>
+               <input *ngIf="banner.isHtml" (click)="onClickOpenHtml(banner.styles.text,'value')" class="mt-2 ml-2" type="text" readonly [(ngModel)]="banner.styles.text.value"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -1263,10 +1264,10 @@
          <ion-card-subtitle> Color de letra</ion-card-subtitle>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <ion-label (click)="scene.backgroundColor = '';">Clear </ion-label>
-               <ion-icon name="close-outline" (click)="banner.fontColor = '';">  </ion-icon>
+               <ion-label (click)="banner.styles.text.fontColor  = '';">Clear </ion-label>
+               <ion-icon name="close-outline" (click)="banner.styles.text.fontColor = '';">  </ion-icon>
                <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
-			   [(ngModel)]="banner.fontColor"/> 
+			   [(ngModel)]="banner.styles.text.fontColor "/> 
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -1277,8 +1278,8 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <select [(ngModel)]="banner.fontFamily" (change)="onChangeItem()" >
-               <option selected="selected" [hidden]="banner.fontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
+               <select [(ngModel)]="banner.styles.text.fontFamily" (change)="onChangeItem()" >
+               <option selected="selected" [hidden]="banner.styles.text.fontFamily" value="YoutubeSansMedium">YoutubeSansMedium</option>
                <option *ngFor="let font of fontFamilyList" value="{{font.value}}">{{font.label}}</option>
                </select>
             </ion-card-subtitle>
@@ -1290,7 +1291,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="banner.fontSize"/> 
+               <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="banner.styles.text.fontSize"/> 
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -1302,7 +1303,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <select [(ngModel)]="banner.fontWeight" (change)="onChangeItem()" >
+               <select [(ngModel)]="banner.styles.text.fontWeight" (change)="onChangeItem()" >
                <option *ngFor="let weight of fontWeightList" value="{{weight}}">{{weight}}</option>
                </select>
             </ion-card-subtitle>
@@ -1313,7 +1314,7 @@
             <ion-card-subtitle> Alineación de Texto </ion-card-subtitle>
          </ion-buttons>
          <ion-buttons slot="end">
-            <select [(ngModel)]="banner.textAlign" (change)="onChangeItem()" >
+            <select [(ngModel)]="banner.styles.text.textAlign" (change)="onChangeItem()" >
             <option *ngFor="let textAlign of textAligns" value="{{textAlign.value}}">{{textAlign.label}}</option>
             </select>
          </ion-buttons>
@@ -1324,7 +1325,7 @@
          </ion-buttons>
          <ion-buttons slot="end">
             {{ banner.lineHeightUnit }} . 
-            <input class="mt-2 ml-2 line-height-mili" type="number" size="4" (change)="onChangeItemTextLineHeight(banner)"  [(ngModel)]="banner.lineHeightMili"/>
+            <input class="mt-2 ml-2 line-height-mili" type="number" size="4" (change)="onChangeItemTextLineHeight(banner.styles.text)"  [(ngModel)]="banner.styles.text.lineHeightMili"/>
          </ion-buttons>
       </ion-toolbar>
    </ion-card-content>
@@ -1345,7 +1346,7 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2" type="number"  (change)="onChangeItem()"  [(ngModel)]="banner.toolPositionLeft"/>
-               px
+               em
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -1357,7 +1358,7 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="banner.toolPositionTop"/>
-               px
+               em
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -1369,7 +1370,7 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2" type="number" (change)="onChangeItem()"  [(ngModel)]="banner.toolPositionWidth"/>
-               px
+               em
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -1417,7 +1418,7 @@
                <ion-card-subtitle> Redondear Borde </ion-card-subtitle>
             </ion-buttons>
             <ion-buttons slot="end">
-               <input class="mt-2 ml-2 mr-2" type="number" (change)="onChangeItem()"  [(ngModel)]="banner.border.radius"/> px
+               <input class="mt-2 ml-2 mr-2" type="number" (change)="onChangeItem()"  [(ngModel)]="banner.border.radius"/> em
             </ion-buttons>
          </ion-toolbar>
          <ion-toolbar>
@@ -1425,7 +1426,7 @@
                <ion-card-subtitle> Ancho del borde  </ion-card-subtitle>
             </ion-buttons>
             <ion-buttons slot="end">
-               <input [disabled]="banner.border.style=='none'"  (change)="onChangeItem()"  class="mt-2 ml-2 m-2" type="number" [(ngModel)]="banner.border.width"/> px
+               <input [disabled]="banner.border.style=='none'"  (change)="onChangeItem()"  class="mt-2 ml-2 m-2" type="number" [(ngModel)]="banner.border.width"/> em
             </ion-buttons>
          </ion-toolbar>
       </div>
@@ -1519,7 +1520,7 @@
          <ion-list>
             <ion-item>
                <ion-card-subtitle>Iniciar en EscalaGris</ion-card-subtitle>
-               <ion-checkbox slot="end" [(ngModel)]="banner.grayscale" (click)="onChangeEffect(effect)"></ion-checkbox>
+               <ion-checkbox slot="end" [(ngModel)]="banner.grayscale"></ion-checkbox>
             </ion-item>
             <ion-item *ngFor="let effect of hoverEffects">
                <ion-card-subtitle>{{effect.name}}</ion-card-subtitle>
@@ -1583,7 +1584,7 @@
             </ion-button>
          </ion-card-subtitle>
          <ion-card-subtitle>
-            <ion-button size="small" color="danger" (click)="onDeleteBanner(banner)">
+            <ion-button size="small" color="danger" (click)="goToOnDeleteBanner(banner)">
                <ion-text color="danger"> Borrar</ion-text>
                <ion-icon slot="end" name="trash-outline"></ion-icon>
             </ion-button>

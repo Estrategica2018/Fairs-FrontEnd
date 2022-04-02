@@ -77,11 +77,12 @@ export class MapEditorPage implements OnInit {
   groupOfLinks = [];
   copyMultiFromList = [];
   selectionElementList = null;
-  showlogScrolling = false;
+  showSpeakerCatalogActions = '';
   showProductCatalogActions = '';
   historyList = [];
   historySel = -1;
   editModeBackdrop = true;
+  bannerSpeakerSelectHover = null;
     
   borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
   toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow right","value":"arrow--4"},
@@ -475,7 +476,7 @@ export class MapEditorPage implements OnInit {
       
       if(this.template === 'fair') {
           this.fair.resources = this.resources;
-          this.adminFairsService.update(this.fair)
+          this.adminFairsService.updateFair(this.fair)
           .then((response) => {
               this.loading.dismiss();
               this.success= `Escena modificada correctamente`;
@@ -950,7 +951,7 @@ export class MapEditorPage implements OnInit {
               
               if(this.template === 'fair') {
                   this.fair.resources = this.resources;
-                  this.adminFairsService.update(this.fair)
+                  this.adminFairsService.updateFair(this.fair)
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
@@ -1669,6 +1670,10 @@ export class MapEditorPage implements OnInit {
       //ionContent.setAttribute("style","background-repeat:" + 'no-repeat;' + "background-size:" + '100% 100%;' + "--background:" + 'url(' + this.scene.url_image + '); ' );
       //ionContent.setAttribute("style","--background:" + "#fff url('" + this.scene.url_image + "') no-repeat center center / cover");
     }
+  }
+  
+  logScrolling($event) {
+	  
   }
 
 }

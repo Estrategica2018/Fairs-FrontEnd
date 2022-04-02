@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { processDataToString } from '../../providers/process-data';
 import { processData } from '../../providers/process-data';
 import { UsersService } from '../users.service';
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class AdminProductPricesService {
           })
         };
         
-        this.http.post(`/api/product-price/create`, processDataToString(dataProduct),httpOptions)
+        this.http.post(`${SERVER_URL}/api/product-price/create`, processDataToString(dataProduct),httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -67,7 +68,7 @@ export class AdminProductPricesService {
           })
         };
 
-        this.http.post(`/api/product-price/update/${productPrice.id}`,processDataToString(productPrice),httpOptions)
+        this.http.post(`${SERVER_URL}/api/product-price/update/${productPrice.id}`,processDataToString(productPrice),httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -102,7 +103,7 @@ export class AdminProductPricesService {
           })
         };
 
-        this.http.post(`/api/product-price/delete/${productPrice.id}`, productPrice,httpOptions)
+        this.http.post(`${SERVER_URL}/api/product-price/delete/${productPrice.id}`, productPrice,httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {

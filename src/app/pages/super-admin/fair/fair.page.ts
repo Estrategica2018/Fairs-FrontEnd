@@ -171,7 +171,7 @@ export class FairPage implements OnInit {
    }
 
    const fairObj = Object.assign({},this.fair);
-   this.adminFairsService.update(fairObj).
+   this.adminFairsService.updateFair(fairObj).
       then( response => {
         this.fair = response.data_fair;
         this.fair.pavilions = this.pavilions;

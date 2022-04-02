@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { processDataToString } from '../../providers/process-data';
 import { processData } from '../../providers/process-data';
 import { UsersService } from '../users.service';
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class AdminAgendasService {
                       'Authorization':  'Bearer ' + userDataSession.token
                   })
                 };
-                this.http.post(`/api/meetings`,processDataToString(agenda),httpOptions)
+                this.http.post(`${SERVER_URL}/api/meetings`,processDataToString(agenda),httpOptions)
                 .pipe(
                   timeout(60000),
                   catchError((e: any) => {
@@ -63,7 +64,7 @@ export class AdminAgendasService {
                       'Authorization':  'Bearer ' + userDataSession.token
                   })
                 };
-                this.http.patch(`/api/meetings/${agenda.zoom_code}`,processDataToString(agenda), httpOptions)
+                this.http.patch(`${SERVER_URL}/api/meetings/${agenda.zoom_code}`,processDataToString(agenda), httpOptions)
                 .pipe(
                   timeout(60000),
                   catchError((e: any) => {
@@ -98,7 +99,7 @@ export class AdminAgendasService {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };
-            this.http.delete(`/api/meetings/${agenda.zoom_code}`,httpOptions)
+            this.http.delete(`${SERVER_URL}/api/meetings/${agenda.zoom_code}`,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -134,7 +135,7 @@ export class AdminAgendasService {
               })
             };
 
-            this.http.get(`/api/agenda/getEmails/${fairId}/${agendaId}`,httpOptions)
+            this.http.get(`${SERVER_URL}/api/agenda/getEmails/${fairId}/${agendaId}`,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -171,7 +172,7 @@ export class AdminAgendasService {
               })
             };
 
-            this.http.post(`/api/speakers/meetings?fair_id=${fairId}&meeting_id=${meeting_id}`, data, httpOptions)
+            this.http.post(`${SERVER_URL}/api/speakers/meetings?fair_id=${fairId}&meeting_id=${meeting_id}`, data, httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -207,7 +208,7 @@ export class AdminAgendasService {
               })
             };
 
-            this.http.post(`/api/audience/meetings?fair_id=${fairId}&meeting_id=${meeting_id}`, data, httpOptions)
+            this.http.post(`${SERVER_URL}/api/audience/meetings?fair_id=${fairId}&meeting_id=${meeting_id}`, data, httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {

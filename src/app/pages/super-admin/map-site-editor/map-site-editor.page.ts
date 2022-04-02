@@ -50,9 +50,14 @@ export class MapSiteEditorPage implements OnInit {
     private popoverCtrl: PopoverController,
     private actionSheetController: ActionSheetController,
     private speakersService: SpeakersService) {
-    this.initializeScene();
+    
+	this.initializeScene();
+	this.url = window.location.origin;
+	
   }
   
+  
+  url: string;
   scene: any = null;
   routerView: Router;
   sceneId: any;
@@ -70,13 +75,19 @@ export class MapSiteEditorPage implements OnInit {
   bannerSelectHover :any;
   success: string = null;
   editMenuTabSave: boolean;
-  layoutSel: any;
-  layoutSelectTime = 0;
+  layoutColSel: any;
+  layoutRowSel: any;
+  layoutSceneSel: any;
+  layoutColSelectTime = 0;
+  bannerSelect = null;
+  tabSelect = 'position';
+  htmlEditor = {obj: null, idType: null};
+  showHtmlEditor = false;
+  internalUrlList: any;
   
   sceneTemplatesTypes: any = [
   {'label': 'Libre','template':'blank','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545505/temporales/blank_spui2b.png'},
-  {'label': 'Bloques','template':'block','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/block_nq1tek.png', 
-  'resources': '{"styles":{},"rows":[{"cols":[{"banners":[{"id":1646546787662,"styles":{"backgroundColor":"#f7f7f7","textAlign":"center","width":"100%","position":{"type":"relative"}},"text":{"value":"Título de página","color":"green","fontSize":"12"},"style":{"opacity":0.55}}]}]},{"cols":[{"banners":[{"styles":{"position":{"type":"relative"},"width":"100%","backgroundColor":"rgb(228, 238, 241)"},"image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"},"scenes":[{"rows":[{"cols":[{"banners":[{"id":1646546787611,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"}},"image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}},{"id":1646546787634,"styles":{"backgroundColor":"","textAlign":"center","width":"100%","position":{"type":"absolute"}},"text":{"value":"Hola Mundo","color":"white","fontSize":"12"}}]}]},{"cols":[{"banners":[{"id":1646546787638,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"}},"image":{"src":"https://images.ctfassets.net/hrltx12pl8hq/qGOnNvgfJIe2MytFdIcTQ/429dd7e2cb176f93bf9b21a8f89edc77/Images.jpg"}}]}]}]}]}]},{"banners":[{"id":1646546787643,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"}},"image":{"src":"https://m.media-amazon.com/images/I/61y8grFG24L._AC_SX466_.jpg"}}]}]}],"show":true,"menuIcon":"map-outline","title":"Escena #3","menuTabs":{"showMenuParent":true,"position":"none"}}'},
+  {'label': 'Bloques','template':'block','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/block_nq1tek.png', 'resources': '{"styles":{},"rows":[{"cols":[{"banners":[{"id":1646546787662,"styles":{"backgroundColor":"#f7f7f7","textAlign":"center","width":"100%","position":{"type":"relative"},"text":{"value":"Título de página","color":"green","fontSize":"5"},"style":{"opacity":0.55}}}]}]},{"cols":[{"banners":[{"styles":{"position":{"type":"relative"},"width":"100%","backgroundColor":"rgb(228, 238, 241)","image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}},"scenes":[{"rows":[{"cols":[{"banners":[{"id":1646546787611,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}}},{"id":1646546787634,"styles":{"backgroundColor":"","textAlign":"center","width":"100%","position":{"type":"absolute"},"text":{"value":"Hola Mundo","color":"white","fontSize":"12"}}}]}]},{"cols":[{"banners":[{"id":1646546787638,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://images.ctfassets.net/hrltx12pl8hq/qGOnNvgfJIe2MytFdIcTQ/429dd7e2cb176f93bf9b21a8f89edc77/Images.jpg"}}}]}]}]}]}]},{"banners":[{"id":1646546787643,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://m.media-amazon.com/images/I/61y8grFG24L._AC_SX466_.jpg"}}}]}]}],"show":true,"menuIcon":"map-outline","title":"Escena #3","menuTabs":{"showMenuParent":true,"position":"none"}}'},
   {'label': 'Presentación','template':'presentation','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/presentation_uven0s.png'},
   {'label': 'Galería','template':'gallery','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545505/temporales/gallery_wsdga2.png'},
   ];
@@ -166,8 +177,7 @@ export class MapSiteEditorPage implements OnInit {
           });
         }
        
-	    console.log(this.scene);
-		this.sceneEdited = this.scene;
+	    this.sceneEdited = this.scene;
 		this.loading.dismiss();
 		
      }, error => {
@@ -192,6 +202,7 @@ export class MapSiteEditorPage implements OnInit {
 
   //windowScreenSm : boolean = window.innerWidth  <= 992;
   windowScreenSm : boolean = window.innerWidth  <= 798;
+  windowScreenLg : boolean = window.innerWidth  <= 19798;
   
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -230,7 +241,7 @@ export class MapSiteEditorPage implements OnInit {
       
       if(this.template === 'fair') {
           this.fair.resources = this.resources;
-          this.adminFairsService.update(this.fair)
+          this.adminFairsService.updateFair(this.fair)
           .then((response) => {
               this.loading.dismiss();
               this.success = `Escena modificada correctamente`;
@@ -357,19 +368,383 @@ export class MapSiteEditorPage implements OnInit {
     });
   }
   
-  addBanner(){
-
+  addBanner(type) {
+    const id = new Date().valueOf();
+    const primaryColor = "#007bff";
+    let banner: any;
+    const _defaultBanner = {
+		"id":id,
+		"type":type,
+	    //"position": this.getNewPosition({"x":156,"y":195}),
+	    "styles": {
+		   "position":{"type":"relative"},"rotation":{"x":0,"y":0,"z":0},"border":{"style":"none"},
+	       "fontWeight":100,"textAlign":"center","width":"100%","fontFamily":'YoutubeSansMedium', 
+	       "fontSize": 12,"lineHeight":"1.0","lineHeightUnit":1,"lineHeightMili":"0",
+		   "shadowActivate":false,"shadowRight":4,"shadowDown":4,"shadowDisperse":7,"shadowExpand":2,"shadowColor":"#ababab"
+	  }
+	};
+    switch(type) { 
+      case 'Text':
+          banner = {styles:{"textAlign":"left","fontColor":"#000000","text":{"value":"Texto aquí"}}};
+      break;
+      case 'Image':
+          banner = {styles: {"image": { src: "https://dummyimage.com/114x105/EFEFEF/000.png"}}};
+      break;
+      case 'Carrete':
+          const allImages = [
+            { "size":{"x":50,"y":88},"title": "We are covered", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/covered.jpg" },
+            { "size":{"x":50,"y":88},"title": "Generation Gap", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/generation.jpg" },
+            { "size":{"x":50,"y":88},"title": "Potter Me", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/potter.jpg" },
+            { "size":{"x":50,"y":88},"title": "Pre-School Kids", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/preschool.jpg" },
+            { "size":{"x":50,"y":88}, "title": "Young Peter Cech", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/soccer.jpg" }    
+          ];
+          banner = {"size":{"x":1156,"y":236},"carousel": { "options":{slidesPerView: 3,rotate: 0,stretch: 50,depth: 100,slideShadows: false,modifier: 1},"style":"horizontal","images": allImages}};
+      break;
+      case 'Video':
+          banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
+          banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+      break;
+      case 'Título':
+          banner = {
+			  "styles":{
+		        "backgroundColor":"#f7f7f7",
+				"textAlign":"center","fontColor":"#98A000",
+				"fontSize": 59, 
+			    "text": {"fontSize": 5,"value":"Título de la Escena aquí","color":"#98A000"}
+				
+		      },
+			  "position": this.getNewPosition({"x":156,"y":95})};
+      break;
+      case 'Sub-Título':
+          banner = {styles: {"color": "#98A000"}};
+      break;
+      case 'SpeakerCatalog':
+          banner = { "size":{"x":428,"y":237},
+            "position": this.getNewPosition({"x":64,"y":29}),
+            "speakerCatalog":{"nameFontSize":24,"nameFontColor":"#ffffff","nameTop":26,"nameLeft":225,"nameFontFamily":"YoutubeSansMedium","nameFontWeight":"100",
+            "descHeigth": 69,
+            "descTop":139,"descLeft":198,"descWidth":208,"descFontSize":14,"descTextAlign":"justify","lineHeightMili":0,"lineHeightUnit":1,"lineHeight":1,"descFontFamily":"YoutubeSansLight","descFontWeight":100,"titleFontColor":"#000","titleFontFamily":"YoutubeSansMedium","titleFontSize":19,"titleFontWeight":"bold","titleLeft":0,"titleTop":113,"imagesTop":0,"imagesLeft":0,"imagesWidth":187,"imagesHeight":224,"imagesPriceWidth":16,"imagestitleWidth":null,"priceTop":38,"priceLeft":27,"priceFontColor":"#ff1a1a","nameWidth":177,"nameHeight":0,"logoLeft":142,"logoTop":26,"logoWidth":74,"logoHeight":69,"professionFontColor":"#ffffff","professionTop":97,"professionLeft":199,"descFontColor":"","professionFontSize":15},"backgroundColor":"#109be0",
+            "class":"rounded-withradius grayscale cursor-pointer","fontColor":"#ffffff"};
+          banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
+      break;
+      case 'ProductCatalog': 
+          banner = { "size":{"x":428,"y":237},
+          "position": this.getNewPosition({"x":64,"y":29}),
+          "productCatalog": { 
+          'buttonWidth': 145,
+          'buttonHeight': 28,
+          'buttonBackgroundColor': primaryColor,
+          'buttonFontColor': '#fff',
+          'buttonFontFamily': 'YoutubeSansMedium',
+          'buttonFontSize': 12,
+          'buttonFontWeight': 'bold',
+          'buttonLabel': 'Ver Oferta',
+          'buttonRight': 10,
+          'buttonBottom': 10,
+          'titleFontSize': 23,
+          'titleFontColor': '#004782',
+          'titleTop': 10,
+          'titleLeft': 69,
+          'titleFontFamily': 'YoutubeSansMedium',
+          'titleFontWeight': 70,
+          'descTop': 54,
+          'descLeft': 170,
+          'descWidth': 238,
+          'descFontSize': 12,
+          'descTextAlign': 'justify',
+          'lineHeightMili': 0,
+          'lineHeightUnit': 1,
+          'lineHeight': 1.0,
+          'descFontFamily': 'YoutubeSansLight',
+          'descFontWeight': 100,
+          'priceFontColor': '#000',
+          'priceFontFamily': 'YoutubeSansMedium',
+          'priceFontSize': 19,
+          'priceFontWeight': 'bold',
+          'priceLeft': 0,
+          'priceTop': 113,
+          'imagesTop': 18,
+          'imagesLeft': 6,
+          'imagesWidth': 146,
+          'imagesHeight': 146,
+          'imagesPriceWidth': 16, 
+          },'backgroundColor':'#f5f6ff'};
+          banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
+          
+      break;
+      case 'Contact':
+          banner = {"groupMode":true,"size":{"x":367,"y":408},"contact": { "name":"" }, "backgroundColor":"#ffffff","fontColor":"#000000", "fontSize":"13", "shadowActivate":true,"shadowRight":-8,"shadowDown":4,"shadowDisperse":21,"shadowExpand":-16};
+      break;
+      case 'ProductName':
+          banner = {"size":{"x":300,"y":33},"position": this.getNewPosition({"x":532,"y":41}),"fontColor":"#F5F6FF","fontSize":"25"};
+      break;
+      case 'ProductDescription':
+          banner = {"size":{"x":530,"y":205},"position": this.getNewPosition({"x":359,"y":115}),"textAlign":"justify","fontColor":"#000","fontSize":"16"};
+      break;      
+      case 'ProductCarousel':
+          banner = {"size":{"x":304,"y":291},"position": this.getNewPosition({"x":117,"y":141})};
+      break;
+      case 'Banner':
+          banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
+                    "border":{"style":"solid","color":"#000","radius":20,"width":1}};
+      break;
+    }
+    
+	const newBanner = Object.assign(_defaultBanner,banner);
+	console.log(newBanner);
+    this.layoutColSel.banners.push(newBanner);
+    //open settingsBanner panel with last element
+    this.bannerSelect = this.layoutColSel.banners[this.layoutColSel.banners.length-1];
+    //if(this.bannerSelect.productCatalog) this.presentNewProductListCatalog(this.bannerSelect);
+    //if(this.bannerSelect.speakerCatalog) this.initializeSpeakers(this.bannerSelect);
+    this.onChangeItem(null);
+    this.showPanelTool = 'settingsBanner'; 
   }
+
+  getNewPosition(pos) {
+      this.layoutColSel.banners.forEach((banner)=>{
+          if(banner.position && banner.position.x == pos.x && banner.position.y == pos.y) {
+              pos = this.getNewPosition({"x":pos.x + 10,"y":pos.y + 10});
+          }
+      });
+      return pos;
+  }
+
   
-  layoutSelect($event){
-	  if($event.id && this.layoutSelectTime==0) {
-	    this.layoutSel = $event;
-		setTimeout(()=>{
-			this.layoutSelectTime = 0;
-		},1000)
-		
-		
+  layoutColSelect($event){
+	  if($event && $event.layoutColSel && (Date.now() - this.layoutColSelectTime) > 100 ) {
+	    this.layoutColSel = $event.layoutColSel;
+	    this.layoutRowSel = $event.layoutRowSel;
+	    this.layoutSceneSel = $event.layoutSceneSel;
+		this.showPanelTool = 'settingsLayout';
+		this.layoutColSelectTime = Date.now();
 	  }
   } 
 
+  onDeleteBanner(bannerSelect) {
+	  
+	let colTmp = this.getLayout(bannerSelect, this.scene);
+	
+	if(colTmp && colTmp.banners) {
+	  this.layoutColSel = colTmp;
+	  this.layoutColSel.banners = this.layoutColSel.banners.filter((banner)=>{
+        return bannerSelect != banner; 
+      });
+      this.bannerSelect = null;
+      this.showPanelTool = false;
+      this.onChangeItem(null);
+	}
+  }
+  
+  onDeleteColumn() {
+	this.layoutRowSel.cols = this.layoutRowSel.cols.filter((col)=>{
+       return col != this.layoutColSel;
+	});
+	
+	if(this.layoutRowSel.cols.length == 0) {
+		this.layoutSceneSel.rows = this.layoutSceneSel.rows.filter((row)=>{
+			return row != this.layoutRowSel;
+		});
+	}
+	
+	this.showPanelTool = '';
+	this.layoutColSel = null;
+	this.layoutRowSel = null;
+  }
+  
+  getLayout(banner,scene) {
+	for(let row of scene.rows ) {
+	  for(let col of row.cols ) {
+	    for(let bannerCol of col.banners ) {
+          if(bannerCol.id === banner.id) {
+              return col;
+          }
+		  else if(bannerCol.scenes){
+			  for(let sceneSubCol of bannerCol.scenes) {
+				  
+				  let layoutSubCol = this.getLayout(banner,sceneSubCol);
+				  if(layoutSubCol){ 
+				     return bannerCol;
+				  }
+				  
+			  }
+		  }
+		}
+	  }
+	}
+	return 	null;
+  }
+  
+  onAddRowToColumn() {
+	  console.log(this.layoutColSel);
+  }
+
+  onChangeBackgroundStyle() {
+    this.editSave = true;
+  }
+
+
+  async onDeleteScene(sceneId) {
+    const alert = await this.alertCtrl.create({
+      message: 'Confirma para eliminar la escena',
+      buttons: [
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Aceptar',
+          handler: (data: any) => {
+              this.loading.present({message:'Cargando...'});
+              this.resources.scenes = this.resources.scenes.filter((scene,key)=>{
+                  return key != sceneId;
+              });
+              
+              if(this.template === 'fair') {
+                  this.fair.resources = this.resources;
+                  this.adminFairsService.updateFair(this.fair)
+                   .then((response) => {
+                       this.loading.dismiss(); 
+                       this.fairsService.refreshCurrentFair();
+					   const detail = {'type': 'sceneFair', 'iScene': sceneId };
+                       window.dispatchEvent(new CustomEvent('removeScene:menu',{ detail: detail }));
+					   //window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
+                       //this.router.navigateByUrl(`/super-admin/fair`);
+                   })
+                   .catch(error => {
+                       this.loading.dismiss(); 
+                       this.errors = `Consultando el servicio para actualizar la feria: ${error}`;
+                   });
+              }
+              else if(this.template === 'pavilion') {
+                  this.pavilion.resources = this.resources;
+                  this.adminPavilionsService.update(this.pavilion)
+                   .then((response) => {
+                       this.loading.dismiss(); 
+                       this.fairsService.refreshCurrentFair();
+                       this.pavilionsService.refreshCurrentPavilion();
+                       window.location.replace(`${this.url}/Fair-website/#/super-admin/pavilion/${this.pavilion.id}`);
+                       //this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
+                   })
+                   .catch(error => {
+                       this.loading.dismiss(); 
+                       this.errors = `Consultando el servicio para actualizar el pabellón: ${error}`;
+                   });
+               }
+               else if(this.template === 'stand') {
+                  this.stand.resources = this.resources;
+                  this.adminStandsService.update(this.stand)
+                   .then((response) => {
+                       this.loading.dismiss(); 
+                       this.fairsService.refreshCurrentFair();
+                       //this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                       window.location.replace(`${this.url}/Fair-website/#/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                   })
+                   .catch(error => {
+                       this.loading.dismiss(); 
+                       this.errors = `Consultando el servicio para actualizar el pabellón: ${error}`;
+                   });
+               }
+            
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+
+  onClickOpenHtmlInput(obj,idType){
+     if(obj[idType].isHtml) {
+        this.onClickOpenHtml(obj,idType)
+     }
+  }
+  
+  onClickOpenHtml(obj,idType){
+      
+      this.showHtmlEditor = true;
+      this.showPanelTool = null;
+      this.htmlEditor = {obj: obj, idType: idType};
+      
+      let text ;
+      if(typeof obj[idType] != 'undefined' && obj[idType] ) {
+         text = '<textarea id="editorhtml">'+obj[idType]+'</textarea>';
+      }
+      else {
+         text = '<textarea id="editorhtml"></textarea>';
+      }
+      document.querySelector<HTMLElement>('#content-editorhtml').innerHTML = text;
+      
+      
+      (window as any).tinymce.init({
+          selector: 'textarea#editorhtml',
+          height: 500,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen textcolor',
+            'link image imagetools table spellchecker lists',
+            'insertdatetime media table paste code help wordcount'
+          ],
+          toolbar: 
+          'undo redo | formatselect | ' +
+          'bold italic backcolor forecolor | alignleft aligncenter ' +
+          'alignright alignjustify | bullist numlist outdent indent | ' +
+          'removeformat | help',
+          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        });
+  }
+  
+  onCleanHtml() {
+    this.showHtmlEditor = false;  
+    this.showPanelTool = 'settingsBanner';
+    this.htmlEditor.obj[this.htmlEditor.idType] = '';
+    this.htmlEditor.obj.isHtml = false;
+    
+  }
+  
+  onCloseHtml(){
+    this.showHtmlEditor = false;  
+    this.showPanelTool = 'settingsBanner';
+  }
+  
+  onAcceptHtml() {
+    const iframe = <HTMLIFrameElement> document.querySelector('#editorhtml_ifr');
+    const newText = (<HTMLElement>iframe.contentWindow.document.body).innerHTML;
+    //this.htmlEditor.obj[this.htmlEditor.idType] = (<any>this.sanitizer.bypassSecurityTrustHtml(newText)).changingThisBreaksApplicationSecurity;
+    this.htmlEditor.obj[this.htmlEditor.idType] = newText;
+    this.showPanelTool = 'settingsBanner';
+    this.showHtmlEditor = false;
+    this.htmlEditor.obj.isHtml = true;
+    this.initializeHtmlTexts([this.htmlEditor.obj]);
+  }  
+  
+  initializeHtmlTexts(banners) {
+      banners.forEach((banner)=>{
+          banner.textHtml = this.sanitizer.bypassSecurityTrustHtml(banner.text);
+      });
+  }  
+  
+  initializeInternalUrl() {
+    this.internalUrlList = {'fair':[],'pavilions':[],'stands':[]};
+    let scene, pavilion, stand;
+    for(let i=0; i<this.fair.resources.scenes.length; i++) {
+        scene = this.fair.resources.scenes[i];
+        this.internalUrlList.fair.push({'label':'Escena - ' + (i+1) + ': ' + scene.title, 'value':`/map/fair/${i}`});
+    }
+    for(let i=0; i<this.fair.pavilions.length; i++) {
+        pavilion = this.fair.pavilions[i];
+        for(let j=0; j<pavilion.resources.scenes.length; j++) {
+            scene = pavilion.resources.scenes[j];
+            this.internalUrlList.pavilions.push({'label':'Pabellón '+ pavilion.name + '. Escena - ' + (j+1), 'value':`/map/pavilion/${pavilion.id}/${j}`});
+        }
+        for(let j=0; j<pavilion.stands.length; j++) {
+            stand = pavilion.stands[j];
+            for(let k=0; k<stand.resources.scenes.length; k++) {
+                scene = stand.resources.scenes[k];
+                this.internalUrlList.stands.push({'label':'Local '+ stand.merchant.name + '. Escena - ' + (k+1), 'value':`/map/stand/${pavilion.id}/${stand.id}/${k}`});
+            }
+        }
+    }
+  }
+  
+  addArrowLineCurve(){}
 }

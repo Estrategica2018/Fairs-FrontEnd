@@ -5,4 +5,4 @@ export const environment = {
   fairName: ''
 };
 
-export const SERVER_URL = 'https://e-logic.com.co';
+export const SERVER_URL = 'https://www.e-logic.com.co';

@@ -5,7 +5,7 @@ import { ScheduleFilterPage } from '../schedule-filter/schedule-filter';
 import { AgendasService } from './../../api/agendas.service';
 import { FairsService } from './../../api/fairs.service';
 import { LoadingService } from './../../providers/loading.service';
-import { Observable } from 'rxjs';
+
 import { DatePipe } from '@angular/common'
 import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import { UsersService } from './../../api/users.service';
@@ -31,7 +31,7 @@ export class SchedulePage implements OnInit {
   dataInitMeetings = null;
   categoriesFilter: any = null;
   textFilters: string;
-  results: Observable<any>;
+  
   ios: boolean;
   dayIndex = 0;
   queryText = '';

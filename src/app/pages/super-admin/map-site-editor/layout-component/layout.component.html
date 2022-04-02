@@ -4,18 +4,16 @@
   [ngClass]="{'layout-row': true }"
   >
     <ion-col 
-	(click)="goToclick(col)"
+	(click)="goToclick(col,row,scene)"
 	size="{{ ( windowScreenSm ? '12' : row.cols.length == 2 && windowScreenLg ? '6' : '' ) }}" 
 	*ngFor="let col of row.cols; let indexCol = index" 
 	class="d-flex layout-col cursor-pointer"
-	[ngClass]="{'center':col.align=='center','layout-selected':layoutSel?.id == col?.id}" 
+	[ngClass]="{'center':col.align=='center','layout-selected':layoutColSel?.id == col?.id}" 
 	[ngStyle]="{
 		'width': scene.styles?.width + 'em',
 		'height': scene.styles?.height + 'em',
 		'margin-top': scene.styles?.marginTop + 'em'
     }">
-	
-	{{layoutSel?.id}}
 	    <div *ngFor="let banner of col.banners" 
 		  [ngStyle]="{
 		    'width': ( !banner.styles || banner.styles && ( !banner.styles.width || banner.styles.width === '100%' ) ) ? '100%' : banner.styles?.width + 'em',
@@ -28,32 +26,32 @@
 			'left': banner.styles?.position?.left + 'em'
 		  }">
 		  
-           <img *ngIf="banner.image" [src]="banner.image.src" 
+           <img *ngIf="banner.styles.image" [src]="banner.styles.image.src" 
 		   [ngStyle]="{
 		    'width': ( !banner.styles || banner.styles && ( !banner.styles.width || banner.styles.width === '100%' ) ) ? '100%' : banner.styles?.width + 'em',
-		    'height': auto,
-			'height': banner.styles?.height + 'em',
+		    'height': banner.styles?.height + 'em',
 			'opacity': 0.25
 		   }">
 		   
-		   <h1 *ngIf="banner.text"
+		   <h1 *ngIf="banner.styles.text"
 		   [ngStyle]="{
-		     'font-size': banner.text?.fontSize + em,
+		     'font-size': banner.text?.fontSize + 'em',
 		     'color': banner.text?.color,
 			 'width': '100%',
 			 'height': banner.styles?.height + 'em',
-		     'padding': banner.text?.padding + em,
+		     'padding': banner.styles?.padding + 'em',
 			 'opacity': 0.25
 		   }">
-		   {{ banner.text?.value }}
+		   {{ banner.styles.text?.value }}
 		   </h1>
            <app-layout-component 
 		     *ngFor="let subChild of banner?.scenes"
 		     [editMode]="editMode"
 		     [scene]="subChild" 
-			 (click)="goToclick"
-			 [layoutSel]="layoutSel"
+			 (click)="goToclickSub($event)"
+			 [layoutColSel]="layoutColSel"
 		     [windowScreenSm]="windowScreenSm" 
+		     [windowScreenLg]="windowScreenLg" 
              (onHoverBanner)="goToOnHoverBannerReciclyer($event)">
            </app-layout-component>
         </div>

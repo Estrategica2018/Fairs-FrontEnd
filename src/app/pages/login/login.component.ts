@@ -427,7 +427,7 @@ export class LoginComponent  implements OnInit {
    this.loading.present({message:'Cargando...'});
    
    const fairObj = Object.assign({},this.fair);
-   this.adminFairsService.update(fairObj).
+   this.adminFairsService.updateFair(fairObj).
       then( response => {
         this.presentToast('Acción '+action+' exitosa', 'success');
         this.loading.dismiss(); 

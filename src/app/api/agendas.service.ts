@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { FairsService } from '../api/fairs.service';
 import { processData } from '../providers/process-data';
+import { environment, SERVER_URL } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class AgendasService {
             
             this.fairsService.getCurrentFair().
               then( fair => {
-                this.http.get(`/api/agenda/list?fair_id=${fair.id}`)
+                this.http.get(`${SERVER_URL}/api/agenda/list?fair_id=${fair.id}`)
                 .pipe(
                   timeout(60000),
                   catchError((e: any) => {
@@ -88,7 +89,7 @@ export class AgendasService {
           })
        };
   
-       this.http.get(`/api/meeting/generate-video-token/${fair_id}/${meeting_id}`,httpOptions)
+       this.http.get(`${SERVER_URL}/api/meeting/generate-video-token/${fair_id}/${meeting_id}`,httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {

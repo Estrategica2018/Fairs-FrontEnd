@@ -71,7 +71,6 @@
           monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
           min="2021" [max]="maxYear"
           [value]="fair.init_date"
-          [pickerOptions]="initPickerOptions"
           placeholder="Select Date" (ionChange)="ionChange()"></ion-datetime>
       </ion-item>
       <ion-item>
@@ -80,7 +79,6 @@
           monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
           min="2021" [max]="maxYear"
           [value]="fair.end_date"
-          [pickerOptions]="endPickerOptions"
           placeholder="Select Date" (ionChange)="ionChange()"></ion-datetime>
       </ion-item>
 

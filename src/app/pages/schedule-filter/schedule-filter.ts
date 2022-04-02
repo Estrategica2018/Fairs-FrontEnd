@@ -12,8 +12,10 @@ export class ScheduleFilterPage {
   ios: boolean;
   deselectAll: boolean = false;
 
-  tracks: {name: string, icon: string, isChecked: boolean}[] = [];
+  tracks: {name: string, icon: string, isChecked: boolean, color: string}[] = [];
 
+  fullScreen = false;
+  
   constructor(
     private confData: ConferenceData,
     private config: Config,

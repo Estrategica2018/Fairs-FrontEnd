@@ -231,8 +231,8 @@
             <div class="card item-{{(i+1)}} {{banner.class}}" *ngFor="let product of banner.__catalog?.products; let i = index;" 
               [ngStyle]="{
                'position': 'absolute',
-               'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
-               'left': ( (  ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
+               'top': ( i  * banner.size.y ) + 'px',
+               'left': ( i  * banner.size.x ) + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
@@ -327,8 +327,8 @@
               [ngClass]="{ 'selected': bannerSpeakerSelectHover == banner.id + '-' + i }"                                                        
               [ngStyle]="{
                'position': 'absolute',
-               'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
-               'left': ( ( ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
+               'top': ( i  * banner.size.y ) + 'px',
+               'left': ( i  * banner.size.x ) + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
@@ -2205,7 +2205,7 @@
          <ion-list>
             <ion-item>
                <ion-card-subtitle>Iniciar en EscalaGris</ion-card-subtitle>
-               <ion-checkbox slot="end" [(ngModel)]="bannerSelect.grayscale" (click)="onChangeEffect(effect)"></ion-checkbox>
+               <ion-checkbox slot="end" [(ngModel)]="bannerSelect.grayscale"></ion-checkbox>
             </ion-item>
             <ion-item *ngFor="let effect of hoverEffects">
                <ion-card-subtitle>{{effect.name}}</ion-card-subtitle>

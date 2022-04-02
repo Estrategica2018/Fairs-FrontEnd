@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { processDataToString } from '../../providers/process-data';
 import { processData } from '../../providers/process-data';
 import { UsersService } from '../users.service';
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class AdminMerchantsService {
           })
         };
 
-      this.http.post(`/api/merchant/create`, processDataToString(data),httpOptions)
+      this.http.post(`${SERVER_URL}/api/merchant/create`, processDataToString(data),httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -61,7 +62,7 @@ export class AdminMerchantsService {
   get(data): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      this.http.post(`/api/merchant/get_merchant`, processDataToString(data))
+      this.http.post(`${SERVER_URL}/api/merchant/get_merchant`, processDataToString(data))
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -87,7 +88,7 @@ export class AdminMerchantsService {
   update(data): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      this.http.post(`/api/merchant/update`, processDataToString(data))
+      this.http.post(`${SERVER_URL}/api/merchant/update`, processDataToString(data))
         .pipe(
           timeout(60000),
           catchError((e: any) => {

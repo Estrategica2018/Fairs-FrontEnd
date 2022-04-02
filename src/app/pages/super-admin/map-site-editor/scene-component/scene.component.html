@@ -17,39 +17,39 @@
 			'height': ( !banner.styles || banner.styles && ( !banner.styles.height || banner.styles.height === '100%' ) ) ? '100%' : banner.styles?.height + 'em',
 			'margin-top': banner.styles?.marginTop + 'em',
 			'margin-left': banner.styles?.marginLeft + 'em',
-			'text-align': banner.styles?.textAlign,
+			'text-align': banner.styles?.text?.textAlign,
 			'position': banner.styles?.position?.type,
 			'top': banner.styles?.position?.top + 'em',
 			'left': banner.styles?.position?.left + 'em'
 		  }">
 		  
-           <img *ngIf="banner.image" [src]="banner.image.src" 
+           <img *ngIf="banner.styles.image" [src]="banner.styles.image.src" 
 		   [ngClass]="{'cursor-pointer':editMode}"
 		   [ngStyle]="{
 		    'width': ( !banner.styles || banner.styles && ( !banner.styles.width || banner.styles.width === '100%' ) ) ? '100%' : banner.styles?.width + 'em',
-		    'height': auto,
-			'height': banner.styles?.height + 'em',
-			'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : banner.style?.opacity
+		    'height': banner.styles?.height + 'em',
+			'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : banner.styles?.opacity
 		   }"
 	       (click)="goToOnHoverBanner(banner,scene)">
 		   
-		   <h1 *ngIf="banner.text"
+		   <h1 *ngIf="banner.styles.text"
 		   [ngClass]="{'cursor-pointer':editMode}"
 		   [ngStyle]="{
-		     'font-size': banner.text?.fontSize + em,
-		     'color': banner.text?.color,
+		     'font-size': banner.styles?.text?.fontSize + 'em',
+		     'color': banner.styles?.text?.color,
 			 'width': '100%',
 			 'height': banner.styles?.height + 'em',
-			 'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : banner.style?.opacity,
-		     'padding': banner.text?.padding + em
+			 'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : banner.styles?.opacity,
+		     'padding': banner.styles?.text?.padding + 'em'
 		   }" (click)="goToOnHoverBanner(banner,scene)">
-		   {{ banner.text?.value }}
+		   {{ banner.styles.text.value }}
 		   </h1>
            <app-scene-component 
 		     *ngFor="let subChild of banner?.scenes"
 		     [editMode]="editMode"
 		     [scene]="subChild" 
 		     [windowScreenSm]="windowScreenSm" 
+		     [windowScreenLg]="windowScreenLg" 
              [bannerSelectHover]="bannerSelectHover" 
              (onHoverBanner)="goToOnHoverBannerReciclyer($event)">
            </app-scene-component>

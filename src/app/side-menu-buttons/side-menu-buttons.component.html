@@ -1,0 +1,44 @@
+<div mwlDraggable class="container-panel-tools">
+  <!-- Button save-->
+  <div class="panel-scene-save">
+    <ion-button [color]="editSave ? 'primary' : 'light'" class="tool-tip" (click)="onSave()">
+      <ion-icon name="save-outline"></ion-icon>
+     </ion-button>
+     <span class="tooltip-text arrow--2">Guardar</span>
+  </div>
+  <!-- Button setting scene-->
+  <div class="panel-scene-settings">
+    <ion-button color="light" class="tool-tip" (click)="onSelectPanel('settings')">
+      <ion-icon name="construct-outline"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Configuración de Escena</span>
+  </div>
+  <!-- Button tab menu-->
+  <div class="panel-tab-menu">
+    <ion-button color="light" class="tool-tip" (click)="layoutMode = !layoutMode">
+      <ion-icon name="grid-outline"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Diseño Layout</span>
+  </div>
+  <!-- Button Video preview-->
+  <div class="panel-video-preview">
+    <ion-button color="light" class="tool-tip" (click)="onSelectPanel('videoPreview')">
+      <ion-icon name="eye-outline"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Video Preview</span>
+  </div>
+  <!-- Button show elements-->
+    <div class="panel-show-item" *ngIf="layoutColSel && layoutMode">
+    <ion-button color="light" class="tool-tip" (click)="onSelectPanel('items')">
+      <ion-icon name="list-outline"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Mostrar elementos</span>
+  </div>
+  <!-- Button add element-->
+  <div class="panel-scene-plus" *ngIf="layoutColSel && layoutMode">
+    <ion-button color="light" class="tool-tip" (click)="onSelectPanel('addBanners')">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Adicionar elemento</span>
+  </div>
+</div>  

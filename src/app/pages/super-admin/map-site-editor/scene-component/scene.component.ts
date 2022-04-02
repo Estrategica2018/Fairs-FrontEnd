@@ -13,6 +13,7 @@ export class SceneComponent implements OnInit {
 
   @Input() scene: any;
   @Input() windowScreenSm: boolean;
+  @Input() windowScreenLg: boolean;
   @Input() editMode: boolean = false;
   @Input() router: Router;
   @Input() bannerSelectHover: any;

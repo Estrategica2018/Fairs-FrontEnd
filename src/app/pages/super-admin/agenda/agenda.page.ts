@@ -27,7 +27,7 @@ export class AgendaPage implements OnInit {
   fair: any;
   action: string;
   categories = [];
-  speakers = [];
+  speakers: any = [];
   emails: any = [];
   editSave = null;
   invited_emails: any = [];
@@ -543,6 +543,14 @@ export class AgendaPage implements OnInit {
   
   changeAudienceConfig() {
       this.agenda.audience_config = this.agendaForm.value['audience_config'];
+  }
+  
+  deleteTag(audience) {
+	if(this.invited_emails && this.invited_emails.length > 0) {
+	  this.invited_emails = this.invited_emails.filter((audTmp)=>{
+		  return audience.email !== audTmp.email;
+	  })
+	}
   }
 }
 

@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { SwUpdate } from '@angular/service-worker';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Storage } from '@ionic/storage';
@@ -21,7 +20,7 @@ import { AgendasService } from './api/agendas.service';
 import { AdminFairsService } from './api/admin/fairs.service';
 import { AdminPavilionsService } from './api/admin/pavilions.service';
 import {HashLocationStrategy, Location, LocationStrategy} from '@angular/common';
-
+import { environment, SERVER_URL } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -65,7 +64,6 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     private storage: Storage,
     private usersService: UsersService,
-    private swUpdate: SwUpdate,
     private toastCtrl: ToastController,
     private loading: LoadingService,
     private fairsService: FairsService,
@@ -201,7 +199,7 @@ export class AppComponent implements OnInit {
   
   ngOnInit() {
     this.checkLoginStatus();
-    this.listenForLoginEvents();
+    this.listenForEvents();
     this.listenForFullScreenEvents();
     this._toolbarHeight = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
     
@@ -237,7 +235,7 @@ export class AppComponent implements OnInit {
     this.loggedIn = ( user !== null );
   }
 
-  listenForLoginEvents() {
+  listenForEvents() {
     window.addEventListener('user:login', (user) => {
       //this.updateLoggedInStatus(user);
       window.location.reload();
@@ -601,7 +599,7 @@ export class AppComponent implements OnInit {
 	if(!isExternal)  this.loading.present({message:'Cargando...'});
 	
 	  const fair  = Object.assign({},{'id':this.fair.id,'location': JSON.stringify(this.fair.location)});
-	  this.adminFairsService.update(fair)
+	  this.adminFairsService.updateFair(fair)
 	  .then((response) => {
 		  this.editMenu = false;
 		  if(!isExternal) { 

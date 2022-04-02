@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { processDataToString } from '../../providers/process-data';
 import { processData } from '../../providers/process-data';
 import { UsersService } from '../users.service';
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,7 @@ export class AdminFairsService {
               })
             };
 
-            this.http.get(`/api/fair/list_all`,httpOptions)
+            this.http.get(`${SERVER_URL}/api/fair/list_all`,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -66,7 +67,7 @@ export class AdminFairsService {
               })
             };
             const newFair = processDataToString(fair);
-            this.http.post(`/api/fair/update/${fair.id}`,newFair,httpOptions)
+            this.http.post(`${SERVER_URL}/api/fair/update/${fair.id}`,newFair,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -98,7 +99,7 @@ export class AdminFairsService {
               })
             };
             const newFair = processDataToString(fair);
-            this.http.post(`/api/fair/delete/${fair.id}`,newFair,httpOptions)
+            this.http.post(`${SERVER_URL}/api/fair/delete/${fair.id}`,newFair,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -129,7 +130,7 @@ export class AdminFairsService {
               })
             };
             
-            this.http.post(`/api/fair/create/`,newFair,httpOptions)
+            this.http.post(`${SERVER_URL}/api/fair/create/`,newFair,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {

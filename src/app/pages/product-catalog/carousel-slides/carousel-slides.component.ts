@@ -391,7 +391,7 @@ export class CarouselSlidesComponent implements OnInit {
      }
   }    
 
-  slidePrev(slides) {
+  slidePrev() {
     this.slides.slidePrev();
   }
   

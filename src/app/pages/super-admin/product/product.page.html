@@ -127,8 +127,8 @@
             </ion-button>
          </ion-buttons>
       </ion-item>
-      <ion-item button="true" *ngFor="let keyword of product.resources.keywords" clas>
-        <ion-input class="ml-auto" class="text-right" [(ngModel)]="keyword" (ionChange)="editSave=true" name="keyword"></ion-input>
+      <ion-item button="true" *ngFor="let word of keywords">
+        <input class="ml-auto text-right" [(ngModel)]="word.value" (ionChange)="editSave=true" name="keyword">
       </ion-item>
       <ion-grid class="attribute" button="true" *ngIf="newKeyWord">
         <ion-row>

@@ -255,7 +255,7 @@ export class ProductPricePage implements OnInit {
 
   }
   
-  openColors (attribute){
+  openColors (){
     this.showColor = true;
   }
   

@@ -4,13 +4,12 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ComponentsModule } from './components.module';
 import { AppComponent } from './app.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -23,6 +22,7 @@ import { LoginComponent } from './pages/login/login.component';
 import localeEs from "@angular/common/locales/es";
 import { registerLocaleData } from "@angular/common";
 registerLocaleData(localeEs, "es");
+import { RouteReuseStrategy } from '@angular/router';
 
 
 @NgModule({
@@ -34,9 +34,6 @@ registerLocaleData(localeEs, "es");
     ReactiveFormsModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production
-    }),
     WompiPaymentLayoutPageModule,
     ComponentsModule
   ],
@@ -47,7 +44,8 @@ registerLocaleData(localeEs, "es");
     SplashScreen, 
     StatusBar, 
     DatePipe,
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    //{provide: LocationStrategy, useClass: HashLocationStrategy},
+	{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Title,
     { provide: LOCALE_ID, useValue: "es" }
     //{provide: APP_BASE_HREF, useValue: 'http://'+window.location.hostname+'/Fair-website/'}    

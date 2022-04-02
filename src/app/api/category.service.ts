@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { processData } from '../providers/process-data';
-
+import { environment, SERVER_URL } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class CategoryService {
 
   list(type, fair): any {
     return new Promise((resolve, reject) => {
-        this.http.get(`/api/category/to_list/${fair.id}/${type}`)
+        this.http.get(`${SERVER_URL}/api/category/to_list/${fair.id}/${type}`)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -49,7 +49,7 @@ export class CategoryService {
   }
   createCategory(category){
     return new Promise((resolve, reject) => {
-        this.http.post(`/api/category/create/`,category)
+        this.http.post(`${SERVER_URL}/api/category/create/`,category)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -77,7 +77,7 @@ export class CategoryService {
   }
   createSubCategory(subCategory) {
     return new Promise((resolve, reject) => {
-      this.http.post(`/api/subcategory/create/`, subCategory)
+      this.http.post(`${SERVER_URL}/api/subcategory/create/`, subCategory)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -105,7 +105,7 @@ export class CategoryService {
   }
   updateCategory(category) {
       return new Promise((resolve, reject) => {
-        this.http.post(`/api/category/update/`, category)
+        this.http.post(`${SERVER_URL}/api/category/update/`, category)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -132,7 +132,7 @@ export class CategoryService {
   }
   getCategory( categoryId: string): any {
     return new Promise((resolve, reject) => {
-      this.http.get(`/api/category/get/${categoryId}`)
+      this.http.get(`${SERVER_URL}/api/category/get/${categoryId}`)
         .pipe(
           timeout(60000),
           catchError((e: any) => {

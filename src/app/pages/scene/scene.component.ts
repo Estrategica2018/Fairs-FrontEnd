@@ -11,6 +11,12 @@ export class SceneComponent implements OnInit {
   @Input() scene: any;
   @Input() product: any;
   @Input() mainContainer: any;
+  @Input() router: any;
+  bannerSelectHover = null;
+  isHover= null;
+  fair =null;
+  pavilion = null;
+  stand = null;
   
   constructor() {
   }
@@ -73,5 +79,33 @@ export class SceneComponent implements OnInit {
      //this.onResizeCarousels();
      
   }
+  
+  logScrolling($event) {
+	  
+  }
+  
+  onMouseWheel($event) {
+	  
+  }
+  
+  goToInternalUrl(banner){
+     if(banner.internalUrl && banner.internalUrl.length > 0) {
+        this.redirectTo(banner.internalUrl);
+     }
+  }
+  
+  redirectTo(uri:string){
+    this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      this.router.navigate([uri])
+    });
+  }
+  
+  startAnimation(banner) {
+	  
+  }
+  
+  mouseUpContainer($event){}
+  
+  mouseDownContainer($event,banner){}
 
 }

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { processData } from '../providers/process-data';
 import { UsersService } from '../api/users.service';
+import { environment, SERVER_URL } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class ShoppingCartsService {
               })
             };     
             
-            this.http.get(`/api/list/shopping-cart/${fair.id}`,httpOptions)
+            this.http.get(`${SERVER_URL}/api/list/shopping-cart/${fair.id}`,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -121,7 +122,7 @@ export class ShoppingCartsService {
            "amount": amount
        };
        
-       this.http.post(`/api/store/shopping-cart/${fair.id}`,data,httpOptions)
+       this.http.post(`${SERVER_URL}/api/store/shopping-cart/${fair.id}`,data,httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -159,7 +160,7 @@ export class ShoppingCartsService {
               })
             };
            const data = {'id': shoppingCart.id, 'state':'A'};
-           this.http.post(`/api/update/shopping-cart/`,data,httpOptions)
+           this.http.post(`${SERVER_URL}/api/update/shopping-cart/`,data,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -197,7 +198,7 @@ export class ShoppingCartsService {
               })
             };
            const data = {'id': shoppingCart.id, 'amount':shoppingCart.amount};
-           this.http.post(`/api/update/shopping-cart/`,data,httpOptions)
+           this.http.post(`${SERVER_URL}/api/update/shopping-cart/`,data,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -233,7 +234,7 @@ export class ShoppingCartsService {
               })
             };     
             console.log('/api/find/shopping');
-            this.http.get(`/api/find/shopping-cart/${fair.id}/${referenceId}`,httpOptions)
+            this.http.get(`${SERVER_URL}/api/find/shopping-cart/${fair.id}/${referenceId}`,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {

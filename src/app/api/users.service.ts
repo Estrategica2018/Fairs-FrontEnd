@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import { Storage } from '@ionic/storage';
 import { environment, SERVER_URL } from '../../environments/environment';
 
@@ -21,7 +20,7 @@ export class UsersService {
   }
 
   login(email: string, password: string, fair_id: string): Observable<any> {
-    return this.http.post(`/api/login`, {email: email, password: password, fair_id: fair_id})
+    return this.http.post(`${SERVER_URL}/api/login`, {email: email, password: password, fair_id: fair_id})
    .pipe(
       timeout(10000),
       catchError((e: any) => {
@@ -64,7 +63,7 @@ export class UsersService {
       })
     };
 
-    return this.http.post(`/api/logout`,{},httpOptions)
+    return this.http.post(`${SERVER_URL}/api/logout`,{},httpOptions)
    .pipe(
       timeout(60000),
       catchError((e: any) => {
@@ -84,7 +83,7 @@ export class UsersService {
   signup(userData: any): Promise<any> {
     return new Promise((resolve, reject) => {
         userData.origin = window.location.origin;
-        this.http.post(`/api/user/create`,userData)
+        this.http.post(`${SERVER_URL}/api/user/create`,userData)
        .pipe(
           timeout(2000),
           catchError((e: any) => {
@@ -139,7 +138,7 @@ export class UsersService {
       })
     };
 
-    return this.http.post(`/api/user/update`,userData, httpOptions)
+    return this.http.post(`${SERVER_URL}/api/user/update`,userData, httpOptions)
    .pipe(
       timeout(3000),
       catchError((e: any) => {
@@ -160,7 +159,7 @@ export class UsersService {
 
   recoverPassword(data): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.post(`/api/password/create`,data)
+      this.http.post(`${SERVER_URL}/api/password/create`,data)
        .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -198,7 +197,7 @@ export class UsersService {
 
   findPassword(token): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.get(`/api/password/find/${token}`)
+      this.http.get(`${SERVER_URL}/api/password/find/${token}`)
        .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -233,7 +232,7 @@ export class UsersService {
 
   resetPassword(data): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.post(`/api/password/reset`,data)
+      this.http.post(`${SERVER_URL}/api/password/reset`,data)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -274,7 +273,7 @@ export class UsersService {
       })
     };
     return new Promise((resolve, reject) => {
-        this.http.post(`/api/payment/user/fair`,data,httpOptions)
+        this.http.post(`${SERVER_URL}/api/payment/user/fair`,data,httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -297,7 +296,7 @@ export class UsersService {
   
   findEmail(email: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        this.http.get(`/api/user/find/${email}`)
+        this.http.get(`${SERVER_URL}/api/user/find/${email}`)
        .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -318,7 +317,7 @@ export class UsersService {
 
   sendSignConfirm(email: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        this.http.get(`/api/user/sendSignConfirm/${email}`)
+        this.http.get(`${SERVER_URL}/api/user/sendSignConfirm/${email}`)
        .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -339,7 +338,7 @@ export class UsersService {
   
   singupValidate(email: string, code: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        this.http.get(`/api/user/sendSignConfirm/validate/${email}/${code}`)
+        this.http.get(`${SERVER_URL}/api/user/sendSignConfirm/validate/${email}/${code}`)
        .pipe(
           timeout(60000),
           catchError((e: any) => {

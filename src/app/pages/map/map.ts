@@ -45,7 +45,8 @@ export class MapPage implements OnInit {
   resources = null;
   template = null;
   bannerSelectHover = null;
-  showlogScrolling = false;
+  bannerSpeakerSelectHover = null;
+  
   profileRole:any;
   slideOpts = {
     initialSlide: 0,
@@ -119,6 +120,8 @@ export class MapPage implements OnInit {
 
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
+		console.log(this.fair);
+		
 		if(!this.fair.resources) {
 			this.loading.dismiss();
 			return;
@@ -193,7 +196,7 @@ export class MapPage implements OnInit {
           this.initializeCarousels();
         }, 1000);
         
-        if(this.scene.menuTabs.showMenuParent) {
+        if(this.scene.menuTabs && this.scene.menuTabs.showMenuParent) {
            this.tabMenuObj = Object.assign({}, this.resources.menuTabs);
         }
         else {
@@ -300,6 +303,7 @@ export class MapPage implements OnInit {
      });     
      
      //Menu tab resize/render
+	 if(this.scene.menuTabs && this.scene.menuTabs.position)
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
      
      //product catalog and carrete of images resize/render 
@@ -389,7 +393,7 @@ export class MapPage implements OnInit {
       banners.forEach((banner)=>{
           banner.textHtml = this.sanitizer.bypassSecurityTrustHtml(banner.text);
       });
-  }  
+  }
   
   initializeCarousels() {
     if(this.carousels && this.carousels._results ) {
@@ -710,5 +714,8 @@ export class MapPage implements OnInit {
     }
    
   }
-    
+ 
+  logScrolling($event) {
+	console.log($event);
+  } 
 }

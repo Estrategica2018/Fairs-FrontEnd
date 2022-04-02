@@ -13,8 +13,9 @@ export class LayoutComponent implements OnInit {
 
   @Input() scene: any;
   @Input() windowScreenSm: boolean;
+  @Input() windowScreenLg: boolean;
   @Input() editMode: boolean = false;
-  @Input() layoutSel: any;
+  @Input() layoutColSel: any;
   @Input() router: Router;	
   @Output() onHoverBanner = new EventEmitter<any>();
   @Output() click = new EventEmitter<any>();
@@ -41,8 +42,13 @@ export class LayoutComponent implements OnInit {
 	  this.goToOnHoverBanner($event.banner, $event.scene);
   }
 
-  goToclick(col) {
-	  this.click.emit(col);
+  goToclick(col,row,scene) {
+	this.click.emit({'layoutColSel':col,'layoutRowSel':row, 'layoutSceneSel':scene});
+  } 
+  
+  goToclickSub($event) {
+	console.log($event);
+	this.click.emit($event);
   }
 
   addCol(colSelected) {

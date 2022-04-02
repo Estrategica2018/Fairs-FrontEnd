@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { processDataToString } from '../../providers/process-data';
 import { processData } from '../../providers/process-data';
 import { UsersService } from '../users.service';
-
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class AdminSpeakersService {
           })
       };
 
-      this.http.post(`/api/speakers/create`, processDataToString(data),httpOptions)
+      this.http.post(`${SERVER_URL}/api/speakers/create`, processDataToString(data),httpOptions)
         .pipe(
           timeout(60000),
           catchError(e => {
@@ -66,7 +66,7 @@ export class AdminSpeakersService {
             Authorization:  'Bearer ' + userDataSession.token
           })
         };
-        this.http.post(`/api/speakers/update`, processDataToString(data), httpOptions)
+        this.http.post(`${SERVER_URL}/api/speakers/update`, processDataToString(data), httpOptions)
           .pipe(
             timeout(60000),
             catchError(e => {
@@ -99,7 +99,7 @@ export class AdminSpeakersService {
             Authorization:  'Bearer ' + userDataSession.token
           })
         };
-        this.http.post(`/api/speakers/delete`, processDataToString(data), httpOptions)
+        this.http.post(`${SERVER_URL}/api/speakers/delete`, processDataToString(data), httpOptions)
           .pipe(
             timeout(60000),
             catchError(e => {

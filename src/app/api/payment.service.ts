@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { processData } from '../providers/process-data';
 import { environment, SERVER_URL } from '../../environments/environment';
@@ -27,7 +27,7 @@ export class PaymentService {
       })
     };
     return new Promise((resolve, reject) => {
-        this.http.post(`/api/payment/generate`,data,httpOptions)
+        this.http.post(`${SERVER_URL}/api/payment/generate`,data,httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -56,7 +56,7 @@ export class PaymentService {
       })
     };
     return new Promise((resolve, reject) => { 
-        this.http.post(`/api/wompi/auth/${data.id}`,data,httpOptions)
+        this.http.post(`${SERVER_URL}/api/wompi/auth/${data.id}`,data,httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {

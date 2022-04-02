@@ -203,8 +203,8 @@
               *ngFor="let product of banner.__catalog?.products; let i = index;" 
               [ngStyle]="{
                'position': 'absolute',
-               'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
-               'left': ( ( ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
+               'top': '0.03' + 'px',
+               'left': '1.03' + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': 'url('+banner.image_url+')',
@@ -299,8 +299,8 @@
               [ngClass]="{ 'selected': bannerSpeakerSelectHover == banner.id + '-' + i }"                                                        
               [ngStyle]="{
                'position': 'absolute',
-               'top': (( number.parseInt( i / banner.__factor ) * banner.size.y) + (banner.size.y * number.parseInt( i / banner.__factor ) * 0.03) ) + 'px',
-               'left': ( ( ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
+               'top': '0.03' + 'px',
+               'left': '1.03' + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',

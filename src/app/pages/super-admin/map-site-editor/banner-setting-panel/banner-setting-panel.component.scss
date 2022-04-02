@@ -39,6 +39,18 @@
   display: none;
 }
 
-legendImgContainer:hover + .legendImg { display: block; }
-legendImgContainer:hover ~ .legendImg { display: block; }
-legendImgContainer:hover > .legendImg { display: block; }
+.legendImgContainer:hover + .legendImg { display: block; }
+.legendImgContainer:hover ~ .legendImg { display: block; }
+.legendImgContainer:hover > .legendImg { display: block; }
+
+
+.imagen-src {
+    width: 15em;
+    height: auto;
+    position: absolute;
+    right: 0;
+}
+
+.inputImage {
+  width: 137%;
+}

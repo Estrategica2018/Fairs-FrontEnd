@@ -24,6 +24,7 @@ export class AdminPage {
   @ViewChild('slides', { static: true }) slides: IonSlides;
   fairList = [];
   showNewFair = false;
+  success: String = null;
   errors: String = null;
   fairDeleted = null;
   fair = { 'name': '', 'description': '', 'social_media': {'icon':'assets/icon/icon.png'}, 'end_date':'', 'init_date':''};

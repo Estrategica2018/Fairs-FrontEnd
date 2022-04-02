@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
 import { map, timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
 import { FairsService } from '../fairs.service';
 import { processData, processDataToString } from '../../providers/process-data';
 import { UsersService } from '../users.service';
+import { environment, SERVER_URL } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class AdminPavilionsService {
               'Authorization':  'Bearer ' + userDataSession.token
           })
         };
-        this.http.post(`/api/pavilion/create2`, processDataToString(data),httpOptions)
+        this.http.post(`${SERVER_URL}/api/pavilion/create2`, processDataToString(data),httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -70,7 +71,7 @@ export class AdminPavilionsService {
           })
         };
 
-        this.http.post(`/api/pavilion/update/${pavilion.id}`, processDataToString(pavilion),httpOptions)
+        this.http.post(`${SERVER_URL}/api/pavilion/update/${pavilion.id}`, processDataToString(pavilion),httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -106,7 +107,7 @@ export class AdminPavilionsService {
               'Authorization':  'Bearer ' + userDataSession.token
           })
         };
-        this.http.post(`/api/pavilion/delete/${pavilion.id}`, {pavilion_id: pavilion.id},httpOptions)
+        this.http.post(`${SERVER_URL}/api/pavilion/delete/${pavilion.id}`, {pavilion_id: pavilion.id},httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
