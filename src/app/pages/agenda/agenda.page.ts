@@ -45,6 +45,7 @@ export class AgendaPage implements OnInit {
   contactForm: FormGroup;
   invited_speakers = [];
   speakers = [];
+  url = SERVER_URL;
   
   constructor(
     private dataProvider: ConferenceData,
