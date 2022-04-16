@@ -75,6 +75,7 @@ export class MapPage implements OnInit {
     private speakersService: SpeakersService) {
         
       this.listenForFullScreenEvents();
+	  this.initializeListeners();
       this.usersService.getUser().then((userDataSession: any)=>{
           if(userDataSession && userDataSession.user_roles_fair)  {
             this.profileRole = {};
@@ -230,7 +231,12 @@ export class MapPage implements OnInit {
     this.router.navigate([tab]);
   }
   
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
+  onResizeAdjustSize() {
+	this.onResize();
+	setTimeout(()=>{ this.onResize(); },100);
+  }
+  
   onResize() {
       
      if(!this.scene) return;
@@ -262,12 +268,12 @@ export class MapPage implements OnInit {
      
      this.scene.banners.forEach((banner)=>{
         
-        if( !banner.productCatalog && !banner.speakerCatalog )  {
-            if(banner.position)  { banner.position.x /= deltaW; banner.position.y /= deltaH; }
+        if( this.scene.render )  {
             if(banner.size ) {    banner.size.x /= deltaW;banner.size.y /= deltaH;}
+            if(banner.position)  { banner.position.x /= deltaW; banner.position.y /= deltaH; }
             if(banner.fontSize > 0 ) banner.fontSize /= deltaW;
             if(banner.border && banner.border.radius > 0) banner.border.radius /= deltaH;
-            if(banner.productCatalog) {
+            if(banner.productCatalog ) {
                if(banner.productCatalog.buttonWidth > 0) banner.productCatalog.buttonWidth /= deltaW;
                if(banner.productCatalog.buttonHeight > 0) banner.productCatalog.buttonHeight /= deltaW;
                if(banner.productCatalog.buttonFontSize > 0) banner.productCatalog.buttonFontSize /= deltaW;
@@ -294,12 +300,10 @@ export class MapPage implements OnInit {
                if(banner.productCatalog.imagesHeight > 0) banner.productCatalog.imagesHeight /= deltaW;
                if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
             }
-            
-            this.initializeCatalogs(banner);
         }
-        else {
-            this.initializeCatalogs(banner);
-        }
+		
+		if(banner.productCatalog)  this.resizeProductCatalogs(banner);
+		if(banner.speakerCatalog)  this.resizeSpeakers(banner);
      });     
      
      //Menu tab resize/render
@@ -346,6 +350,12 @@ export class MapPage implements OnInit {
        this.onResize();
       }, 100);
     }); 
+  }
+  
+  initializeListeners() {
+	window.addEventListener('window:resize-menu', () => {
+      setTimeout(()=>{ this.onResize(); },100);
+    });
   }
   
   async startAnimation(obj) {
@@ -530,8 +540,9 @@ export class MapPage implements OnInit {
          });
   }
   
+
   initializeProductCatalogs(banner) {
-   
+     
       banner.__catalog = {"products":[]};
       banner.__factor = 3;
       let remark = banner.productCatalog.list;
@@ -549,16 +560,38 @@ export class MapPage implements OnInit {
             products.forEach((product)=>{
                 if(category == 'all' || product.category_id == category ){
                     product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
+                    banner.__catalog.products.push(product);
                     product.priceSelected = product.prices[0];
                     product.priceSelectedIndex = 0;
-                    banner.__catalog.products.push(product);
                 }
             });
         }
+		
+		this.resizeProductCatalogs(banner);
       })
       .catch(error => {
         
       });
+  }
+  
+  resizeProductCatalogs(banner) {
+	  for(var i=10;i>0;i--) {
+         if( ( banner.position.x + i * banner.size.x <= this.scene.container.w ) || 
+		   ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
+            banner.__factor = i -1 ;
+            break;              
+         }
+      }
+	  
+	  banner.__catalog.products.forEach((product,i:any)=>{
+		  product.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
+		  product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
+	  });
+	  
+	  const main = document.querySelector<HTMLElement>('ion-router-outlet');
+	  const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+	  const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
+	  if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
   }
   
   
@@ -574,12 +607,33 @@ export class MapPage implements OnInit {
              });
          } 
          this.onChangeSpeakerStyle(banner);
+         this.resizeSpeakers(banner);
+		 
       })
       .catch(error => {
         
       });
   }
 
+  resizeSpeakers(banner) {
+	  for(var i=10;i>0;i--) {
+         if( ( banner.position.x + i * banner.size.x <= this.scene.container.w ) || 
+		   ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
+            banner.__factor = i -1 ;
+            break;              
+         }
+      }
+	  
+	  banner.__speakers.forEach((product,i:any)=>{
+		  product.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
+		  product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
+	  });
+	  
+	  const main = document.querySelector<HTMLElement>('ion-router-outlet');
+	  const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+	  const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
+	  if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
+  }
   
   changePriceProductCatalog(product,banner){
     setTimeout(() => {
@@ -612,6 +666,7 @@ export class MapPage implements OnInit {
       this.loading.present({message:'Cargando...'});
       this.fairsService.sendMessage(data)
       .then((response)=>{
+		 this.loading.dismiss();
          this.presentToast(response.message);
       }, error => {
         this.loading.dismiss();
@@ -718,4 +773,5 @@ export class MapPage implements OnInit {
   logScrolling($event) {
 	console.log($event);
   } 
+
 }

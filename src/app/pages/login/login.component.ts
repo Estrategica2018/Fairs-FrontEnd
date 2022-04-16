@@ -446,7 +446,7 @@ export class LoginComponent  implements OnInit {
     const toast = await this.toastCtrl.create({
       message: msg,
       //color: color,
-      duration: 1000,
+      duration: 3000,
       position: 'bottom'
     });  
     toast.present();

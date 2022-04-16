@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Storage } from '@ionic/storage';
 import { UsersService } from './api/users.service';
 import { MenuController, Platform, ToastController, ModalController } from '@ionic/angular';
@@ -42,6 +40,7 @@ export class AppComponent implements OnInit {
   userDataSession: any;
   lTotal = 0;
   url: string;
+  showBannerSideMenu = false;
   
   shoppingCartCount = 0;
   menuHidden = false;
@@ -60,8 +59,6 @@ export class AppComponent implements OnInit {
     private menu: MenuController,
     private platform: Platform,
     private router: Router,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar,
     private storage: Storage,
     private usersService: UsersService,
     private toastCtrl: ToastController,
@@ -77,7 +74,7 @@ export class AppComponent implements OnInit {
 	private adminPavilionsService: AdminPavilionsService,
 	private locationComn: Location
   ) {
-    this.initializeApp();
+    
     this.initializeFair();
 	this.url = window.location.origin;
 	this.location = locationComn;
@@ -199,7 +196,7 @@ export class AppComponent implements OnInit {
   
   ngOnInit() {
     this.checkLoginStatus();
-    this.listenForEvents();
+    this.listenForLoginEvents();
     this.listenForFullScreenEvents();
     this._toolbarHeight = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
     
@@ -218,13 +215,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    });
-  }
-
+  
   checkLoginStatus() {
     return this.usersService.isLoggedIn().then(user => {
       return this.updateLoggedInStatus(user);
@@ -235,7 +226,7 @@ export class AppComponent implements OnInit {
     this.loggedIn = ( user !== null );
   }
 
-  listenForEvents() {
+  listenForLoginEvents() {
     window.addEventListener('user:login', (user) => {
       //this.updateLoggedInStatus(user);
       window.location.reload();
@@ -279,11 +270,21 @@ export class AppComponent implements OnInit {
         this.fullScreen = false;
       }, 300);
     });
+	
     window.addEventListener('map:fullscreenIn', (e:any) => {
       setTimeout(() => {
         this.fullScreen = true;
       }, 300);
     });
+	
+	window.addEventListener('banner-side-menu:show', (event:any) => {
+      this.showBannerSideMenu = true;
+    });
+
+	window.addEventListener('banner-side-menu:hide', (event:any) => {
+      this.showBannerSideMenu = false;
+    });
+	
   } 
 
   async presentLogout() {
@@ -433,12 +434,12 @@ export class AppComponent implements OnInit {
   onHidenMenu() {
     this.menuHiddenAnt = 0;
     this.menuHidden = true;
-    window.dispatchEvent(new CustomEvent('window:resize'));
+    window.dispatchEvent(new CustomEvent('window:resize-menu'));
   }
   
   onShowMenu() {
     this.menuHidden = false;
-    window.dispatchEvent(new CustomEvent('window:resize'));
+    window.dispatchEvent(new CustomEvent('window:resize-menu'));
   } 
   
   onMenuOver() {
@@ -491,7 +492,7 @@ export class AppComponent implements OnInit {
   async presentTermsModal() {
     const modal = await this.modalCtrl.create({
       component: TermsPage,
-      swipeToClose: true,
+      swipeToClose: true
       //presentingElement: this.routerOutlet.nativeEl
     });
     await modal.present();
@@ -589,7 +590,7 @@ export class AppComponent implements OnInit {
   async presentToast(msg) {
     const toast = await this.toastCtrl.create({
       message: msg,
-      duration: 1000,
+      duration: 3000,
       position: 'bottom'
     });  
     toast.present();
@@ -609,16 +610,16 @@ export class AppComponent implements OnInit {
 		  else {
 			  
 			  if(isExternal.typeAction == 'add' && isExternal.type=='sceneFair') {
-			    window.location.replace(`${this.url}/Fair-website/#/super-admin/map-editor/fair/${isExternal.sceneId}`);
+			    window.location.replace(`/super-admin/map-editor/fair/${isExternal.sceneId}`);
 			  }
 			  else if(isExternal.typeAction == 'remove' && isExternal.type=='sceneFair') {
-				  window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
+				  window.location.replace(`/super-admin/fair`);
 			  } 
 			  else if(isExternal.typeAction == 'add' && isExternal.type=='scenePavilion') {
-			    window.location.replace(`${this.url}/Fair-website/#/super-admin/pavilion/${isExternal.sceneId}`);
+			    window.location.replace(`/super-admin/pavilion/${isExternal.sceneId}`);
 			  }			  
 			  else if(isExternal.typeAction == 'remove' && isExternal.type=='scenePavilion') {
-				window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
+				window.location.replace(`/super-admin/fair`);
 			  }
 		  }
 	  })

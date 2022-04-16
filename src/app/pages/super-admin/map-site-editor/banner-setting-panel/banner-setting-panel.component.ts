@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-banner-setting-panel',
@@ -11,12 +12,21 @@ export class BannerSettingPanelComponent implements OnInit {
   @Input() banner: any;
   @Input() internalUrlList: any;
   @Output() onClose = new EventEmitter<any>();
+  @Output() onCopyBanner = new EventEmitter<any>();
   @Output() changeItem = new EventEmitter<any>();
   @Output() deleteBanner = new EventEmitter<any>();
+  
   fixedBannerPanel = false;
   panelPos: any = { x: '27px', y: '0px' };
   tabSelect = 'position';
   positionTypes = [{"value":"relative","label":"Relativo","selected":true},{"value":"absolute","label":"Absolute"}];
+  triangleBorderStyles = [{"value":"solid","label":"Sólido","selected":true},
+  {"value":"dashed","label":"dashed"},
+  {"value":"dotted","label":"dotted"},
+  {"value":"double","label":"double"},
+  {"value":"groove","label":"groove"},
+  {"value":"inset","label":"inset"},
+  {"value":"ridge","label":"ridge"}];
   carouselOptionList = ['slidesPerView','rotate','stretch','depth','modifier'];  
     fontFamilyList = [
     {'label':'Gill Sans Extrabold', 'value':'"Gill Sans Extrabold", Helvetica, sans-serif'},
@@ -33,22 +43,38 @@ export class BannerSettingPanelComponent implements OnInit {
     {'label':'Gill Sans', 'value': '"Gill Sans", serif'},
     {'label':'Helvetica Narrow', 'value': '"Helvetica Narrow", sans-serif'}
   ];
-  lineTypes = [{"value":"dashed","label":"Cortada"},{"value":"solid","label":"Sólida"},{"value":"dotted","label":"Punteada"},{"value":"double","label":"Doble"},{"value":"groove","label":"Sombreada"},{"value":"hidden","label":"Oculta"},]
+  lineTypes = [{"value":"dashed","label":"Cortada"},{"value":"solid","label":"Sólida"},{"value":"dotted","label":"Punteada"},{"value":"double","label":"Doble"},{"value":"groove","label":"Sombreada"}]
   fontWeightList = ['100','200','300','400','500','600','700','800','900','bold','bolder','inherit','initial','lighter','normal','revert','unset'];
   textAligns = [{"value":"center","label":"Centrado"},{"value":"justify","label":"Justificado"},{"value":"right","label":"Derecha"},{"value":"left","label":"Izquierda"}];
   toolTipArrowStyles = [{"label":"Arrow Up","value":"arrow--1"},{"label":"Array left","value":"arrow--2"},{"label":"Arrow Down","value":"arrow--3"},{"label":"Arrow right","value":"arrow--4"},
                         {"label":"Arrow Up Inside","value":"arrow--5"},{"label":"Array left Inside","value":"arrow--6"},{"label":"Arrow Down Inside","value":"arrow--7"},{"label":"Arrow right Inside","value":"arrow--8"}];
-  borderStyles = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset","hidden"];
+  borderStyles = [
+  {"label":"none", "value":"none"},
+  {"label":"dashed", "value":"dashed"},
+  {"label":"solid", "value":"solid"},
+  {"label":"double", "value":"double"},
+  {"label":"groove", "value":"groove"},
+  {"label":"ridge", "value":"ridge"},
+  {"label":"inset", "value":"inset"},
+  {"label":"outset", "value":"outset"}];
+  
   hoverEffects = [ {"name":"GirarDerecha","isChecked":false},{"name":"GirarIzquierda","isChecked":false}];
   showProductCatalogActions = null;
   showSpeakerCatalogActions = null;
   tabMenuObj:any;
   showPanelTool = null;
   
-  constructor(private sanitizer: DomSanitizer) { }
+  
+  constructor(
+    private sanitizer: DomSanitizer,
+    private alertCtrl: AlertController
+  ) { 
+  
+	
+  }
 
   ngOnInit() {
-	  
+  	
   }
 
   onCloseClick() {
@@ -57,16 +83,15 @@ export class BannerSettingPanelComponent implements OnInit {
 
   onChangeOpacity() {
       const originYRange : any= document.querySelector<HTMLElement>('.origin-y-range');
-	  this.banner.style = this.banner.style || {};
-      this.banner.style.opacity = originYRange.value / 100;
+	  this.banner.styles = this.banner.styles || {};
+      this.banner.styles.opacity = originYRange.value / 100;
+	  this.goToOnChangeItem();
   }
   
   goToOnChangeItem() {
-    if(this.changeItem) this.changeItem.emit(null);
-  }
-  
-  goToOnDeleteBanner(banner) {
-    if(this.deleteBanner) this.deleteBanner.emit(banner);
+    if(this.changeItem) { 
+	  this.changeItem.emit(true);
+	}
   }
   
   onChangeItemColor() {
@@ -134,12 +159,33 @@ export class BannerSettingPanelComponent implements OnInit {
   }
   
   onClickOpenHtml(banner,str) {
-	  
+
   }
+    
+  goToOnCopyBanner(itemList) {
+    if(this.onCopyBanner) this.onCopyBanner.emit(itemList);
+  }
+
   
-  
-  
-  onCopyBanner(banners){}
+  async presenterDeleteScene(banner) {
+    const alert = await this.alertCtrl.create({
+      message: 'Confirma para eliminar el objeto ' + banner.type,
+      buttons: [
+        { text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Aceptar',
+          handler: (data: any) => {
+              if(this.deleteBanner) { 
+			     this.onCloseClick();
+			     this.deleteBanner.emit(banner);
+			  }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 
 }
-

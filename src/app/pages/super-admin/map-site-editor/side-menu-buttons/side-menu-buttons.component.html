@@ -1,0 +1,73 @@
+-<div class="container-panel-tools" >
+
+  <!-- Button theme-->
+  <div class="panel-scene-save" class="mr-2">
+    <ion-button class="tool-tip" id="trigger-button">
+      <ion-icon name="color-palette-outline" class="icon-size"></ion-icon>
+     </ion-button>
+     
+  </div>
+  
+  <ion-popover trigger="trigger-button" [dismissOnSelect]="true">
+    <ng-template>
+       <ion-list class="theme-list">
+         <ion-item [ngClass]="{'selected': themeSelected == theme}"  *ngFor="let theme of themeList"  button (click)="onSetTheme(theme)">{{theme.name}}</ion-item>
+       </ion-list>
+    </ng-template>
+  </ion-popover>
+
+  <!-- Button preview-->
+  <div class="panel-video-preview">
+    <ion-button class="tool-tip" *ngIf="editMode" (click)="onShowPreview()">
+      <ion-icon name="eye-outline" class="icon-size"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Previzualizar Escena</span>
+  </div>
+  
+  <div class="panel-video-preview" [hidden]="editMode">
+    <ion-button class="tool-tip" (click)="onHidePreview()">
+      <ion-icon name="eye-off-outline" class="icon-size"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Regresar al editor </span>
+  </div>
+  
+  <!-- Button save-->
+  <div class="panel-scene-save">
+    <ion-button [color]="editSave ? 'primary': ''" [ngClass]="{'not-allowed': !editSave }" class="tool-tip" (click)="onSave()">
+      <ion-icon name="save-outline" class="icon-size"></ion-icon>
+     </ion-button>
+     <span class="tooltip-text arrow--2">Guardar</span>
+  </div>
+  
+  <!-- Button setting scene-->
+  <div class="panel-scene-settings">
+    <ion-button class="tool-tip" (click)="onSelectPanel('settings')">
+      <ion-icon name="construct-outline" class="icon-size"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Configuración de Escena</span>
+  </div>
+  
+  <!-- Button tab menu-->
+  <div class="panel-tab-menu">
+    <ion-button class="tool-tip" [ngClass]="{'selected': layoutModel }" (click)="onToogleLayoutModel()">
+      <ion-icon name="grid-outline" class="icon-size"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Diseño Layout</span>
+  </div>
+  
+  <div class="panel-show-item">
+    <ion-button class="tool-tip" (click)="onSelectPanel('items')">
+      <ion-icon name="list-outline" class="icon-size"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Lista de elementos</span>
+  </div>
+  
+  <!-- Button add element-->
+  <div class="panel-scene-plus">
+    <ion-button class="tool-tip" (click)="onSelectPanel('addBanners')">
+      <ion-icon name="add-outline" class="icon-size"></ion-icon>
+    </ion-button>
+    <span class="tooltip-text arrow--2">Adicionar elemento</span>
+  </div>
+  
+</div>  

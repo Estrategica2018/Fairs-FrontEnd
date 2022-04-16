@@ -39,11 +39,11 @@
       </ion-button>
       
       <ion-item lines="none">
-        <ion-label>Mostrar/ocultar</ion-label>
-        <ion-toggle (click)="toogleShowFair(fair)" [(ngModel)]="fair.location" name="mostrar" checked></ion-toggle>
+        <ion-label>Publicar/ocultar</ion-label>
+        <ion-toggle #toogleFair (click)="toogleShowFair(fair, toogleFair.checked)" [(ngModel)]="fair.location" name="toogleFair" checked></ion-toggle>
       </ion-item>
 	  </div>
-	  	  
+	  
     </ion-slide>
 
 

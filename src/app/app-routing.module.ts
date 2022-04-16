@@ -141,6 +141,10 @@ const routes: Routes = [
   {
     path: 'shopping-cart',
     loadChildren: () => import('./pages/shopping-cart/shopping-cart.module').then( m => m.ShoppingCartPageModule)
+  },
+  {
+    path: 'agenda/:agendaId',
+    loadChildren: () => import('./pages/agenda/agenda.module').then( m => m.AgendaPageModule)
   }
 
 

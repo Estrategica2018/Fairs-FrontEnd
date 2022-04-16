@@ -68,8 +68,8 @@
                            </ion-text>
                         </ion-item>
                         <br /><br />
-                        <h4 *ngIf="session?.invited_speakers.length > 1">Conferencistas</h4>
-                        <h4 *ngIf="session?.invited_speakers.length === 1">Conferencista</h4>
+                        <h4 *ngIf="session?.invited_speakers?.length > 1">Conferencistas</h4>
+                        <h4 *ngIf="session?.invited_speakers?.length === 1">Conferencista</h4>
                         
                         <ion-item *ngFor="let invited_speaker of session.invited_speakers" class="p-2"
                         (click)="onSpeaker(invited_speaker.speaker)" button>
@@ -90,7 +90,7 @@
                   <ion-row>
                     <ion-col class="ion-text-center">
                         <div *ngIf="showConfirmByProduct" class="mt-1">
-                          <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
+                          <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 6em;">
                             <h6 style="margin-right:2em; width: 87%;" slot="start">Confirma para agregar el evento al carrito de compras por $ {{ agenda.price  | currency: ' ':' ':'1.0-0' }}</h6>
                             <div (click)="showConfirmByProduct=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
                           </ion-toolbar>
@@ -101,7 +101,7 @@
                           </ion-toolbar>
                         </div>
                         <div  *ngIf="showRegister" class="mt-1">
-                          <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
+                          <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 6em;">
                             <h6 style="margin-right:2em; width: 87%;" slot="start">Para poder acceder a este evento debes acceder con tu usuario</h6>
                             <div (click)="showRegister=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
                           </ion-toolbar>        
@@ -117,14 +117,11 @@
         </ion-list>
         <ion-list *ngIf="showSupportDetail">
             <ion-grid *ngIf="session" class="mt-4">
-              <ion-row>
-                <div (click)="showSupportDetail = null">
-                    <div ion-button class="back-button cursor-pointer">
+              
+                    <ion-item button class="back-button" (click)="showSupportDetail = null">
                       <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-                      <div> Regresar a agenda</div>
-                    </div>
-                </div>
-              </ion-row>
+                      <ion-label> Regresar a agenda</ion-label>
+                    </ion-item>
               <ion-row>
                 <ion-col>
                   <h6 class="name ion-text-center mt-3">Deja tu comentario</h6> 
@@ -148,8 +145,8 @@
                     <p class="d-flex ml-8 mt-4">
                       <span style="color: rgb(224, 62, 45);">*</span> 
                       <span style="font-weight: 500;"> Asunto </span>
-					  <input formControlName="subject" type="text" class=" ion-text-start ml-4" style="width: 78%;">
                     </p>
+					<input formControlName="subject" type="text" class=" ion-text-start ml-4 w-80">                    
                     <div class="contact-line"></div>
                     
                     <textarea placeholder="Mensaje" type="text" 

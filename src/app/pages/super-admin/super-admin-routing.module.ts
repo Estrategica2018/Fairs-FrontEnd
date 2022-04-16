@@ -113,6 +113,10 @@ const routes: Routes = [
   },  {
     path: 'map-site-editor',
     loadChildren: () => import('./map-site-editor/map-site-editor.module').then( m => m.MapSiteEditorPageModule)
+  },
+  {
+    path: 'agenda-list',
+    loadChildren: () => import('./agenda-list/agenda-list.module').then( m => m.AgendaListPageModule)
   }
 
 ];

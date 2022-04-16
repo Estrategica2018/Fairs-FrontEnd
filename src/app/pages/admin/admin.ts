@@ -107,7 +107,7 @@ export class AdminPage {
   }
 
   ionViewWillEnter() {
-   
+   this.fairList = [];
    this.adminFairsService.allList().
       then( response => { 
 	    if(response.success == 201) {
@@ -133,24 +133,23 @@ export class AdminPage {
   async presentToast(msg) {
     const toast = await this.toastCtrl.create({
       message: msg,
-      duration: 1000,
+      duration: 3000,
       position: 'bottom'
     });  
     toast.present();
   }
 
 
-  async toogleShowFair(fair) {
+  async toogleShowFair(fair,newLocation) {
       
 	this.success = null;
 	this.errors = null;
-	let _selft = this;
 	
 	
     const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
-      header: !fair.location ? 'Publicar Feria?' : 'Ocultar Feria?',
-      subHeader: !fair.location ? 'Confirma para publicar la feria' : 'Confirma para ocultar la feria',
+      header: !newLocation ? 'Publicar Feria?' : 'Ocultar Feria?',
+      subHeader: !newLocation ? 'Confirma para publicar la feria' : 'Confirma para ocultar la feria',
       buttons: [
         {
           text: 'Cancelar',
@@ -165,23 +164,31 @@ export class AdminPage {
           handler: (data) => {
             
 			this.loading.present({message:'Cargando...'});
-			let newFair = {'location': fair.location ? 'true':'false','id':fair.id };
+			let newFair = {'location': !newLocation ? 'true':'false','id':fair.id };
 			
             this.adminFairsService.updateFair(newFair)
               .then((response) => {
-                this.success = !fair.location ? `Feria publicada exitosamente` : `Feria oculta`;
-				this.presentToast(this.success);
-                this.ionViewWillEnter();
-				this.fairDeleted = fair.id;
+				if(response.success === 201) {
+					console.log(response.data_fair.location);
+					this.success = response.data_fair.location === 'true' ? `Feria publicada exitosamente` : `La feria se encuentra oculta`;
+				    //fair.location = response.data_fair.location === 'true';
+					this.ionViewWillEnter();
+					this.presentToast(this.success);
+					this.fairDeleted = fair.id;
+				}
+				else {
+					this.errors = !newLocation ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
+				    this.loading.dismiss();
+				}
               },
               (error) => {
                  console.log(error);
-                 this.errors = !fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
+                 this.errors = fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
 				 this.loading.dismiss();
               })
             .catch(error => {
                 console.log(error);
-                this.errors = !fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
+                this.errors = fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
 				this.loading.dismiss();
              });        
     
@@ -195,7 +202,6 @@ export class AdminPage {
   async onDeleteFair(fair) {
 	this.success = null;
 	this.errors = null;
-	let _selft = this;
 	
     const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',

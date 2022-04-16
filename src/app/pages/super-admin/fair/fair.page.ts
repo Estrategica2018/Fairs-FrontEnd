@@ -35,6 +35,8 @@ export class FairPage implements OnInit {
   modal: any;
   userDataSession: any;
   profileRole: any;
+  showInitDate = false;
+  
 
   constructor(
     private fairsService: FairsService,
@@ -48,40 +50,7 @@ export class FairPage implements OnInit {
     private usersService: UsersService,
     private toastCtrl: ToastController,
   ) { 
-  
-   
-   this.maxYear = new Date().getFullYear() + 2;
-   this.initPickerOptions = {
-      buttons: [{
-        text: 'Cancelar',
-        role: 'cancel',
-        handler: () => {
-          return false;
-        }
-      },
-      {
-        text: 'Guardar',
-        handler: (data) => { 
-          this.fair.init_date = data.year.value+'-'+data.month.value+'-'+data.day.value;
-        }
-      }]
-    }
-  
-   this.endPickerOptions = {
-      buttons: [{
-        text: 'Cancelar',
-        role: 'cancel',
-        handler: () => {
-          return false;
-        }
-      },
-      {
-        text: 'Guardar',
-        handler: (data) => { 
-          this.fair.end_date = data.year.value+'-'+data.month.value+'-'+data.day.value;
-        }
-      }]
-    }
+     this.maxYear = new Date().getFullYear() + 5;
   }
   
   ngDoCheck(){
@@ -190,8 +159,8 @@ export class FairPage implements OnInit {
   
   async copy(itemId) {
     let aux = document.createElement("input");
-    aux.setAttribute("value", document.getElementById(itemId).innerHTML);
-    document.body.appendChild(aux);
+    aux.setAttribute("value",`https://${this.fair.name}.e-logic.com.co`);
+	document.body.appendChild(aux);
     aux.select();
     document.execCommand("copy");
     document.body.removeChild(aux);
@@ -320,6 +289,75 @@ export class FairPage implements OnInit {
 
     if(data) {
     }
+  }
+
+  ionChangeInitDate(initDateTime){
+	this.fair.init_date = initDateTime;
+	this.ionChange();
+  } 
+  
+  ionChangeEndDate(endDateTime){
+	this.fair.end_date = endDateTime;
+	this.ionChange();
+  }
+  
+  async toogleShowFair(newLocation) {
+      
+	this.success = null;
+	this.errors = null;
+	
+    const alert2 = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
+      header: !newLocation ? 'Publicar Feria?' : 'Ocultar Feria?',
+      subHeader: !newLocation ? 'Confirma para publicar la feria' : 'Confirma para ocultar la feria',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            this.fair.location = !this.fair.location;
+          }
+        }, {
+          text: 'Confirmar',
+          cssClass: 'danger',
+          handler: (data) => {
+            
+			this.loading.present({message:'Cargando...'});
+			let newFair = {'location': this.fair.location ? 'true':'false','id':this.fair.id };
+			
+            this.adminFairsService.updateFair(newFair)
+              .then((response) => {
+				  
+                this.success = this.fair.location ? `Feria publicada exitosamente` : `La feria se encuentra oculta`;
+				this.presentToast(this.success);
+                this.loading.dismiss();
+              },
+              (error) => {
+                 console.log(error);
+                 this.errors = this.fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
+				 this.loading.dismiss();
+              })
+            .catch(error => {
+                console.log(error);
+                this.errors = this.fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
+				this.loading.dismiss();
+             });        
+    
+          }
+        }
+      ]
+    });
+    await alert2.present();
+  }
+
+  async presentToast(msg) {
+    const toast = await this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'bottom'
+    });  
+    toast.present();
   }
 
 

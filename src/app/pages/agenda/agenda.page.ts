@@ -1,36 +1,38 @@
-import { Component, Input } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 
-import { ConferenceData } from '../../../providers/conference-data';
-import { ActivatedRoute } from '@angular/router';
-import { UserData } from '../../../providers/user-data';
-import { AgendasService } from '../../../api/agendas.service';
+import { ConferenceData } from '../../providers/conference-data';
+import { UserData } from '../../providers/user-data';
+import { AgendasService } from '../../api/agendas.service';
 import { DatePipe } from '@angular/common'
-import { Router } from '@angular/router';
-import { LoadingService } from '../../../providers/loading.service';
-import { SpeakerDetailComponent } from '../../speaker-list/speaker-detail/speaker-detail.component';
+import { Router, ActivatedRoute } from '@angular/router';
+import { LoadingService } from '../../providers/loading.service';
+import { SpeakerDetailComponent } from './../speaker-list/speaker-detail/speaker-detail.component';
+import { ScheduleDetailComponent } from './../schedule/schedule-detail/schedule-detail.component';
 import { ModalController, ToastController } from '@ionic/angular';
-import { UsersService } from '../../../api/users.service';
-import { ShoppingCartsService } from '../../../api/shopping-carts.service';
-import { FairsService } from '../../../api/fairs.service';
+import { UsersService } from './../../api/users.service';
+import { SpeakersService } from './../../api/speakers.service';
+import { ShoppingCartsService } from './../../api/shopping-carts.service';
+import { FairsService } from './../../api/fairs.service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { environment, SERVER_URL } from '../../../../environments/environment';
+import { environment, SERVER_URL } from './../../../environments/environment';
+import * as moment from 'moment-timezone';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
-  selector: 'app-schedule-detail',
-  templateUrl: './schedule-detail.component.html',
-  styleUrls: ['./schedule-detail.component.scss'],
+  selector: 'app-agenda',
+  templateUrl: './agenda.page.html',
+  styleUrls: ['./agenda.page.scss'],
 })
-export class ScheduleDetailComponent {
-  session: any;
+export class AgendaPage implements OnInit {
+
   errors: string = null;
   speaker: any;
   modalSpeaker: any;
-  @Input() _parent: any;
-  @Input() agenda: any;
-  @Input() speakerModal = false;
-  @Input() speakerDetailComponent: any;
-  @Input() optionTab: any;
+  modal : any;
+  agenda: any;
+  speakerModal = true;
+  speakerDetailComponent = SpeakerDetailComponent;
   userDataSession = null;
   loggedIn = false;
   profileRole= null;
@@ -41,7 +43,8 @@ export class ScheduleDetailComponent {
   showRegister = false;
   showSupportDetail = false;
   contactForm: FormGroup;
-  url = SERVER_URL;
+  invited_speakers = [];
+  speakers = [];
   
   constructor(
     private dataProvider: ConferenceData,
@@ -60,20 +63,53 @@ export class ScheduleDetailComponent {
     private toastCtrl: ToastController,
     private formBuilder: FormBuilder,
     private dom:DomSanitizer,
-  ) { 
-  
-	  this.contactForm = this.formBuilder.group({
-		name: ['', Validators.required],
-		email: ['', [Validators.required, Validators.email]],
-		message: ['', Validators.required],
-		subject: ['', Validators.required]
-	  });
-
+	private speakersService: SpeakersService,
+  ) {   
   }
   
-  get f() { return this.contactForm.controls; }
+  ngOnInit() {
+      
+    this.loading.present({message:'Cargando...'});
+    this.fairsService.getCurrentFair().then((fair)=>{
+        this.fair = fair;
+        console.log('12341234');
+        const agendaId = this.route.snapshot.paramMap.get('agendaId');
+        
+		  this.agendasService.get(agendaId)
+		   .then((agenda) => {
+			  this.loading.dismiss();
+			  this.invited_speakers = [];
+			  this.errors = null;
+			  this.agenda = Object.assign({},agenda);
+			  this.agenda.invited_speakers.forEach((speaker)=>{
+				 this.invited_speakers.push(Object.assign({},speaker));
+			  });
+			  this.agenda.invited_speakers = null;
+			  this.agenda.duration_time = this.agenda.duration_time.toString();
+			  if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
+			  const start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
+			  this.agenda.start_at_str = this.agenda.start_time;
+			  const date = start_time.substr(0,10); 
+			  const hour = start_time.substr(11,5); 
+			  
+			  this.initializeAgenda();
+		  })
+		  .catch(error => {
+			 this.loading.dismiss();
+			 this.errors = error;
+		  });
+    
+		this.speakersService.
+		list().then((speakers)=>{
+		  this.speakers = speakers;
+		})
+		.catch(error => {
+			this.errors = error;
+		});
+	});
+  }
   
-  contactSendForm(form){
+  contactSendForm(form) {
       
       const sentToEmail = this.fair.resources.supportContact;
       const data = { 
@@ -97,23 +133,10 @@ export class ScheduleDetailComponent {
       });
   }  
   
-  ionViewWillEnter() {
-    
-	this.showSupportDetail = this.optionTab && this.optionTab === 'showSupportDetail';
-	//this.showSupportDetail = true;
-	
-    const agenda = this.agenda;
+  initializeAgenda() {
     
     this.loading.present({message:'Cargando...'});
     
-    this.fairsService.getCurrentFair().
-    then( fair => {
-        this.fair = fair;
-    },error => {
-        this.errors = error;
-    });
-
-
     this.usersService.getUser().then((userDataSession: any)=>{
       this.userDataSession = userDataSession;    
       if(userDataSession)  {
@@ -138,7 +161,7 @@ export class ScheduleDetailComponent {
             }
           }); 
         }
-        if(agenda.audience_config == 4) {
+        if(this.agenda.audience_config == 4) {
           this.usersService.getPaymentUser({type:"Event",id:this.agenda.id},userDataSession).
             then( (payment:any) => {
              
@@ -166,7 +189,7 @@ export class ScheduleDetailComponent {
       
          this.contactForm = this.formBuilder.group({
             name: [this.userDataSession.name  + ' '  + this.userDataSession.last_name, Validators.required],
-            email: [this.userDataSession.email, [Validators.required, Validators.email]],
+            email: [this.userDataSession.email, Validators.required],
             message: ['', Validators.required],
             subject: ['', Validators.required]
           });
@@ -174,7 +197,7 @@ export class ScheduleDetailComponent {
       else {
           this.contactForm = this.formBuilder.group({
             name: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
+            email: ['', Validators.required],
             message: ['', Validators.required],
             subject: ['', Validators.required]
           });
@@ -184,23 +207,38 @@ export class ScheduleDetailComponent {
       }
     });
     
-    const strDay = this.datepipe.transform(new Date(agenda.start_at), 'EEEE, MMMM d, y');
-    const startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
-    const endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
-	const location = agenda.room ? agenda.room.name : '';
-	
-    this.session = agenda;
-	this.session.strDay = strDay;
-	this.session.startTime = startTime;
-	this.session.endTime = endTime;
-	this.session.location = location;
+    this.agenda.strDay = this.datepipe.transform(new Date(this.agenda.start_at), 'EEEE, MMMM d, y');
+    this.agenda.startHour = this.datepipe.transform(new Date(this.agenda.start_at), 'hh:mm a');
+    this.agenda.endTime = this.datepipe.transform(new Date(this.agenda.start_at + this.agenda.duration_time * 60000), 'hh:mm a');
+    this.agenda.location = this.agenda.room ? this.agenda.room.name : '';
   }
   
   onSupportClick() {
-     //     this.router.navigateByUrl('/support');
-     //this.router.navigate(['/support'], {queryParams: {orgstructure: "Agenda", sessionId: this.session.id}});
-     this.showSupportDetail = true;
+     //this.showSupportDetail = true;
+	 this.openAgenda(this.agenda);
   }
+  
+  
+  async openAgenda(session) {
+
+    this.modal = await this.modalCtrl.create({
+      component: ScheduleDetailComponent,
+      cssClass: ['agenda-modal','boder-radius-modal'],
+      componentProps: {
+        '_parent': this,
+        'agenda': session,
+        'speakerDetailComponent': this.speakerDetailComponent,
+        'type': 'Agenda',
+		'optionTab': 'showSupportDetail'
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
+  } 
+  
 
   onSpeaker(speaker) {
     if(!this.speakerModal) {
@@ -209,11 +247,9 @@ export class ScheduleDetailComponent {
   }
 
   async presenterSpeakerModal(speaker) {
-      
-      
     this.modalSpeaker = await this.modalCtrl.create({
       component: this.speakerDetailComponent,
-      cssClass: ['speaker-modal','boder-radius-modal'],
+      cssClass: 'speaker-modal',
       swipeToClose: true,
       //presentingElement: this.routerOutlet.nativeEl,
       componentProps: { speaker: speaker, scheduleMode: true }
@@ -227,8 +263,20 @@ export class ScheduleDetailComponent {
     this.modalCtrl.dismiss();
   }  
   
-  onRegister () {
-    this._parent.presenterLogin(); 
+  async onRegister() {
+
+    this.modal = await this.modalCtrl.create({
+      component: LoginComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if(data) {
+    }
   }
   
   checkLoginStatus() {
@@ -312,5 +360,4 @@ export class ScheduleDetailComponent {
     }
       
   }  
- 
 }

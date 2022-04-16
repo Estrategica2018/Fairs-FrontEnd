@@ -1,6 +1,17 @@
+/*Panel Position*/
+.scene-setting-panel {
+  position: fixed;
+  margin-top: 5em;
+  top: 0.3em;
+  right: 51px;
+  width: 391px;
+  z-index: 2;
+}
+
 .panel-scene-select {
-  position: absolute;
-  top: 0px;
+  position: fixed;
+  margin-top: 5em;
+  top: 0.3em;
   right: 52px;
   width: 425px;
   z-index: 1002;
@@ -53,4 +64,72 @@
 
 .inputImage {
   width: 137%;
+}
+
+.unit {
+  height: 1.9em;
+  margin-top: 0.4em;
+}
+
+.tool-selected {
+  --color: var(--ion-color-primary);
+  --background: var(--ion-color-light);
+}
+
+.tool-special {
+  display: flex
+}
+
+.tool-special::before {
+  color: red;
+  content: "*";
+  opacity: 0.5;
+  padding-right: 3px;
+}
+
+.icon-panel-scene {
+   ion-icon {
+     font-size: 2em;
+	 margin-left: 0.3em;
+   }
+   ion-label {
+     position: absolute;
+     top: 0.5em;
+     left: 4.5em;
+	 width: 10em;
+   }
+}
+
+.line-separator{
+  --background: rgb(26, 186, 204);
+  height: 1px;
+}
+
+.line-icon {
+  border-bottom: 3px solid gray;
+  height: 2px;
+  width: 33px;
+  margin-top: 16px;
+  margin-left: 7px;
+}
+
+.triangle-icon {
+  border-style: solid;
+  border-width: 16px 18.5px 0px;
+  border-color: rgb(104,104,104, 0.8) transparent transparent;
+  margin-left: 7px;
+  margin-top: 9px;
+}
+
+.border-icon-custom {
+    height: 2px;
+    margin-left: -51px;
+    border: 7px ridge gray;
+    position: absolute;
+    width: 41px;
+    margin-top: 3px;
+}
+
+.border-input-unit {
+  width: 61px;
 }

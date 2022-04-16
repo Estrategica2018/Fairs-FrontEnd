@@ -74,7 +74,7 @@ export class SpeakerDetailComponent implements OnInit {
       
       const modal = await this.modalCtrl.create({
       component: ScheduleDetailComponent,
-      cssClass: 'agenda-modal',
+      cssClass: ['agenda-modal','boder-radius-modal'],
       componentProps: {
         '_parent': this,
         'agenda': agenda,

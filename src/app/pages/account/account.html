@@ -21,7 +21,9 @@
  <div [hidden]="showEditPhoto">
   <h2 class="name ion-text-center title-modal">Cuenta de usuario </h2>
   
+  <div class="auto-scroll-dialog">
   <div *ngIf="userData" class="ion-text-center min-height" [ngClass]="{'padding-container': !showEdit}">
+ 
     <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar mt-4" *ngIf="!userData.url_image">
     <img [src]="userData.url_image" class="avatar mt-4" *ngIf="userData.url_image">
     <h2>{{userData.name}} {{userData.last_name}}</h2>
@@ -94,6 +96,7 @@
       </ion-item>
 
     </ion-list>
+  </div>
   </div>
  </div>
 </div>

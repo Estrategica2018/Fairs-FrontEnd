@@ -7,24 +7,30 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-buttons class="d-flex w-100">
+	  
       <ion-img slot="start" class="icon-logo" [src]="fair?.social_media?.icon"></ion-img>
-      <ion-label class="fair-title"> {{fair?.description}} </ion-label>
+	  
     </ion-buttons>
     <ion-buttons slot="end" >
-      <ion-button (click)="openShoppingCart()" *ngIf="userDataSession">
-        <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-      </ion-button>
-      <ion-badge class="icon-badge" color="danger"  *ngIf="userDataSession && shoppingCartCount > 0" >{{shoppingCartCount}}</ion-badge>
-      <ion-button class="d-none d-md-flex end-menu-button" color="secondary" 
-      (click)="presenterLogin()"
-      *ngIf="!loggedIn" fill="outline" shape="round">
-        <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-         Acceder
-      </ion-button>
-      <ion-button class="d-none d-md-flex" *ngIf="loggedIn" (click)="presentAccount()">
-        <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-         Cuenta
-      </ion-button>
+	  <app-side-menu-buttons *ngIf="showBannerSideMenu"></app-side-menu-buttons>
+ 	  
+	    <ion-label class="fair-title" [hidden]="showBannerSideMenu"> 
+	      {{fair?.description}} 
+	    </ion-label>
+        <ion-button (click)="openShoppingCart()" *ngIf="userDataSession" [hidden]="showBannerSideMenu">
+          <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+        </ion-button>
+        <ion-badge [hidden]="showBannerSideMenu" class="icon-badge" color="danger"  *ngIf="userDataSession && shoppingCartCount > 0" >{{shoppingCartCount}}</ion-badge>
+        <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex end-menu-button" color="secondary" 
+        (click)="presenterLogin()"
+        *ngIf="!loggedIn" fill="outline" shape="round">
+          <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+           Acceder
+        </ion-button>
+        <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn" (click)="presentAccount()">
+          <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+           Cuenta
+        </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -58,7 +64,7 @@
       <ion-content class="scroll-container" [hidden]="menuHidden">
 
         <ion-list lines="none" class="border-botton" *ngIf="profileRole && profileRole.admin">
-          <ion-list-header>Super Administrador </ion-list-header>
+          <ion-list-header routerLink="/super-admin/admin" routerLinkActive="active" routerDirection="root" detail="false">Super Administrador </ion-list-header>
           <ion-menu-toggle autoHide="false">
             <ion-item routerLink="/super-admin/fair" routerLinkActive="active" routerDirection="root" detail="false">
               <ion-icon slot="start" name="create-outline"></ion-icon>
@@ -182,7 +188,7 @@
         </ion-list>
         <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
           <ion-menu-toggle autoHide="false">
-            <ion-item (click)="presentAccount()">
+            <ion-item button (click)="presentAccount()"  detail="false">
               <ion-icon slot="start" name="person"></ion-icon>
               <ion-label>
                 Cuenta
@@ -265,7 +271,13 @@
       </ion-content>
 
         <ion-buttons *ngIf="menuHidden">
-          <ion-button class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
+          <ion-button 
+		  
+		   mat-raised-button
+        matTooltip="Info about the action"
+        aria-label="Button that displays a tooltip when focused or hovered over"
+		  
+		  class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </ion-button> 
         </ion-buttons>
@@ -334,7 +346,7 @@
         <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
           
           <ion-menu-toggle autoHide="false">
-            <ion-item class="width-icon p-0" (click)="presentAccount()">
+            <ion-item  button class="width-icon p-0" (click)="presentAccount()"  detail="false">
               <ion-icon slot="start" name="person"></ion-icon>
               <ion-label>
                 Cuenta

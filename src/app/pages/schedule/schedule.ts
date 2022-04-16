@@ -154,7 +154,7 @@ export class SchedulePage implements OnInit {
             agenda.hide  = false;
 			
 			const timeZone = moment(agenda.start_at);
-			const strHour = Number(timeZone.format('HH')) === 0 ? "12" : timeZone.format('HH');
+			const strHour = this.datepipe.transform(new Date(agenda.start_at), 'hh');
 			const strMinutes = timeZone.format('mm');
 			
 			const time = timeZone.format('YYYY-MM-DD');
@@ -253,6 +253,7 @@ export class SchedulePage implements OnInit {
     
     const modal = await this.modalCtrl.create({
       component: ScheduleFilterPage,
+	  cssClass: 'boder-radius-modal',
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { categories: this.categoriesFilter }
@@ -279,6 +280,7 @@ export class SchedulePage implements OnInit {
 
     this.modal = await this.modalCtrl.create({
       component: WompiPaymentLayoutPage,
+	  cssClass: 'boder-radius-modal',
       componentProps: {
           'objPrice': this.fair,
           'type': 'Fair',
@@ -302,6 +304,7 @@ export class SchedulePage implements OnInit {
 
     this.modal = await this.modalCtrl.create({
       component: WompiPaymentLayoutPage,
+	  cssClass: 'boder-radius-modal',
       componentProps: {
           'objPrice': session,
           'type': 'Agenda'
@@ -318,7 +321,7 @@ export class SchedulePage implements OnInit {
 
     this.modal = await this.modalCtrl.create({
       component: ScheduleDetailComponent,
-      cssClass: 'agenda-modal',
+      cssClass: ['agenda-modal','boder-radius-modal'],
       componentProps: {
         '_parent': this,
         'agenda': session,
@@ -372,6 +375,7 @@ export class SchedulePage implements OnInit {
   async presentTermsModal() {
     const modal = await this.modalCtrl.create({
       component: TermsPage,
+	  cssClass: 'boder-radius-modal',
       swipeToClose: true,
       //presentingElement: this.routerOutlet.nativeEl
     });

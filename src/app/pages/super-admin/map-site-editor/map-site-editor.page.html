@@ -3,32 +3,37 @@
 
 <ion-content cdkDropList>
 
-  <app-scene-component [hidden]="layoutMode"
-   [editMode]="true"
+  <app-scene-component [hidden]="layoutModel"
+   [editMode]="editMode"
    [windowScreenSm]="windowScreenSm" 
    [windowScreenLg]="windowScreenLg" 
    [scene]="sceneEdited"
    [bannerSelectHover]="bannerSelectHover" 
+   [layoutColHover]="layoutColHover" 
    (onHoverBanner)="onHoverBanner($event)"
+   [layoutColSel]="layoutColSel"
+   [level]="1"
    [router]="routerView">
   </app-scene-component>
 
-  <app-layout-component *ngIf="layoutMode"
-   [editMode]="true"
+  <app-layout-component *ngIf="layoutModel"
+   [editMode]="editMode"
    [windowScreenSm]="windowScreenSm" 
    [windowScreenLg]="windowScreenLg" 
    [scene]="sceneEdited"
    [layoutColSel]="layoutColSel"
-   (click)="layoutColSelect($event)"
+   (selectLayout)="layoutColSelect($event)"
    (onHoverBanner)="onHoverBanner($event)"
+   [level]="1"
    [router]="routerView">
   </app-layout-component>
 
-  <app-banner-setting-panel cdkDrag 
-	(changeItem)="onChangeItem($event)"
+  <app-banner-setting-panel
+	(changeItem)="onChangeItem()"
+	(onCopyBanner)="onCopyBanner($event)"
 	(deleteBanner)="onDeleteBanner($event)"
 	(onClose)="bannerSelectHover = null"
-    *ngIf="bannerSelectHover" 
+    *ngIf="editMode && bannerSelectHover" 
 	[banner]="bannerSelectHover"
 	[internalUrlList]="internalUrlList">
   </app-banner-setting-panel>
@@ -49,7 +54,7 @@
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle style="margin-top: -19px;" *ngIf="scene">
-                  <select [(ngModel)]="scene.menuIcon" (change)="onChangeItem($event)" style="width: 168px;">
+                  <select [(ngModel)]="scene.menuIcon" (change)="onChangeItem()" style="width: 168px;">
                   <option  *ngFor="let menuIcon of menuIcons" value="{{menuIcon}}">{{menuIcon}}</option>
                   </select>
                   <ion-icon class="ml-4" style="font-size: 30px;"  [name]="scene.menuIcon"></ion-icon>
@@ -62,33 +67,10 @@
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input class="mt-2 ml-2" type="text"  (change)="onChangeItem($event)" [(ngModel)]="scene.title"/> 
+                  <input class="mt-2 ml-2" type="text"  (change)="onChangeItem()" [(ngModel)]="scene.title"/> 
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
-         <!--ion-toolbar>
-            <ion-buttons slot="start">
-               <ion-card-subtitle>Imagen de Fondo </ion-card-subtitle>
-            </ion-buttons>
-            <ion-buttons slot="end">
-               <ion-card-subtitle>
-                  <input class="mt-2 ml-2" type="text"   (change)="onChangeBackgroundStyle()"  [(ngModel)]="scene.url_image"/>
-               </ion-card-subtitle>
-            </ion-buttons>
-         </ion-toolbar>
-         <ion-toolbar>
-            <ion-buttons slot="start">
-               <ion-card-subtitle>Color de Fondo</ion-card-subtitle>
-            </ion-buttons>
-            <ion-buttons slot="end">
-               <ion-label (click)="scene.backgroundColor = '';">Clear </ion-label>
-               <ion-icon name="close-outline" (click)="bannerSelect.style.backgroundColor = '';">  </ion-icon>
-               <ion-card-subtitle>
-                  <input [ngStyle]="{'opacity': scene.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color" [(ngModel)]="scene.backgroundColor" 
-                  (change)="onChangeBackgroundStyle()" />
-               </ion-card-subtitle>
-            </ion-buttons>
-         </ion-toolbar-->
          <ion-toolbar>
             <ion-buttons slot="start">
                <ion-card-subtitle> Mostrar en Menú? </ion-card-subtitle>
@@ -97,7 +79,7 @@
                <ion-card-subtitle>
                   <ion-chip [color]="scene.show ? 'primary' : ''" (click)="scene.show = !scene.show">
                   <ion-icon name="checkmark-circle"></ion-icon>
-                  <ion-label>{{ scene.show ? 'Mostrar': 'No mostrar' }}</ion-label>
+                  <ion-label>{{ scene.show ? 'Si': 'No' }}</ion-label>
                   </ion-chip>
                </ion-card-subtitle>
             </ion-buttons>
@@ -119,8 +101,8 @@
 </div>
 
 
-<!-- Panel Setting Layout-->
-<div *ngIf="showPanelTool === 'settingsLayout' && !tabMenuOver" class="general-setting-panel">
+<!-- Panel Setting Column-->
+<div *ngIf="showPanelTool === 'settingsColumnLayout' && !tabMenuOver" class="general-setting-panel">
    <div class="close-tool" (click)="showPanelTool = null">
       <ion-icon slot="icon-only" name="close-outline"></ion-icon>
    </div>
@@ -131,24 +113,35 @@
       <ion-card-content>
          <ion-toolbar>
             <ion-buttons slot="start">
-               <ion-card-subtitle>Imagen de Fondo </ion-card-subtitle>
+               <ion-card-subtitle>Imagen de Fondo  </ion-card-subtitle>
             </ion-buttons>
             <ion-buttons slot="end">
                <ion-card-subtitle>
-                  <input class="mt-2 ml-2" type="text"   (change)="onChangeBackgroundStyle()"  [(ngModel)]="bannerSelect.styles.image.src"/>
+                  <input class="mt-2 ml-2" type="text"  (change)="onChangeBackgroundStyle()"  [(ngModel)]="layoutColSel.styles.imageUrl"/>
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
          <ion-toolbar>
             <ion-buttons slot="start">
-               <ion-card-subtitle>Color de Fondo</ion-card-subtitle>
+               <ion-card-subtitle>Color de Fondo </ion-card-subtitle>
             </ion-buttons>
             <ion-buttons slot="end">
-               <ion-label (click)="scene.backgroundColor = '';">Clear </ion-label>
-               <ion-icon name="close-outline" (click)="bannerSelect.backgroundColor = '';">  </ion-icon>
+               <ion-label (click)="layoutColSel.styles.backgroundColor = '';">Clear </ion-label>
+               <ion-icon name="close-outline" (click)="layoutColSel.styles.backgroundColor = '';">  </ion-icon>
                <ion-card-subtitle>
-                  <input [ngStyle]="{'opacity': scene.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color" [(ngModel)]="scene.backgroundColor" 
+                  <input [ngStyle]="{'opacity': layoutColSel?.styles?.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color"
+				  [(ngModel)]="layoutColSel.styles.backgroundColor" 
                   (change)="onChangeBackgroundStyle()" />
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle>Alto de la columna  </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <input class="mt-2 ml-2" type="number" min="0"  (change)="onChangeItem()"  [(ngModel)]="layoutColSel.styles.height"/>
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -189,19 +182,19 @@
       </ion-card-header>
       <ion-card-content>
          <div class="d-flex">
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Banner');" cdkDrag>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Banner');">
                <ion-label slot="start"> Banner </ion-label>
                <ion-icon class="ml-2" style="font-size: 24px" name="browsers-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Text');">
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Texto');">
                <ion-label slot="start"> Texto </ion-label>
                <ion-icon class="ml-2" style="font-size: 24px" name="text-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Image');">
-               Imagen
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Imágen');">
+               Imágen
                <ion-icon style="font-size: 24px" name="image-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Carrete');">
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Carrete Imágenes');">
                Carrete
                <ion-icon style="font-size: 24px" name="albums-outline"></ion-icon>
             </div>
@@ -210,6 +203,21 @@
                <ion-icon style="font-size: 24px" name="videocam-outline"></ion-icon>
             </div>
          </div>
+         <div class="d-flex mt-4">
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Título');">
+               Título
+               <ion-icon style="font-size: 24px" name="text-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 pt-2 pl-2" style="font-size: 13px;" (click)="addBanner('Sub-Título');">
+               Sub Título
+               <ion-icon style="font-size: 18px; margin-top: 4px;" name="text-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Párrafo');">
+               <ion-label slot="start"> Párrafo </ion-label>
+               <ion-icon class="ml-2" style="font-size: 24px" name="reorder-four-outline"></ion-icon>
+            </div>
+
+         </div>
       </ion-card-content>
       <ion-card-header>
          <ion-card-title><small>Agregar Elemento</small></ion-card-title>
@@ -217,19 +225,17 @@
       <ion-card-content>
          <div class="d-flex">
             <div class="icon-panel-scene" (click)="addArrowLineCurve();">
-               <div class="container-arrow--curve" >
-                  <div class="arrow line-arrow-button">
-                     <div class="arrow__body"></div>
-                  </div>
+               <div class="arrow-icon" >
+                  
                </div>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Título');">
-               Título
-               <ion-icon style="font-size: 24px" name="text-outline"></ion-icon>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Línea');">
+               Línea
+               <div class="line-icon"></div>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Sub-Título');">
-               Título
-               <ion-icon style="font-size: 24px" name="text-outline"></ion-icon>
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Triángulo');">
+               <small>Triángulo</small>
+               <div class="triangle-icon"></div>
             </div>
          </div>
       </ion-card-content>
@@ -238,22 +244,73 @@
       </ion-card-header>
       <ion-card-content>
          <div class="d-flex">
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('ProductCatalog');">
+            <div class="icon-panel-scene ml-2 pl-2 pr-2 pb-2 pt-1" (click)="addBanner('ProductCatalog');">
                <small>Productos</small>
-               <ion-icon style="font-size: 24px" name="grid-outline"></ion-icon>
+               <ion-icon style="font-size: 24px" name="apps-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('Contact');">
+            <div class="icon-panel-scene ml-2 pl-2 pr-2 pb-2 pt-1" style="font-size: 13px" (click)="addBanner('Contact');">
                <small>Contáctenos</small>
                <ion-icon style="font-size: 24px" name="list-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('SpeakerCatalog');">
-               <small>Conferencistas</small>
+            <div class="icon-panel-scene ml-2 pl-2 pr-2 pb-2 pt-1" style="width: 67px; font-size: 13px;" (click)="addBanner('SpeakerCatalog');">
+               <small>Expositores</small>
                <ion-icon style="font-size: 24px" name="people-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 pl-2 pr-2 pb-2 pt-1" style="1px 4px" (click)="addBanner('Tabla');">
+               <small>Tabla</small>
+               <ion-icon style="font-size: 24px; margin-left: 10px;" name="grid-outline"></ion-icon>
             </div>
          </div>
       </ion-card-content>
    </ion-card>
 </div>
 
+<!-- Panel Item list->
+<div *ngIf="showPanelTool === 'items'  && !tabMenuOver" class="tool-panel" >
+   <div class="close" (click)="showPanelTool = null; showInputClipboard = false;">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+   </div>
+   <ion-card class="scene-panel">
+      <ion-card-header>
+         <ion-card-title><small>Lista de ({{ scene.banners.length}}) Elemento(s)</small></ion-card-title>
+      </ion-card-header>
+      <ion-card-header>
+         <ion-checkbox class="mr-2"  (ionChange)="toogleSelection()"></ion-checkbox>
+         <ion-button style="margin-top: -10px" size="small" *ngIf="copyMultiFromList.length > 0" color="primary" fill="outline" (click)="onCopyBanner(copyMultiFromList)"> Copiar</ion-button>
+         <ion-button style="margin-top: -10px" size="small" *ngIf="copyMultiFromList.length > 0" color="danger" fill="outline" (click)="onDeleteBannerList(copyMultiFromList)"> Borrar</ion-button>
+         <ion-button style="margin-top: -10px" size="small" color="medium" fill="outline" (click)="showInputClipboard = true;"> Pegar portapales</ion-button>
+      </ion-card-header>
+      <ion-card-header *ngIf="showInputClipboard">
+         <input id="output-clipboard" (change)="onPasteFromClipboard()"/> 
+      </ion-card-header>
+      <ion-card-content class="reorder d-flex">
+         <ion-list class=" mt--8 max-height">
+            <ion-item *ngFor="let banner of scene.banners" buttom="true" class="border-gray">
+               <ion-checkbox [(ngModel)]="banner.isChecked" (ionChange)="toogleOneSelection()"></ion-checkbox>
+            </ion-item>
+         </ion-list>
+          <ion-reorder-group (ionItemReorder)="doReorderBanners($event)" disabled="false">
+             <ion-reorder *ngFor="let banner of scene.banners" buttom="true" class="border-gray" style="width: 215px;"
+            (mouseover)="bannerSelectHover =  banner;"
+            (mouseout)="isHover = null; bannerSelectHover = null;"
+            >
+            <ion-item class="reorder-banner" >
+               <ion-card-subtitle> {{ banner.type || 'Elemento' }}
+               </ion-card-subtitle>
+            </ion-item>
+            </ion-reorder>
+         </ion-reorder-group>
+         <ion-list class=" mt--8 max-height">
+            <ion-item *ngFor="let banner of scene.banners" buttom="true"  class="border-gray">
+               <ion-button size="small" color="light" (click)="onBannerSelect(banner)">
+                  <ion-icon name="create-outline"></ion-icon>
+               </ion-button>
+            </ion-item>
+         </ion-list>
+      </ion-card-content>
+    </ion-card>
+   </ion-card>
+</div>
+<!-- Panel Item list-->
 </ion-content>
 

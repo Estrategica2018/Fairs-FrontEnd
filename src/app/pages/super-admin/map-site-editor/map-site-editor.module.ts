@@ -8,6 +8,7 @@ import { MapSiteEditorPage } from './map-site-editor.page';
 import { SceneComponent } from './scene-component/scene.component';
 import { LayoutComponent } from './layout-component/layout.component';
 import { BannerSettingPanelComponent } from './banner-setting-panel/banner-setting-panel.component';
+import { NgxPopperModule } from 'ngx-popper';
 
 @NgModule({
   imports: [
@@ -15,7 +16,10 @@ import { BannerSettingPanelComponent } from './banner-setting-panel/banner-setti
     FormsModule,
     IonicModule,
 	DragAndDropModule,
-    MapSiteEditorPageRoutingModule
+    MapSiteEditorPageRoutingModule,
+	NgxPopperModule.forRoot({
+      hideOnClickOutside: false
+    })
   ],
   declarations: [MapSiteEditorPage, SceneComponent, LayoutComponent, BannerSettingPanelComponent],
   entryComponents: [SceneComponent, LayoutComponent, BannerSettingPanelComponent]

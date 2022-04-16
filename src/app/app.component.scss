@@ -336,6 +336,7 @@ body.backdrop-no-scroll {
   --height: 52em;
 }
 
+.boder-radius-modal,
 .boder-radius-modal .modal-wrapper {
   --border-radius: 2em !important;
 }
@@ -390,6 +391,10 @@ body.backdrop-no-scroll {
   }
 }
 
+.close-menu-right {
+  --padding-start: 1px !important;
+}
+
 .close-menu-right,
 .close-menu-left {
   margin-left: 51% !important;
@@ -403,8 +408,8 @@ body.backdrop-no-scroll {
 
 @media (min-width: 992px) {
   .show-menu-mini {
-    min-width: 6.5em;
-    max-width: 6.5em;
+    min-width: 5em;
+    max-width: 5em;
   }
 
 }

@@ -96,7 +96,7 @@ export class PavilionPage implements OnInit {
           this.fairsService.refreshCurrentFair();
           this.pavilionsService.refreshCurrentPavilion();
           //this.redirectTo(`/super-admin/pavilion/${pavilion.id}`);
-          window.location.replace(`${this.url}/Fair-website/#/super-admin/pavilion/${pavilion.id}`);
+          window.location.replace(`${this.url}/super-admin/pavilion/${pavilion.id}`);
       })
       .catch(error => {
         this.loading.dismiss();

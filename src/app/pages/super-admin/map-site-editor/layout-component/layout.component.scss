@@ -1,6 +1,6 @@
 .layout-col {
   background-color: rgb(177, 173, 235);
-  border: 0.4em solid rgb(72 62 217);
+  border: 0.2em solid rgb(72 62 217);
   opacity: 0.7;
 }
 
@@ -9,32 +9,80 @@
 }
 
 .add-row,
-.add-col {
-  display: none;
+.add-col,
+.setting-col {
+  display: block;
   font-size: 3em;
   position: absolute;
   z-index: 1000000;
   opacity: 0.6;
-  
+  opacity: 1;
+  cursor: pointer;
 }
+
 .add-col {
   right: -0.5em;
   top: 10%;
 }
+
 .add-row {
   right: 50%;
   bottom: -0.9em;
 }
+
 .layout-col:hover > .add-row,
-.layout-col:hover > .add-col {
+.layout-col:hover > .add-col,
+.layout-col:hover > .setting-col {
    display: block;
 }
 
 .add-row:hover,
-.add-col:hover {
+.add-col:hover,
+.setting-col:hover {
   opacity: 1;
 }
 
 .layout-selected {
-  background-color: red;
+  border: 0.4em solid rgb(255, 0, 0, 0.6);
+  opacity: 1;
 }
+
+.setting-col.level-1 {
+  left: 1em;
+  top: 0.1em;
+}
+
+.setting-col.level-1 > 
+.level-2 {
+  left: 0.2em;
+  top: 0em;
+}
+
+.setting-col.level-2 {
+  left: 0.2em;
+  top: 0em;
+}
+
+.setting-col.level-3 {
+  font-size: 2em;
+}
+
+.add-col.level-1 {
+  bottom: -1.2em;
+}
+
+.add-col.level-2 {
+  font-size: 2.5em;
+  right: -15px;
+}
+
+.add-row.level-1 {
+  bottom: -1.1em;
+}
+
+.add-row.level-2 {
+  font-size: 2.5em; 
+  bottom: -1em;
+  left: 44%;
+}
+

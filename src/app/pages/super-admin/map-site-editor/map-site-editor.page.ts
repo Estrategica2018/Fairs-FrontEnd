@@ -52,10 +52,9 @@ export class MapSiteEditorPage implements OnInit {
     private speakersService: SpeakersService) {
     
 	this.initializeScene();
+	this.initializeListeners();
 	this.url = window.location.origin;
-	
   }
-  
   
   url: string;
   scene: any = null;
@@ -68,10 +67,11 @@ export class MapSiteEditorPage implements OnInit {
   template = '';
   resources : any = null;
   sceneEdited: any = null;
+  editMode: boolean = true;
   editSave: boolean = false;
   showPanelTool: any;
   tabMenuOver: boolean;
-  layoutMode: boolean = false;
+  layoutModel : boolean = false;
   bannerSelectHover :any;
   success: string = null;
   editMenuTabSave: boolean;
@@ -84,10 +84,16 @@ export class MapSiteEditorPage implements OnInit {
   htmlEditor = {obj: null, idType: null};
   showHtmlEditor = false;
   internalUrlList: any;
+  showInputClipboard = false;
+  bannerCopy = [];
+  copyMultiFromList = [];
+  themeSelected = null;
+  layoutColHover = null;
+  
   
   sceneTemplatesTypes: any = [
-  {'label': 'Libre','template':'blank','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545505/temporales/blank_spui2b.png'},
-  {'label': 'Bloques','template':'block','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/block_nq1tek.png', 'resources': '{"styles":{},"rows":[{"cols":[{"banners":[{"id":1646546787662,"styles":{"backgroundColor":"#f7f7f7","textAlign":"center","width":"100%","position":{"type":"relative"},"text":{"value":"Título de página","color":"green","fontSize":"5"},"style":{"opacity":0.55}}}]}]},{"cols":[{"banners":[{"styles":{"position":{"type":"relative"},"width":"100%","backgroundColor":"rgb(228, 238, 241)","image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}},"scenes":[{"rows":[{"cols":[{"banners":[{"id":1646546787611,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}}},{"id":1646546787634,"styles":{"backgroundColor":"","textAlign":"center","width":"100%","position":{"type":"absolute"},"text":{"value":"Hola Mundo","color":"white","fontSize":"12"}}}]}]},{"cols":[{"banners":[{"id":1646546787638,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://images.ctfassets.net/hrltx12pl8hq/qGOnNvgfJIe2MytFdIcTQ/429dd7e2cb176f93bf9b21a8f89edc77/Images.jpg"}}}]}]}]}]}]},{"banners":[{"id":1646546787643,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://m.media-amazon.com/images/I/61y8grFG24L._AC_SX466_.jpg"}}}]}]}],"show":true,"menuIcon":"map-outline","title":"Escena #3","menuTabs":{"showMenuParent":true,"position":"none"}}'},
+  {'label': 'Libre','template':'blank','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545505/temporales/blank_spui2b.png',          'resources':'{"styles":{},"rows":[{"id":1649481341273,		 "cols":[{"styles":{},"id":1649481340897,"banners":[]}]}],"show":true,"menuIcon":"map-outline","title":"Escena #3","menuTabs":{"showMenuParent":true,"position":"none"}}'},  
+  {'label': 'Bloques','template':'block','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/block_nq1tek.png',          'resources': '{"styles":{},"rows":[{"cols":[{"styles":{},"banners":[{"id":1646546787662,"styles":{"backgroundColor":"#f7f7f7","textAlign":"center","width":"100%","position":{"type":"relative"},"text":{"value":"Título de página","color":"green","fontSize":"5"},"style":{"opacity":0.55}}}]}]},		 {"cols":[{"styles":{},"banners":[{"styles":{"position":{"type":"relative"},"width":"100%","backgroundColor":"rgb(228, 238, 241)","image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}},"scenes":		 [{"rows":[{"cols":[{"styles":{},"banners":[{"id":1646546787611,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}}},{"id":1646546787634,"styles":{"backgroundColor":"","textAlign":"center","width":"100%","position":{"type":"absolute"},"text":{"value":"Hola Mundo","color":"white","fontSize":"12"}}}]}]},		 {"cols":[{"styles":{},"banners":[{"id":1646546787638,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://images.ctfassets.net/hrltx12pl8hq/qGOnNvgfJIe2MytFdIcTQ/429dd7e2cb176f93bf9b21a8f89edc77/Images.jpg"}}}]}]}]}]}]},{			 "styles":{},"banners":[{"id":1646546787643,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://m.media-amazon.com/images/I/61y8grFG24L._AC_SX466_.jpg"}}}]}]}],"show":true,"menuIcon":"map-outline","title":"Escena #3","menuTabs":{"showMenuParent":true,"position":"none"}}'},
   {'label': 'Presentación','template':'presentation','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/presentation_uven0s.png'},
   {'label': 'Galería','template':'gallery','url_image':'https://res.cloudinary.com/deueufyac/image/upload/v1646545505/temporales/gallery_wsdga2.png'},
   ];
@@ -100,10 +106,17 @@ export class MapSiteEditorPage implements OnInit {
   sucess: String = null;
   
   ngOnInit() {
-	 //this.scene = this._defaultScene();
 	 this.routerView = this.router;
 	 this.sceneTemplatesTypes = processData(this.sceneTemplatesTypes);
+	 //show menu in app.component
+	 window.dispatchEvent(new CustomEvent('banner-side-menu:show'));
   }
+  
+  ngOnDestroy(): void {
+	//hide menu in app.component
+    window.dispatchEvent(new CustomEvent('banner-side-menu:hide'));
+  } 
+  
   
   initializeScene() {
      
@@ -120,45 +133,22 @@ export class MapSiteEditorPage implements OnInit {
      const standId = this.route.snapshot.paramMap.get('standId');
      const productId = this.route.snapshot.paramMap.get('productId');
      this.sceneId = this.route.snapshot.paramMap.get('sceneId');
-     
+     const sceneTemplateId = this.route.snapshot.paramMap.get('template');
      
      this.fairsService.getCurrentFair().then((fair)=>{
         
         this.fair = fair;
 
         if(this.template === 'fair') {
-          this.resources = fair.resources;
-          
-		  if(this.sceneId) {
-		    this.scene = fair.resources.scenes[this.sceneId];
-		  }
-		  else {
-		    const sceneTemplateId = this.route.snapshot.paramMap.get('template');
-		    for(let templ of this.sceneTemplatesTypes) {
-  			  if(templ.template ===  sceneTemplateId  ) {
-
-				templ.resources.rows.forEach((row)=>{
-				  row.id = this._getId();
-				  row.cols.forEach((col)=>{
-					 col.id = this._getId();
-					 col.banners.forEach((banner)=>{
-					   col.id = this._getId();
-					 });
-				  });
-				});
-  
-  			    this.scene = templ.resources;
-			    break;
-			  }
-		    }
-		  }
+          this.resources = this.fair.resources;
+		  this.scene = this.sceneId ? this.fair.resources.scenes[this.sceneId] : this._defaultScene(sceneTemplateId);
 		}
         else if(this.template === 'pavilion') {
           this.fair.pavilions.forEach((pavilion)=>{
               if(pavilion.id == pavilionId) {
                 this.pavilion = pavilion;
 				this.resources = this.pavilion.resources;
-                this.scene = this.sceneId ? this.pavilion.resources.scenes[this.sceneId] : this._defaultScene();
+                this.scene = this.sceneId ? this.pavilion.resources.scenes[this.sceneId] : this._defaultScene(sceneTemplateId);
               }
           });
         }
@@ -170,7 +160,7 @@ export class MapSiteEditorPage implements OnInit {
                    if(standEl.id == standId) {
                       this.stand = standEl;
 					  this.resources = this.stand.resources;
-                      this.scene = this.sceneId ? this.stand.resources.scenes[this.sceneId] : this._defaultScene();
+                      this.scene = this.sceneId ? this.stand.resources.scenes[this.sceneId] : this._defaultScene(sceneTemplateId);
                    }
                 });
               }
@@ -178,7 +168,12 @@ export class MapSiteEditorPage implements OnInit {
         }
        
 	    this.sceneEdited = this.scene;
-		this.loading.dismiss();
+
+		setTimeout(()=>{
+			this.onResize();
+		    this.loading.dismiss();
+		},100);
+		
 		
      }, error => {
         this.loading.dismiss();
@@ -186,43 +181,94 @@ export class MapSiteEditorPage implements OnInit {
      });
         
   }
-
-  _defaultScene(){
-	  return { 'styles': {}, 'rows':[{ 'cols':[{ 'scenes': [] }]}],
-               'show': true,
-               'menuIcon': 'map-outline', 
-               'title': 'Escena #' + (this.resources.scenes.length + 1),
-               'menuTabs': {'showMenuParent':true, 'position':'none' }
-	  };
+  
+  setIdForRow(rows) {
+	rows.forEach((row)=>{
+	  row.id = this._getId();
+	  row.cols.forEach((col)=>{
+		 col.id = this._getId();
+		 col.banners.forEach((banner)=>{
+		   col.id = this._getId();
+			if(banner.scenes)
+			banner.scenes.forEach((scene)=>{
+			    this.setIdForRow(scene.rows);
+			});
+		 });
+	  });
+	});
   }
 
-  dragBannerEnd($event,scene) {
-     
+  _defaultScene(sceneTemplateId){
+	  
+	  for(let templ of this.sceneTemplatesTypes) {
+		if(templ.template ===  sceneTemplateId  ) {
+		  this.setIdForRow(templ.resources.rows);
+
+		  return { 'styles': {}, 'rows': templ.resources.rows,
+				   'show': true,
+				   'menuIcon': 'map-outline', 
+				   'title': 'Escena #' + (this.resources.scenes.length + 1),
+				   'menuTabs': {'showMenuParent':true, 'position':'none' }
+		  };
+		}
+	  }
   }
 
   //windowScreenSm : boolean = window.innerWidth  <= 992;
-  windowScreenSm : boolean = window.innerWidth  <= 798;
+  //windowScreenSm : boolean = window.innerWidth  <= 798;
+  windowScreenSm : boolean = window.innerWidth  <= 858;
   windowScreenLg : boolean = window.innerWidth  <= 19798;
   
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
+  onResizeAdjustSize() {
+	this.onResize();
+	setTimeout(()=>{ this.onResize(); },100);
+  }
+  
   onResize() {
-	  this.windowScreenSm = window.innerWidth  <= 992;
+	  
+	  this.windowScreenSm = window.innerWidth  <= 858;
+	  
+	  this.scene.rows.forEach((row)=>{
+  	    row.cols.forEach((col)=>{
+		  col.banners.forEach((banner)=>{
+			if(banner.triangle) {
+			   const ionContent = document.querySelector<HTMLElement>('#col-' + col.id);
+			   ionContent.setAttribute("data-with", ionContent.offsetWidth + '' );
+			   if(ionContent.offsetWidth > 0) {
+				  if(banner.triangle) {
+					  let height  = ( banner.styles.height ? banner.styles.height : '100' );
+					  height += banner.styles.heightUnit ? banner.styles.heightUnit : 'px';
+					  console.log(ionContent.offsetWidth);
+					  banner.triangle.borderWidth =  ionContent.offsetWidth / 2;
+					  banner.triangle.triangleBorderHeight =  ionContent.offsetHeight;
+					  banner.triangle.triangleBorderHeightUnit =  'px';
+				  }
+			   }
+			}
+  	      });
+	    });
+	  });
   }
   
   onHoverBanner($event) {
 	  const banner = $event.banner;
-	  if(this.bannerSelectHover && banner && this.bannerSelectHover.id !== banner.id) {
-	    //this.sceneEdited = $event.scene;
-	  }
 	  this.bannerSelectHover = banner;
+	  this.layoutColSelect({'layoutColSel':$event.col,'layoutRowSel':$event.row,'layoutSceneSel':$event.scene});
   }
   
   _getId() {
-    return new Date().valueOf() + Math.floor(Math.random() * (100 + 1));
+    return new Date().valueOf() + Math.floor(Math.random() * (1000 + 1));
   }
 
-  onChangeItem($event){
-	this.editSave = true
+  onChangeItem(){
+	this.editSave = true;
+	window.dispatchEvent(new CustomEvent('side-menu-button:edit-save-on'));
+  }
+  
+  onChangeItemOff(){
+	this.editSave = true;
+    window.dispatchEvent(new CustomEvent('side-menu-button:edit-save-off'));
   }
 
   onSave() {
@@ -241,7 +287,7 @@ export class MapSiteEditorPage implements OnInit {
       
       if(this.template === 'fair') {
           this.fair.resources = this.resources;
-          this.adminFairsService.updateFair(this.fair)
+		  this.adminFairsService.updateFair(Object.assign({},this.fair))
           .then((response) => {
               this.loading.dismiss();
               this.success = `Escena modificada correctamente`;
@@ -255,8 +301,11 @@ export class MapSiteEditorPage implements OnInit {
                   this.editMenuTabSave = null;
                   this.showPanelTool = false
                   this.redirectTo('/super-admin/map-site-editor/fair/'+this.sceneId);
-                  //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-site-editor/fair/${this.sceneId}`);
+				  setTimeout(()=>{
+					  window.dispatchEvent(new CustomEvent('banner-side-menu:show'));
+				  },1000);
               }
+			  this.onChangeItemOff();
            })
            .catch(error => {
                this.loading.dismiss();
@@ -276,15 +325,17 @@ export class MapSiteEditorPage implements OnInit {
               if(!this.sceneId) {
                   this.resources = processData(pavilion.resources);
                   this.sceneId = this.resources.scenes.length - 1;
+                  this.redirectTo('/super-admin/map-site-editor/pavilion/' + this.pavilion.id + '/' + this.sceneId);
+				  setTimeout(()=>{
+					  window.dispatchEvent(new CustomEvent('banner-side-menu:show'));
+				  },1000);
               }
               this.fairsService.refreshCurrentFair();
               this.pavilionsService.refreshCurrentPavilion();
               this.editMenuTabSave = null;
               this.editSave = false;
               this.showPanelTool = false
-              //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-site-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
-              //this.router.navigateByUrl(`/super-admin/map-site-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
-              this.redirectTo('/super-admin/map-site-editor/pavilion/' + this.pavilion.id + '/' + this.sceneId);
+			  this.onChangeItemOff();
            })
            .catch(error => {
                this.loading.dismiss();
@@ -302,16 +353,17 @@ export class MapSiteEditorPage implements OnInit {
 			  this.presentToast(this.success);
               if(!this.sceneId) {
                   this.sceneId = this.resources.scenes.length - 1;
+				  this.redirectTo('/super-admin/map-site-editor/stand/' + this.pavilion.id + '/' + this.stand.id + '/' + this.sceneId);
+				  setTimeout(()=>{
+					  window.dispatchEvent(new CustomEvent('banner-side-menu:show'));
+				  },1000);
               }
               this.fairsService.refreshCurrentFair();
               this.pavilionsService.refreshCurrentPavilion();
               this.errors = null;
               this.editMenuTabSave = null;
-              this.editSave = false;
               this.showPanelTool = false
-              this.redirectTo('/super-admin/map-site-editor/stand/' + this.pavilion.id + '/' + this.stand.id + '/' + this.sceneId);
-              //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-site-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
-              //this.router.navigateByUrl(`/super-admin/map-site-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+              this.onChangeItemOff();
            })
            .catch(error => {
                this.loading.dismiss(); 
@@ -327,14 +379,15 @@ export class MapSiteEditorPage implements OnInit {
               this.loading.dismiss();
               if(!this.sceneId) {
                   this.sceneId = this.resources.scenes.length - 1;
+                  this.redirectTo('/super-admin/map-site-editor/product/' + this.pavilion.id + '/' + this.stand.id + '/' + this.product.id + '/' + this.sceneId);
+				  setTimeout(()=>{
+					  window.dispatchEvent(new CustomEvent('banner-side-menu:show'));
+				  },1000);
               }
               this.errors = null;
               this.editMenuTabSave = null;
-              this.editSave = false;
+              this.onChangeItemOff();
               this.showPanelTool = false
-              //window.location.replace(`${this.url}/Fair-website/#/super-admin/map-site-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
-              this.redirectTo('/super-admin/map-site-editor/product/' + this.pavilion.id + '/' + this.stand.id + '/' + this.product.id + '/' + this.sceneId);
-              //this.router.navigateByUrl(`/super-admin/map-site-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
            })
            .catch(error => {
                this.loading.dismiss(); 
@@ -344,6 +397,7 @@ export class MapSiteEditorPage implements OnInit {
   }  
   
   onSelectPanel(tabname) {
+	 this.bannerSelectHover = null;
      if(this.showPanelTool == tabname) {
         this.showPanelTool = null;
      }
@@ -369,28 +423,42 @@ export class MapSiteEditorPage implements OnInit {
   }
   
   addBanner(type) {
+	  
+	if(!this.layoutColSel) {
+		this.presentToast(`Seleccione una capa para insertar el objeto`);
+		return;
+	}
+	  
     const id = new Date().valueOf();
     const primaryColor = "#007bff";
-    let banner: any;
-    const _defaultBanner = {
+    let banner: any = {
 		"id":id,
 		"type":type,
 	    //"position": this.getNewPosition({"x":156,"y":195}),
 	    "styles": {
-		   "position":{"type":"relative"},"rotation":{"x":0,"y":0,"z":0},"border":{"style":"none"},
-	       "fontWeight":100,"textAlign":"center","width":"100%","fontFamily":'YoutubeSansMedium', 
-	       "fontSize": 12,"lineHeight":"1.0","lineHeightUnit":1,"lineHeightMili":"0",
-		   "shadowActivate":false,"shadowRight":4,"shadowDown":4,"shadowDisperse":7,"shadowExpand":2,"shadowColor":"#ababab"
-	  }
+		   "position":{"type":"relative"},"rotation":{"x":0,"y":0,"z":0},
+		   "borderStyle":"none", "borderColor" : "#000", "borderLength" : 2, "borderRadius": 0, "borderRadiusUnit": "px",
+	       "fontColor": this.themeSelected.textColor, "fontWeight":100,"textAlign":"center","width":"100%","fontFamily":'YoutubeSansMedium', 
+	       "fontSize": "1", "fontSizeUnit":"em", "lineHeight":"1.0","lineHeightUnit":1,"lineHeightMili":0,		   
+		   "widthUnit": "em", "heightUnit": "em",	   
+		   "marginType":"none", "paddingType":"none",
+		   "paddingTop": 0, "paddingBottom": 0, "paddingLeft": 0, "paddingRight": 0,		   
+		   "marginTop": 0, "marginBottom": 0, "marginLeft": 0, "marginRight": 0,		   
+		   "marginTopUnit": "em", "marginLeftUnit": "em", "marginRightUnit": "em","marginBottomUnit": "em",
+		   "paddingTopUnit": "em", "paddingLeftUnit": "em", "paddingRightUnit": "em","paddingBottomUnit": "em",
+		   "opacity": 0,
+		   "shadowActivate":false,"shadowRight":4,"shadowDown":4,"shadowDisperse":7,"shadowExpand":2,"shadowColor":"#ababab"		   
+	     }
 	};
     switch(type) { 
-      case 'Text':
-          banner = {styles:{"textAlign":"left","fontColor":"#000000","text":{"value":"Texto aquí"}}};
+      case 'Texto':
+		  banner.styles.text = {"value":"Texto aquí"};
+		  banner.styles.textAlign = "left";
       break;
-      case 'Image':
-          banner = {styles: {"image": { src: "https://dummyimage.com/114x105/EFEFEF/000.png"}}};
+      case 'Imágen':
+          banner.styles.image = { "src": "https://dummyimage.com/114x105/EFEFEF/000.png"};
       break;
-      case 'Carrete':
+      case 'Carrete Imágenes':
           const allImages = [
             { "size":{"x":50,"y":88},"title": "We are covered", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/covered.jpg" },
             { "size":{"x":50,"y":88},"title": "Generation Gap", "url": "https://raw.githubusercontent.com/christiannwamba/angular2-carousel-component/master/images/generation.jpg" },
@@ -401,22 +469,21 @@ export class MapSiteEditorPage implements OnInit {
           banner = {"size":{"x":1156,"y":236},"carousel": { "options":{slidesPerView: 3,rotate: 0,stretch: 50,depth: 100,slideShadows: false,modifier: 1},"style":"horizontal","images": allImages}};
       break;
       case 'Video':
-          banner = {"size":{"x":114,"y":105},"video": { "url":"https://player.vimeo.com/video/286898202"}};
+          banner.size = {"x":114,"y":105};
+		  banner.video = { "url":"https://player.vimeo.com/video/286898202"};
+		  banner.styles.text = {"fontSize": 5,"value":"Título de la Escena aquí","color":"#98A000"};
           banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
       break;
       case 'Título':
-          banner = {
-			  "styles":{
-		        "backgroundColor":"#f7f7f7",
-				"textAlign":"center","fontColor":"#98A000",
-				"fontSize": 59, 
-			    "text": {"fontSize": 5,"value":"Título de la Escena aquí","color":"#98A000"}
-				
-		      },
-			  "position": this.getNewPosition({"x":156,"y":95})};
+	      banner.styles.fontSize = 5;
+		  banner.styles.fontColor = this.themeSelected.fontColor;
+		  console.log(this.themeSelected.fontColor);
+	      banner.styles.text = { "value":"Título de la Escena aquí" };
       break;
       case 'Sub-Título':
-          banner = {styles: {"color": "#98A000"}};
+	      banner.styles.fontSize = 2;
+		  banner.styles.fontColor = this.themeSelected.fontColor;
+	      banner.styles.text = { "value":"Sub Título aquí" };
       break;
       case 'SpeakerCatalog':
           banner = { "size":{"x":428,"y":237},
@@ -470,7 +537,6 @@ export class MapSiteEditorPage implements OnInit {
           'imagesPriceWidth': 16, 
           },'backgroundColor':'#f5f6ff'};
           banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
-          
       break;
       case 'Contact':
           banner = {"groupMode":true,"size":{"x":367,"y":408},"contact": { "name":"" }, "backgroundColor":"#ffffff","fontColor":"#000000", "fontSize":"13", "shadowActivate":true,"shadowRight":-8,"shadowDown":4,"shadowDisperse":21,"shadowExpand":-16};
@@ -485,20 +551,73 @@ export class MapSiteEditorPage implements OnInit {
           banner = {"size":{"x":304,"y":291},"position": this.getNewPosition({"x":117,"y":141})};
       break;
       case 'Banner':
-          banner = {"fontColor":"#000000","backgroundColor":"#ffff00","size":{"x":114,"y":105},
-                    "border":{"style":"solid","color":"#000","radius":20,"width":1}};
+	      banner.styles.text = { "value" : "Texto aquí"};
+		  banner.styles.backgroundColor = this.themeSelected.backgroundColor
+		  banner.styles.border = {"style":"solid","color":"#000","radius":20,"width":1};
       break;
+	  case 'Tabla':
+	      banner.scenes = [{'rows':[this.getNewRow()]}];
+	  break;
+	  case 'Línea':
+	      banner.line = { };
+	      banner.styles.width = 24;
+	      banner.styles.widthUnit = '%';
+	      banner.styles.height = 0;
+	      banner.styles.heightUnit = 'em';
+		  banner.styles.lineWeight = '2';
+		  banner.styles.lineType = 'solid';
+		  banner.styles.colorLine = this.themeSelected.fontColor;
+		  banner.styles.marginType = 'custom';
+		  banner.styles.marginBottom = '2';
+		  banner.styles.marginBottomUnit = 'em';
+	  break;
+	  case 'Triángulo':
+	      banner.triangle = { };
+		  banner.styles.triangleColor = this.themeSelected.backgroundColor;
+		  banner.styles.triangleColor1 = 'transparent';
+		  banner.styles.triangleColor2 = 'transparent';
+		  banner.styles.triangleColor3 = 'transparent';
+		  banner.styles.triangleBorderStyle = 'solid';
+		  banner.styles.triangleBorderHeight = '5';
+		  banner.styles.triangleBorderHeightUnit = 'em';
+		  setTimeout(()=>{ this.onResize(); },100);
+	  break;
+	  case 'Párrafo':
+	      banner.styles.text = {'paragraph': {},'value':'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'};
+		  banner.styles.textAlign = 'justify';
+		  banner.styles.paddingType = 'custom';
+		  banner.styles.paddingLeft = '4';
+		  banner.styles.paddingRight = '4';
+	  break;
     }
     
-	const newBanner = Object.assign(_defaultBanner,banner);
-	console.log(newBanner);
-    this.layoutColSel.banners.push(newBanner);
+	this.layoutColSel.banners.push(banner);
+	
     //open settingsBanner panel with last element
     this.bannerSelect = this.layoutColSel.banners[this.layoutColSel.banners.length-1];
+	if(this.layoutModel) {
+      this.layoutModel = false;
+      window.dispatchEvent(new CustomEvent('side-menu-button:layout-model-off'));
+	}
+	this.onChangeItem();
+	this.showPanelTool = 'settingsBanner';
+    
+	let interval = setInterval(()=>{
+	   const ionContent = document.querySelector<HTMLElement>('#col-' + this.layoutColSel.id);
+	   ionContent.setAttribute("data-with", ionContent.offsetWidth + '' );
+	   console.log(ionContent.offsetWidth);
+	   if(ionContent.offsetWidth > 0) {
+		  clearInterval(interval);   
+		  if(this.bannerSelect.triangle) {
+			  banner.triangle.borderWidth = '100px ' + ionContent.offsetWidth / 2 + 'px 0 ' + ionContent.offsetWidth / 2 + 'px';
+		  }
+	   }
+	}, 100);
+  
     //if(this.bannerSelect.productCatalog) this.presentNewProductListCatalog(this.bannerSelect);
     //if(this.bannerSelect.speakerCatalog) this.initializeSpeakers(this.bannerSelect);
-    this.onChangeItem(null);
-    this.showPanelTool = 'settingsBanner'; 
+    
+    
   }
 
   getNewPosition(pos) {
@@ -516,11 +635,10 @@ export class MapSiteEditorPage implements OnInit {
 	    this.layoutColSel = $event.layoutColSel;
 	    this.layoutRowSel = $event.layoutRowSel;
 	    this.layoutSceneSel = $event.layoutSceneSel;
-		this.showPanelTool = 'settingsLayout';
 		this.layoutColSelectTime = Date.now();
 	  }
   } 
-
+  
   onDeleteBanner(bannerSelect) {
 	  
 	let colTmp = this.getLayout(bannerSelect, this.scene);
@@ -532,11 +650,12 @@ export class MapSiteEditorPage implements OnInit {
       });
       this.bannerSelect = null;
       this.showPanelTool = false;
-      this.onChangeItem(null);
+      this.onChangeItem();
 	}
   }
   
   onDeleteColumn() {
+			
 	this.layoutRowSel.cols = this.layoutRowSel.cols.filter((col)=>{
        return col != this.layoutColSel;
 	});
@@ -547,9 +666,18 @@ export class MapSiteEditorPage implements OnInit {
 		});
 	}
 	
+	if(this.layoutSceneSel.rows.length == 0) {
+		let row = this.getNewRow();
+	    this.layoutSceneSel.rows.push(row);		
+	}
+	
 	this.showPanelTool = '';
 	this.layoutColSel = null;
 	this.layoutRowSel = null;
+  }
+  
+  getNewRow() {
+	  return {'id' : this._getId(), 'cols' : [{ 'id' : this._getId(), 'banners': []}] };
   }
   
   getLayout(banner,scene) {
@@ -564,7 +692,7 @@ export class MapSiteEditorPage implements OnInit {
 				  
 				  let layoutSubCol = this.getLayout(banner,sceneSubCol);
 				  if(layoutSubCol){ 
-				     return bannerCol;
+				     return layoutSubCol;
 				  }
 				  
 			  }
@@ -607,8 +735,7 @@ export class MapSiteEditorPage implements OnInit {
                        this.fairsService.refreshCurrentFair();
 					   const detail = {'type': 'sceneFair', 'iScene': sceneId };
                        window.dispatchEvent(new CustomEvent('removeScene:menu',{ detail: detail }));
-					   //window.location.replace(`${this.url}/Fair-website/#/super-admin/fair`);
-                       //this.router.navigateByUrl(`/super-admin/fair`);
+					   this.redirectTo(`/super-admin/fair/${this.fair.id}`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -622,8 +749,7 @@ export class MapSiteEditorPage implements OnInit {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
                        this.pavilionsService.refreshCurrentPavilion();
-                       window.location.replace(`${this.url}/Fair-website/#/super-admin/pavilion/${this.pavilion.id}`);
-                       //this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
+					   this.redirectTo(`/super-admin/pavilion/${this.pavilion.id}`);
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -636,8 +762,8 @@ export class MapSiteEditorPage implements OnInit {
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-                       //this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
-                       window.location.replace(`${this.url}/Fair-website/#/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                       this.redirectTo(`super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+
                    })
                    .catch(error => {
                        this.loading.dismiss(); 
@@ -746,5 +872,140 @@ export class MapSiteEditorPage implements OnInit {
     }
   }
   
-  addArrowLineCurve(){}
+  addArrowLineCurve() {}
+  
+  initializeListeners() {
+	window.addEventListener('side-menu-button:onSave', () => {
+       this.onSave();
+    });
+	
+	window.addEventListener('side-menu-button:select-panel-settings', () => {
+       this.onSelectPanel('settings');
+    });
+	
+	window.addEventListener('side-menu-button:select-panel-videoPreview', () => {
+       this.onSelectPanel('videoPreview');
+    });	
+	
+	window.addEventListener('side-menu-button:select-panel-items', () => {
+       this.onSelectPanel('items');
+    });	
+	
+	window.addEventListener('side-menu-button:select-panel-addBanners', () => {
+
+	   	if(!this.layoutColSel) {
+			if(!this.layoutModel) {
+			  this.layoutModel = true;
+			  this.showPanelTool = null;
+			  window.dispatchEvent(new CustomEvent('side-menu-button:layout-model-on'));
+			}
+		}
+	   
+        this.onSelectPanel('addBanners');
+    });
+
+	window.addEventListener('side-menu-button:select-panel-settingsColumnLayout', () => {
+       this.onSelectPanel('settingsColumnLayout');
+    });
+
+	window.addEventListener('side-menu-button:edit-mode-on', () => {
+       this.editMode = true;
+    });	
+	
+	window.addEventListener('side-menu-button:edit-mode-off', () => {
+       this.editMode = false;
+    });
+	
+	window.addEventListener('window:resize-menu', () => {
+      setTimeout(()=>{ this.onResize(); },100);
+    });
+	
+	window.addEventListener('side-menu-button:layout-model-on', () => {
+       this.layoutModel = true;
+	   this.bannerSelectHover = null;
+	   this.onSelectPanel('none');
+    });
+	
+	window.addEventListener('side-menu-button:layout-model-off', () => {
+       this.layoutModel = false;
+	   this.bannerSelectHover = null;
+	   this.onSelectPanel('none');
+    });
+	
+  	window.addEventListener('side-menu-button:set-theme', ($event: any) => {
+       this.themeSelected = $event.detail.theme;
+    });	
+	
+  }
+ 
+  onPasteFromClipboard() {
+    try { 
+      let pasteText = <HTMLInputElement> document.getElementById("output-clipboard");
+      const jsonText = pasteText.value;
+      
+      const itemList = JSON.parse(jsonText);
+      pasteText.value = '';
+      let id = new Date().valueOf();
+      this.bannerCopy = [];
+      if( itemList.length > 0 ){
+        itemList.forEach((banner)=>{        
+           const newBanner = Object.assign({},banner);
+           newBanner.id = id;
+           newBanner.position = this.getNewPosition(banner.position);
+           this.bannerCopy.push(newBanner);
+           id ++;
+           this.showInputClipboard = false;
+        });
+        
+        //Add element into scene
+        this.onPasteBannerBtn();
+		let msg = itemList.length > 1 ? `${itemList.length} objetos adicionados en la escena` : `1 objeto adicionado en la escena`;
+        this.presentToast(msg);
+      }
+    }catch(e) {
+		let msg = e.message ? e.message : e.error ? e.error : '';
+		if(msg.length > 50) msg = msg.substr(0,50);
+		this.presentToast(`Error al copiar objeto: ${msg} `);
+	}
+  }
+ 
+  onCopyBanner(itemList) {
+    let id = this._getId();
+    this.bannerCopy = [];
+    itemList.forEach((banner)=>{        
+       const newBanner = clone(banner);
+       newBanner.id = id;
+       this.bannerCopy.push(newBanner);
+       id ++;
+    });
+    
+    let aux = document.createElement("input");
+    aux.setAttribute("value", JSON.stringify(itemList));
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+	
+	const msg = itemList.length > 1 ? `${itemList.length} Objetos copiados en el portapapeles` : ` 1 Objeto copiado en el portapapeles`;
+    this.presentToast(msg);
+  } 
+
+  onPasteBannerBtn() {
+    let id = this._getId();
+    this.bannerCopy.forEach((banner)=>{
+       const newBanner = Object.assign({},banner);
+       newBanner.id = id;
+       newBanner.position = this.getNewPosition(banner.position);
+       this.scene.banners.push(newBanner);
+       id ++;
+       this.onChangeItem();
+    });
+    
+    setTimeout(() => {
+      //this.initializeHtmlTexts(this.scene.banners);
+    }, 5);
+    
+    this.bannerCopy = [];
+  }
+  	
 }

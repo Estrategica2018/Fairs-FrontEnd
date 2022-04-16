@@ -271,7 +271,7 @@ export class ProductDetailComponent implements OnInit {
     const toast = await this.toastCtrl.create({
       message: msg,
       cssClass: cssClass,
-      duration: 1000,
+      duration: 3000,
       position: 'bottom'
     });
     toast.present();

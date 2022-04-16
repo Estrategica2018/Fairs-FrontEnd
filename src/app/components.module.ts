@@ -15,6 +15,7 @@ import { ScheduleDetailComponent } from './pages/schedule/schedule-detail/schedu
 import { SignupComponent } from './pages/signup/signup.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AccountComponent } from './pages/account/account.component';
+import { SideMenuButtonsComponent } from './pages/super-admin/map-site-editor/side-menu-buttons/side-menu-buttons.component';
 import { TermsPage } from './pages/terms/terms.page';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { TermsPage } from './pages/terms/terms.page';
     SignupComponent,
     LoginComponent,
     AccountComponent,
+	SideMenuButtonsComponent,
     TermsPage
   ],
   exports: [
@@ -54,6 +56,7 @@ import { TermsPage } from './pages/terms/terms.page';
     SignupComponent,
     LoginComponent,
     AccountComponent,
+	SideMenuButtonsComponent,
     TermsPage
   ]
   

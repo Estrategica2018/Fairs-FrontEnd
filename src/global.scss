@@ -410,3 +410,13 @@ ion-router-outlet {
 .w-90 {
    width: 90%;
 }
+
+
+.auto-scroll-dialog {
+  overflow: auto;
+  height: 44em;
+}
+
+.custom-loading-class {
+  /*--background: red;*/		
+}

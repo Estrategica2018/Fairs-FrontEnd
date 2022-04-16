@@ -210,12 +210,13 @@ $border-size: 3px;
      position: absolute;
      .arrow__body {
        width: 100%;
-       height: 95%;
-       margin-left: 11px;
+       height: 3em;
+       margin-left: 17px;
        border-width: 5px 0 0 5px;
        border-style: dashed;
        border-color: var(--highlight-color);
        border-top-left-radius: 100%;
+       margin-top: 3px;
      }
      .arrow__body::after {
        content: '';
@@ -225,6 +226,8 @@ $border-size: 3px;
        border-width: 20px 15px 0;
        border-style: solid;
        border-color: var(--highlight-color)    transparent transparent;
+	   margin-left: 0.3em;
+       top: 2em;
     }
 }
 

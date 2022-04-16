@@ -1,9 +1,26 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/super-admin/fair"></ion-back-button>
+      <ion-back-button defaultHref="/super-admin/agenda-list"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end" *ngIf="action==='update'">
+	  <ion-list-header [hidden]="!errors">
+        <div class="alert alert-danger fade show alert-dismissible">
+         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+           <strong></strong> {{errors}}
+        </div>
+      </ion-list-header>
+  
+      <ion-list-header [hidden]="!success">
+        <div class="alert alert-success fade show alert-dismissible">
+          <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+          <strong></strong> {{success}}
+        </div>
+      </ion-list-header>
+      <ion-button color="primary" [disabled]="initSubmitted" (click)="onSave()">
+        Guardar
+        <ion-icon slot="start" name="save"></ion-icon>
+      </ion-button>
       <ion-button color="danger" (click)="onDeleteAgenda()">
         <ion-icon slot="start" name="trash-outline"></ion-icon>
         Borrar
@@ -28,20 +45,18 @@
             <ion-label position="stacked">
                 Categoría <span class="required"> (*) </span>
             </ion-label>
-            <ion-select interface="popover" class="fs-0 mt-3 form-control" formControlName="category"
+            <select interface="popover" class="fs-0 mt-3 form-control" formControlName="category"
             (change)="changeCategory()"
             (ionChange)="changeCategory()"
             [ngClass]="{ 'is-invalid': submitted && f.category.errors }"
             >
-              <ion-select-option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}
-              </ion-select-option>
-            </ion-select>
+              <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}
+              </option>
+            </select>
             <div *ngIf="submitted && f.category.errors" class="invalid-feedback">
             <div *ngIf="f.category.errors.required">Campo requerido</div>
             </div>
           </ion-col>
-          
-
 
           <ion-col size="12" class="fs-1">
             <ion-label position="stacked">
@@ -62,26 +77,37 @@
             </div>
           </ion-col>
           <ion-col size="12" class="fs-1">
+		    <ion-grid>
+		    <ion-row>
+            <ion-col>
             <ion-label position="stacked">
                 Fecha de inicio <span class="required"> (*) </span>
             </ion-label>
-            <ion-datetime class="fs-0 mt-3 form-control" min="2019" max="2030" formControlName="date" 
+            <ion-datetime class="fs-0 mt-3 form-control datetime-item" min="2019" max="2030" formControlName="date" 
             [ngClass]="{ 'is-invalid': submitted && f.date.errors }"
+			presentation="date" 
             (ionChange)="onChangeStartTime()" display-format="DD/MM/YYYY" picker-format="DD/MM/YYYY"></ion-datetime>
             <div *ngIf="submitted && f.date.errors" class="invalid-feedback">
             <div *ngIf="f.date.errors.required">Campo requerido</div>
             </div>
-          </ion-col>
-          <ion-col size="12" class="fs-1">
+            </ion-col>
+            <ion-col>
             <ion-label position="stacked">
                 Hora de inicio <span class="required"> (*) </span>
             </ion-label>
-            <ion-datetime class="fs-0 mt-3 form-control" formControlName="hour" 
+			<br>
+            <input type="text" *ngIf="showHourDatetime"  readonly (click)="showHourDatetime = !showHourDatetime;" value="{{hour}}" class="cursor-pointer datetime-hour-input mt-4"/>
+			
+			<ion-datetime class="fs-0 mt-3 form-control datetime-item-time" formControlName="hour" 
+			presentation="time" showDefaultTimeLabel="false" showDefaultTimeLabel="false" 
             [ngClass]="{ 'is-invalid': submitted && f.hour.errors }"
             (ionChange)="onChangeStartTime()" display-format="HH:mm" picker-format="HH:mm"></ion-datetime>
             <div *ngIf="submitted && f.hour.errors" class="invalid-feedback">
             <div *ngIf="f.hour.errors.required">Campo requerido</div>
             </div>
+            </ion-col>
+		    </ion-row>
+		    </ion-grid>
           </ion-col>
           <ion-col  size="12" class="fs-1">
             <ion-label position="stacked">
@@ -116,14 +142,14 @@
            
           <ion-col  size="12" class="fs-1">
             <ion-label position="stacked">
-                Tipo de público <span class="required"> (*) </span>
+                Tipo de público <span class="required"> (*) </span> 
             </ion-label>
-            <ion-select (ionChange)="changeAudienceConfig()" interface="popover" class="fs-0 mt-3 form-control" formControlName="audience_config" 
+            <select (ionChange)="changeAudienceConfig(agenda)" (change)="changeAudienceConfig(agenda)" interface="popover" class="fs-0 mt-3 form-control" formControlName="audience_config" 
             [ngClass]="{ 'is-invalid': submitted && f.audience_config.errors }"
             >
-              <ion-select-option *ngFor="let audience of audiences" value="{{audience.id}}">{{audience.name}}
-              </ion-select-option>
-            </ion-select>
+              <option *ngFor="let audience of audiences" value="{{audience.id}}">{{audience.name}}
+              </option>
+            </select>
             <div *ngIf="submitted && f.audience_config.errors" class="invalid-feedback">
             <div *ngIf="f.audience_config.errors.required">Campo requerido</div>
             </div>
@@ -141,8 +167,9 @@
 
         </ion-row>
         <ion-row>
-           <ion-button [disabled]="initSubmitted" type="submit" (click)="onSave()" class="w-100">
-            <ion-label > {{ action==='update' ? 'Guardar Cambios': 'Crear Agenda'}}  </ion-label>
+           <ion-button [disabled]="initSubmitted" type="submit" 
+		   (click)="onSave()" class="w-100" [hidden]="action==='update'">
+            <ion-label> Crear Agenda </ion-label>
               <ion-icon slot="end" name="save-outline"></ion-icon>
             </ion-button>
         </ion-row>
@@ -176,20 +203,6 @@
         </div>
       </ion-item>
        
-      <ion-list-header [hidden]="!errors">
-        <div class="alert alert-danger fade show alert-dismissible">
-         <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-           <strong></strong> {{errors}}
-        </div>
-      </ion-list-header>
-  
-      <ion-list-header [hidden]="!success">
-        <div class="alert alert-success fade show alert-dismissible">
-          <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
-          <strong></strong> {{success}}
-        </div>
-      </ion-list-header>
-      
       <ion-item lines="none" *ngIf="action==='update'">
         <ion-toolbar>
           <ion-buttons slot="primary">

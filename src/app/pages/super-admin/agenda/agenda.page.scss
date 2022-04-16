@@ -43,3 +43,22 @@ ion-item.agenda-logo {
 select { 
   height: calc(3.25rem + 2px) !important;
 } 
+
+
+
+.picker-date-container {
+    height: 29em;
+}
+
+.datetime-item {
+    height: 25em;
+}
+
+.datetime-item-time {
+    height: 13em;
+}
+
+.datetime-hour-input {
+   border-radius: 1em;
+   padding-left: 1em;
+}

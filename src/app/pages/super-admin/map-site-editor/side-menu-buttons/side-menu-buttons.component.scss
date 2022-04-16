@@ -1,0 +1,49 @@
+.container-panel-tools {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  top: 0px;
+  right: 0px;
+}
+
+
+.icon-size { 
+  font-size: 1.8em;
+}
+
+.tooltip-text.arrow--2 {
+  left: -14em;
+  width: 13em;
+}
+
+
+ 
+ion-button.not-allowed {
+  pointer: not-allowed;
+  opacity: 0.4;
+}
+
+
+ion-button.not-allowed::part(button) {
+  color: red !important;
+}
+
+ion-button.not-allowed::part(span) {
+  cursor: not-allowed;
+}
+
+.panel-tab-menu ion-button.selected {
+  background-color: lightgray;
+}
+
+.theme-list {
+  padding: 0;
+  margin: 0;
+  color: var(--gray-dark);
+}
+
+.theme-list ion-item.selected {
+  --background: var(--ion-color-light);
+  color: var(--gray-dark);
+}
