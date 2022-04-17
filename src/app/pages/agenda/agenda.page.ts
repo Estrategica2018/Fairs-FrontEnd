@@ -118,7 +118,8 @@ export class AgendaPage implements OnInit {
         'name': form.value.name,
         'email': form.value.email,
         'subject': form.value.subject,
-        'message': form.value.message
+        'message': form.value.message,
+		'fairId': this.fair.id
       };
       
       this.loading.present({message:'Cargando...'});

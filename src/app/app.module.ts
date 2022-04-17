@@ -20,8 +20,8 @@ import localeEs from "@angular/common/locales/es";
 import { registerLocaleData } from "@angular/common";
 registerLocaleData(localeEs, "es");
 import { RouteReuseStrategy } from '@angular/router';
+import { NgScrollbarModule, NG_SCROLLBAR_OPTIONS } from 'ngx-scrollbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgxPopperModule } from 'ngx-popper';
 
 
 @NgModule({
@@ -35,9 +35,8 @@ import { NgxPopperModule } from 'ngx-popper';
     IonicStorageModule.forRoot(),
     WompiPaymentLayoutPageModule,
     ComponentsModule,
-    NgxPopperModule.forRoot({
-      hideOnClickOutside: false
-    })
+	NgScrollbarModule,
+	MatTooltipModule
   ],
   declarations: [AppComponent],
   entryComponents: [ ShoppingCartComponent, LoginComponent, SignupComponent, AccountComponent ],

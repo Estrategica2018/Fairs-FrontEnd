@@ -1,409 +1,271 @@
 <!--ion-app [class.dark-theme]="dark"-->
 <ion-app>
-<ion-header translucent="true" [hidden]="fairAdminMode">
-  <ion-toolbar 
-  color="light" [ngClass]="{'full-screen': fullScreen}" class="app-toolbar-header">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-buttons class="d-flex w-100">
-      
-      <ion-img slot="start" class="icon-logo" [src]="fair?.social_media?.icon"></ion-img>
-      
-    </ion-buttons>
-    <ion-buttons slot="end" >
-      <app-side-menu-buttons *ngIf="showBannerSideMenu"></app-side-menu-buttons>
-       
-        <ion-label class="fair-title" [hidden]="showBannerSideMenu"> 
-          {{fair?.description}} 
-        </ion-label>
-        <ion-button (click)="openShoppingCart()" *ngIf="userDataSession" [hidden]="showBannerSideMenu">
-          <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-        </ion-button>
-        <ion-badge [hidden]="showBannerSideMenu" class="icon-badge" color="danger"  *ngIf="userDataSession && shoppingCartCount > 0" >{{shoppingCartCount}}</ion-badge>
-        <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex end-menu-button" color="secondary" 
-        (click)="presenterLogin()"
-        *ngIf="!loggedIn" fill="outline" shape="round">
-          <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-           Acceder
-        </ion-button>
-        <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn" (click)="presentAccount()">
-          <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-           Cuenta
-        </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-  <ion-split-pane contentId="main-content" when="lg">
-
-    <ion-menu class="scroll-container" contentId="main-content" class="menu-main-content" 
-    [ngClass]="{ 'show-menu-mini': menuHidden, 'd-none': fullScreen }"
-    [hidden]="fairAdminMode"
-    (mouseover)="onMenuOver()"
-    >
-
-      <ion-buttons class="ion-hide-lg-down"  [hidden]="menuHidden">
-        <ion-button class="w-100" slot="start" color="primary" (click)="onEditMenuClick()" *ngIf="profileRole && profileRole.admin" [hidden]="editMenu">
-           Editar Menú
-        </ion-button>
-        <ion-button class="w-100"  slot="start" (click)="updateSceneMenu(null)" *ngIf="profileRole && profileRole.admin && editMenu" 
-           [color]="editMenu ? 'primary' : 'medium'">
-           Guardar Menú
-           <ion-icon slot="end" name="save-outline"></ion-icon> 
-        </ion-button>
-        <ion-button class="w-100"  slot="end" (click)="onCancelEditMenuClick()" *ngIf="profileRole && profileRole.admin && editMenu" 
-           color="medium">
-           Cancelar
-        </ion-button>
-        
-        <ion-button slot="end" style="margin-left: auto;" class="ion-hide-lg-down" (click)="onHidenMenu()" [hidden]="profileRole && profileRole.admin && editMenu">
-          <ion-icon name="chevron-back-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-
-      <ion-content class="scroll-container" [hidden]="menuHidden">
-
-        <ion-list lines="none" class="border-botton" *ngIf="profileRole && profileRole.admin">
-          <ion-list-header routerLink="/super-admin/admin" routerLinkActive="active" routerDirection="root" detail="false">Super Administrador </ion-list-header>
-          <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/super-admin/fair" routerLinkActive="active" routerDirection="root" detail="false">
-              <ion-icon slot="start" name="create-outline"></ion-icon>
-              <ion-label>
-                Administrar Feria
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
-        <ion-list lines="none">
-          <ion-menu-toggle autoHide="false" 
-          *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index">
-
-            <!-- If its fair scene -->
-            <ion-item (click)="onClickFairScene(sceneLayout.iScene)"  button="true" *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )">
-              <ion-icon
-              slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
-              <ion-label (click)="onClickFairScene(sceneLayout.iScene)" class="ion-text-wrap"  style="min-width: 11em;"
-              [ngClass]="{'label-scene-move': (editMenu && profileRole && profileRole.admin)}">
-                {{sceneLayout.scene.title}}
-              </ion-label>
-              <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
-                     <ion-button (click)="goToSceneUp(sceneLayout, iLayout + 1, fair)" *ngIf="iLayout > 0" class="icon-up"> &#8593; </ion-button>
-                     <ion-button (click)="goToSceneDown(sceneLayout, iLayout + 1, fair)" *ngIf="iLayout + 1 < lTotal" class="icon-down"> &#8595; </ion-button>
-              </ion-buttons>
-            </ion-item>
-            
-            <!-- If its pavilion scene-->
-            <div *ngIf="sceneLayout.type == 'scenePavilion'">
-              <ion-item class="pavilions-menu" button="true" lines="none" (click)="onClickPavilion(sceneLayout.pavilion)">
-                <ion-icon  slot="start" name="albums-outline"></ion-icon>
-                <ion-label class="menu-label ion-text-wrap">
-                {{sceneLayout.pavilion.name}}
-                </ion-label>
-                <ion-buttons class="m-0" slot="end" 
-                  [hidden]="profileRole && profileRole.admin && editMenu">
-                  <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionDetail !== 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
-                  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionDetail === 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
-                </ion-buttons>
-                
-                <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
-                     <ion-button (click)="goToSceneUp(sceneLayout, iLayout + 1, sceneLayout.pavilion)" *ngIf="iLayout > 0" class="icon-up"> &#8593; </ion-button>
-                     <ion-button (click)="goToSceneDown(sceneLayout, iLayout + 1, sceneLayout.pavilion)" *ngIf="iLayout + 1 < lTotal" class="icon-down"> &#8595; </ion-button>
-                </ion-buttons>
-                
-              </ion-item>
-
-              <div *ngIf="showPavilionDetail ==='pavilion_id_'+sceneLayout.pavilion.id">
-                <div *ngFor="let scene of sceneLayout.pavilion.resources.scenes; let k = index;" >
-                  <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
-                          (click)="onClickPavilionScene(sceneLayout.pavilion,k)"
-                          lines="none"
-                          button="true"
-                          class="sub-menu">
-                    <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
-                    <ion-label class="menu-label ml-4 ion-text-wrap"> {{ scene.title}} </ion-label>
-                  </ion-item>
-                </div>
-                <ion-item (click)="onClickPavilionLocal(sceneLayout.pavilion)"
-                          lines="none"
-                          button="true"
-                          class="sub-menu"
-                          *ngIf="sceneLayout.pavilion.stands.length > 0" >
-                  <ion-label class="menu-label ml-4">Locales comerciales </ion-label>
-                  <ion-icon slot="end" name="chevron-down-outline" size="small" [hidden]="sceneLayout.pavilion.showStandDetail"></ion-icon>
-                  <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="sceneLayout.pavilion.showStandDetail"></ion-icon>
-                </ion-item>
-                <div *ngIf="sceneLayout.pavilion.showStandDetail">
-                    <div *ngFor="let stand of sceneLayout.pavilion.stands;let i_stand = index">
-                      <ion-item (click)="onClickPavilionStand(sceneLayout.pavilion,stand)"
-                              button="true" lines="none" class="sub-menu-stand">
-                        <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
-                        <ion-label class="menu-label ml-6 ion-text-wrap" style="margin-left: 2em;">{{stand.merchant.name}}</ion-label>
-                      </ion-item>
-                      <div *ngIf="stand.standShowSelect && stand.resources.scenes.length > 1">
-                        <div *ngFor="let scene of stand.resources.scenes;let i_scene = index">
-                          <ion-item *ngIf="profileRole && profileRole.admin"
-                              (click)="onClickPavilionStandScene(sceneLayout.pavilion,stand,i_scene)"
-                              button="true"
-                              lines="none" class="sub-menu-stand">
-                            <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                            <ion-label class="menu-label ion-text-wrap" style="margin-left: 2em;">{{scene.title }}</ion-label>
-                          </ion-item>
-                         </div>
-                       </div>
-                    </div>
-                </div>
-             </div>
-            </div>
-
-          </ion-menu-toggle>
-        </ion-list>
-        <ion-list lines="none" class="border-botton">
-          <ion-menu-toggle autoHide="false" *ngIf="showAgenda">
-            <ion-item 
-            (click)="showPavilionDetail = null"
-            routerLink="/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
-              <ion-label>
-                Agenda
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <!--ion-menu-toggle autoHide="false">
-            <ion-item 
-            (click)="showPavilionDetail = null"
-            routerLink="/speakers" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" [name]="'people-outline'"></ion-icon>
-              <ion-label>
-                Conferencistas
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle-->
-          <!--ion-menu-toggle auto-hide="false">
-            <ion-item (click)="showPavilionDetail = null"
-            routerLink="/news" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" name="newspaper-outline"></ion-icon>
-              <ion-label class="menu-label">Noticias</ion-label>
-            </ion-item>
-          </ion-menu-toggle-->
-        </ion-list>
-        <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
-          <ion-menu-toggle autoHide="false">
-            <ion-item button (click)="presentAccount()"  detail="false">
-              <ion-icon slot="start" name="person"></ion-icon>
-              <ion-label>
-                Cuenta
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-
-          <ion-menu-toggle autoHide="false">
-            <ion-item button (click)="presentLogout()" detail="false">
-              <ion-icon slot="start" name="log-out"></ion-icon>
-              <ion-label>
-                Salir
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-
-        </ion-list>
-
-        <ion-list *ngIf="!loggedIn" class="border-botton ion-text-center access">
-          <ion-menu-toggle autoHide="false" class="ion-text-center"> 
-            <ion-note class="login-note ion-text-start font-light">Accede con tu usuario para participar en los eventos, realizar solicitudes y gestionar tu usuario.</ion-note>
-            
-            <ion-button color="secondary" fill="outline" shape="round" (click)="presenterLogin()">
-                <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-                Acceder
+   <ion-header translucent="true" [hidden]="fairAdminMode">
+      <ion-toolbar 
+         color="light" [ngClass]="{'full-screen': fullScreen}" class="app-toolbar-header">
+         <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+         </ion-buttons>
+         <ion-buttons class="d-flex w-100">
+            <ion-img slot="start" class="icon-logo" [src]="fair?.social_media?.icon"></ion-img>
+         </ion-buttons>
+         <ion-buttons slot="end" >
+            <app-side-menu-buttons *ngIf="showBannerSideMenu"></app-side-menu-buttons>
+            <ion-label class="fair-title" [hidden]="showBannerSideMenu"> 
+               {{fair?.description}} 
+            </ion-label>
+            <ion-button (click)="openShoppingCart()" *ngIf="userDataSession" [hidden]="showBannerSideMenu">
+            <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
             </ion-button>
-          </ion-menu-toggle> 
-        </ion-list>
-        
-        <!--ion-list class="border-botton ion-text-center nav-title"-->
-        <!--ion-list lines="none" class="border-botton">
-          <ion-menu-toggle auto-hide="false">
-            <ion-item routerLink="/app/tabs/library" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" name="albums-sharp"></ion-icon>
-              <ion-label class="menu-label">Biblioteca</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item routerLink="/app/tabs/history" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" name="refresh-sharp"></ion-icon>
-              <ion-label class="menu-label">Historial</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item routerLink="/app/tabs/memories" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" ios="ios-bookmarks-outline" md="bookmarks-sharp"></ion-icon>
-              <ion-label class="menu-label">Lo mejor de la feria</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list-->
-        
-        <!--ion-list lines="none">
-          <ion-list-header>
-            Tutorial
-          </ion-list-header>
-          <ion-menu-toggle autoHide="false">
-            <ion-item button (click)="openTutorial()" detail="false">
-              <ion-icon slot="start" name="hammer"></ion-icon>
-              <ion-label>Ver Tutorial</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          
-          <ion-menu-toggle autoHide="false">
-            <ion-item routerLink="/support" routerLinkActive="active" routerDirection="root" detail="false">
-              <ion-icon slot="start" name="help"></ion-icon>
-              <ion-label>
-                Soporte
-              </ion-label>
-            </ion-item>
-                
-          </ion-menu-toggle>
-
-        </ion-list-->
-      
-        <ion-list class="border-botton ion-text-center">  
-          <ion-item>
-              <ion-label class="font-light menu-label">© 2021 Estratégica S.A </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-content>
-
-        <ion-buttons *ngIf="menuHidden">
-          <ion-button 
-          
-           mat-raised-button
-        matTooltip="Info about the action"
-        aria-label="Button that displays a tooltip when focused or hovered over"
-          
-          class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
-            <ion-icon name="chevron-forward-outline"></ion-icon>
-          </ion-button> 
-        </ion-buttons>
-
-      <ion-content class="menu-content-mini" *ngIf="menuHidden">
-
-
-        <ion-list lines="none" class="border-botton" *ngIf="profileRole && profileRole.admin">
-          <ion-list-header></ion-list-header>
-          <ion-menu-toggle autoHide="false">
-          <ion-item routerLink="/super-admin/fair" routerLinkActive="active" routerDirection="root" detail="false" button="true" class="width-icon p-0">
-              <ion-icon slot="start" name="create-outline"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                Administrar Feria
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
-        <ion-list lines="none">
-          <ion-menu-toggle autoHide="false">
-            <div *ngFor="let scene of fair?.resources?.scenes;let i = index">
-              <div *ngIf="scene.show || (profileRole && profileRole.admin)">
-                <ion-item (click)="onClickFairScene(i)" button="true" class="width-icon p-0">
-                  <ion-icon slot="start" [name]="scene.menuIcon"></ion-icon>
-                  <ion-label class="ion-text-wrap">
-                    {{scene.title}}
+            <ion-badge [hidden]="showBannerSideMenu" class="icon-badge" color="danger"  *ngIf="userDataSession && shoppingCartCount > 0" >{{shoppingCartCount}}</ion-badge>
+            <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex end-menu-button" color="secondary" 
+            (click)="presenterLogin()"
+            *ngIf="!loggedIn" fill="outline" shape="round">
+            <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+            Acceder
+            </ion-button>
+            <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn" (click)="presentAccount()">
+            <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+            Cuenta
+            </ion-button>
+         </ion-buttons>
+      </ion-toolbar>
+   </ion-header>
+   <ion-split-pane contentId="main-content" when="lg">
+      <ion-menu class="scroll-container" contentId="main-content" class="menu-main-content" 
+      [ngClass]="{ 'show-menu-mini': menuHidden, 'd-none': fullScreen }"
+      [hidden]="fairAdminMode"
+      (mouseover)="onMenuOver()"
+      >
+      <ion-buttons class="ion-hide-lg-down"  [hidden]="menuHidden">
+         <ion-button class="w-100" slot="start" color="primary" (click)="onEditMenuClick()" *ngIf="profileRole && profileRole.admin" [hidden]="editMenu">
+         Editar Menú
+         </ion-button>
+         <ion-button class="w-100"  slot="start" (click)="updateSceneMenu(null)" *ngIf="profileRole && profileRole.admin && editMenu" 
+         [color]="editMenu ? 'primary' : 'medium'">
+         Guardar Menú
+         <ion-icon slot="end" name="save-outline"></ion-icon>
+         </ion-button>
+         <ion-button class="w-100"  slot="end" (click)="onCancelEditMenuClick()" *ngIf="profileRole && profileRole.admin && editMenu" 
+         color="medium">
+         Cancelar
+         </ion-button>
+         <ion-button slot="end" style="margin-left: auto;" class="ion-hide-lg-down" (click)="onHidenMenu()" [hidden]="profileRole && profileRole.admin && editMenu">
+         <ion-icon name="chevron-back-outline"></ion-icon>
+         </ion-button>
+      </ion-buttons>
+      <ion-content class="scroll-container" [hidden]="menuHidden">
+         <ion-list lines="none" class="border-botton" *ngIf="profileRole && profileRole.admin">
+            <ion-list-header routerLink="/super-admin/admin" routerLinkActive="active" routerDirection="root" detail="false">Super Administrador </ion-list-header>
+            <ion-menu-toggle autoHide="false">
+               <ion-item routerLink="/super-admin/fair" routerLinkActive="active" routerDirection="root" detail="false">
+                  <ion-icon slot="start" name="create-outline"></ion-icon>
+                  <ion-label>
+                     Administrar Feria
                   </ion-label>
-                </ion-item>
-              </div>
+               </ion-item>
+            </ion-menu-toggle>
+         </ion-list>
+         <ion-list lines="none">
+            <ion-menu-toggle autoHide="false" 
+               *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index">
+               <!-- If its fair scene -->
+               <ion-item (click)="onClickFairScene(sceneLayout.iScene)"  button="true" *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )">
+               <ion-icon
+                  slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
+               <ion-label (click)="onClickFairScene(sceneLayout.iScene)" class="ion-text-wrap"  style="min-width: 11em;"
+               [ngClass]="{'label-scene-move': (editMenu && profileRole && profileRole.admin)}">
+               {{sceneLayout.scene.title}}
+               </ion-label>
+               <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
+                  <ion-button (click)="goToSceneUp(sceneLayout, iLayout + 1, fair)" *ngIf="iLayout > 0" class="icon-up"> &#8593; </ion-button>
+                  <ion-button (click)="goToSceneDown(sceneLayout, iLayout + 1, fair)" *ngIf="iLayout + 1 < lTotal" class="icon-down"> &#8595; </ion-button>
+               </ion-buttons>
+               </ion-item>
+               <!-- If its pavilion scene-->
+               <div *ngIf="sceneLayout.type == 'scenePavilion'">
+                  <ion-item class="pavilions-menu" button="true" lines="none" (click)="onClickPavilion(sceneLayout.pavilion)">
+                     <ion-icon  slot="start" name="albums-outline"></ion-icon>
+                     <ion-label class="menu-label ion-text-wrap">
+                        {{sceneLayout.pavilion.name}}
+                     </ion-label>
+                     <ion-buttons class="m-0" slot="end" 
+                        [hidden]="profileRole && profileRole.admin && editMenu">
+                        <ion-icon slot="end" name="chevron-down-outline" size="small" *ngIf="showPavilionDetail !== 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
+                        <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="showPavilionDetail === 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
+                     </ion-buttons>
+                     <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
+                        <ion-button (click)="goToSceneUp(sceneLayout, iLayout + 1, sceneLayout.pavilion)" *ngIf="iLayout > 0" class="icon-up"> &#8593; </ion-button>
+                        <ion-button (click)="goToSceneDown(sceneLayout, iLayout + 1, sceneLayout.pavilion)" *ngIf="iLayout + 1 < lTotal" class="icon-down"> &#8595; </ion-button>
+                     </ion-buttons>
+                  </ion-item>
+                  <div *ngIf="showPavilionDetail ==='pavilion_id_'+sceneLayout.pavilion.id">
+                     <div *ngFor="let scene of sceneLayout.pavilion.resources.scenes; let k = index;" >
+                        <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
+                        (click)="onClickPavilionScene(sceneLayout.pavilion,k)"
+                        lines="none"
+                        button="true"
+                        class="sub-menu">
+                        <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
+                        <ion-label class="menu-label ml-4 ion-text-wrap"> {{ scene.title}} </ion-label>
+                        </ion-item>
+                     </div>
+                     <ion-item (click)="onClickPavilionLocal(sceneLayout.pavilion)"
+                     lines="none"
+                     button="true"
+                     class="sub-menu"
+                     *ngIf="sceneLayout.pavilion.stands.length > 0" >
+                     <ion-label class="menu-label ml-4">Locales comerciales </ion-label>
+                     <ion-icon slot="end" name="chevron-down-outline" size="small" [hidden]="sceneLayout.pavilion.showStandDetail"></ion-icon>
+                     <ion-icon slot="end" name="chevron-up-outline" size="small" *ngIf="sceneLayout.pavilion.showStandDetail"></ion-icon>
+                     </ion-item>
+                     <div *ngIf="sceneLayout.pavilion.showStandDetail">
+                        <div *ngFor="let stand of sceneLayout.pavilion.stands;let i_stand = index">
+                           <ion-item (click)="onClickPavilionStand(sceneLayout.pavilion,stand)"
+                              button="true" lines="none" class="sub-menu-stand">
+                              <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
+                              <ion-label class="menu-label ml-6 ion-text-wrap" style="margin-left: 2em;">{{stand.merchant.name}}</ion-label>
+                           </ion-item>
+                           <div *ngIf="stand.standShowSelect && stand.resources.scenes.length > 1">
+                              <div *ngFor="let scene of stand.resources.scenes;let i_scene = index">
+                                 <ion-item *ngIf="profileRole && profileRole.admin"
+                                 (click)="onClickPavilionStandScene(sceneLayout.pavilion,stand,i_scene)"
+                                 button="true"
+                                 lines="none" class="sub-menu-stand">
+                                 <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+                                 <ion-label class="menu-label ion-text-wrap" style="margin-left: 2em;">{{scene.title }}</ion-label>
+                                 </ion-item>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </ion-menu-toggle>
+         </ion-list>
+         <ion-list lines="none" class="border-botton">
+            <ion-menu-toggle autoHide="false" *ngIf="showAgenda">
+               <ion-item matTooltip="This is simple Tooltip" matTooltipPosition="after" matTooltipClass="custom-tooltip-blue"
+			   
+			   matTooltipHideDelay="200000"
+                  (click)="showPavilionDetail = null"
+                  routerLink="/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
+                  <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
+                  <ion-label>
+                     Agenda
+                  </ion-label>
+               </ion-item>
+			   
+            </ion-menu-toggle>
+         </ion-list>
+         <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
+            <ion-menu-toggle autoHide="false">
+               <ion-item button (click)="presentAccount()"  detail="false">
+                  <ion-icon slot="start" name="person"></ion-icon>
+                  <ion-label>
+                     Cuenta
+                  </ion-label>
+               </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle autoHide="false">
+               <ion-item button (click)="presentLogout()" detail="false">
+                  <ion-icon slot="start" name="log-out"></ion-icon>
+                  <ion-label>
+                     Salir
+                  </ion-label>
+               </ion-item>
+            </ion-menu-toggle>
+         </ion-list>
+         <ion-list *ngIf="!loggedIn" class="border-botton ion-text-center access">
+            <ion-menu-toggle autoHide="false" class="ion-text-center">
+               <ion-note class="login-note ion-text-start font-light">Accede con tu usuario para participar en los eventos, realizar solicitudes y gestionar tu usuario.</ion-note>
+               <ion-button color="secondary" fill="outline" shape="round" (click)="presenterLogin()">
+                  <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+                  Acceder
+               </ion-button>
+            </ion-menu-toggle>
+         </ion-list>
+         <ion-list class="border-botton ion-text-center">
+            <ion-item>
+               <ion-label class="font-light menu-label">© 2022 Estratégica S.A </ion-label>
+            </ion-item>
+         </ion-list>
+      </ion-content>
+      <ion-buttons *ngIf="menuHidden">
+         <ion-button 
+            mat-raised-button
+            matTooltip="Info about the action"
+            aria-label="Button that displays a tooltip when focused or hovered over"
+            class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+         </ion-button>
+      </ion-buttons>
+      <ng-scrollbar #scrollable track="all" pointerEventsMethod="scrollbar" [disabled]="disabled"
+      class="menu-content-mini" *ngIf="menuHidden" >
+      <ion-list lines="none" class="border-botton ion-list-mini" *ngIf="profileRole && profileRole.admin">
+         <ion-list-header></ion-list-header>
+         <ion-menu-toggle autoHide="false">
+            <ion-item routerLink="/super-admin/fair" routerLinkActive="active" routerDirection="root" detail="false" button="true" class="width-icon p-0">
+               <ion-icon slot="start" name="create-outline"></ion-icon>
+               <ion-label class="ion-text-wrap">
+                  Administrar Feria
+               </ion-label>
+            </ion-item>
+         </ion-menu-toggle>
+      </ion-list>
+      <ion-list lines="none"class="ion-list-mini">
+         <ion-menu-toggle autoHide="false">
+            <div *ngFor="let scene of fair?.resources?.scenes;let i = index">
+               <div *ngIf="scene.show || (profileRole && profileRole.admin)">
+                  <ion-item (click)="onClickFairScene(i)" button="true" class="width-icon p-0">
+                     <ion-icon slot="start" [name]="scene.menuIcon"></ion-icon>
+                     <ion-label class="ion-text-wrap">
+                        {{scene.title}}
+                     </ion-label>
+                  </ion-item>
+               </div>
             </div>
             <div *ngFor="let pavilion of fair?.pavilions;let i = index">
-              <ion-item (click)="onClickPavilion(pavilion)"
-                      class="pavilions-menu width-icon p-0"
-                      button="true"
-                      lines="none">
-                <ion-icon slot="start" name="albums-outline"></ion-icon>
-                <ion-label class="menu-label ion-text-wrap">{{pavilion.name}}</ion-label>
-              </ion-item>
+               <ion-item (click)="onClickPavilion(pavilion)"
+                  class="pavilions-menu width-icon p-0"
+                  button="true"
+                  lines="none">
+                  <ion-icon slot="start" name="albums-outline"></ion-icon>
+                  <ion-label class="menu-label ion-text-wrap">{{pavilion.name}}</ion-label>
+               </ion-item>
             </div>
-          </ion-menu-toggle>
-        </ion-list>
-          
-
-         <ion-list lines="none" class="border-botton">
-          <ion-menu-toggle autoHide="false">
+         </ion-menu-toggle>
+      </ion-list>
+      <ion-list lines="none" class="border-botton ion-list-mini">
+         <ion-menu-toggle autoHide="false">
             <ion-item class="width-icon p-0"
-            (click)="showPavilionDetail = null"
-            routerLink="/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
-              <ion-label>
-                Agenda
-              </ion-label>
+               (click)="showPavilionDetail = null"
+			   title="Agenda"
+               routerLink="/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
+               <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
             </ion-item>
-          </ion-menu-toggle>
-          <!--ion-menu-toggle auto-hide="false">
-            <ion-item (click)="showPavilionDetail = null"
-            class="width-icon p-0"
-            routerLink="/news" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" name="newspaper-outline"></ion-icon>
-              <ion-label class="menu-label">Noticias</ion-label>
-            </ion-item>
-          </ion-menu-toggle-->
-        </ion-list>
-        
-
-        <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
-          
-          <ion-menu-toggle autoHide="false">
+         </ion-menu-toggle>
+      </ion-list>
+      <ion-list *ngIf="loggedIn" lines="none" class="border-botton ion-list-mini">
+         <ion-menu-toggle autoHide="false">
             <ion-item  button class="width-icon p-0" (click)="presentAccount()"  detail="false">
-              <ion-icon slot="start" name="person"></ion-icon>
-              <ion-label>
-                Cuenta
-              </ion-label>
+               <ion-icon slot="start" name="person"></ion-icon>
+               <ion-label>
+                  Cuenta
+               </ion-label>
             </ion-item>
-          </ion-menu-toggle>
-
-          <ion-menu-toggle autoHide="false">
+         </ion-menu-toggle>
+         <ion-menu-toggle autoHide="false">
             <ion-item button class="width-icon p-0" (click)="presentLogout()" detail="false">
-              <ion-icon slot="start" name="log-out"></ion-icon>
-              <ion-label>
-                Salir
-              </ion-label>
+               <ion-icon slot="start" name="log-out"></ion-icon>
+               <ion-label>
+                  Salir
+               </ion-label>
             </ion-item>
-          </ion-menu-toggle>
-
-        </ion-list>
-
-        
-        <ion-list *ngIf="!loggedIn" class="border-botton ion-text-center access">
-          <ion-menu-toggle autoHide="false" class="ion-text-center"> 
-            <ion-note class="login-note ion-text-start font-light">Accede con tu usuario para participar en los eventos, realizar solicitudes y gestionar tu usuario.</ion-note>
-            
-            <ion-button class="width-icon p-0" color="secondary" fill="outline" shape="round" routerLink="/login/" routerLinkActive="selected" routerDirection="root">
-                <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-                Acceder
-            </ion-button>
-          </ion-menu-toggle> 
-        </ion-list>
-        
-        <!--ion-list class="border-botton ion-text-center nav-title"-->
-        <!--ion-list lines="none" class="border-botton">
-          <ion-menu-toggle auto-hide="false">
-            <ion-item routerLink="/app/tabs/library" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" name="albums-sharp"></ion-icon>
-              <ion-label class="menu-label">Biblioteca</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item routerLink="/app/tabs/history" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" name="refresh-sharp"></ion-icon>
-              <ion-label class="menu-label">Historial</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item routerLink="/app/tabs/memories" routerLinkActive="selected" routerDirection="root" detail="false">
-              <ion-icon slot="start" ios="ios-bookmarks-outline" md="bookmarks-sharp"></ion-icon>
-              <ion-label class="menu-label">Lo mejor de la feria</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list-->
-      </ion-content>
-      
-    </ion-menu>
-    <ion-router-outlet id="main-content"></ion-router-outlet>
-      
-      
-  </ion-split-pane>
-
+         </ion-menu-toggle>
+      </ion-list>
+      </ng-scrollbar>
+      </ion-menu>
+      <ion-router-outlet id="main-content"></ion-router-outlet>
+   </ion-split-pane>
 </ion-app>

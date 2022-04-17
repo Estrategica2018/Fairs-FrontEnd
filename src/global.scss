@@ -411,12 +411,24 @@ ion-router-outlet {
    width: 90%;
 }
 
-
 .auto-scroll-dialog {
   overflow: auto;
-  height: 44em;
+  height: 46em;
 }
 
 .custom-loading-class {
   /*--background: red;*/		
+}
+
+ion-modal::part(content) {
+  max-width: 601px;
+  --border-radius: 2em !important;
+}
+
+.boder-radius-modal {
+  --border-radius: 2em !important;
+}
+
+ion-icon {
+ pointer-events: none;
 }
