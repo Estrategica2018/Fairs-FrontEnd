@@ -29,13 +29,13 @@
   </app-layout-component>
 
   <app-banner-setting-panel
-	(changeItem)="onChangeItem()"
-	(onCopyBanner)="onCopyBanner($event)"
-	(deleteBanner)="onDeleteBanner($event)"
-	(onClose)="bannerSelectHover = null"
+    (changeItem)="onChangeItem()"
+    (onCopyBanner)="onCopyBanner($event)"
+    (deleteBanner)="onDeleteBanner($event)"
+    (onClose)="bannerSelectHover = null"
     *ngIf="editMode && bannerSelectHover" 
-	[banner]="bannerSelectHover"
-	[internalUrlList]="internalUrlList">
+    [banner]="bannerSelectHover"
+    [internalUrlList]="internalUrlList">
   </app-banner-setting-panel>
   
 <!-- Panel Setting scene-->
@@ -130,7 +130,7 @@
                <ion-icon name="close-outline" (click)="layoutColSel.styles.backgroundColor = '';">  </ion-icon>
                <ion-card-subtitle>
                   <input [ngStyle]="{'opacity': layoutColSel?.styles?.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" type="color"
-				  [(ngModel)]="layoutColSel.styles.backgroundColor" 
+                  [(ngModel)]="layoutColSel.styles.backgroundColor" 
                   (change)="onChangeBackgroundStyle()" />
                </ion-card-subtitle>
             </ion-buttons>
@@ -155,7 +155,7 @@
                </ion-button>
             </ion-buttons>
          </ion-toolbar>         
-		 <ion-toolbar>
+         <ion-toolbar>
             <ion-buttons slot="start">
                <ion-card-subtitle>
                   <ion-label color="danger">Borrar Columna</ion-label>

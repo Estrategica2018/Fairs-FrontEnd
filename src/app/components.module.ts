@@ -39,7 +39,7 @@ import { TermsPage } from './pages/terms/terms.page';
     SignupComponent,
     LoginComponent,
     AccountComponent,
-	SideMenuButtonsComponent,
+    SideMenuButtonsComponent,
     TermsPage
   ],
   exports: [
@@ -56,7 +56,7 @@ import { TermsPage } from './pages/terms/terms.page';
     SignupComponent,
     LoginComponent,
     AccountComponent,
-	SideMenuButtonsComponent,
+    SideMenuButtonsComponent,
     TermsPage
   ]
   

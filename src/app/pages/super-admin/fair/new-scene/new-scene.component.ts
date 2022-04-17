@@ -30,14 +30,14 @@ export class NewSceneComponent implements OnInit {
   }
 
   onTemplateClick(template) {
-	  this.closeModal();
-	  if(template.label === 'Libre') {
-		  this.redirectTo(`/super-admin/map-editor/fair/`);
-	  }
-	  else {
-		  this.redirectTo(`/super-admin/map-site-editor/fair/template/${template.template}`);
-	  }
-	  
+      this.closeModal();
+      if(template.label === 'Libre') {
+          this.redirectTo(`/super-admin/map-editor/fair/`);
+      }
+      else {
+          this.redirectTo(`/super-admin/map-site-editor/fair/template/${template.template}`);
+      }
+      
   }
 
   redirectTo(uri:string){

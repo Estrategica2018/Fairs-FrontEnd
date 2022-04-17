@@ -11,10 +11,10 @@ export class LoadingService {
   constructor(public loadingController: LoadingController) { }
 
   async present(data) {
-	data.cssClass = 'custom-loading-class';
+    data.cssClass = 'custom-loading-class';
     this.isLoading = true;
     return await this.loadingController.create(data)
-	.then(a => {
+    .then(a => {
       a.present().then(() => {
         if (!this.isLoading) {
           a.dismiss().then(() => {});

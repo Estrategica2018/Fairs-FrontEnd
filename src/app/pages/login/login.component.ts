@@ -165,7 +165,7 @@ export class LoginComponent  implements OnInit {
       then( fair => {
           const password = this.loginForm.value['password'];
           const email = this.loginForm.value['email'];
-		  const fairId = this.fair.id || this.fair.name;
+          const fairId = this.fair.id || this.fair.name;
           this.usersService.login(email,password, fairId)
           .subscribe(
             data => {
@@ -462,7 +462,7 @@ export class LoginComponent  implements OnInit {
   onSendSignConfirm(email) {
     
     //this.loading.present({message:'Cargando...'});
-    console.log(email);
+    
     this.usersService.sendSignConfirm(email)
     .then(data => {
             

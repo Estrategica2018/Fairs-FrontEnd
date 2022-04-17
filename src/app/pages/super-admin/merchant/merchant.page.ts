@@ -53,7 +53,7 @@ export class MerchantPage implements OnInit {
         this.success = `Comercio creado exitosamente`;
         this.errors = null;
         this.merchant = merchant;
-        console.log(merchant, 'creación');
+        
       })
       .catch(error => {
         this.loading.dismiss();

@@ -33,10 +33,10 @@ export class AdminPage {
     public menu: MenuController,
     public router: Router,
     public storage: Storage,
-	private adminFairsService: AdminFairsService,
-	private toastCtrl: ToastController,
-	private alertCtrl: AlertController,
-	private loading: LoadingService,
+    private adminFairsService: AdminFairsService,
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController,
+    private loading: LoadingService,
   ) {}
 
  ngDoCheck(){
@@ -47,57 +47,57 @@ export class AdminPage {
     /*this.router
       .navigateByUrl('/schedule', { replaceUrl: true })
       .then(() => this.storage.set('ion_did_tutorial', true));*/
-	  
+      
     const windowReference = window.open();
-	let url = '';
-	if(environment.production ) {
-		url = 'https://'+fair.name+'.'+SERVER_URL.split('https://')[1];
-		windowReference.location.href = url;
-	}
-	else {
-		windowReference.location.href = "#";
-	}
+    let url = '';
+    if(environment.production ) {
+        url = 'https://'+fair.name+'.'+SERVER_URL.split('https://')[1];
+        windowReference.location.href = url;
+    }
+    else {
+        windowReference.location.href = "#";
+    }
   }
   
   startNewFair() {
-	let newFair = Object.assign({ 
-	 'halls_number':0,
-	 'location': '{}',
-	 'resources': '{"scenes":[]}'
-	},this.fair);
+    let newFair = Object.assign({ 
+     'halls_number':0,
+     'location': '{}',
+     'resources': '{"scenes":[]}'
+    },this.fair);
 
-	newFair = Object.assign(newFair,{
-	 'social_media': JSON.stringify(newFair.social_media)
-	});	
-	
-	this.success = null;
-	this.errors = null;
-	
-	this.loading.present({message:'Cargando...'});
-	
-	this.adminFairsService.createFair(newFair).
-	 then( response => { 
-	 console.log(response);
-	    if(response.success == 201) {
-		  this.presentToast(`Feria creada exitósamente`);
-		  this.fair = { 'name': '', 'description': '', 'social_media': {'icon':'assets/icon/icon.png'}, 'end_date':'', 'init_date':''};
-		  this.ionViewWillEnter();
-		  this.showNewFair = false;
-	    }
-		else {
-			this.errors = `Error creando la feria ` + ( response.data || '' );
-			this.presentToast(`Error creando la feria`);
-			this.loading.dismiss();
-		}
-	  })
-	  .catch(error => {
-		   console.log(error);
-		   this.errors = error.data || ( error.message ? error.message : '' ) || error;
-		   if(this.errors.length > 76) { this.errors = this.errors.substr(0,76); }
-		   this.errors = `Error creando la feria ${this.errors}`
-		   this.presentToast(`Error creando la feria`);
-		   this.loading.dismiss();
-	  });
+    newFair = Object.assign(newFair,{
+     'social_media': JSON.stringify(newFair.social_media)
+    });    
+    
+    this.success = null;
+    this.errors = null;
+    
+    this.loading.present({message:'Cargando...'});
+    
+    this.adminFairsService.createFair(newFair).
+     then( response => { 
+     
+        if(response.success == 201) {
+          this.presentToast(`Feria creada exitósamente`);
+          this.fair = { 'name': '', 'description': '', 'social_media': {'icon':'assets/icon/icon.png'}, 'end_date':'', 'init_date':''};
+          this.ionViewWillEnter();
+          this.showNewFair = false;
+        }
+        else {
+            this.errors = `Error creando la feria ` + ( response.data || '' );
+            this.presentToast(`Error creando la feria`);
+            this.loading.dismiss();
+        }
+      })
+      .catch(error => {
+           console.log(error);
+           this.errors = error.data || ( error.message ? error.message : '' ) || error;
+           if(this.errors.length > 76) { this.errors = this.errors.substr(0,76); }
+           this.errors = `Error creando la feria ${this.errors}`
+           this.presentToast(`Error creando la feria`);
+           this.loading.dismiss();
+      });
   }
 
   onSlideChangeStart(event) {
@@ -110,19 +110,19 @@ export class AdminPage {
    this.fairList = [];
    this.adminFairsService.allList().
       then( response => { 
-	    if(response.success == 201) {
-		  this.fairList =   response.data;
-		  this.loading.dismiss();
-	    }
-		else {
-			this.errors = `Error consultando la feria ` + ( response.data || '' );
-			this.presentToast(`Error consultando la feria`);
-			this.loading.dismiss();
-		}
-	  })
-	  .catch(error => {
-		   this.loading.dismiss();
-	  });
+        if(response.success == 201) {
+          this.fairList =   response.data;
+          this.loading.dismiss();
+        }
+        else {
+            this.errors = `Error consultando la feria ` + ( response.data || '' );
+            this.presentToast(`Error consultando la feria`);
+            this.loading.dismiss();
+        }
+      })
+      .catch(error => {
+           this.loading.dismiss();
+      });
   }
 
   ionViewDidLeave() {
@@ -142,10 +142,10 @@ export class AdminPage {
 
   async toogleShowFair(fair,newLocation) {
       
-	this.success = null;
-	this.errors = null;
-	
-	
+    this.success = null;
+    this.errors = null;
+    
+    
     const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: !newLocation ? 'Publicar Feria?' : 'Ocultar Feria?',
@@ -163,33 +163,33 @@ export class AdminPage {
           cssClass: 'danger',
           handler: (data) => {
             
-			this.loading.present({message:'Cargando...'});
-			let newFair = {'location': !newLocation ? 'true':'false','id':fair.id };
-			
+            this.loading.present({message:'Cargando...'});
+            let newFair = {'location': !newLocation ? 'true':'false','id':fair.id };
+            
             this.adminFairsService.updateFair(newFair)
               .then((response) => {
-				if(response.success === 201) {
-					console.log(response.data_fair.location);
-					this.success = response.data_fair.location === 'true' ? `Feria publicada exitosamente` : `La feria se encuentra oculta`;
-				    //fair.location = response.data_fair.location === 'true';
-					this.ionViewWillEnter();
-					this.presentToast(this.success);
-					this.fairDeleted = fair.id;
-				}
-				else {
-					this.errors = !newLocation ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
-				    this.loading.dismiss();
-				}
+                if(response.success === 201) {
+                    
+                    this.success = response.data_fair.location === 'true' ? `Feria publicada exitosamente` : `La feria se encuentra oculta`;
+                    //fair.location = response.data_fair.location === 'true';
+                    this.ionViewWillEnter();
+                    this.presentToast(this.success);
+                    this.fairDeleted = fair.id;
+                }
+                else {
+                    this.errors = !newLocation ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
+                    this.loading.dismiss();
+                }
               },
               (error) => {
                  console.log(error);
                  this.errors = fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
-				 this.loading.dismiss();
+                 this.loading.dismiss();
               })
             .catch(error => {
                 console.log(error);
                 this.errors = fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
-				this.loading.dismiss();
+                this.loading.dismiss();
              });        
     
           }
@@ -200,9 +200,9 @@ export class AdminPage {
   }
   
   async onDeleteFair(fair) {
-	this.success = null;
-	this.errors = null;
-	
+    this.success = null;
+    this.errors = null;
+    
     const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: 'Eliminar Feria?',
@@ -225,18 +225,18 @@ export class AdminPage {
             this.adminFairsService.deleteFair(fair)
               .then((response) => {
                 this.success = `Feria eliminada exitosamente`;
-				this.presentToast(this.success);
+                this.presentToast(this.success);
                 this.ionViewWillEnter();
               },
               (error) => {
                  console.log(error);
                  this.errors = `Ha ocurrido un error al eliminar la feria`;
-				 this.loading.dismiss();
+                 this.loading.dismiss();
               })
             .catch(error => {
                 console.log(error);
                 this.errors = `Ha ocurrido un error al eliminar la feria`;
-				this.loading.dismiss();
+                this.loading.dismiss();
              });
           }
         }

@@ -233,7 +233,7 @@ export class ShoppingCartsService {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };     
-            console.log('/api/find/shopping');
+            
             this.http.get(`${SERVER_URL}/api/find/shopping-cart/${fair.id}/${referenceId}`,httpOptions)
             .pipe(
               timeout(60000),

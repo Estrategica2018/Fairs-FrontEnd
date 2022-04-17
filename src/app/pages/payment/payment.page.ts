@@ -51,7 +51,7 @@ export class PaymentPage implements OnInit {
               this.success = 'Tu pago ha sido registrado exitósamente, te enviamos un correo con el resumen de tu compra';
 
               this.shoppingCarts = response;
-              console.log(response);
+              
               this.loading.dismiss();
             }, errors => {
               this.errors = errors;

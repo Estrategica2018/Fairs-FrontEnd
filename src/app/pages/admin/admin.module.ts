@@ -10,7 +10,7 @@ import { AdminPageRoutingModule } from './admin-routing.module';
     CommonModule,
     IonicModule,
     AdminPageRoutingModule,
-	FormsModule,
+    FormsModule,
     ReactiveFormsModule,
   ],
   declarations: [AdminPage],

@@ -90,7 +90,7 @@ export class AdminFairsService {
   }  
 
   deleteFair(fair: any): any {
-	  
+      
     return new Promise((resolve, reject) => {
         this.usersService.getUser().then((userDataSession: any)=>{
             const httpOptions = {

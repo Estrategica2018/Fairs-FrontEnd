@@ -26,39 +26,38 @@ export class SceneComponent implements OnInit {
   layoutBannerSelectTime = 0;
   
   ngOnInit() {
-	  
+      
   }
   
   goToOnHoverBanner(banner,col,row,scene){
-	  if(banner && this.editMode) {
-		this.layoutBannerSelectTime = Date.now();  
-	    this.onHoverBanner.emit({'banner':banner,'col':col,'row':row,'scene':scene});
-	  }
-	  else if(banner && banner.externalUrl) {
-	     const windowReference = window.open();
-		 windowReference.location.href = banner.externalUrl;
-	  } else if(banner.internalUrl) {
-		 this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      if(banner && this.editMode) {
+        this.layoutBannerSelectTime = Date.now();  
+        this.onHoverBanner.emit({'banner':banner,'col':col,'row':row,'scene':scene});
+      }
+      else if(banner && banner.externalUrl) {
+         const windowReference = window.open();
+         windowReference.location.href = banner.externalUrl;
+      } else if(banner.internalUrl) {
+         this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
            this.router.navigate([banner.internalUrl])
          });
-	  }
+      }
   }
   
   goToSelectLayout(col,row,scene) {
-	  if(this.editMode && (Date.now() - this.layoutBannerSelectTime) > 100) {
-		this.layoutBannerSelectTime = Date.now();
-	    this.onHoverBanner.emit({'banner':null,'col':col,'row':row,'scene':scene});
-	  }
+      if(this.editMode && (Date.now() - this.layoutBannerSelectTime) > 100) {
+        this.layoutBannerSelectTime = Date.now();
+        this.onHoverBanner.emit({'banner':null,'col':col,'row':row,'scene':scene});
+      }
   }
 
   goToOnHoverBannerReciclyer($event) {
-	  
-	  this.goToOnHoverBanner($event.banner,$event.col,$event.row, $event.scene);
+      
+      this.goToOnHoverBanner($event.banner,$event.col,$event.row, $event.scene);
   }
 
   layoutColSelect($event){
-	console.log('layoutColSelect($event)');
-	this.selectLayout.emit($event);  
+    this.selectLayout.emit($event);  
   }
 
   async startAnimation(obj) {

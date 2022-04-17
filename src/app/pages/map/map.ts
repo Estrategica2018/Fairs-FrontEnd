@@ -75,7 +75,7 @@ export class MapPage implements OnInit {
     private speakersService: SpeakersService) {
         
       this.listenForFullScreenEvents();
-	  this.initializeListeners();
+      this.initializeListeners();
       this.usersService.getUser().then((userDataSession: any)=>{
           if(userDataSession && userDataSession.user_roles_fair)  {
             this.profileRole = {};
@@ -92,7 +92,7 @@ export class MapPage implements OnInit {
   ngOnInit() {
     const div = document.querySelector<HTMLElement>('.div-container');
     //div.addEventListener('scroll', this.logScrolling);
-	this.initializeScreen();
+    this.initializeScreen();
   } 
   
   ngOnDestroy(): void {
@@ -106,7 +106,7 @@ export class MapPage implements OnInit {
      //this.initializeScreen();
   }
   
-  ngDoCheck(){
+    ngDoCheck(){
      const main = document.querySelector<HTMLElement>('ion-router-outlet');
      const top = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
      main.style.top = top + 'px';
@@ -121,12 +121,12 @@ export class MapPage implements OnInit {
 
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
-		console.log(this.fair);
-		
-		if(!this.fair.resources) {
-			this.loading.dismiss();
-			return;
-		}
+        
+        
+        if(!this.fair.resources) {
+            this.loading.dismiss();
+            return;
+        }
         if(this.router.url.indexOf('/fair') >=0 ) {
             this.template = 'fair';
             this.scene = fair.resources.scenes[this.sceneId];
@@ -163,11 +163,11 @@ export class MapPage implements OnInit {
           });
         }
         
-		if(!this.scene) { 
-		   this.loading.dismiss();
+        if(!this.scene) { 
+           this.loading.dismiss();
            this.errors = `Algo malo ha ocurrido`;
-		   return;
-		}
+           return;
+        }
         this.scene.banners = this.scene.banners || [];
         this.onChangeBackgroundStyle();
         
@@ -204,7 +204,7 @@ export class MapPage implements OnInit {
             this.tabMenuObj = this.scene.menuTabs;
         }
         
-		this.scene.container = this.scene.container || { 'w': window.innerWidth , 'h': window.innerHeight }
+        this.scene.container = this.scene.container || { 'w': window.innerWidth , 'h': window.innerHeight }
         this.onResize();
         
     }, error => {
@@ -233,8 +233,8 @@ export class MapPage implements OnInit {
   
   @HostListener('window:resize')
   onResizeAdjustSize() {
-	this.onResize();
-	setTimeout(()=>{ this.onResize(); },100);
+    this.onResize();
+    setTimeout(()=>{ this.onResize(); },100);
   }
   
   onResize() {
@@ -301,13 +301,13 @@ export class MapPage implements OnInit {
                if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
             }
         }
-		
-		if(banner.productCatalog)  this.resizeProductCatalogs(banner);
-		if(banner.speakerCatalog)  this.resizeSpeakers(banner);
+        
+        if(banner.productCatalog)  this.resizeProductCatalogs(banner);
+        if(banner.speakerCatalog)  this.resizeSpeakers(banner);
      });     
      
      //Menu tab resize/render
-	 if(this.scene.menuTabs && this.scene.menuTabs.position)
+     if(this.scene.menuTabs && this.scene.menuTabs.position)
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
      
      //product catalog and carrete of images resize/render 
@@ -353,7 +353,7 @@ export class MapPage implements OnInit {
   }
   
   initializeListeners() {
-	window.addEventListener('window:resize-menu', () => {
+    window.addEventListener('window:resize-menu', () => {
       setTimeout(()=>{ this.onResize(); },100);
     });
   }
@@ -566,8 +566,8 @@ export class MapPage implements OnInit {
                 }
             });
         }
-		
-		this.resizeProductCatalogs(banner);
+        
+        this.resizeProductCatalogs(banner);
       })
       .catch(error => {
         
@@ -575,23 +575,23 @@ export class MapPage implements OnInit {
   }
   
   resizeProductCatalogs(banner) {
-	  for(var i=10;i>0;i--) {
+      for(var i=10;i>0;i--) {
          if( ( banner.position.x + i * banner.size.x <= this.scene.container.w ) || 
-		   ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
+           ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
             banner.__factor = i -1 ;
             break;              
          }
       }
-	  
-	  banner.__catalog.products.forEach((product,i:any)=>{
-		  product.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
-		  product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
-	  });
-	  
-	  const main = document.querySelector<HTMLElement>('ion-router-outlet');
-	  const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
-	  const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
-	  if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
+      
+      banner.__catalog.products.forEach((product,i:any)=>{
+          product.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
+          product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
+      });
+      
+      const main = document.querySelector<HTMLElement>('ion-router-outlet');
+      const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+      const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
+      if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
   }
   
   
@@ -602,13 +602,13 @@ export class MapPage implements OnInit {
       this.speakersService.list()
       .then((speakers) => {
          if(speakers) {
+             
              speakers.forEach((speaker, indx)=>{
                banner.__speakers.push(speaker);
              });
          } 
          this.onChangeSpeakerStyle(banner);
          this.resizeSpeakers(banner);
-		 
       })
       .catch(error => {
         
@@ -616,23 +616,23 @@ export class MapPage implements OnInit {
   }
 
   resizeSpeakers(banner) {
-	  for(var i=10;i>0;i--) {
+      for(var i=10;i>0;i--) {
          if( ( banner.position.x + i * banner.size.x <= this.scene.container.w ) || 
-		   ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
+           ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
             banner.__factor = i -1 ;
             break;              
          }
       }
-	  
-	  banner.__speakers.forEach((product,i:any)=>{
-		  product.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
-		  product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
-	  });
-	  
-	  const main = document.querySelector<HTMLElement>('ion-router-outlet');
-	  const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
-	  const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
-	  if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
+      
+      banner.__speakers.forEach((speaker,i:any)=>{
+          speaker.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
+          speaker.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
+      });
+      
+      const main = document.querySelector<HTMLElement>('ion-router-outlet');
+      const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+      const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
+      if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
   }
   
   changePriceProductCatalog(product,banner){
@@ -666,7 +666,7 @@ export class MapPage implements OnInit {
       this.loading.present({message:'Cargando...'});
       this.fairsService.sendMessage(data)
       .then((response)=>{
-		 this.loading.dismiss();
+         this.loading.dismiss();
          this.presentToast(response.message);
       }, error => {
         this.loading.dismiss();
@@ -771,7 +771,7 @@ export class MapPage implements OnInit {
   }
  
   logScrolling($event) {
-	console.log($event);
+    console.log($event);
   } 
 
 }

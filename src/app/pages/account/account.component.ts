@@ -106,11 +106,6 @@ export class AccountComponent implements AfterViewInit {
                 // do something with cropped blob
                 console.log(blob);
             });
-            
-            
-            
-            
-             
              
              //$('#btnCrop').click(function() {
              //   // Get a string base 64 data url

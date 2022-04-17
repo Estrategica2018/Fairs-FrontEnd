@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/super-admin/agenda-list"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end" *ngIf="action==='update'">
-	  <ion-list-header [hidden]="!errors">
+      <ion-list-header [hidden]="!errors">
         <div class="alert alert-danger fade show alert-dismissible">
          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
            <strong></strong> {{errors}}
@@ -77,15 +77,15 @@
             </div>
           </ion-col>
           <ion-col size="12" class="fs-1">
-		    <ion-grid>
-		    <ion-row>
+            <ion-grid>
+            <ion-row>
             <ion-col>
             <ion-label position="stacked">
                 Fecha de inicio <span class="required"> (*) </span>
             </ion-label>
             <ion-datetime class="fs-0 mt-3 form-control datetime-item" min="2019" max="2030" formControlName="date" 
             [ngClass]="{ 'is-invalid': submitted && f.date.errors }"
-			presentation="date" 
+            presentation="date" 
             (ionChange)="onChangeStartTime()" display-format="DD/MM/YYYY" picker-format="DD/MM/YYYY"></ion-datetime>
             <div *ngIf="submitted && f.date.errors" class="invalid-feedback">
             <div *ngIf="f.date.errors.required">Campo requerido</div>
@@ -95,19 +95,19 @@
             <ion-label position="stacked">
                 Hora de inicio <span class="required"> (*) </span>
             </ion-label>
-			<br>
+            <br>
             <input type="text" *ngIf="showHourDatetime"  readonly (click)="showHourDatetime = !showHourDatetime;" value="{{hour}}" class="cursor-pointer datetime-hour-input mt-4"/>
-			
-			<ion-datetime class="fs-0 mt-3 form-control datetime-item-time" formControlName="hour" 
-			presentation="time" showDefaultTimeLabel="false" showDefaultTimeLabel="false" 
+            
+            <ion-datetime class="fs-0 mt-3 form-control datetime-item-time" formControlName="hour" 
+            presentation="time" showDefaultTimeLabel="false" showDefaultTimeLabel="false" 
             [ngClass]="{ 'is-invalid': submitted && f.hour.errors }"
             (ionChange)="onChangeStartTime()" display-format="HH:mm" picker-format="HH:mm"></ion-datetime>
             <div *ngIf="submitted && f.hour.errors" class="invalid-feedback">
             <div *ngIf="f.hour.errors.required">Campo requerido</div>
             </div>
             </ion-col>
-		    </ion-row>
-		    </ion-grid>
+            </ion-row>
+            </ion-grid>
           </ion-col>
           <ion-col  size="12" class="fs-1">
             <ion-label position="stacked">
@@ -168,7 +168,7 @@
         </ion-row>
         <ion-row>
            <ion-button [disabled]="initSubmitted" type="submit" 
-		   (click)="onSave()" class="w-100" [hidden]="action==='update'">
+           (click)="onSave()" class="w-100" [hidden]="action==='update'">
             <ion-label> Crear Agenda </ion-label>
               <ion-icon slot="end" name="save-outline"></ion-icon>
             </ion-button>

@@ -136,7 +136,7 @@ export class ProductPricePage implements OnInit {
           this.productPrice = productPrice;
           this.attributes = this.productPrice.resources.attributes;
           this.editSave = false;
-          console.log(this.productPrice);
+          
           this.onRouterLink(`/super-admin/product-price/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${productPrice.id}`);
       })
       .catch(error => {

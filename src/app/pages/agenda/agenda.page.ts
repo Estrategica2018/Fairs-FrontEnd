@@ -64,7 +64,7 @@ export class AgendaPage implements OnInit {
     private toastCtrl: ToastController,
     private formBuilder: FormBuilder,
     private dom:DomSanitizer,
-	private speakersService: SpeakersService,
+    private speakersService: SpeakersService,
   ) {   
   }
   
@@ -73,41 +73,41 @@ export class AgendaPage implements OnInit {
     this.loading.present({message:'Cargando...'});
     this.fairsService.getCurrentFair().then((fair)=>{
         this.fair = fair;
-        console.log('12341234');
+        
         const agendaId = this.route.snapshot.paramMap.get('agendaId');
         
-		  this.agendasService.get(agendaId)
-		   .then((agenda) => {
-			  this.loading.dismiss();
-			  this.invited_speakers = [];
-			  this.errors = null;
-			  this.agenda = Object.assign({},agenda);
-			  this.agenda.invited_speakers.forEach((speaker)=>{
-				 this.invited_speakers.push(Object.assign({},speaker));
-			  });
-			  this.agenda.invited_speakers = null;
-			  this.agenda.duration_time = this.agenda.duration_time.toString();
-			  if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
-			  const start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
-			  this.agenda.start_at_str = this.agenda.start_time;
-			  const date = start_time.substr(0,10); 
-			  const hour = start_time.substr(11,5); 
-			  
-			  this.initializeAgenda();
-		  })
-		  .catch(error => {
-			 this.loading.dismiss();
-			 this.errors = error;
-		  });
+          this.agendasService.get(agendaId)
+           .then((agenda) => {
+              this.loading.dismiss();
+              this.invited_speakers = [];
+              this.errors = null;
+              this.agenda = Object.assign({},agenda);
+              this.agenda.invited_speakers.forEach((speaker)=>{
+                 this.invited_speakers.push(Object.assign({},speaker));
+              });
+              this.agenda.invited_speakers = null;
+              this.agenda.duration_time = this.agenda.duration_time.toString();
+              if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
+              const start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
+              this.agenda.start_at_str = this.agenda.start_time;
+              const date = start_time.substr(0,10); 
+              const hour = start_time.substr(11,5); 
+              
+              this.initializeAgenda();
+          })
+          .catch(error => {
+             this.loading.dismiss();
+             this.errors = error;
+          });
     
-		this.speakersService.
-		list().then((speakers)=>{
-		  this.speakers = speakers;
-		})
-		.catch(error => {
-			this.errors = error;
-		});
-	});
+        this.speakersService.
+        list().then((speakers)=>{
+          this.speakers = speakers;
+        })
+        .catch(error => {
+            this.errors = error;
+        });
+    });
   }
   
   contactSendForm(form) {
@@ -216,7 +216,7 @@ export class AgendaPage implements OnInit {
   
   onSupportClick() {
      //this.showSupportDetail = true;
-	 this.openAgenda(this.agenda);
+     this.openAgenda(this.agenda);
   }
   
   
@@ -230,7 +230,7 @@ export class AgendaPage implements OnInit {
         'agenda': session,
         'speakerDetailComponent': this.speakerDetailComponent,
         'type': 'Agenda',
-		'optionTab': 'showSupportDetail'
+        'optionTab': 'showSupportDetail'
       }
     });
     await this.modal.present();

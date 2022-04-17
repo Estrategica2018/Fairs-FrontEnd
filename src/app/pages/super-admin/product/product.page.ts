@@ -103,9 +103,9 @@ export class ProductPage implements OnInit {
                     if(typeof this.product.resources.attributes !== 'object' || !this.product.resources.attributes.length ) {
                        this.product.resources.attributes = [];
                     }
-					for(let word of this.product.resources.keywords) {
+                    for(let word of this.product.resources.keywords) {
                        this.keywords.push({'value':word});
-					}
+                    }
                     
                   })
                   .catch(error => {
@@ -140,12 +140,12 @@ export class ProductPage implements OnInit {
   updateProduct(){
     this.loading.present({message:'Cargando...'});
     if(this.product.id) {
-		this.keywords.forEach((keyword)=>{
-			this.product.resources.keywords.push(product.keyword.value);
-		});
-		
+        this.keywords.forEach((keyword)=>{
+            this.product.resources.keywords.push(product.keyword.value);
+        });
+        
         let product = clone(this.product);
-		
+        
         this.adminProductsService.update(Object.assign({'fair_id':this.fair.id,'pavilion_id':this.pavilion.id,'stand_id':this.stand.id},product))
        .then((product) => {
           this.loading.dismiss();

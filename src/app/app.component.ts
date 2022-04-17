@@ -70,14 +70,14 @@ export class AppComponent implements OnInit {
     private menuCtrl: MenuController,
     private modalCtrl: ModalController,
     private agendasService: AgendasService,
-	private adminFairsService: AdminFairsService,
-	private adminPavilionsService: AdminPavilionsService,
-	private locationComn: Location
+    private adminFairsService: AdminFairsService,
+    private adminPavilionsService: AdminPavilionsService,
+    private locationComn: Location
   ) {
     
     this.initializeFair();
-	this.url = window.location.origin;
-	this.location = locationComn;
+    this.url = window.location.origin;
+    this.location = locationComn;
     
   }
   
@@ -85,34 +85,34 @@ export class AppComponent implements OnInit {
       this.fairsService.getCurrentFair().
       then( fair => {
         if(fair.name == 'admin') {
-		   this.fairAdminMode = true;
+           this.fairAdminMode = true;
            this.usersService.getUser().then((userDataSession: any)=>{
-			  this.userDataSession = userDataSession;    
-			  
-			  this.profileRole = {};
-			  if(userDataSession && userDataSession.user_roles_fair) {
-				userDataSession.user_roles_fair.forEach((role)=>{
-					if(role.id == 1) { //"super_administrador"
-					   this.profileRole.admin = true;
-					}
-				 });
-			  }
-			  if(!this.fairAdminMode || !this.profileRole.admin) {
-				this.presenterLogin();
-			  }
-			  else {
-				this.redirectTo('/admin');
-			  }
-			  
-			});
-		}
-		else {
-		  this.fair = fair;
+              this.userDataSession = userDataSession;    
+              
+              this.profileRole = {};
+              if(userDataSession && userDataSession.user_roles_fair) {
+                userDataSession.user_roles_fair.forEach((role)=>{
+                    if(role.id == 1) { //"super_administrador"
+                       this.profileRole.admin = true;
+                    }
+                 });
+              }
+              if(!this.fairAdminMode || !this.profileRole.admin) {
+                this.presenterLogin();
+              }
+              else {
+                this.redirectTo('/admin');
+              }
+              
+            });
+        }
+        else {
+          this.fair = fair;
           this.getShoppingCart();
           this.titleService.setTitle(this.fair.description);
         
-		  this.initializeSceneMenu();
-		
+          this.initializeSceneMenu();
+        
           this.agendasService.list()
           .then((data) => {
               this.showAgenda = data.length > 0;
@@ -124,71 +124,71 @@ export class AppComponent implements OnInit {
   }
   
   initializeSceneMenu(){
-	 this.lTotal = 0;
+     this.lTotal = 0;
      this.sceneLayoutList = [];
-	 this.fair.resources = this.fair.resources || { 'scenes': [] };
-	 this.fair.pavilions =  this.fair.pavilions || [];
-	 
-	 /*for(let scene of this.fair.resources.scenes) {
-		 if(scene.show || (this.editMenu && this.profileRole && this.profileRole.admin)) {
+     this.fair.resources = this.fair.resources || { 'scenes': [] };
+     this.fair.pavilions =  this.fair.pavilions || [];
+     
+     /*for(let scene of this.fair.resources.scenes) {
+         if(scene.show || (this.editMenu && this.profileRole && this.profileRole.admin)) {
              this.lTotal++;
-		 }
-	 }*/
-	 for(let scene of this.fair.resources.scenes) this.lTotal++;
-	 for(let pav of this.fair.pavilions) this.lTotal++;
-	 
-	 //this.fair.location = [];
-	 
-	 function findScenePosition(fair,type,iScene,indx) {
-		
-		if( typeof fair.location == 'string' ) {
-		  if(fair.location == '{}') { fair.location = '[]'; }
-		  fair.location = JSON.parse(fair.location);
-		}
-		
-		fair.location = fair.location && fair.location.length > 0 ? fair.location : [];
-		
-		for(let i=0,location = null; i<fair.location.length;i++){
-			location = fair.location[i];
-			if(location.type == type && location.iScene == iScene) {
-				return location.menuPosition;
-			}
-		}
-		
-		fair.location.push({'type': type,'iScene': iScene,'menuPosition': indx});
-		return indx;
-	 }
-	 
-	 for(let i=0; i<this.lTotal; i++){
-		
-		let mbControl = false;
-		
-		for(let iScene = 0, scene = null; iScene < this.fair.resources.scenes.length; iScene ++) {
-			scene = this.fair.resources.scenes[iScene];
-			//if(!scene.show || (this.editMenu && this.profileRole && this.profileRole.admin)) continue;
-			scene.menuPosition = findScenePosition(this.fair,'sceneFair',iScene,(i+1));
-			scene.id = scene.id || this._getId();
-			if(scene.menuPosition == i + 1) {
-				this.sceneLayoutList.push({'type':'sceneFair', 'scene': scene, 'iScene': iScene});
-				mbControl = true;
-				break;
-			}
-		}
-		
-		if(!mbControl) {
-		
-		  for(let iScene = 0, pavilion = null; iScene < this.fair.pavilions.length; iScene ++) {
-			pavilion = this.fair.pavilions[iScene];
-			pavilion.menuPosition = findScenePosition(this.fair,'scenePavilion',iScene,(i+1));
-			if(pavilion.menuPosition == i + 1) {
-			  this.sceneLayoutList.push({'type':'scenePavilion', 'menuPosition': pavilion.menuPosition, 'pavilion': pavilion, 'iScene': iScene});
-			  break;
-			}
-		  }
-		}
-		
-	 }
-  }	
+         }
+     }*/
+     for(let scene of this.fair.resources.scenes) this.lTotal++;
+     for(let pav of this.fair.pavilions) this.lTotal++;
+     
+     //this.fair.location = [];
+     
+     function findScenePosition(fair,type,iScene,indx) {
+        
+        if( typeof fair.location == 'string' ) {
+          if(fair.location == '{}') { fair.location = '[]'; }
+          fair.location = JSON.parse(fair.location);
+        }
+        
+        fair.location = fair.location && fair.location.length > 0 ? fair.location : [];
+        
+        for(let i=0,location = null; i<fair.location.length;i++){
+            location = fair.location[i];
+            if(location.type == type && location.iScene == iScene) {
+                return location.menuPosition;
+            }
+        }
+        
+        fair.location.push({'type': type,'iScene': iScene,'menuPosition': indx});
+        return indx;
+     }
+     
+     for(let i=0; i<this.lTotal; i++){
+        
+        let mbControl = false;
+        
+        for(let iScene = 0, scene = null; iScene < this.fair.resources.scenes.length; iScene ++) {
+            scene = this.fair.resources.scenes[iScene];
+            //if(!scene.show || (this.editMenu && this.profileRole && this.profileRole.admin)) continue;
+            scene.menuPosition = findScenePosition(this.fair,'sceneFair',iScene,(i+1));
+            scene.id = scene.id || this._getId();
+            if(scene.menuPosition == i + 1) {
+                this.sceneLayoutList.push({'type':'sceneFair', 'scene': scene, 'iScene': iScene});
+                mbControl = true;
+                break;
+            }
+        }
+        
+        if(!mbControl) {
+        
+          for(let iScene = 0, pavilion = null; iScene < this.fair.pavilions.length; iScene ++) {
+            pavilion = this.fair.pavilions[iScene];
+            pavilion.menuPosition = findScenePosition(this.fair,'scenePavilion',iScene,(i+1));
+            if(pavilion.menuPosition == i + 1) {
+              this.sceneLayoutList.push({'type':'scenePavilion', 'menuPosition': pavilion.menuPosition, 'pavilion': pavilion, 'iScene': iScene});
+              break;
+            }
+          }
+        }
+        
+     }
+  }    
 
   ngOnDestroy(): void {
      if(this.modal) { this.modal.dismiss(); }
@@ -231,12 +231,12 @@ export class AppComponent implements OnInit {
       //this.updateLoggedInStatus(user);
       window.location.reload();
     }); 
-	
-	window.addEventListener('addScene:menu', (event:any) => {
+    
+    window.addEventListener('addScene:menu', (event:any) => {
       this.addSceneMenu(event.detail.type,event.detail.iScene);
-    });	
-	
-	window.addEventListener('removeScene:menu', (event:any) => {
+    });    
+    
+    window.addEventListener('removeScene:menu', (event:any) => {
       this.removeSceneMenu(event.detail.type,event.detail.iScene);
     });
     
@@ -251,7 +251,7 @@ export class AppComponent implements OnInit {
       //this.updateLoggedInStatus(null);
       //this.getShoppingCart();
       //window.location.reload();
-	  window.location.href = window.location.host;
+      window.location.href = window.location.host;
     });
     
     window.addEventListener('user:shoppingCart', () => {
@@ -270,21 +270,21 @@ export class AppComponent implements OnInit {
         this.fullScreen = false;
       }, 300);
     });
-	
+    
     window.addEventListener('map:fullscreenIn', (e:any) => {
       setTimeout(() => {
         this.fullScreen = true;
       }, 300);
     });
-	
-	window.addEventListener('banner-side-menu:show', (event:any) => {
+    
+    window.addEventListener('banner-side-menu:show', (event:any) => {
       this.showBannerSideMenu = true;
     });
 
-	window.addEventListener('banner-side-menu:hide', (event:any) => {
+    window.addEventListener('banner-side-menu:hide', (event:any) => {
       this.showBannerSideMenu = false;
     });
-	
+    
   } 
 
   async presentLogout() {
@@ -307,17 +307,17 @@ export class AppComponent implements OnInit {
 
   logout() {
     
-	this.loading.present({message:'Cargando...'});
-	
+    this.loading.present({message:'Cargando...'});
+    
     this.usersService.getUser().then(userDataSession=>{
         this.usersService.logout(userDataSession)
         .subscribe(
           data => {
             this.loading.dismiss();
             
-			window.location.href = window.location.host;
-			window.location.reload();
-			
+            window.location.href = window.location.host;
+            window.location.reload();
+            
             this.usersService.setUser(null).then(() => {
               this.router.navigateByUrl(`/map/fair/0`);
             });
@@ -405,7 +405,7 @@ export class AppComponent implements OnInit {
           })
          .catch(error => {
             this.errors = error; 
-			console.log(error);
+            console.log(error);
             //this.loading.dismiss();
          }); 
       });
@@ -515,75 +515,75 @@ export class AppComponent implements OnInit {
   }   
 
   goToSceneUp(sceneLayout, menuPosition, obj) {
-	if(menuPosition == 0 || !obj || !obj.resources || !obj.resources.scenes) return;
+    if(menuPosition == 0 || !obj || !obj.resources || !obj.resources.scenes) return;
   
     let list = [];
-	this.fair.location = [];
-	let mp0: Number = menuPosition;
-	let mp1: Number;
-	let sceneIni = sceneLayout.scene ? sceneLayout.scene : sceneLayout.pavilion;
-	
+    this.fair.location = [];
+    let mp0: Number = menuPosition;
+    let mp1: Number;
+    let sceneIni = sceneLayout.scene ? sceneLayout.scene : sceneLayout.pavilion;
+    
     for(let i = 0, sceneTmp = null, sceneNext = null; i < this.sceneLayoutList.length; i++) {
-		sceneTmp = this.sceneLayoutList[i].scene ? this.sceneLayoutList[i].scene : this.sceneLayoutList[i].pavilion;
-		if((menuPosition - 1) == i + 1 ) {
-			sceneNext = this.sceneLayoutList[i + 1].scene ? this.sceneLayoutList[i + 1 ].scene : this.sceneLayoutList[i + 1].pavilion;
-			mp1 = sceneNext.menuPosition;
-			sceneNext.menuPosition = mp0;
-			sceneIni.menuPosition = mp1;
-			this.addEditedScene(list, this.sceneLayoutList[i+1], i );
-			this.addEditedScene(list, this.sceneLayoutList[i], i + 1 );
-		} else if (menuPosition == i + 1){
-			
-		}
-		else {
-			this.addEditedScene(list, this.sceneLayoutList[i], i);
-		}
-	}
-	this.sceneLayoutList = list;
+        sceneTmp = this.sceneLayoutList[i].scene ? this.sceneLayoutList[i].scene : this.sceneLayoutList[i].pavilion;
+        if((menuPosition - 1) == i + 1 ) {
+            sceneNext = this.sceneLayoutList[i + 1].scene ? this.sceneLayoutList[i + 1 ].scene : this.sceneLayoutList[i + 1].pavilion;
+            mp1 = sceneNext.menuPosition;
+            sceneNext.menuPosition = mp0;
+            sceneIni.menuPosition = mp1;
+            this.addEditedScene(list, this.sceneLayoutList[i+1], i );
+            this.addEditedScene(list, this.sceneLayoutList[i], i + 1 );
+        } else if (menuPosition == i + 1){
+            
+        }
+        else {
+            this.addEditedScene(list, this.sceneLayoutList[i], i);
+        }
+    }
+    this.sceneLayoutList = list;
   }
   
   goToSceneDown(sceneLayout, menuPosition, obj) {
-	if( menuPosition + 1 > this.lTotal || !obj || !obj.resources || !obj.resources.scenes) return;
-	let list = [];
-	this.fair.location = [];
-	let mp0: Number = menuPosition;
-	let mp1: Number;
-	let sceneIni = sceneLayout.scene ? sceneLayout.scene : sceneLayout.pavilion;
-	
+    if( menuPosition + 1 > this.lTotal || !obj || !obj.resources || !obj.resources.scenes) return;
+    let list = [];
+    this.fair.location = [];
+    let mp0: Number = menuPosition;
+    let mp1: Number;
+    let sceneIni = sceneLayout.scene ? sceneLayout.scene : sceneLayout.pavilion;
+    
     for(let i = 0, sceneTmp = null, sceneNext = null; i < this.sceneLayoutList.length; i++) {
-		sceneTmp = this.sceneLayoutList[i].scene ? this.sceneLayoutList[i].scene : this.sceneLayoutList[i].pavilion;
-		if(menuPosition == i + 1 ) {
-			sceneNext = this.sceneLayoutList[i + 1].scene ? this.sceneLayoutList[i + 1].scene : this.sceneLayoutList[i + 1].pavilion;
-			mp1 = sceneNext.menuPosition;
-			sceneNext.menuPosition = mp0;
-			sceneIni.menuPosition = mp1;
-			this.addEditedScene(list, this.sceneLayoutList[i+1], i );
-			this.addEditedScene(list, this.sceneLayoutList[i], i + 1 );
-			
-			
-		} else if (menuPosition == sceneTmp.menuPosition){
-			
-		}
-		else {
-			this.addEditedScene(list, this.sceneLayoutList[i], i);
-		}
-	}
-	this.sceneLayoutList = list;
+        sceneTmp = this.sceneLayoutList[i].scene ? this.sceneLayoutList[i].scene : this.sceneLayoutList[i].pavilion;
+        if(menuPosition == i + 1 ) {
+            sceneNext = this.sceneLayoutList[i + 1].scene ? this.sceneLayoutList[i + 1].scene : this.sceneLayoutList[i + 1].pavilion;
+            mp1 = sceneNext.menuPosition;
+            sceneNext.menuPosition = mp0;
+            sceneIni.menuPosition = mp1;
+            this.addEditedScene(list, this.sceneLayoutList[i+1], i );
+            this.addEditedScene(list, this.sceneLayoutList[i], i + 1 );
+            
+            
+        } else if (menuPosition == sceneTmp.menuPosition){
+            
+        }
+        else {
+            this.addEditedScene(list, this.sceneLayoutList[i], i);
+        }
+    }
+    this.sceneLayoutList = list;
   }
 
   addEditedScene(list, sceneLayout, indx) {
-	  const scene = sceneLayout.scene ? sceneLayout.scene : sceneLayout.pavilion;
-	  const type = sceneLayout.scene ? 'sceneFair' : 'scenePavilion';
-	  this.editMenu = true;
-	  
-	  if(type == 'sceneFair') {
-	     list.push({'scene': scene,'type': type, 'iScene': sceneLayout.iScene });
-	  }
-	  if(type == 'scenePavilion') {
-	     list.push({'pavilion': scene,'type': type, 'iScene': sceneLayout.iScene });
-	  }
-	  
-	  this.fair.location.push({'type': type,'iScene': sceneLayout.iScene,'menuPosition': indx + 1});
+      const scene = sceneLayout.scene ? sceneLayout.scene : sceneLayout.pavilion;
+      const type = sceneLayout.scene ? 'sceneFair' : 'scenePavilion';
+      this.editMenu = true;
+      
+      if(type == 'sceneFair') {
+         list.push({'scene': scene,'type': type, 'iScene': sceneLayout.iScene });
+      }
+      if(type == 'scenePavilion') {
+         list.push({'pavilion': scene,'type': type, 'iScene': sceneLayout.iScene });
+      }
+      
+      this.fair.location.push({'type': type,'iScene': sceneLayout.iScene,'menuPosition': indx + 1});
   }
   
 
@@ -597,82 +597,81 @@ export class AppComponent implements OnInit {
   }
   
   updateSceneMenu(isExternal) {
-	if(!isExternal)  this.loading.present({message:'Cargando...'});
-	
-	  const fair  = Object.assign({},{'id':this.fair.id,'location': JSON.stringify(this.fair.location)});
-	  this.adminFairsService.updateFair(fair)
-	  .then((response) => {
-		  this.editMenu = false;
-		  if(!isExternal) { 
-		    this.presentToast(`Menú guardado con exito`);
-		    this.loading.dismiss();
-		  }
-		  else {
-			  
-			  if(isExternal.typeAction == 'add' && isExternal.type=='sceneFair') {
-			    window.location.replace(`/super-admin/map-editor/fair/${isExternal.sceneId}`);
-			  }
-			  else if(isExternal.typeAction == 'remove' && isExternal.type=='sceneFair') {
-				  window.location.replace(`/super-admin/fair`);
-			  } 
-			  else if(isExternal.typeAction == 'add' && isExternal.type=='scenePavilion') {
-			    window.location.replace(`/super-admin/pavilion/${isExternal.sceneId}`);
-			  }			  
-			  else if(isExternal.typeAction == 'remove' && isExternal.type=='scenePavilion') {
-				window.location.replace(`/super-admin/fair`);
-			  }
-		  }
-	  })
-	  .catch(error => {
-		   this.loading.dismiss();
-		   console.log(error);
-		   this.presentToast(`Consultando el servicio para actualizar menú ${error}`);
-	  });
+    if(!isExternal)  this.loading.present({message:'Cargando...'});
+    
+      const fair  = Object.assign({},{'id':this.fair.id,'location': JSON.stringify(this.fair.location)});
+      this.adminFairsService.updateFair(fair)
+      .then((response) => {
+          this.editMenu = false;
+          if(!isExternal) { 
+            this.presentToast(`Menú guardado con exito`);
+            this.loading.dismiss();
+          }
+          else {
+              
+              if(isExternal.typeAction == 'add' && isExternal.type=='sceneFair') {
+                window.location.replace(`/super-admin/map-editor/fair/${isExternal.sceneId}`);
+              }
+              else if(isExternal.typeAction == 'remove' && isExternal.type=='sceneFair') {
+                  window.location.replace(`/super-admin/fair`);
+              } 
+              else if(isExternal.typeAction == 'add' && isExternal.type=='scenePavilion') {
+                window.location.replace(`/super-admin/pavilion/${isExternal.sceneId}`);
+              }              
+              else if(isExternal.typeAction == 'remove' && isExternal.type=='scenePavilion') {
+                window.location.replace(`/super-admin/fair`);
+              }
+          }
+      })
+      .catch(error => {
+           this.loading.dismiss();
+           console.log(error);
+           this.presentToast(`Consultando el servicio para actualizar menú ${error}`);
+      });
   }
   
   _getId() {
-	  return new Date().valueOf() + Math.floor(Math.random() * 1000);
+      return new Date().valueOf() + Math.floor(Math.random() * 1000);
   }
   
   addSceneMenu(type,iScene) {
-	  var list = [];
-	  var indx = 1;
-	  list.push({'type': type,'iScene': iScene,'menuPosition': indx});
-	  for(let location of this.fair.location) {
-		location.menuPosition ++;
-		list.push(location);
-	  }
-	  
-	  this.fair.location = list;
-	  this.updateSceneMenu({'type': type, 'sceneId': iScene, 'typeAction' : 'add' });
+      var list = [];
+      var indx = 1;
+      list.push({'type': type,'iScene': iScene,'menuPosition': indx});
+      for(let location of this.fair.location) {
+        location.menuPosition ++;
+        list.push(location);
+      }
+      
+      this.fair.location = list;
+      this.updateSceneMenu({'type': type, 'sceneId': iScene, 'typeAction' : 'add' });
   }
   
   removeSceneMenu(type,iScene) {
-	  var list = [];
-	  var indxRem = 10000;
-	  console.log('antes',this.fair.location)
-	  for(let location of this.fair.location) {
-		if(location.type == type && location.iScene == iScene) {
-			indxRem = location.menuPosition;
-		}
-		else if(location.menuPosition > indxRem ) {
-		    location.menuPosition --;
-			list.push(location);
-		}
-		else {
-			list.push(location);
-		}
-	  }
-	  
-	  this.fair.location = list;
-	  console.log('despues',this.fair.location)
-	  this.updateSceneMenu({'type': type, 'sceneId': iScene, 'typeAction' : 'remove'});
+      var list = [];
+      var indxRem = 10000;
+      for(let location of this.fair.location) {
+        if(location.type == type && location.iScene == iScene) {
+            indxRem = location.menuPosition;
+        }
+        else if(location.menuPosition > indxRem ) {
+            location.menuPosition --;
+            list.push(location);
+        }
+        else {
+            list.push(location);
+        }
+      }
+      
+      this.fair.location = list;
+      
+      this.updateSceneMenu({'type': type, 'sceneId': iScene, 'typeAction' : 'remove'});
   }
 
 
   onEditMenuClick(){
     this.initializeSceneMenu(); 
-	this.editMenu=true
+    this.editMenu=true
   }
   
   onCancelEditMenuClick() {

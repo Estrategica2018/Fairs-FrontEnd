@@ -30,10 +30,10 @@ export class PavilionPage implements OnInit {
     private fairsService: FairsService,
     private router: Router
     ) { 
-	
-	this.url = window.location.origin;
-	
-	}
+    
+    this.url = window.location.origin;
+    
+    }
 
   ngDoCheck(){
     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
@@ -116,8 +116,8 @@ export class PavilionPage implements OnInit {
           this.pavilionsService.refreshCurrentPavilion();
           //this.redirectTo(`/super-admin/pavilion/${pavilion.id}`);
           //window.location.href = `/#/super-admin/pavilion/${pavilion.id}`;
-		  const detail = {'type': 'scenePavilion', 'iScene': pavilion.id };
-		  window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
+          const detail = {'type': 'scenePavilion', 'iScene': pavilion.id };
+          window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
       })
       .catch(error => {
          this.loading.dismiss();
@@ -153,8 +153,8 @@ export class PavilionPage implements OnInit {
                         return pavilion.id != this.pavilion.id;
                    });
                    //const tab = `/super-admin/fair`;
-				   //this.redirectTo(tab);
-				   const detail = {'type': 'sceneFair', 'iScene': this.pavilion.id };
+                   //this.redirectTo(tab);
+                   const detail = {'type': 'sceneFair', 'iScene': this.pavilion.id };
                    window.dispatchEvent(new CustomEvent('removeScene:menu',{ detail: detail }));
                 
               },
@@ -191,7 +191,7 @@ export class PavilionPage implements OnInit {
   }
 
   cancel() {
-	const tab = `/super-admin/fair`;
+    const tab = `/super-admin/fair`;
     this.redirectTo(tab);
   }
 

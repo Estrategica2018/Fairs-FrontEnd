@@ -28,9 +28,9 @@ export class CarouselTemplateComponent {
   constructor(private productsService: ProductsService) { }
 
   initialize() {
-	  
-	  
-	  
+      
+      
+      
 const swiper = new Swiper('.swiper', {
   // Optional parameters
   direction: 'horizontal',

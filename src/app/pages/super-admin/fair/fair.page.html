@@ -39,11 +39,11 @@
           <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
           <div class="d-flex ml-auto scroll-container" style="overflow-x: scroll;" >
               <ion-col  *ngFor="let scene of fair?.resources?.scenes;let i = index"  class="scene-select"
-			  button="true" routerLink="/super-admin/map-editor/fair/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
-			    <div [hidden]="scene && scene.url_image" class="scene-icon-mini customSceneCSSClass{{i}}"></div>
+              button="true" routerLink="/super-admin/map-editor/fair/{{i}}" routerLinkActive="active" routerDirection="root" detail="false">
+                <div [hidden]="scene && scene.url_image" class="scene-icon-mini customSceneCSSClass{{i}}"></div>
                 <img *ngIf="scene && scene.url_image" [src]="scene.url_image" class="ml-auto mr-auto mt-2 mb-2 " alt="escena" style="width: 77px;">
-			    <label class="scene-icon-label">{{scene.title}}</label>
-			  </ion-col>
+                <label class="scene-icon-label">{{scene.title}}</label>
+              </ion-col>
             </div>
 
          <ion-buttons slot="end">
@@ -57,8 +57,8 @@
       <ion-item button="true">
         <ion-label> Subdominio </ion-label>
         <ion-label slot="end" class="text-right"> 
-		https://{{fair.name}}.e-logic.com.co
-		<ion-icon name="copy-outline"  (click)="copy('fair-name')"></ion-icon></ion-label>
+        https://{{fair.name}}.e-logic.com.co
+        <ion-icon name="copy-outline"  (click)="copy('fair-name')"></ion-icon></ion-label>
       </ion-item>
 
       <ion-item button="true" (click)="presentActionIcons()">
@@ -80,20 +80,20 @@
       </ion-item>
       <ion-item>
           <ion-label>Fecha Inicio</ion-label>
-		  <ion-datetime presentation="date" 
-		  monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
-		  [value]="fair.init_date"
-		  #initDatetime
-		  placeholder="Select Date" (ionChange)="ionChangeInitDate(initDatetime.value)"></ion-datetime>
+          <ion-datetime presentation="date" 
+          monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
+          [value]="fair.init_date"
+          #initDatetime
+          placeholder="Select Date" (ionChange)="ionChangeInitDate(initDatetime.value)"></ion-datetime>
       </ion-item>
       <ion-item>
           <ion-label>Fecha final</ion-label>
-		    <ion-datetime presentation="date" 
-			  monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
-			  [max]="maxYear"
-			  [value]="fair.end_date"
-			  #endDatetime
-			  placeholder="Select Date" (ionChange)="ionChangeEndDate(endDatetime.value)"></ion-datetime>
+            <ion-datetime presentation="date" 
+              monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
+              [max]="maxYear"
+              [value]="fair.end_date"
+              #endDatetime
+              placeholder="Select Date" (ionChange)="ionChangeEndDate(endDatetime.value)"></ion-datetime>
       </ion-item>
       <ion-item lines="">
           <ion-label style="max-width: 75px;" slot="start">Pabellones</ion-label>
@@ -125,7 +125,7 @@
             </ion-button>
         </ion-buttons>
       </ion-item>
-	  
+      
     <ion-item button="true">
        <ion-label> Contacto de soporte </ion-label>
        <input class="ml-auto" class="text-right" required [(ngModel)]="fair.resources.supportContact" name="description" (ionChange)="ionChange()" (ionInput)="ionChange()">

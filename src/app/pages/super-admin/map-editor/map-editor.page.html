@@ -61,7 +61,7 @@
 
    <!--Scene Background Image / Background Color -->
    <div class="div-container" >
-	   <!--Scene Background Image-->
+       <!--Scene Background Image-->
       <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
       'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
@@ -229,7 +229,7 @@
           <div class="grid" *ngIf="banner.productCatalog"  id="grid-{{banner.id}}" 
           [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
             <div *ngFor="let product of banner.__catalog?.products; let i = index;" 
-			  class="card item-{{(i+1)}} {{banner.class}}"
+              class="card item-{{(i+1)}} {{banner.class}}"
               [ngStyle]="{
                'position': 'absolute',
                'top': product.top + 'px',
@@ -322,14 +322,15 @@
           </ion-button>
           <div class="grid" *ngIf="banner.speakerCatalog"  id="grid-{{banner.id}}"  
           [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
-            <div class="card card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.class}}" *ngFor="let speaker of banner.__speakers; let i = index;" 
+            <div class="card card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.class}}" 
+              *ngFor="let speaker of banner.__speakers; let i = index;" 
               (mouseover)="bannerSpeakerSelectHover = banner.id + '-' + i;"
               (mouseout)="isHover = null; bannerSpeakerSelectHover = null;"
               [ngClass]="{ 'selected': bannerSpeakerSelectHover == banner.id + '-' + i }"                                                        
               [ngStyle]="{
                'position': 'absolute',
-               'top': (( ( i / banner.__factor ) * banner.size.y) + (banner.size.y * ( i / banner.__factor ) * 0.03) ) + 'px',
-               'left': ( ( ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
+               'top': speaker.top + 'px',
+               'left': speaker.left + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',

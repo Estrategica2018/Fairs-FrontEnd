@@ -74,7 +74,6 @@ export class ShoppingCartComponent implements OnInit {
           }
           else if(shoppingCart.agenda) {
               price = shoppingCart.agenda.price;
-              console.log(shoppingCart.agenda);
           }
           
           this.totalAmount += price * shoppingCart.amount;

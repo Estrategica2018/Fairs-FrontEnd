@@ -15,10 +15,10 @@
 
   <ion-slides #slides (ionSlideWillChange)="onSlideChangeStart($event)" pager="true" [options]="slideOpts">
     <ion-slide *ngFor="let fair of fairList" 
-	[ngClass]=" { 'show-fair': fair.location == 'true' || fair.location == 'true' , 
-	              'hide-fair' : fair.location == 'false' || fair.location == false }">
+    [ngClass]=" { 'show-fair': fair.location == 'true' || fair.location == 'true' , 
+                  'hide-fair' : fair.location == 'false' || fair.location == false }">
       <img [src]="fair?.social_media?.icon" class="slide-image"  style="width: 7em;"/>
-	  <h2 class="slide-title">
+      <h2 class="slide-title">
         <b>{{fair?.name}}</b>
       </h2>
       <h6 class="slide-title">
@@ -31,23 +31,23 @@
         Ir a la Feria
         <ion-icon slot="end" name="arrow-forward"></ion-icon>
       </ion-button>
-	  
+      
       <div class="delete-btn" >
-	  <ion-button fill="clear" (click)="onDeleteFair(fair)" color="danger" class="mt-3">
+      <ion-button fill="clear" (click)="onDeleteFair(fair)" color="danger" class="mt-3">
         <ion-icon slot="start" name="trash-outline"></ion-icon>
-		Borrar
+        Borrar
       </ion-button>
       
       <ion-item lines="none">
         <ion-label>Publicar/ocultar</ion-label>
         <ion-toggle #toogleFair (click)="toogleShowFair(fair, toogleFair.checked)" [(ngModel)]="fair.location" name="toogleFair" checked></ion-toggle>
       </ion-item>
-	  </div>
-	  
+      </div>
+      
     </ion-slide>
 
 
-    <ion-slide [hidden]="showNewFair">	
+    <ion-slide [hidden]="showNewFair">    
       <img src="assets/img/ica-slidebox-img-4.png" class="slide-image" style="width: 7em;"/>
       <h2 class="slide-title">Crear nueva feria?</h2>
       <ion-button fill="clear" (click)="showNewFair=true">
@@ -55,28 +55,28 @@
         <ion-icon slot="end" name="arrow-forward"></ion-icon>
       </ion-button>
     </ion-slide>
-	
+    
     <ion-slide *ngIf="showNewFair">
          <h5>Nombre de nueva Feria</h5>
          <input type="text" [(ngModel)]="fair.name" name="nombre" >
          <br>
-		 <h5>Descripción</h5>
+         <h5>Descripción</h5>
          <input type="text" [(ngModel)]="fair.description" name="description" >
          <br>
-		 <h5>Icono</h5>
+         <h5>Icono</h5>
          <input type="text" [(ngModel)]="fair.social_media.icon" name="icon" >
-		 <br>
-		 <h5>Fecha de inicio</h5>
+         <br>
+         <h5>Fecha de inicio</h5>
          <input type="text" [(ngModel)]="fair.init_date" name="init_date" >
-		 <br>
-		 <h5>Fecha fin</h5>
+         <br>
+         <h5>Fecha fin</h5>
          <input type="text" [(ngModel)]="fair.end_date" name="end_date" >
-		 <br>
+         <br>
           <ion-button fill="clear" (click)="startNewFair()">
             Crear
             <ion-icon slot="end" name="arrow-forward"></ion-icon>
           </ion-button>
-		  
+          
     </ion-slide>
   </ion-slides>
   </div>

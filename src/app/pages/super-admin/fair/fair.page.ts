@@ -86,9 +86,9 @@ export class FairPage implements OnInit {
             this.agendasService.list()
             .then((agendas) => {
                 this.agendas = agendas;
-				if(agendas)
+                if(agendas)
                 this.agendas.forEach((agenda)=>{
-					agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+                    agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
                     agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
                     agenda.location = agenda.room ? agenda.room.name : '';
                 });
@@ -160,7 +160,7 @@ export class FairPage implements OnInit {
   async copy(itemId) {
     let aux = document.createElement("input");
     aux.setAttribute("value",`https://${this.fair.name}.e-logic.com.co`);
-	document.body.appendChild(aux);
+    document.body.appendChild(aux);
     aux.select();
     document.execCommand("copy");
     document.body.removeChild(aux);
@@ -272,7 +272,7 @@ export class FairPage implements OnInit {
   }
 
   async presentNewScene() {
-	  
+      
 
     if(this.modal) { this.modal.dismiss(); }
     
@@ -292,20 +292,20 @@ export class FairPage implements OnInit {
   }
 
   ionChangeInitDate(initDateTime){
-	this.fair.init_date = initDateTime;
-	this.ionChange();
+    this.fair.init_date = initDateTime;
+    this.ionChange();
   } 
   
   ionChangeEndDate(endDateTime){
-	this.fair.end_date = endDateTime;
-	this.ionChange();
+    this.fair.end_date = endDateTime;
+    this.ionChange();
   }
   
   async toogleShowFair(newLocation) {
       
-	this.success = null;
-	this.errors = null;
-	
+    this.success = null;
+    this.errors = null;
+    
     const alert2 = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: !newLocation ? 'Publicar Feria?' : 'Ocultar Feria?',
@@ -323,25 +323,25 @@ export class FairPage implements OnInit {
           cssClass: 'danger',
           handler: (data) => {
             
-			this.loading.present({message:'Cargando...'});
-			let newFair = {'location': this.fair.location ? 'true':'false','id':this.fair.id };
-			
+            this.loading.present({message:'Cargando...'});
+            let newFair = {'location': this.fair.location ? 'true':'false','id':this.fair.id };
+            
             this.adminFairsService.updateFair(newFair)
               .then((response) => {
-				  
+                  
                 this.success = this.fair.location ? `Feria publicada exitosamente` : `La feria se encuentra oculta`;
-				this.presentToast(this.success);
+                this.presentToast(this.success);
                 this.loading.dismiss();
               },
               (error) => {
                  console.log(error);
                  this.errors = this.fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
-				 this.loading.dismiss();
+                 this.loading.dismiss();
               })
             .catch(error => {
                 console.log(error);
                 this.errors = this.fair.location ? `Ha ocurrido un error al publicar la feria` : `Ha ocurrido un error al ocultar la feria`;
-				this.loading.dismiss();
+                this.loading.dismiss();
              });        
     
           }

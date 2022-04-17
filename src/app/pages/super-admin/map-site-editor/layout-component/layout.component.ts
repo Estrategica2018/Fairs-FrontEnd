@@ -18,96 +18,89 @@ export class LayoutComponent implements OnInit {
   @Input() editMode: boolean = false;
   @Input() layoutColSel: any;
   @Input() layoutColHover: any;
-  @Input() router: Router;	
+  @Input() router: Router;    
   @Output() onHoverBanner = new EventEmitter<any>();
   @Output() selectLayout = new EventEmitter<any>();
   
   
   ngOnInit() {
-	  
+      
   }
   
   goToOnHoverBanner(banner,scene){
-	  if(banner && this.editMode) {
-		this.onHoverBanner.emit({'banner':banner,'scene':scene});
-	  }
-	  else if(banner && banner.externalUrl) {
-	     const windowReference = window.open();
-		 windowReference.location.href = banner.externalUrl;
-	  } else if(banner.internalUrl) {
-		 this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
+      if(banner && this.editMode) {
+        this.onHoverBanner.emit({'banner':banner,'scene':scene});
+      }
+      else if(banner && banner.externalUrl) {
+         const windowReference = window.open();
+         windowReference.location.href = banner.externalUrl;
+      } else if(banner.internalUrl) {
+         this.router.navigateByUrl('/overflow', {skipLocationChange: true}).then(()=>{
            this.router.navigate([banner.internalUrl])
          }); 
-	  }
+      }
   }
   
   goToOnHoverBannerReciclyer($event) {
-	  this.goToOnHoverBanner($event.banner, $event.scene);
+      this.goToOnHoverBanner($event.banner, $event.scene);
   }
 
   goToSelectLayout(col,row,scene) {
-	this.selectLayout.emit({'layoutColSel':col,'layoutRowSel':row, 'layoutSceneSel':scene});
+    this.selectLayout.emit({'layoutColSel':col,'layoutRowSel':row, 'layoutSceneSel':scene});
   }
 
   layoutColSelect($event){
-	this.selectLayout.emit($event);  
+    this.selectLayout.emit($event);  
   }
   
   addCol(colSelected) {
-	let newCols = [];
+    let newCols = [];
     for(let i=0, row = null; i<this.scene.rows.length; i++) {
-		row = this.scene.rows[i];
-		for(let j=0, col = null; j< row.cols.length; j++) {
+        row = this.scene.rows[i];
+        for(let j=0, col = null; j< row.cols.length; j++) {
             col = row.cols[j];
-			if(col.id == colSelected.id) {
-				for(let k=0; k<=j; k++) {
-				    newCols.push(row.cols[k]);
-				}
-				const newCol = { 'styles':{}, 'banners':[], 'id': this._getId() };
-				newCols.push(newCol);
-				console.log(newCol);
-				setTimeout(()=>{
-				   const div = document.querySelector('#' + newCol.id);
-				   console.log(div);
-				},100);
-				
-				for(let k=j+1; k<row.cols.length; k++) {
-				    newCols.push(row.cols[k]);
-				}
-				row.cols = newCols;
-				
-				
-				return;
-			}
-		}
-	}
+            if(col.id == colSelected.id) {
+                for(let k=0; k<=j; k++) {
+                    newCols.push(row.cols[k]);
+                }
+                const newCol = { 'styles':{}, 'banners':[], 'id': this._getId() };
+                newCols.push(newCol);
+                
+                for(let k=j+1; k<row.cols.length; k++) {
+                    newCols.push(row.cols[k]);
+                }
+                row.cols = newCols;
+                return;
+            }
+        }
+    }
   }
 
   addRow(colSelected, parent) {
-	let newRows = [];
-	for(let i=0, row = null; i<parent.rows.length; i++) {
-		row = this.scene.rows[i];
-		for(let j=0, col = null; j< row.cols.length; j++) {
+    let newRows = [];
+    for(let i=0, row = null; i<parent.rows.length; i++) {
+        row = this.scene.rows[i];
+        for(let j=0, col = null; j< row.cols.length; j++) {
             col = row.cols[j];
-			if(col.id == colSelected.id) {
-				
-				for(let k=0; k<=i; k++) {
-				    newRows.push(parent.rows[k]);
-				}
-				
-				const newScene : any = { 'styles':{}, 'id': this._getId()};
-				const newCol = { 'styles':{}, 'banners':[], 'id': this._getId()};
-				newScene.cols = [newCol];
-				newRows.push(newScene);
-				
-				for(let k=i+1; k< parent.rows.length; k++) {
-				    newRows.push(parent.rows[k]);
-				}
-				parent.rows = newRows;
-				return;
-			}
-		}
-	}
+            if(col.id == colSelected.id) {
+                
+                for(let k=0; k<=i; k++) {
+                    newRows.push(parent.rows[k]);
+                }
+                
+                const newScene : any = { 'styles':{}, 'id': this._getId()};
+                const newCol = { 'styles':{}, 'banners':[], 'id': this._getId()};
+                newScene.cols = [newCol];
+                newRows.push(newScene);
+                
+                for(let k=i+1; k< parent.rows.length; k++) {
+                    newRows.push(parent.rows[k]);
+                }
+                parent.rows = newRows;
+                return;
+            }
+        }
+    }
   }
   
   _getId() {
@@ -115,7 +108,7 @@ export class LayoutComponent implements OnInit {
   }
 
   showSettingLayout(col, scene) {
-	  window.dispatchEvent(new CustomEvent('side-menu-button:select-panel-settingsColumnLayout'));
+      window.dispatchEvent(new CustomEvent('side-menu-button:select-panel-settingsColumnLayout'));
   }
 
 }

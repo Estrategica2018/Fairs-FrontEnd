@@ -152,15 +152,15 @@ export class SchedulePage implements OnInit {
         
         for (let agenda of this.dataInitMeetings) {
             agenda.hide  = false;
-			
-			const timeZone = moment(agenda.start_at);
-			const strHour = this.datepipe.transform(new Date(agenda.start_at), 'hh');
-			const strMinutes = timeZone.format('mm');
-			
-			const time = timeZone.format('YYYY-MM-DD');
+            
+            const timeZone = moment(agenda.start_at);
+            const strHour = this.datepipe.transform(new Date(agenda.start_at), 'hh');
+            const strMinutes = timeZone.format('mm');
+            
+            const time = timeZone.format('YYYY-MM-DD');
             const month = Number(timeZone.format('MM'));
-			const strSignature = Number(timeZone.format('HH')) > 12 ? 'PM' : 'AM';
-			const strYear = timeZone.format('YYYY');
+            const strSignature = Number(timeZone.format('HH')) > 12 ? 'PM' : 'AM';
+            const strYear = timeZone.format('YYYY');
             const strMonth = months[month-1];
             const strDay = timeZone.format('DD');
             
@@ -182,7 +182,7 @@ export class SchedulePage implements OnInit {
             }
             
             const endHour = moment(agenda.start_at).add(agenda.duration_time, 'milliseconds').format('hh:mm a');
-			
+            
             const location = agenda.room ? agenda.room.name : '';
             
             let categoryTemp = null; 
@@ -253,7 +253,7 @@ export class SchedulePage implements OnInit {
     
     const modal = await this.modalCtrl.create({
       component: ScheduleFilterPage,
-	  cssClass: 'boder-radius-modal',
+      cssClass: 'boder-radius-modal',
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { categories: this.categoriesFilter }
@@ -280,7 +280,7 @@ export class SchedulePage implements OnInit {
 
     this.modal = await this.modalCtrl.create({
       component: WompiPaymentLayoutPage,
-	  cssClass: 'boder-radius-modal',
+      cssClass: 'boder-radius-modal',
       componentProps: {
           'objPrice': this.fair,
           'type': 'Fair',
@@ -304,7 +304,7 @@ export class SchedulePage implements OnInit {
 
     this.modal = await this.modalCtrl.create({
       component: WompiPaymentLayoutPage,
-	  cssClass: 'boder-radius-modal',
+      cssClass: 'boder-radius-modal',
       componentProps: {
           'objPrice': session,
           'type': 'Agenda'
@@ -375,7 +375,7 @@ export class SchedulePage implements OnInit {
   async presentTermsModal() {
     const modal = await this.modalCtrl.create({
       component: TermsPage,
-	  cssClass: 'boder-radius-modal',
+      cssClass: 'boder-radius-modal',
       swipeToClose: true,
       //presentingElement: this.routerOutlet.nativeEl
     });

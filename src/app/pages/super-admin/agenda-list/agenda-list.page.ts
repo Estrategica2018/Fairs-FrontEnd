@@ -39,7 +39,7 @@ export class AgendaListPage implements OnInit {
     private modalCtrl: ModalController,
     private usersService: UsersService,
     private toastCtrl: ToastController,
-	private adminFairsService: AdminFairsService,
+    private adminFairsService: AdminFairsService,
   ) { 
   
   }
@@ -64,13 +64,13 @@ export class AgendaListPage implements OnInit {
           then( fair => {
             this.fair = fair;
             this.showPrice = fair.price > 0;
-			
+            
             this.agendasService.list()
             .then((agendas) => {
                 this.agendas = agendas;
-				if(agendas)
+                if(agendas)
                 this.agendas.forEach((agenda)=>{
-					agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+                    agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
                     agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
                     agenda.location = agenda.room ? agenda.room.name : '';
                 });

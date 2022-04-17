@@ -12,7 +12,7 @@ import { AgendaPage } from './agenda.page';
     CommonModule,
     FormsModule,
     IonicModule,
-	ReactiveFormsModule,
+    ReactiveFormsModule,
     AgendaPageRoutingModule
   ],
   declarations: [AgendaPage]

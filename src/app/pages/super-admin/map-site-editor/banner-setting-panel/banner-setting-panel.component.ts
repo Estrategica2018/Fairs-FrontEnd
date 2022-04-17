@@ -70,32 +70,32 @@ export class BannerSettingPanelComponent implements OnInit {
     private alertCtrl: AlertController
   ) { 
   
-	
+    
   }
 
   ngOnInit() {
-  	
+      
   }
 
   onCloseClick() {
-	if(this.onClose) this.onClose.emit();
+    if(this.onClose) this.onClose.emit();
   }
 
   onChangeOpacity() {
       const originYRange : any= document.querySelector<HTMLElement>('.origin-y-range');
-	  this.banner.styles = this.banner.styles || {};
+      this.banner.styles = this.banner.styles || {};
       this.banner.styles.opacity = originYRange.value / 100;
-	  this.goToOnChangeItem();
+      this.goToOnChangeItem();
   }
   
   goToOnChangeItem() {
     if(this.changeItem) { 
-	  this.changeItem.emit(true);
-	}
+      this.changeItem.emit(true);
+    }
   }
   
   onChangeItemColor() {
-	this.goToOnChangeItem();
+    this.goToOnChangeItem();
   }
 
   onToogleBannerPanel() {
@@ -109,11 +109,11 @@ export class BannerSettingPanelComponent implements OnInit {
   }
 
   onChangeItem() {
-	 this.goToOnChangeItem();
+     this.goToOnChangeItem();
   }
   
   onChangeVideoUrl() {
-	this.onChangeItem();
+    this.onChangeItem();
     this.banner.video.sanitizer =  this.sanitizer.bypassSecurityTrustResourceUrl(this.banner.video.url);
   }
   
@@ -123,11 +123,11 @@ export class BannerSettingPanelComponent implements OnInit {
   }
   
   presentActionAddCarrousel() {
-	  
+      
   }
   
   doReorderCarousel($event) {
-	  
+      
   }
   
   onOpenChangeImg(image,images,i) {
@@ -178,9 +178,9 @@ export class BannerSettingPanelComponent implements OnInit {
           text: 'Aceptar',
           handler: (data: any) => {
               if(this.deleteBanner) { 
-			     this.onCloseClick();
-			     this.deleteBanner.emit(banner);
-			  }
+                 this.onCloseClick();
+                 this.deleteBanner.emit(banner);
+              }
           }
         }
       ]

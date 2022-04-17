@@ -299,8 +299,8 @@
               [ngClass]="{ 'selected': bannerSpeakerSelectHover == banner.id + '-' + i }"                                                        
               [ngStyle]="{
                'position': 'absolute',
-               'top': (( ( i / banner.__factor ) * banner.size.y) + (banner.size.y * ( i / banner.__factor ) * 0.03) ) + 'px',
-               'left': ( ( ( i % banner.__factor ) * 1.03 ) * banner.size.x ) + 'px',
+               'top': speaker.top + 'px',
+               'left': speaker.left + 'px',
                'width': banner.size.x + 'px', 
                'height': banner.size.y + 'px',
                'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
@@ -344,7 +344,7 @@
                   'font-size': banner.speakerCatalog.descFontSize + 'px',
                   'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
                   'height': banner.speakerCatalog.descHeigth + 'px',
-				  'overflow': 'hidden',
+                  'overflow': 'hidden',
                   'top': banner.speakerCatalog.descTop + 'px',
                   'left': banner.speakerCatalog.descLeft + 'px',
                   'width': banner.speakerCatalog.descWidth + 'px',

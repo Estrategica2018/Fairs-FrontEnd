@@ -20,71 +20,71 @@ export class SideMenuButtonsComponent implements OnInit {
   
   constructor() { 
     this.listenForEvents();
-	this.onSetTheme(this.themeList[0]);
+    this.onSetTheme(this.themeList[0]);
   }
 
   ngOnInit() {
-	this.layoutModel = false;
-	this.editSave = false;
+    this.layoutModel = false;
+    this.editSave = false;
   }
   
   onSave() {
-	if(this.editSave) {
-	  window.dispatchEvent(new CustomEvent('side-menu-button:onSave'));
-	}
-	
-	this.onSelectPanel('none');
+    if(this.editSave) {
+      window.dispatchEvent(new CustomEvent('side-menu-button:onSave'));
+    }
+    
+    this.onSelectPanel('none');
   }
   
   onSelectPanel(panelName) {
-	window.dispatchEvent(new CustomEvent('side-menu-button:select-panel-' + panelName));
+    window.dispatchEvent(new CustomEvent('side-menu-button:select-panel-' + panelName));
   }
 
   onToogleLayoutModel() {
-	if(this.layoutModel) {
-	  window.dispatchEvent(new CustomEvent('side-menu-button:layout-model-off'));
-	}
-	else {
-	  this.onHidePreview();
-	  window.dispatchEvent(new CustomEvent('side-menu-button:layout-model-on'));
-	}
+    if(this.layoutModel) {
+      window.dispatchEvent(new CustomEvent('side-menu-button:layout-model-off'));
+    }
+    else {
+      this.onHidePreview();
+      window.dispatchEvent(new CustomEvent('side-menu-button:layout-model-on'));
+    }
   }
   
   listenForEvents() {
     
-	window.addEventListener('side-menu-button:edit-save-on', () => {
-       this.editSave = true;	
-    });	
+    window.addEventListener('side-menu-button:edit-save-on', () => {
+       this.editSave = true;    
+    });    
 
-	window.addEventListener('side-menu-button:edit-save-off', () => {
+    window.addEventListener('side-menu-button:edit-save-off', () => {
        this.editSave = false;
-    });	
-	
-	window.addEventListener('side-menu-button:layout-model-on', () => {
+    });    
+    
+    window.addEventListener('side-menu-button:layout-model-on', () => {
        this.layoutModel = true;
-	   this.onHidePreview();
+       this.onHidePreview();
     });
-	
-	window.addEventListener('side-menu-button:layout-model-off', () => {
+    
+    window.addEventListener('side-menu-button:layout-model-off', () => {
        this.layoutModel = false;
     });
   }
 
   onShowPreview() {
-	this.editMode = false;
-	this.layoutModel = false;
-	window.dispatchEvent(new CustomEvent('side-menu-button:layout-model-off'));
-	window.dispatchEvent(new CustomEvent('side-menu-button:edit-mode-off'));	  
+    this.editMode = false;
+    this.layoutModel = false;
+    window.dispatchEvent(new CustomEvent('side-menu-button:layout-model-off'));
+    window.dispatchEvent(new CustomEvent('side-menu-button:edit-mode-off'));      
   }
 
   onHidePreview() {
-	this.editMode = true;
-	window.dispatchEvent(new CustomEvent('side-menu-button:edit-mode-on'));
+    this.editMode = true;
+    window.dispatchEvent(new CustomEvent('side-menu-button:edit-mode-on'));
   }
   
   onSetTheme(theme) {
-	this.themeSelected = theme;
-	window.dispatchEvent(new CustomEvent('side-menu-button:set-theme',{ detail: { 'theme': theme } } ));
+    this.themeSelected = theme;
+    window.dispatchEvent(new CustomEvent('side-menu-button:set-theme',{ detail: { 'theme': theme } } ));
   }
 
 }

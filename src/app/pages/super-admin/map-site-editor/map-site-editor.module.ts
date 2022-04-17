@@ -15,9 +15,9 @@ import { NgxPopperModule } from 'ngx-popper';
     CommonModule,
     FormsModule,
     IonicModule,
-	DragAndDropModule,
+    DragAndDropModule,
     MapSiteEditorPageRoutingModule,
-	NgxPopperModule.forRoot({
+    NgxPopperModule.forRoot({
       hideOnClickOutside: false
     })
   ],

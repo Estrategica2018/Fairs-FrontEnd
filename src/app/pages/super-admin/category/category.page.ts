@@ -57,7 +57,7 @@ export class CategoryPage implements OnInit {
         this.categoryService.list('all', fair).then((categories) => {
           this.categories = categories.data_category;
           this.subCategories = categories.data_subcategory;
-          console.log(this.subCategories)
+          
           this.loading.dismiss();
           this.errors = null;
         }).catch(error => {
@@ -97,7 +97,7 @@ export class CategoryPage implements OnInit {
         this.categoryService.createSubCategory(this.subCategory)
           .then((subCategory) => {
             this.categoryService.list('all', fair).then((categories) => {
-              console.log(categories.data_subcategory)
+              
               this.categories = categories.data_category;
               this.subCategories = categories.data_subcategory;
               this.loading.dismiss();
@@ -125,7 +125,7 @@ export class CategoryPage implements OnInit {
   getCategory(categoryId) {
     this.loading.present({message: 'Cargando...'});
     this.categoryService.getCategory(categoryId).then((category) => {
-      console.log(category)
+      
       this.category.id = category.data.id;
       this.category.name = category.data.name;
       this.category.type = category.data.type;

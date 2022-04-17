@@ -62,12 +62,12 @@ export class ScheduleDetailComponent {
     private dom:DomSanitizer,
   ) { 
   
-	  this.contactForm = this.formBuilder.group({
-		name: ['', Validators.required],
-		email: ['', [Validators.required, Validators.email]],
-		message: ['', Validators.required],
-		subject: ['', Validators.required]
-	  });
+      this.contactForm = this.formBuilder.group({
+        name: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        message: ['', Validators.required],
+        subject: ['', Validators.required]
+      });
 
   }
   
@@ -99,9 +99,9 @@ export class ScheduleDetailComponent {
   
   ionViewWillEnter() {
     
-	this.showSupportDetail = this.optionTab && this.optionTab === 'showSupportDetail';
-	//this.showSupportDetail = true;
-	
+    this.showSupportDetail = this.optionTab && this.optionTab === 'showSupportDetail';
+    //this.showSupportDetail = true;
+    
     const agenda = this.agenda;
     
     this.loading.present({message:'Cargando...'});
@@ -187,13 +187,13 @@ export class ScheduleDetailComponent {
     const strDay = this.datepipe.transform(new Date(agenda.start_at), 'EEEE, MMMM d, y');
     const startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
     const endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
-	const location = agenda.room ? agenda.room.name : '';
-	
+    const location = agenda.room ? agenda.room.name : '';
+    
     this.session = agenda;
-	this.session.strDay = strDay;
-	this.session.startTime = startTime;
-	this.session.endTime = endTime;
-	this.session.location = location;
+    this.session.strDay = strDay;
+    this.session.startTime = startTime;
+    this.session.endTime = endTime;
+    this.session.location = location;
   }
   
   onSupportClick() {

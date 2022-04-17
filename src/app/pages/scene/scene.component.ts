@@ -81,11 +81,11 @@ export class SceneComponent implements OnInit {
   }
   
   logScrolling($event) {
-	  
+      
   }
   
   onMouseWheel($event) {
-	  
+      
   }
   
   goToInternalUrl(banner){
@@ -101,7 +101,7 @@ export class SceneComponent implements OnInit {
   }
   
   startAnimation(banner) {
-	  
+      
   }
   
   mouseUpContainer($event){}

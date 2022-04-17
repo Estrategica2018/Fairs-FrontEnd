@@ -27,23 +27,23 @@
                (click)="tabSelect = 'margin'">
                   <ion-label>Márgenes</ion-label>
                </ion-tab-button>
-			   
+               
                <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'image' }" 
                (click)="tabSelect = 'image'" *ngIf="banner.styles.image">
                <ion-label class="tool-special"> Imágen</ion-label>
                </ion-tab-button>
-			   
-			   
-			   <ion-tab-button   [ngClass]="{'tool-selected': tabSelect == 'background' }" 
+               
+               
+               <ion-tab-button   [ngClass]="{'tool-selected': tabSelect == 'background' }" 
                (click)="tabSelect = 'background'" [hidden]="banner.line || banner.triangle || banner.styles.image ">
                <ion-label>Fondo</ion-label>
                </ion-tab-button>
-			   
+               
                <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'line' }" 
                (click)="tabSelect = 'line'" *ngIf="banner.line">
                <ion-label class="tool-special">Línea</ion-label>
                </ion-tab-button>
-			   
+               
                <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'triangle' }" 
                (click)="tabSelect = 'triangle'" *ngIf="banner.triangle">
                <ion-label class="tool-special" > Triángulo</ion-label>
@@ -73,12 +73,12 @@
                (click)="tabSelect = 'rotate'">
                   <ion-label>Rotar</ion-label>
                </ion-tab-button>
-			   
+               
                <ion-tab-button  [ngClass]="{'tool-selected': tabSelect == 'text' }" 
                (click)="tabSelect = 'text'" *ngIf="banner.styles.text">
                <ion-label class="tool-special"> Texto</ion-label>
                </ion-tab-button>
-			   
+               
             </ion-tab-bar>
          </ion-tabs>
          <ion-tabs style="top:-31px">
@@ -118,9 +118,9 @@
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
-	  <ion-toolbar class="line-separator"></ion-toolbar>
-	  
+      
+      <ion-toolbar class="line-separator"></ion-toolbar>
+      
       <ion-toolbar [hidden]="banner.triangle">
          <ion-buttons slot="start">
             <ion-card-subtitle> Ancho </ion-card-subtitle>
@@ -128,13 +128,13 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form" type="number" style="width: 9em;margin-right: 0.5em;"
-			   (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()"
-			   [(ngModel)]="banner.styles.width" placeholder="auto"/>
+               (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()"
+               [(ngModel)]="banner.styles.width" placeholder="auto"/>
                <select [(ngModel)]="banner.styles.widthUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -145,19 +145,19 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form" type="number" style="width: 9em;margin-right: 0.5em;"
-			   (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			   [(ngModel)]="banner.styles.height" placeholder="auto"/>
+               (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+               [(ngModel)]="banner.styles.height" placeholder="auto"/>
                <select [(ngModel)]="banner.styles.heightUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
-	  <ion-toolbar class="line-separator"></ion-toolbar>
-	  
+      
+      <ion-toolbar class="line-separator"></ion-toolbar>
+      
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle> Transparencia </ion-card-subtitle>
@@ -170,7 +170,7 @@
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle> Alineación </ion-card-subtitle>
@@ -178,10 +178,10 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <select [(ngModel)]="banner.styles.textAlign" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="center">Centrado</option>
-			    <option value="left">Izquierda</option>
-			    <option value="right">Derecha</option>
-			  </select>
+                <option value="center">Centrado</option>
+                <option value="left">Izquierda</option>
+                <option value="right">Derecha</option>
+              </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -189,16 +189,16 @@
    </ion-card-content>
 
    <ion-card-content *ngIf="tabSelect == 'margin'" >
-	  
+      
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle>Margen Exterior</ion-card-subtitle>
          </ion-buttons>
          <ion-buttons slot="end">
-		      <select [(ngModel)]="banner.styles.marginType" (change)="goToOnChangeItem()">
-			    <option value="none">Ninguno</option>
-			    <option value="custom">Personalizado</option>
-			  </select>
+              <select [(ngModel)]="banner.styles.marginType" (change)="goToOnChangeItem()">
+                <option value="none">Ninguno</option>
+                <option value="custom">Personalizado</option>
+              </select>
          </ion-buttons>
       </ion-toolbar>
 
@@ -206,119 +206,119 @@
          <ion-buttons slot="start">  Horizontal
          </ion-buttons>
          <ion-buttons slot="end">
-		    <ion-icon name="arrow-back-outline"></ion-icon>
+            <ion-icon name="arrow-back-outline"></ion-icon>
             <input class="mt-2 ml-2 mr-2 input-form" style="width: 4em;"
-			  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			  type="number" [(ngModel)]="banner.styles.marginLeft"/>
-			  
-			  <select [(ngModel)]="banner.styles.marginLeftUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
-		    <ion-icon name="arrow-forward-outline"  class="ml-3"></ion-icon>
+              (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+              type="number" [(ngModel)]="banner.styles.marginLeft"/>
+              
+              <select [(ngModel)]="banner.styles.marginLeftUnit" (change)="goToOnChangeItem()"  class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
+            <ion-icon name="arrow-forward-outline"  class="ml-3"></ion-icon>
             <input class="mt-2 ml-2 mr-2 input-form " style="width: 4em;"
-			  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			  type="number" [(ngModel)]="banner.styles.marginRight"/>
-			  <select [(ngModel)]="banner.styles.marginRightUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option> 
-			  </select>
+              (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+              type="number" [(ngModel)]="banner.styles.marginRight"/>
+              <select [(ngModel)]="banner.styles.marginRightUnit" (change)="goToOnChangeItem()"  class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option> 
+              </select>
          </ion-buttons>
-      </ion-toolbar>	  
-	  <ion-toolbar *ngIf="banner.styles.marginType === 'custom'">
+      </ion-toolbar>      
+      <ion-toolbar *ngIf="banner.styles.marginType === 'custom'">
          <ion-buttons slot="start">  Vertical
          </ion-buttons>
          <ion-buttons slot="end">         
-		    <ion-icon name="arrow-up-outline"></ion-icon>
+            <ion-icon name="arrow-up-outline"></ion-icon>
             <input class="mt-2 ml-2 mr-2 input-form " style="width: 4em;"
-			  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			  type="number" [(ngModel)]="banner.styles.marginTop"/>
-			  <select [(ngModel)]="banner.styles.marginTopUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option> 
-			  </select>
-			  
-		    <ion-icon name="arrow-down-outline" class="ml-3"></ion-icon>
+              (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+              type="number" [(ngModel)]="banner.styles.marginTop"/>
+              <select [(ngModel)]="banner.styles.marginTopUnit" (change)="goToOnChangeItem()"  class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option> 
+              </select>
+              
+            <ion-icon name="arrow-down-outline" class="ml-3"></ion-icon>
             <input class="mt-2 ml-2 mr-2 input-form " style="width: 4em;"
-			  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			  type="number" [(ngModel)]="banner.styles.marginBottom"/>
-			  <select [(ngModel)]="banner.styles.marginBottomUnit" (change)="goToOnChangeItem()" class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option> 
-			  </select>
+              (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+              type="number" [(ngModel)]="banner.styles.marginBottom"/>
+              <select [(ngModel)]="banner.styles.marginBottomUnit" (change)="goToOnChangeItem()" class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option> 
+              </select>
          </ion-buttons>
       </ion-toolbar>
-	  
-	  <ion-toolbar class="line-separator"></ion-toolbar>
-	  
+      
+      <ion-toolbar class="line-separator"></ion-toolbar>
+      
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle>Margen Interior</ion-card-subtitle>
          </ion-buttons>
          <ion-buttons slot="end">
-		      <select [(ngModel)]="banner.styles.paddingType" (change)="goToOnChangeItem()">
-			    <option value="none" checked >Ninguno</option>
-			    <option value="custom">Personalizado</option>
-			  </select>
+              <select [(ngModel)]="banner.styles.paddingType" (change)="goToOnChangeItem()">
+                <option value="none" checked >Ninguno</option>
+                <option value="custom">Personalizado</option>
+              </select>
          </ion-buttons>
       </ion-toolbar>
       <ion-toolbar *ngIf="banner.styles.paddingType === 'custom'">
          <ion-buttons slot="start">
-		    <ion-card-subtitle>Horizontal</ion-card-subtitle>
+            <ion-card-subtitle>Horizontal</ion-card-subtitle>
          </ion-buttons>
          <ion-buttons slot="end">
-		    <ion-icon name="arrow-back-outline"></ion-icon>
+            <ion-icon name="arrow-back-outline"></ion-icon>
             <input class="mt-2 ml-2 mr-2 input-form" style="width: 4em;" placeholder="0"  min="0"
-			  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			  type="number" [(ngModel)]="banner.styles.paddingLeft"/>
-			  <select [(ngModel)]="banner.styles.paddingLeftUnit" (change)="goToOnChangeItem()" class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
-		    <ion-icon name="arrow-forward-outline"  class="ml-3"></ion-icon>
+              (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+              type="number" [(ngModel)]="banner.styles.paddingLeft"/>
+              <select [(ngModel)]="banner.styles.paddingLeftUnit" (change)="goToOnChangeItem()" class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
+            <ion-icon name="arrow-forward-outline"  class="ml-3"></ion-icon>
             <input class="mt-2 ml-2 mr-2 input-form " style="width: 4em;" placeholder="0"  min="0"
-			  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			  type="number" [(ngModel)]="banner.styles.paddingRight"/>
-			  <select [(ngModel)]="banner.styles.paddingRightUnit" (change)="goToOnChangeItem()" class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+              (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+              type="number" [(ngModel)]="banner.styles.paddingRight"/>
+              <select [(ngModel)]="banner.styles.paddingRightUnit" (change)="goToOnChangeItem()" class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
          </ion-buttons>
       </ion-toolbar>
-	  <ion-toolbar *ngIf="banner.styles.paddingType === 'custom'">
+      <ion-toolbar *ngIf="banner.styles.paddingType === 'custom'">
          <ion-buttons slot="start">
-		    <ion-card-subtitle>Vertical</ion-card-subtitle>
+            <ion-card-subtitle>Vertical</ion-card-subtitle>
          </ion-buttons>
          <ion-buttons slot="end">         
-		    <ion-icon name="arrow-up-outline"></ion-icon>
+            <ion-icon name="arrow-up-outline"></ion-icon>
             <input class="mt-2 ml-2 mr-2 input-form " style="width: 4em;" placeholder="0"  min="0"
-			  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			  type="number" [(ngModel)]="banner.styles.paddingTop"/>
-			  <select [(ngModel)]="banner.styles.paddingTopUnit" (change)="goToOnChangeItem()" class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
-		    <ion-icon name="arrow-down-outline" class="ml-3"></ion-icon>
+              (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+              type="number" [(ngModel)]="banner.styles.paddingTop"/>
+              <select [(ngModel)]="banner.styles.paddingTopUnit" (change)="goToOnChangeItem()" class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
+            <ion-icon name="arrow-down-outline" class="ml-3"></ion-icon>
             <input class="mt-2 ml-2 mr-2 input-form " style="width: 4em;" placeholder="0" min="0"
-			  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			  type="number" [(ngModel)]="banner.styles.paddingBottom"/>
-			  <select [(ngModel)]="banner.styles.paddingBottomUnit" (change)="goToOnChangeItem()" class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+              (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+              type="number" [(ngModel)]="banner.styles.paddingBottom"/>
+              <select [(ngModel)]="banner.styles.paddingBottomUnit" (change)="goToOnChangeItem()" class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
          </ion-buttons>
       </ion-toolbar>
       
-	  <ion-toolbar class="line-separator"></ion-toolbar>
-	  
+      <ion-toolbar class="line-separator"></ion-toolbar>
+      
    </ion-card-content>
  
    
@@ -331,7 +331,7 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form" (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()"
-			   type="number" min="1" max="50" [(ngModel)]="banner.styles.lineWeight"/>
+               type="number" min="1" max="50" [(ngModel)]="banner.styles.lineWeight"/>
                px
             </ion-card-subtitle>
          </ion-buttons>
@@ -369,7 +369,7 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form" type="color" 
-			   (change)="onChangeItemColor()" [(ngModel)]="banner.styles.colorLine"/>
+               (change)="onChangeItemColor()" [(ngModel)]="banner.styles.colorLine"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -382,7 +382,7 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form" type="number"  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()"
-			   [(ngModel)]="banner.styles.rotation.x"/> grados
+               [(ngModel)]="banner.styles.rotation.x"/> grados
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -393,7 +393,7 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form" type="number" (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()"
-			   [(ngModel)]="banner.styles.rotation.y"/> grados
+               [(ngModel)]="banner.styles.rotation.y"/> grados
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -404,7 +404,7 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form" type="number"  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()"
-			   [(ngModel)]="banner.styles.rotation.z"/> grados
+               [(ngModel)]="banner.styles.rotation.z"/> grados
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -416,27 +416,27 @@
          <img  slot="end" class="imagen-src" [src]="banner.styles.backgroundImage">
       </ion-toolbar>
       <ion-toolbar>
-	  <ion-grid>
-	  <ion-row>
-		 <ion-col size="9">
-  		   <label class="legendImgContainer"> {{ banner.styles.backgroundImage }}</label>
-  		   <input class="inputImage" [(ngModel)]="banner.styles.backgroundImage">
-		   <span class="legendImg2">
-		     <ion-button size="small" color="light" style="opacity:0.8">  
-			   <ion-icon slot="start" name="copy"></ion-icon>
+      <ion-grid>
+      <ion-row>
+         <ion-col size="9">
+             <label class="legendImgContainer"> {{ banner.styles.backgroundImage }}</label>
+             <input class="inputImage" [(ngModel)]="banner.styles.backgroundImage">
+           <span class="legendImg2">
+             <ion-button size="small" color="light" style="opacity:0.8">  
+               <ion-icon slot="start" name="copy"></ion-icon>
                Copiar Link
-			 </ion-button>
-		   </span>
-		   <ion-button size="small">
-		     Cambiar
-		   </ion-button>
-		   <ion-button size="small"color="danger" style="opacity:0.8" (click)="banner.styles.backgroundImage=''">
-			 <ion-icon slot="start" name="close-outline"></ion-icon>
+             </ion-button>
+           </span>
+           <ion-button size="small">
+             Cambiar
+           </ion-button>
+           <ion-button size="small"color="danger" style="opacity:0.8" (click)="banner.styles.backgroundImage=''">
+             <ion-icon slot="start" name="close-outline"></ion-icon>
              Limpiar
-		   </ion-button>
-		 </ion-col>  
-		 </ion-row>
-		 </ion-grid>
+           </ion-button>
+         </ion-col>  
+         </ion-row>
+         </ion-grid>
       </ion-toolbar>
       <ion-toolbar>
          <ion-card-subtitle slot="start"> Color de Fondo</ion-card-subtitle>
@@ -444,7 +444,7 @@
             <ion-label class="cursor-pointer" (click)="banner.styles.backgroundColor = '';">Clear </ion-label>
             <ion-icon class="cursor-pointer" name="close-outline" (click)="banner.styles.backgroundColor = '';">  </ion-icon>
             <input [ngStyle]="{'opacity': banner.styles.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" 
-			type="color" (change)="onChangeItemColor()"
+            type="color" (change)="onChangeItemColor()"
             [(ngModel)]="banner.styles.backgroundColor"/> 
          </ion-buttons>
       </ion-toolbar>
@@ -457,27 +457,27 @@
          <img  slot="end" class="imagen-src" [src]="banner.styles.image.src">
       </ion-toolbar>
       <ion-toolbar *ngIf="banner.styles.image">
-	  <ion-grid>
-	  <ion-row>
-		 <ion-col size="9">
-  		   <label class="legendImgContainer"> {{ banner.styles.image.src }}</label>
-  		   <input class="inputImage" [(ngModel)]="banner.styles.image.src">
-		   <span class="legendImg2">
-		     <ion-button size="small" color="light" style="opacity:0.8">  
-			   <ion-icon slot="start" name="copy"></ion-icon>
+      <ion-grid>
+      <ion-row>
+         <ion-col size="9">
+             <label class="legendImgContainer"> {{ banner.styles.image.src }}</label>
+             <input class="inputImage" [(ngModel)]="banner.styles.image.src">
+           <span class="legendImg2">
+             <ion-button size="small" color="light" style="opacity:0.8">  
+               <ion-icon slot="start" name="copy"></ion-icon>
                Copiar Link
-			 </ion-button>
-		   </span>
-		   <ion-button size="small">
-		     Cambiar
-		   </ion-button>
-		   <ion-button size="small"color="danger" style="opacity:0.8" (click)="banner.styles.image.src=''">
-			 <ion-icon slot="start" name="close-outline"></ion-icon>
+             </ion-button>
+           </span>
+           <ion-button size="small">
+             Cambiar
+           </ion-button>
+           <ion-button size="small"color="danger" style="opacity:0.8" (click)="banner.styles.image.src=''">
+             <ion-icon slot="start" name="close-outline"></ion-icon>
              Limpiar
-		   </ion-button>
-		 </ion-col>  
-		 </ion-row>
-		 </ion-grid>
+           </ion-button>
+         </ion-col>  
+         </ion-row>
+         </ion-grid>
       </ion-toolbar>
       <ion-toolbar>
          <ion-card-subtitle slot="start"> Color de Fondo</ion-card-subtitle>
@@ -485,11 +485,11 @@
             <ion-label class="cursor-pointer" (click)="banner.styles.backgroundColor = '';">Clear </ion-label>
             <ion-icon class="cursor-pointer" name="close-outline" (click)="banner.styles.backgroundColor = '';">  </ion-icon>
             <input [ngStyle]="{'opacity': banner.styles.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2" 
-			type="color" (change)="onChangeItemColor()"
+            type="color" (change)="onChangeItemColor()"
             [(ngModel)]="banner.styles.backgroundColor"/> 
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar [hidden]="banner.triangle">
          <ion-buttons slot="start">
             <ion-card-subtitle> Largo </ion-card-subtitle>
@@ -497,18 +497,18 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form" type="number" style="width: 9em;margin-right: 0.5em;"
-			   (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			   [(ngModel)]="banner.styles.height" placeholder="auto"/>
+               (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
+               [(ngModel)]="banner.styles.height" placeholder="auto"/>
                <select [(ngModel)]="banner.styles.heightUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
-	  
+      
+      
    </ion-card-content>
 
 
@@ -629,7 +629,7 @@
              <ion-buttons slot="end">
                 <ion-card-subtitle>
                    <input class="mt-2 ml-2" style="width: 8em;margin-right: 1em;"
-				   type="number" (change)="goToOnChangeItem()" [(ngModel)]="banner.speakerCatalog.nameFontSize"/> px
+                   type="number" (change)="goToOnChangeItem()" [(ngModel)]="banner.speakerCatalog.nameFontSize"/> px
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -640,7 +640,7 @@
                    <ion-label (click)="banner.speakerCatalog.nameFontColor = '';">Clear </ion-label>
                    <ion-icon name="close-outline" (click)="banner.speakerCatalog.nameFontColor = '';">  </ion-icon>
                    <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()" 
-				   [(ngModel)]="banner.speakerCatalog.nameFontColor"/> 
+                   [(ngModel)]="banner.speakerCatalog.nameFontColor"/> 
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -740,7 +740,7 @@
                    <ion-label (click)="banner.speakerCatalog.descFontColor = '';">Clear </ion-label>
                    <ion-icon name="close-outline" (click)="banner.speakerCatalog.descFontColor = '';">  </ion-icon>
                    <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"  
-				   [(ngModel)]="banner.speakerCatalog.descFontColor"/> 
+                   [(ngModel)]="banner.speakerCatalog.descFontColor"/> 
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -882,7 +882,7 @@
                    <ion-label (click)="banner.speakerCatalog.professionFontColor = '';">Clear </ion-label>
                    <ion-icon name="close-outline" (click)="banner.speakerCatalog.professionFontColor = '';">  </ion-icon>
                    <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()" 
-				   [(ngModel)]="banner.speakerCatalog.professionFontColor"/> 
+                   [(ngModel)]="banner.speakerCatalog.professionFontColor"/> 
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -1044,7 +1044,7 @@
                    <ion-label (click)="banner.productCatalog.titleFontColor = '';">Clear </ion-label>
                    <ion-icon name="close-outline" (click)="banner.productCatalog.titleFontColor = '';">  </ion-icon>
                    <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()" 
-				   [(ngModel)]="banner.productCatalog.titleFontColor"/> 
+                   [(ngModel)]="banner.productCatalog.titleFontColor"/> 
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -1133,7 +1133,7 @@
                    <ion-label (click)="banner.productCatalog.descFontColor = '';">Clear </ion-label>
                    <ion-icon name="close-outline" (click)="banner.productCatalog.descFontColor = '';">  </ion-icon>
                    <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()" 
-				   [(ngModel)]="banner.productCatalog.descFontColor"/> 
+                   [(ngModel)]="banner.productCatalog.descFontColor"/> 
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -1253,7 +1253,7 @@
                    <ion-label (click)="banner.productCatalog.buttonBackgroundColor = '';">Clear </ion-label>
                    <ion-icon name="close-outline" (click)="banner.productCatalog.buttonBackgroundColor = '';">  </ion-icon>
                    <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
-				   [(ngModel)]="banner.productCatalog.buttonBackgroundColor"/> 
+                   [(ngModel)]="banner.productCatalog.buttonBackgroundColor"/> 
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -1264,7 +1264,7 @@
                    <ion-label (click)="banner.productCatalog.buttonFontColor = '';">Clear </ion-label>
                    <ion-icon name="close-outline" (click)="banner.productCatalog.buttonFontColor = '';">  </ion-icon>
                    <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
-				   [(ngModel)]="banner.productCatalog.buttonFontColor"/> 
+                   [(ngModel)]="banner.productCatalog.buttonFontColor"/> 
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -1356,7 +1356,7 @@
                    <ion-label (click)="banner.productCatalog.buttonFontColor = '';">Clear </ion-label>
                    <ion-icon name="close-outline" (click)="banner.productCatalog.buttonFontColor = '';">  </ion-icon>
                    <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
-				   [(ngModel)]="banner.productCatalog.priceFontColor"/> 
+                   [(ngModel)]="banner.productCatalog.priceFontColor"/> 
                 </ion-card-subtitle>
              </ion-buttons>
           </ion-toolbar>
@@ -1482,7 +1482,7 @@
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar *ngIf="banner.styles.text.paragraph">
          <ion-buttons slot="start">
             <ion-card-subtitle> Párrafo
@@ -1497,7 +1497,7 @@
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar>
          <ion-card-subtitle> Color de letra</ion-card-subtitle>
          <ion-buttons slot="end">
@@ -1505,7 +1505,7 @@
                <ion-label (click)="banner.styles.fontColor  = '';">Clear </ion-label>
                <ion-icon name="close-outline" (click)="banner.styles.fontColor = '';">  </ion-icon>
                <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
-			   [(ngModel)]="banner.styles.fontColor "/> 
+               [(ngModel)]="banner.styles.fontColor "/> 
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -1529,12 +1529,12 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 mr-2	" style="width: 8.2em;" type="number" (change)="goToOnChangeItem()"  [(ngModel)]="banner.styles.fontSize"/> 
+               <input class="mt-2 ml-2 mr-2    " style="width: 8.2em;" type="number" (change)="goToOnChangeItem()"  [(ngModel)]="banner.styles.fontSize"/> 
                <select [(ngModel)]="banner.styles.fontSizeUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
@@ -1568,7 +1568,7 @@
          <ion-buttons slot="end">
             {{ banner.lineHeightUnit }} . 
             <input class="mt-2 ml-2 line-height-mili" type="number"  style="width: 3em;"
-			(change)="onChangeItemTextLineHeight(banner.styles.text)"  [(ngModel)]="banner.styles.text.lineHeightMili"/>
+            (change)="onChangeItemTextLineHeight(banner.styles.text)"  [(ngModel)]="banner.styles.text.lineHeightMili"/>
          </ion-buttons>
       </ion-toolbar>
    </ion-card-content>
@@ -1642,9 +1642,9 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-			   
-			   <div class="border-icon-custom" [ngStyle]="{'border': '7px ' + banner.styles.borderStyle +' gray'}"></div>
-			
+               
+               <div class="border-icon-custom" [ngStyle]="{'border': '7px ' + banner.styles.borderStyle +' gray'}"></div>
+            
                <select [(ngModel)]="banner.styles.borderStyle" (change)="goToOnChangeItem()">
                   <option value="{{type.value}}" *ngFor="let type of borderStyles">{{type.label}}</option>
                </select>
@@ -1657,52 +1657,52 @@
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-			   <ion-label (click)="banner.styles.borderColor  = '';" class="cursor-pointer">Clear </ion-label>
+               <ion-label (click)="banner.styles.borderColor  = '';" class="cursor-pointer">Clear </ion-label>
                <ion-icon name="close-outline" class="cursor-pointer" (click)="banner.styles.borderColor = '';">  </ion-icon>
                <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
-			   [disabled]="banner.styles.borderStyle === 'none'"
-			   [ngStyle]="{ 'opacity': banner.styles.borderStyle === 'none' || banner.styles.borderColor === '' ? '0.3' : '1'}"
-			   [(ngModel)]="banner.styles.borderColor "/> 
+               [disabled]="banner.styles.borderStyle === 'none'"
+               [ngStyle]="{ 'opacity': banner.styles.borderStyle === 'none' || banner.styles.borderColor === '' ? '0.3' : '1'}"
+               [(ngModel)]="banner.styles.borderColor "/> 
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar [hidden]="banner.styles.borderStyle === 'none'">
          <ion-buttons slot="start">
             <ion-card-subtitle>Tamaño de borde</ion-card-subtitle>
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 mr-2	border-input-unit" type="number" (change)="onChangeItemColor()" min="1"
-			   [(ngModel)]="banner.styles.borderLength"/> 
-			   <select [(ngModel)]="banner.styles.borderLengthUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+               <input class="mt-2 ml-2 mr-2    border-input-unit" type="number" (change)="onChangeItemColor()" min="1"
+               [(ngModel)]="banner.styles.borderLength"/> 
+               <select [(ngModel)]="banner.styles.borderLengthUnit" (change)="goToOnChangeItem()"  class="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar [hidden]="banner.styles.borderStyle === 'none'">
          <ion-buttons slot="start">
             <ion-card-subtitle>Redondear borde</ion-card-subtitle>
          </ion-buttons>
          <ion-buttons slot="end">
             <ion-card-subtitle>
-               <input class="mt-2 ml-2 mr-2	border-input-unit" type="number" (change)="onChangeItemColor()" min="1" max="100"
-			   [(ngModel)]="banner.styles.borderRadius "/>
+               <input class="mt-2 ml-2 mr-2    border-input-unit" type="number" (change)="onChangeItemColor()" min="1" max="100"
+               [(ngModel)]="banner.styles.borderRadius "/>
                <select [(ngModel)]="banner.styles.borderRadiusUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
-	  <ion-toolbar class="line-separator"></ion-toolbar>
-	  
+      
+      <ion-toolbar class="line-separator"></ion-toolbar>
+      
    </ion-card-content>
 
    <ion-card-content *ngIf="tabSelect == 'border1'">
@@ -1720,7 +1720,7 @@
          </ion-buttons>
       </ion-toolbar>
 
-	  <ion-toolbar line="solid">
+      <ion-toolbar line="solid">
          <ion-buttons slot="start">
             <ion-card-subtitle> Estilo del borde {{borderStyles.length}} </ion-card-subtitle>
          </ion-buttons>
@@ -1913,16 +1913,16 @@
          <ion-buttons slot="end">
             <ion-card-subtitle>
                <input class="mt-2 ml-2 input-form"  (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" 
-			   type="number" [(ngModel)]="banner.styles.triangleBorderHeight" placeholder="auto"/>
+               type="number" [(ngModel)]="banner.styles.triangleBorderHeight" placeholder="auto"/>
                <select [(ngModel)]="banner.styles.triangleBorderHeightUnit" (change)="goToOnChangeItem()"  class="unit">
-			    <option value="em">em</option>
-			    <option value="px">px</option>
-			    <option value="%">%</option>
-			  </select>
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+              </select>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle> Color </ion-card-subtitle>
@@ -1932,11 +1932,11 @@
                 <ion-label [hidden]="banner.styles.triangleColor == 'transparent'"  class="cursor-pointer" (click)="banner.styles.triangleColor = 'transparent';">Clear </ion-label>
                 <ion-icon  [hidden]="banner.styles.triangleColor == 'transparent'" class="cursor-pointer" name="close-outline" (click)="banner.styles.triangleColor = 'transparent';">  </ion-icon>
                <input class="mt-2 ml-2 input-form" type="color"  [ngStyle]="{'opacity': banner.styles.triangleColor === 'transparent' ? '0.1' : '1'}"
-			   (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.triangleColor"/>
+               (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.triangleColor"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle> Color 1</ion-card-subtitle>
@@ -1946,11 +1946,11 @@
                 <ion-label [hidden]="banner.styles.triangleColor1 == 'transparent'"  class="cursor-pointer" (click)="banner.styles.triangleColor1 = 'transparent';">Clear </ion-label>
                 <ion-icon  [hidden]="banner.styles.triangleColor1 == 'transparent'" class="cursor-pointer" name="close-outline" (click)="banner.styles.triangleColor1 = 'transparent';">  </ion-icon>
                <input class="mt-2 ml-2 input-form" type="color" [ngStyle]="{'opacity': banner.styles.triangleColor1 === 'transparent' ? '0.1' : '1'}"
-			   (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.triangleColor1"/>
+               (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.triangleColor1"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle> Color 2 </ion-card-subtitle>
@@ -1960,11 +1960,11 @@
                 <ion-label  [hidden]="banner.styles.triangleColor2 == 'transparent'"  class="cursor-pointer" (click)="banner.styles.triangleColor2 = 'transparent';">Clear </ion-label>
                 <ion-icon   [hidden]="banner.styles.triangleColor2 == 'transparent'"  class="cursor-pointer" name="close-outline" (click)="banner.styles.triangleColor2 = 'transparent';">  </ion-icon>
                <input class="mt-2 ml-2 input-form" type="color"  [ngStyle]="{'opacity': banner.styles.triangleColor2 === 'transparent' ? '0.1' : '1'}"
-			   (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.triangleColor2"/>
+               (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.triangleColor2"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
+      
       <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle> Color 3 </ion-card-subtitle>
@@ -1974,12 +1974,12 @@
                 <ion-label [hidden]="banner.styles.triangleColor3 == 'transparent'" class="cursor-pointer" (click)="banner.styles.triangleColor3 = 'transparent';">Clear </ion-label>
                 <ion-icon  [hidden]="banner.styles.triangleColor3 == 'transparent'" class="cursor-pointer" name="close-outline" (click)="banner.styles.triangleColor3 = 'transparent';">  </ion-icon>
                <input class="mt-2 ml-2 input-form" type="color"  [ngStyle]="{'opacity': banner.styles.triangleColor3 === 'transparent' ? '0.1' : '1'}"
-			   (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.triangleColor3"/>
+               (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.triangleColor3"/>
             </ion-card-subtitle>
          </ion-buttons>
       </ion-toolbar>
-	  
-	  <ion-toolbar>
+      
+      <ion-toolbar>
          <ion-buttons slot="start">
             <ion-card-subtitle> Estilo de relleno </ion-card-subtitle>
          </ion-buttons>
@@ -2008,7 +2008,7 @@
                <div class="triangle-icon"  *ngIf="banner.type === 'Triángulo'"></div>
                <ion-label class="mt-2"> {{ banner.type }} </ion-label>
             </div>
-		 </ion-card-subtitle>
+         </ion-card-subtitle>
       </ion-buttons>
       <ion-buttons slot="end">
          <ion-card-subtitle>

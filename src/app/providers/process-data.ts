@@ -13,7 +13,7 @@ export function processData(obj){
           }catch(e) {
              console.log(e);
              console.log(obj.resources);
-			 console.log(obj);
+             console.log(obj);
           }
         }
         if(obj.social_media && typeof obj.social_media == 'string') {
@@ -21,8 +21,8 @@ export function processData(obj){
              obj.social_media = JSON.parse(obj.social_media);
           }catch(e) {
              console.log(e);
-			 console.log(obj.social_media);
-			 console.log(obj);
+             console.log(obj.social_media);
+             console.log(obj);
           }
         }
         let objItem = null;

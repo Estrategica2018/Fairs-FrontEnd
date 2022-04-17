@@ -35,7 +35,7 @@ import { NgxPopperModule } from 'ngx-popper';
     IonicStorageModule.forRoot(),
     WompiPaymentLayoutPageModule,
     ComponentsModule,
-	NgxPopperModule.forRoot({
+    NgxPopperModule.forRoot({
       hideOnClickOutside: false
     })
   ],
@@ -44,7 +44,7 @@ import { NgxPopperModule } from 'ngx-popper';
   providers: [
     DatePipe,
     //{provide: LocationStrategy, useClass: HashLocationStrategy},
-	{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Title,
     { provide: LOCALE_ID, useValue: "es" }
   ],

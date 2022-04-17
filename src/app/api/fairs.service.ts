@@ -73,12 +73,12 @@ export class FairsService {
 
             this.list()
              .then((data) => {
-				 
+                 
                 if(data && data.success == 201 && data.data ) {
-				  if(this.fairName.toUpperCase() == 'ADMIN') {
-					resolve({ 'name':'admin'});
-				  }
-				  else
+                  if(this.fairName.toUpperCase() == 'ADMIN') {
+                    resolve({ 'name':'admin'});
+                  }
+                  else
                   for(let fair of data.data ) {
 
                     if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
@@ -102,7 +102,7 @@ export class FairsService {
                       return;
                     }
                   }
-				}
+                }
                 reject(`No se encontraron datos para la feria: ${this.fairName}`);
                 //window.location.href = SERVER_URL;
               },error => {

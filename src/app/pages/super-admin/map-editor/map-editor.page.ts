@@ -134,12 +134,12 @@ export class MapEditorPage implements OnInit {
     private speakersService: SpeakersService) { 
       
       this.url = environment.production ? SERVER_URL + '/Fair-website/': 'http://localhost:8100/';
-	  this.listenForFullScreenEvents();
-	  this.initializeListeners();
+      this.listenForFullScreenEvents();
+      this.initializeListeners();
       this.initializePanel();
-	  window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
-	  this.changeEditSave(false);
-	  
+      window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
+      this.changeEditSave(false);
+      
   }
 
   ngOnInit() {
@@ -233,12 +233,12 @@ export class MapEditorPage implements OnInit {
   }
   
   initializeScene(){
-	  
-		if(!this.scene) { 
-		   this.loading.dismiss();
-		   this.errors = `Algo malo ha ocurrido`;
-		   return;
-		}
+      
+        if(!this.scene) { 
+           this.loading.dismiss();
+           this.errors = `Algo malo ha ocurrido`;
+           return;
+        }
  
     this.scene.menuTabs = this.scene.menuTabs ||  { 'showMenuParent': true };
     this.resources.menuTabs = this.resources.menuTabs || {};
@@ -274,6 +274,8 @@ export class MapEditorPage implements OnInit {
     else {
         this.tabMenuObj = this.scene.menuTabs;
     }
+    
+    this.scene.container = this.scene.container || { 'w': window.innerWidth , 'h': window.innerHeight }
     this.onResize();
   }
   
@@ -331,8 +333,8 @@ export class MapEditorPage implements OnInit {
   
   @HostListener('window:resize')
   onResizeAdjustSize() {
-	this.onResize();
-	setTimeout(()=>{ this.onResize(); },100);
+    this.onResize();
+    setTimeout(()=>{ this.onResize(); },100);
   }
   
   onResize() {
@@ -370,48 +372,37 @@ export class MapEditorPage implements OnInit {
         
         if( this.scene.render )  {
             if(banner.size ) {    banner.size.x /= deltaW;banner.size.y /= deltaH;}
-            if(banner.position)  { banner.position.x /= deltaW; banner.position.y /= deltaH; }	
+            if(banner.position)  { banner.position.x /= deltaW; banner.position.y /= deltaH; }    
             if(banner.fontSize > 0 ) banner.fontSize /= deltaW;
             if(banner.border && banner.border.radius > 0) banner.border.radius /= deltaH;
             if(banner.productCatalog ) {
-               if(banner.productCatalog.buttonWidth > 0) banner.productCatalog.buttonWidth /= deltaW;
-               if(banner.productCatalog.buttonHeight > 0) banner.productCatalog.buttonHeight /= deltaW;
-               if(banner.productCatalog.buttonFontSize > 0) banner.productCatalog.buttonFontSize /= deltaW;
-               if(banner.productCatalog.buttonFontWeight > 0) banner.productCatalog.buttonFontWeight /= deltaW;
-               if(banner.productCatalog.buttonRight > 0) banner.productCatalog.buttonRight /= deltaW;
-               if(banner.productCatalog.buttonBottom > 0) banner.productCatalog.buttonBottom /= deltaW;
-               
-               if(banner.productCatalog.titleFontSize > 0) banner.productCatalog.titleFontSize /= deltaW;
-               if(banner.productCatalog.titleFontWeight > 0) banner.productCatalog.titleFontWeight /= deltaW;
-               if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
-               if(banner.productCatalog.titleTop > 0) banner.productCatalog.titleTop /= deltaW;
-               if(banner.productCatalog.descTop > 0) banner.productCatalog.descTop /= deltaW;
-               if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
-               if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
-               if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
-               //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
-               
-               if(banner.productCatalog.priceTop > 0) banner.productCatalog.priceTop /= deltaW;
-               if(banner.productCatalog.priceLeft > 0) banner.productCatalog.priceLeft /= deltaW;
-               if(banner.productCatalog.priceFontSize > 0) banner.productCatalog.priceFontSize /= deltaW;
-               if(banner.productCatalog.imageTop > 0) banner.productCatalog.imageTop /= deltaW;
-               if(banner.productCatalog.imageLeft > 0) banner.productCatalog.imageLeft /= deltaW;
-               if(banner.productCatalog.imagesWidth > 0) banner.productCatalog.imagesWidth /= deltaW;
-               if(banner.productCatalog.imagesHeight > 0) banner.productCatalog.imagesHeight /= deltaW;
-               if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
+               ['buttonWidth','buttonHeight','buttonFontSize','buttonFontWeight','buttonRight',
+                'buttonBottom','titleFontSize','titleFontWeight','titleLeft','titleTop','descTop',
+                'descLeft','descWidth','descFontSize','lineHeight','priceTop','priceLeft','priceFontSize',
+                'imageTop','imageLeft','imagesWidth','imagesHeight','imagesPriceWidth'].forEach((attr)=>{
+                   if(banner.productCatalog[attr] > 0 ) banner.productCatalog[attr] /= deltaW;
+               });
+            }
+            if(banner.speakerCatalog ) {
+               ['descFontSize','descFontWeight','descHeigth','descLeft','descTop','descWidth','titleTop',
+                'imagesHeight','imagesLeft','imagesPriceWidth','imagesTop','imagesWidth','imagestitleWidth',
+                 'lineHeight','lineHeightMili','lineHeightUnit','logoHeight','logoLeft','logoTop','logoWidth',
+                 'nameFontSize','nameFontWeight','nameHeight','nameLeft','nameTop','nameWidth','priceLeft','priceTop',
+                 'professionFontSize','professionLeft','professionTop','titleFontSize','titleLeft'].forEach((attr)=>{
+                   if(banner.speakerCatalog[attr] > 0 ) banner.speakerCatalog[attr] /= deltaW;
+               });
             }
         }
 
-		if(banner.productCatalog)  this.resizeProductCatalogs(banner);
-		if(banner.speakerCatalog)  this.resizeSpeakers(banner);		
+        if(banner.productCatalog)  this.resizeProductCatalogs(banner);
+        if(banner.speakerCatalog)  this.resizeSpeakers(banner);        
      });     
      
      //Menu tab resize/render
      this.menuTabs.initializeMenuTabs(this.tabMenuObj, this.scene.menuTabs.position);
 
      //product catalog and carrete of images resize/render 
-     this.onResizeCarousels();
-     
+     this.onResizeCarousels();     
   }
   
   initializeCatalogs(banner) {
@@ -492,14 +483,14 @@ export class MapEditorPage implements OnInit {
                   this.editMenuTabSave = null;
                   this.showPanelTool = false
                   this.bannerSelect = null;
-				  const detail = {'type': 'sceneFair', 'iScene': this.sceneId };
-				  window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
+                  const detail = {'type': 'sceneFair', 'iScene': this.sceneId };
+                  window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
                   //this.redirectTo('/super-admin/map-editor/fair/'+this.sceneId);
                   //window.location.replace(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
               }
-			  else {
-				  window.location.replace(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
-			  }
+              else {
+                  window.location.replace(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
+              }
            })
            .catch(error => {
                this.loading.dismiss();
@@ -515,15 +506,15 @@ export class MapEditorPage implements OnInit {
               if(!this.sceneId) {
                   this.resources = processData(pavilion.resources);
                   this.sceneId = this.resources.scenes.length - 1;
-				  const detail = {'type': 'scenePavilions', 'iScene': this.sceneId, 'pavilionId': this.pavilion.id  };
-			      window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
+                  const detail = {'type': 'scenePavilions', 'iScene': this.sceneId, 'pavilionId': this.pavilion.id  };
+                  window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
               }
               else { 
                 //this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
                 //this.redirectTo('/super-admin/map-editor/pavilion/' + this.pavilion.id + '/' + this.sceneId);
-			    window.location.replace(`${this.url}/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
-			  }
-			  
+                window.location.replace(`${this.url}/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+              }
+              
            })
            .catch(error => {
                this.loading.dismiss();
@@ -548,7 +539,7 @@ export class MapEditorPage implements OnInit {
               //this.redirectTo('/super-admin/map-editor/stand/' + this.pavilion.id + '/' + this.stand.id + '/' + this.sceneId);
               window.location.replace(`${this.url}/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
               //this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
-			  
+              
            })
            .catch(error => {
                this.loading.dismiss(); 
@@ -571,7 +562,7 @@ export class MapEditorPage implements OnInit {
               //window.location.replace(`${this.url}/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
               this.redirectTo('/super-admin/map-editor/product/' + this.pavilion.id + '/' + this.stand.id + '/' + this.product.id + '/' + this.sceneId);
               //this.router.navigateByUrl(`/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
-			  
+              
            })
            .catch(error => {
                this.loading.dismiss(); 
@@ -852,8 +843,8 @@ export class MapEditorPage implements OnInit {
     aux.select();
     document.execCommand("copy");
     document.body.removeChild(aux);
-	
-	const msg = itemList.length > 1 ? `${itemList.length} Objetos copiados en el portapapeles` : ` 1 Objeto copiado en el portapapeles`;
+    
+    const msg = itemList.length > 1 ? `${itemList.length} Objetos copiados en el portapapeles` : ` 1 Objeto copiado en el portapapeles`;
     this.presentToast(msg);
   }
   
@@ -893,7 +884,7 @@ export class MapEditorPage implements OnInit {
   }
   
   initializeListeners() {
-	window.addEventListener('window:resize-menu', () => {
+    window.addEventListener('window:resize-menu', () => {
       setTimeout(()=>{ this.onResize(); },100);
     });
   }
@@ -960,9 +951,9 @@ export class MapEditorPage implements OnInit {
                    .then((response) => {
                        this.loading.dismiss(); 
                        this.fairsService.refreshCurrentFair();
-					   const detail = {'type': 'sceneFair', 'iScene': sceneId };
+                       const detail = {'type': 'sceneFair', 'iScene': sceneId };
                        window.dispatchEvent(new CustomEvent('removeScene:menu',{ detail: detail }));
-					   //window.location.replace(`${this.url}/super-admin/fair`);
+                       //window.location.replace(`${this.url}/super-admin/fair`);
                        //this.router.navigateByUrl(`/super-admin/fair`);
                    })
                    .catch(error => {
@@ -1235,15 +1226,15 @@ export class MapEditorPage implements OnInit {
         
         //Add element into scene
         this.onPasteBannerBtn();
-		let msg = itemList.length > 1 ? `${itemList.length} objetos adicionados en la escena` : `1 objeto adicionado en la escena`;
+        let msg = itemList.length > 1 ? `${itemList.length} objetos adicionados en la escena` : `1 objeto adicionado en la escena`;
         this.presentToast(msg);
       }
     }catch(e) {
-		let msg = e.message ? e.message : e.error ? e.error : '';
-		if(msg.length > 50) msg = msg.substr(0,50);
-		this.presentToast(`Error al copiar objeto: ${msg} `);
-	}
-	
+        let msg = e.message ? e.message : e.error ? e.error : '';
+        if(msg.length > 50) msg = msg.substr(0,50);
+        this.presentToast(`Error al copiar objeto: ${msg} `);
+    }
+    
   }
 
   async onAddImgCarousel(){
@@ -1561,8 +1552,8 @@ export class MapEditorPage implements OnInit {
                 }
             });
         }
-		
-		this.resizeProductCatalogs(banner);
+        
+        this.resizeProductCatalogs(banner);
       })
       .catch(error => {
         
@@ -1570,22 +1561,22 @@ export class MapEditorPage implements OnInit {
   }
   
   resizeProductCatalogs(banner) {
-	  for(var i=10;i>0;i--) {
+      for(var i=10;i>0;i--) {
          if( ( banner.position.x + i * banner.size.x <= this.scene.container.w ) || 
-		   ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
+           ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
             banner.__factor = i -1 ;
             break;              
          }
       }
-	  banner.__catalog.products.forEach((product,i:any)=>{
-		  product.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
-		  product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
-	  });
-	  
-	  const main = document.querySelector<HTMLElement>('ion-router-outlet');
-	  const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
-	  const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
-	  if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
+      banner.__catalog.products.forEach((product,i:any)=>{
+          product.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
+          product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
+      });
+      
+      const main = document.querySelector<HTMLElement>('ion-router-outlet');
+      const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+      const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
+      if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
   }
   
   changePriceProductCatalog(product, banner){
@@ -1610,6 +1601,7 @@ export class MapEditorPage implements OnInit {
              });
          } 
          this.onChangeSpeakerStyle(banner);
+         this.resizeSpeakers(banner);
       })
       .catch(error => {
         
@@ -1617,23 +1609,23 @@ export class MapEditorPage implements OnInit {
   }
 
   resizeSpeakers(banner) {
-	  for(var i=10;i>0;i--) {
+      for(var i=10;i>0;i--) {
          if( ( banner.position.x + i * banner.size.x <= this.scene.container.w ) || 
-		   ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
+           ( banner.position.x + ( i - 1.3 ) * banner.size.x <= this.scene.container.w ) )  {
             banner.__factor = i -1 ;
             break;              
          }
       }
-	  
-	  banner.__speakers.forEach((product,i:any)=>{
-		  product.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
-		  product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
-	  });
-	  
-	  const main = document.querySelector<HTMLElement>('ion-router-outlet');
-	  const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
-	  const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
-	  if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
+      
+      banner.__speakers.forEach((speaker,i:any)=>{
+          speaker.top = (( Math.floor( i / banner.__factor ) * banner.size.y) + (banner.size.y * Math.floor( i / banner.__factor ) * 0.03) );
+          speaker.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
+      });
+      
+      const main = document.querySelector<HTMLElement>('ion-router-outlet');
+      const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+      const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
+      if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
   }
 
   
@@ -1720,16 +1712,16 @@ export class MapEditorPage implements OnInit {
   }
   
   logScrolling($event) {
-	  
+      
   }
 
   changeEditSave(editSave){
-	this.editSave = editSave;
-	if(editSave) {
-	  window.dispatchEvent(new CustomEvent( 'side-menu-button:edit-save-on'));
-	} else {
-	  window.dispatchEvent(new CustomEvent( 'side-menu-button:edit-save-off'));
-	}
+    this.editSave = editSave;
+    if(editSave) {
+      window.dispatchEvent(new CustomEvent( 'side-menu-button:edit-save-on'));
+    } else {
+      window.dispatchEvent(new CustomEvent( 'side-menu-button:edit-save-off'));
+    }
   } 
 
   async presentToast(msg) {
