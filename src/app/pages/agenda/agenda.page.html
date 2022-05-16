@@ -3,7 +3,7 @@
 
 <ion-content>
 
-    <div class="card w-100 ">
+    <div class="card w-100 p-3">
       <div class="info">
         <ion-icon color="primary" name="calendar-outline"></ion-icon>    
       </div>
@@ -29,22 +29,22 @@
                           </div>
                           <ion-list>
 
-                            <ion-item *ngIf="loaded && ( agenda.audience_config == 4 && !eventPayment ) " [hidden]="profileRole && profileRole.speaker"
+                            <ion-item *ngIf="loaded && ( agenda.audience_config == 4 && !eventPayment ) " [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
                             (click)="onAgendaPrice()" button>
                               <ion-label color="primary">Entrar al Evento por $ {{agenda?.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
                             </ion-item>
                             
-                            <ion-item *ngIf="loaded && profileRole && profileRole.speaker"
-                            (click)="onAgendaPrice()" button>
-                              <ion-label color="primary"> Iniciar Conferencia </ion-label>
+                            <ion-item *ngIf="loaded && profileRole && ( profileRole.speaker || profileRole.admin )"
+                            (click)="onViewerMeeting()" button>
+                              <ion-label color="primary"> Iniciar conferencia </ion-label>
                             </ion-item>
                             
-                            <ion-item *ngIf="loaded && agenda.audience_config == 1 " [hidden]="profileRole && profileRole.speaker"
+                            <ion-item *ngIf="loaded && agenda.audience_config == 1 " [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
                             (click)="onViewerMeeting()" button>
                               <ion-label color="primary">Entrar al Evento ( gratuito )</ion-label>
                             </ion-item>
                             
-                            <ion-item *ngIf="loaded && eventPayment && agenda.audience_config == 4" [hidden]="profileRole && profileRole.speaker"
+                            <ion-item *ngIf="loaded && eventPayment && agenda.audience_config == 4" [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
                             (click)="onViewerMeeting()" button>
                               <ion-label color="primary">Entrar al Evento</ion-label>
                             </ion-item>
@@ -70,10 +70,10 @@
                                </ion-text>
                             </ion-item>
                             <br /><br />
-                            <h4 *ngIf="agenda?.invited_speakers?.length > 1">Conferencistas</h4>
-                            <h4 *ngIf="agenda?.invited_speakers?.length === 1">Conferencista</h4>
+                            <h4 *ngIf="invited_speakers?.length > 1">Conferencistas</h4>
+                            <h4 *ngIf="invited_speakers?.length === 1">Conferencista</h4>
                             
-                            <ion-item *ngFor="let invited_speaker of agenda.invited_speakers" class="p-2"
+                            <ion-item *ngFor="let invited_speaker of invited_speakers" class="p-2"
                             (click)="onSpeaker(invited_speaker.speaker)" button>
                             
                                   <div class="d-flex">
@@ -92,7 +92,7 @@
                       <ion-row>
                         <ion-col class="ion-text-center">
                             <div *ngIf="showConfirmByProduct" class="mt-1">
-                              <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 6em;">
+                              <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
                                 <h6 style="margin-right:2em; width: 87%;" slot="start">Confirma para agregar el evento al carrito de compras por $ {{ agenda.price  | currency: ' ':' ':'1.0-0' }}</h6>
                                 <div (click)="showConfirmByProduct=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
                               </ion-toolbar>
@@ -103,8 +103,8 @@
                               </ion-toolbar>
                             </div>
                             <div  *ngIf="showRegister" class="mt-1">
-                              <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 6em;">
-                                <h6 style="margin-right:2em; width: 87%;" slot="start">Para poder acceder a este evento debes acceder con tu usuario</h6>
+                              <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
+                                <h6 style="margin-right:2em; width: 87%;" slot="start">Para ingresar a este evento debes registrarte y acceder con tu usuario</h6>
                                 <div (click)="showRegister=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
                               </ion-toolbar>        
                               <ion-toolbar class="pay-button ml-6 footer-pay">

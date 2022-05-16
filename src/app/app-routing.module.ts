@@ -145,6 +145,10 @@ const routes: Routes = [
   {
     path: 'agenda/:agendaId',
     loadChildren: () => import('./pages/agenda/agenda.module').then( m => m.AgendaPageModule)
+  },
+  {
+    path: 'app-dialog/:dialogType/:email',
+    loadChildren: () => import('./pages/app-dialog/app-dialog.module').then( m => m.AppDialogPageModule)
   }
 
 

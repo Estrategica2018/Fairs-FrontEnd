@@ -293,8 +293,11 @@ export class ScheduleDetailComponent {
   onViewerMeeting() {
     const fair_id = this.fair.id;
     const meeting_id = this.agenda.id;
-      
+    
     if(this.userDataSession!=null) {
+        
+        this.loading.present({message:'Cargando...'});
+        
         const email = this.userDataSession.email;
         this.agendasService.generateVideoToken(fair_id, meeting_id, this.userDataSession)
         .then( response => {
@@ -304,7 +307,10 @@ export class ScheduleDetailComponent {
           //window.open(url, '_blank').focus();
           const windowReference = window.open();
           windowReference.location.href = url;
+          this.loading.dismiss();
+          
         },error => {
+           this.loading.dismiss(); 
            this.errors = error;
         });
     }

@@ -240,13 +240,7 @@ export class AppComponent implements OnInit {
       this.removeSceneMenu(event.detail.type,event.detail.iScene);
     });
     
-    window.addEventListener('user:signup', (user) => {
-      setTimeout(() => {
-        //this.loggedIn = user !== null;
-        window.location.reload();
-      }, 300);
-    }); 
-
+    
     window.addEventListener('user:logout', () => {
       //this.updateLoggedInStatus(null);
       //this.getShoppingCart();
@@ -309,30 +303,44 @@ export class AppComponent implements OnInit {
     
     this.loading.present({message:'Cargando...'});
     
-    this.usersService.getUser().then(userDataSession=>{
-        this.usersService.logout(userDataSession)
-        .subscribe(
-          data => {
+    
+      this.usersService.getUser().then(userDataSession=>{
+        if(userDataSession) {
+            this.usersService.logout(userDataSession)
+            .subscribe(
+              data => {
+                this.loading.dismiss();
+                
+                
+                this.usersService.setUser(null).then(() => {
+                  window.dispatchEvent(new CustomEvent('user:logout'));
+                });
+                window.location.href = window.location.host;
+                window.location.reload();
+                console.log('window.location.reload();');
+                
+              },
+              error => {
+                this.loading.dismiss();
+                this.errors = error;
+                console.log(this.errors);
+                this.usersService.setUser(null).then(() => {
+                  window.dispatchEvent(new CustomEvent('user:logout'));
+                  //this.router.navigateByUrl(`/schedule`);
+                });
+             }
+            );
+        }
+        else {
             this.loading.dismiss();
-            
-            window.location.href = window.location.host;
-            window.location.reload();
-            
-            this.usersService.setUser(null).then(() => {
-              this.router.navigateByUrl(`/map/fair/0`);
-            });
-            
-          },
-          error => {
-            this.loading.dismiss();
-            this.errors = error;
+            console.log('no user data');
             this.usersService.setUser(null).then(() => {
               window.dispatchEvent(new CustomEvent('user:logout'));
-              //this.router.navigateByUrl(`/schedule`);
             });
-         }
-        ); 
-    });
+            window.location.href = window.location.host;
+            window.location.reload();
+        }
+      });
 
   }
 

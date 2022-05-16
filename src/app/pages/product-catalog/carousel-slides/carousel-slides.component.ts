@@ -414,7 +414,7 @@ export class CarouselSlidesComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     if(this.resize)
-    this._factorWidth = window.innerWidth <= 500 ? 4 : window.innerWidth < 670 ? 4.5 : 5.9;
+    this._factorWidth = window.innerWidth <= 500 ? 4 : window.innerWidth < 670 ? 4.5 : 4.9;
     
   }
 

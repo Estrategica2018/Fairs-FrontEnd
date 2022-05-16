@@ -16,6 +16,8 @@ import { SignupComponent } from './pages/signup/signup.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AccountComponent } from './pages/account/account.component';
 import { SideMenuButtonsComponent } from './pages/super-admin/map-site-editor/side-menu-buttons/side-menu-buttons.component';
+import { ShowColorComponent } from './pages/super-admin/product/show-color/show-color.component';
+
 import { TermsPage } from './pages/terms/terms.page';
 
 @NgModule({
@@ -40,6 +42,7 @@ import { TermsPage } from './pages/terms/terms.page';
     LoginComponent,
     AccountComponent,
     SideMenuButtonsComponent,
+    ShowColorComponent,
     TermsPage
   ],
   exports: [
@@ -57,6 +60,7 @@ import { TermsPage } from './pages/terms/terms.page';
     LoginComponent,
     AccountComponent,
     SideMenuButtonsComponent,
+    ShowColorComponent,
     TermsPage
   ]
   

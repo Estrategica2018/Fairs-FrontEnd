@@ -8,6 +8,10 @@ import { LoginComponent } from '../login/login.component';
 import { ToastController, ModalController } from '@ionic/angular';
 import Cropper from 'cropperjs';
 import Croppie from 'croppie';
+import { Cloudinary } from '@cloudinary/angular-5.x';
+
+
+declare var cloudinary: any;
 
 @Component({
   selector: 'page-account',
@@ -16,6 +20,7 @@ import Croppie from 'croppie';
 })
 export class AccountComponent implements AfterViewInit {
   
+
   userData: any;
   showChangeImageBtn = false;
   keyUpdate: string = null;
@@ -29,10 +34,12 @@ export class AccountComponent implements AfterViewInit {
   imageCropper: any;
   cropper: any;
   vanilla: any;
-
+  myWidgetFalse;
+  
   constructor(
     private alertCtrl: AlertController,
     private router: Router,
+    private toastCtrl: ToastController,
     private loading: LoadingService,
     private usersService: UsersService,
     private modalCtrl: ModalController,
@@ -44,6 +51,26 @@ export class AccountComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.getUser();
+    this.myWidgetFalse = cloudinary.createUploadWidget(
+      {
+        cloudName: "deueufyac",
+        uploadPreset: "angular_cloudinary",
+        showAdvancedOptions: true,
+        multiple: false,
+        sources: [ 'local', 'url'],
+        folder: 'sublimacion/locales/saeta', 
+        cropping: true
+      },
+      (error, result) => {
+        if (!error && result && result.event === "success") {
+          console.log("Done! Here is the image info: ", result.info);
+          this.keyUpdate = 'url_image';
+          this.objectUpdate = result.info.secure_url;
+          this.onUpdateUser();
+        }
+      }
+    );
+
   }
   
   ngOnDestroy(): void {
@@ -51,7 +78,10 @@ export class AccountComponent implements AfterViewInit {
   }
 
   onSelectFile(event) {
-      
+    this.myWidgetFalse.open();
+  }
+  
+  onSelectFileLocal(event) {
     this.showEditPhoto = true;  
     const _self = this;
     if (event.target.files && event.target.files[0]) {
@@ -226,27 +256,32 @@ export class AccountComponent implements AfterViewInit {
     this.errors = null;
     dt[this.keyUpdate] = this.objectUpdate;
     
+    
     this.usersService.getUser().then((userDataSession: any)=>{
        this.usersService.updateUser(userDataSession,dt)
        .subscribe(
         data => {
             
-            this.loading.dismiss();
             if(data.success == 201 ) {
               this.userData.url_image = data.data.url_image;
               this.userData.name = data.data.name;
               this.userData.last_name = data.data.last_name;
-              this.url_image = this.userData.url_image;
+              this.url_image = data.data.url_image;
               this.usersService.setUser(this.userData).then((data) => {
-                console.log('guardado Exitosamente',data);
+                this.presentToast('Registro guardado Exitosamente');
               });
+              this.loading.dismiss();
             }
-            else { this.errors = "actualizando los datos"; }
-            
+            else { 
+              this.errors = "Error actualizando los datos"; 
+              this.presentToast(this.errors);
+              this.loading.dismiss();
+            }
         },
         error => {
             this.loading.dismiss();
             this.errors = error;
+            this.presentToast(this.errors);
       });
     });
   }
@@ -272,27 +307,37 @@ export class AccountComponent implements AfterViewInit {
   logout() {
     this.loading.present({message:'Cargando...'});
     this.usersService.getUser().then(userDataSession=>{
-        this.usersService.logout(userDataSession)
-        .subscribe(
-          data => {
-            this.loading.dismiss();
-            
-            this.usersService.setUser(null).then(() => {
-              window.dispatchEvent(new CustomEvent('user:logout'));
-              //this.router.navigateByUrl(`/schedule`);
-            });
-            
-          },
-          error => {
-            this.loading.dismiss();
-            this.errors = error;
-            this.usersService.setUser(null).then(() => {
-              window.dispatchEvent(new CustomEvent('user:logout'));
-              //this.router.navigateByUrl(`/schedule`);
-            });
+        if(userDataSession) {
+            this.usersService.logout(userDataSession)
+            .subscribe(
+              data => {
+                this.loading.dismiss();
+                
+                this.usersService.setUser(null).then(() => {
+                  window.dispatchEvent(new CustomEvent('user:logout'));
+                  //this.router.navigateByUrl(`/schedule`);
+                });
+                
+              },
+              error => {
+                this.loading.dismiss();
+                this.errors = error;
+                this.usersService.setUser(null).then(() => {
+                  window.dispatchEvent(new CustomEvent('user:logout'));
+                  //this.router.navigateByUrl(`/schedule`);
+                });
 
-         }
-        ); 
+             }
+            ); 
+        }
+        else {
+            this.loading.dismiss();
+            this.errors = null;
+            this.usersService.setUser(null).then(() => {
+              window.dispatchEvent(new CustomEvent('user:logout'));
+              //this.router.navigateByUrl(`/schedule`);
+            });
+        }
     });
   }
   
@@ -332,4 +377,12 @@ export class AccountComponent implements AfterViewInit {
   }
   
 
+  async presentToast(msg) {
+    const toast = await this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'bottom'
+    });  
+    toast.present();
+  }
 }

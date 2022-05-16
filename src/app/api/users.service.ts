@@ -315,9 +315,9 @@ export class UsersService {
     });
   }
 
-  sendSignConfirm(email: string): Promise<any> {
+  sendSignConfirm(email: string, fairName: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        this.http.get(`${SERVER_URL}/api/user/sendSignConfirm/${email}`)
+        this.http.get(`${SERVER_URL}/api/user/sendSignConfirm/notify/${fairName}/${email}`)
        .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -342,6 +342,9 @@ export class UsersService {
        .pipe(
           timeout(60000),
           catchError((e: any) => {
+               if(e.error.message) {
+                   throw new Error(`Consultando el servicio para validación del usuario: ${e.error.message}`);
+               }
                if(e.status && e.statusText) {
                   throw new Error(`Consultando el servicio para validación del usuario: ${e.status} - ${e.statusText}`);
                }

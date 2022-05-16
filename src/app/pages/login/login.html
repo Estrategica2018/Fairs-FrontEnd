@@ -66,19 +66,26 @@
     </div>
   </div>
   <div *ngIf="showMenu == 'singup'">
-    <div (click)="showMenu = 'login'; submitted = false"> 
-        <div ion-button class="back-button cursor-pointer">
+    <div> 
+    <ion-buttons slot="primary">
+        <div slot="start"    class="back-button cursor-pointer" (click)="showMenu = 'login'; submitted = false">
           <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
           <div> Iniciar sesión</div>
         </div>
+        <div *ngIf="showConfirmAccount" class="forward-button cursor-pointer" (click)="showMenu = 'singupConfirm'; submitted = false">
+          <div> Confirmar cuenta</div> 
+          <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+        </div>
+    </ion-buttons>    
+
     </div>
     <h2 class="name ion-text-center title-modal">Registro de usuario </h2>
-    <div class="padding-container scroll-90 min-height">
-        <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()" [ngClass]="{'mt-3': !errors && !success }">
-          <ion-list-header [ngStyle]="{ 'margin-top': ( !errors && !success ) ? '0em' : '-0.8em' }">
+    <div class="padding-container scroll-90 min-height-register">
+        <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+          <ion-list-header style="margin-top: -1em;">
              Formulario para la creación de usuario
           </ion-list-header>
-          <ion-list>
+          <ion-list style="    margin-top: -16px;">
                 <ion-grid>
                   <ion-row>
                     <ion-col>
@@ -172,11 +179,11 @@
           <div> Registrar usuario </div>
         </div>
     </div>
-    <h2 class="name ion-text-center title-modal" style="margin-top: 2.5em;">Confirmación de cuenta</h2>
+    <h2 class="name ion-text-center title-modal" style="margin-top: 2.5em;">Confirmar cuenta</h2>
     <div class="padding-container scroll-90 min-height">
         <form [formGroup]="singupConfirmForm" (ngSubmit)="onSingupValidate()" class="mt-3'">
           <ion-item class="not-found">
-             <div class="alert alert-success">
+             <div class="alert alert-success" *ngIf="singupConfirmMsg">
               <strong></strong> {{singupConfirmMsg}}
              </div>
           </ion-item>
@@ -224,7 +231,7 @@
                       </ion-col>
                    </ion-row>
                   <ion-row>
-                    <ion-col size="8">
+                    <ion-col size="8" class="m-auto">
                         <ion-button [disabled]="singupConfirmForm.invalid" expand="full" type="submit">Confirmar código</ion-button>
                     </ion-col>
                    </ion-row>

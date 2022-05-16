@@ -29,18 +29,57 @@ ion-input {
   left: 2.5em;
   top: 0.5em;
   font-size: 1.7em;
+  border-radius: 15px;
+  padding-top: 3px;
+  padding-left: 13px;
+  height: 31px;
+  width: 175px;
+  
   ion-icon {
     font-size: 1.5em;
+    position: absolute;
+    top: 2px;
+    left: 3px;
   }
   
   div {
     position: absolute;
-    top: 0em;
-    width: 100vw;
+    top: 2px;
     left: 1.7em;
   }
 }
 
+
+.forward-button {
+  position: absolute;
+  right: 3em;
+  top: 0.5em;
+  font-size: 1.7em;
+  border-radius: 15px;
+  padding-top: 3px;
+  padding-left: 13px;
+  height: 31px;
+  width: 175px;
+  
+  ion-icon {
+    font-size: 1.5em;
+    position: absolute;
+    left: 133px;
+    top: 0px;
+  }
+  
+  div {
+    position: absolute;
+    top: 0px;
+  }
+}
+
+
+.back-button:hover,
+.forward-button:hover {
+  background-color: #F0F0F0;
+  transition: background-color .5s;
+}
 
 .title-modal {
   margin-top: 1.5em;
@@ -50,9 +89,17 @@ ion-input {
   min-height: 50em;
 }
 
+.min-height-register {
+  height: 43em;
+  overflow: auto;
+}
+
 
 .delete-terms { 
   left: 1.4em;
   position: absolute;
 }
 
+.m-auto {
+  margin: auto;
+}

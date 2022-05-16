@@ -70,6 +70,7 @@ export class AgendaListPage implements OnInit {
                 this.agendas = agendas;
                 if(agendas)
                 this.agendas.forEach((agenda)=>{
+                    agenda.strDay = this.datepipe.transform(new Date(agenda.start_at), 'EEEE, MMMM d, y');
                     agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
                     agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
                     agenda.location = agenda.room ? agenda.room.name : '';

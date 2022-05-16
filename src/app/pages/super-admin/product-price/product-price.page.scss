@@ -5,17 +5,16 @@
 }
 
 .attribute-key {
-    width: 100%;
-    height: 37px;
-    font-size: 1.5em;
+  width: 100%;
+  height: 37px;
+  font-size: 1em;
 }
 
 .attribute-value {
-    width: 100%;
-    height: 37px;
-    font-size: 1.5em;
+  width: 100%;
+  height: 37px;
+  font-size: 1.5em;
 }
-
 
 .fs-1 {
   font-size: 1em;
@@ -60,4 +59,36 @@ select {
 
 .card-color {
   z-index: 100;
+}
+
+.input-attr-down {
+  position: absolute;
+  top: 13px;
+  right: 8px;
+}
+
+
+.attr-list {
+  border: 1px solid gray;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin-top: -1px;
+  height: 9em;
+  cursor: pointer;
+  overflow: auto;
+  font-size: 1.2em;
+}
+
+.attr-list div {
+  padding-left: 11px;
+}
+
+.attr-list div:hover {
+  padding-left: 11px;
+  background-color: lightgray;
+}
+
+.color-dialog-overflow {
+    overflow: auto;
+    height: 35.5em;
 }

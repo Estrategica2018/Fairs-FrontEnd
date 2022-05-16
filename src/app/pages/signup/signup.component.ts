@@ -115,8 +115,8 @@ export class SignupComponent implements OnInit {
         data => {
             const token = data.data;
             this.usersService.setUser(Object.assign(userData,{token:token})).then(() => {
-              this.router.navigateByUrl('/schedule');
-              window.dispatchEvent(new CustomEvent('user:signup'));
+              //this.router.navigateByUrl('/schedule');
+              window.location.reload();
             });
         },
         error => {

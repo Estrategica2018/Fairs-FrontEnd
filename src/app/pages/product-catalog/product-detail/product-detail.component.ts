@@ -54,6 +54,7 @@ export class ProductDetailComponent implements OnInit {
     if(this.product.resources && this.product.resources.attributes && this.product.resources.attributes.length > 0) {
         
         this.product.attributeSelect = this.product.attributeSelect || [];
+        this.product.resources = this.product.resources || { 'detail': { 'elements': [] } };
         
         for(let attr of this.product.resources.attributes) {
           if(attr.value.split('|').length>1) {
@@ -61,7 +62,16 @@ export class ProductDetailComponent implements OnInit {
             attr.value.split('|').forEach((item)=>{
               list.push(item);
             });
-            this.product.attributeSelect.push({list: list, label:attr.name});
+            
+            if(attr.name === 'Color') {
+               if(attr.value.length > 0) {
+                list.push(attr.value);
+                this.product.attributeSelect.push({list: list, label:attr.name});
+               }
+            }
+            else {
+              this.product.attributeSelect.push({list: list, label:attr.name});
+            }
           }
         }
     }    
@@ -101,7 +111,7 @@ export class ProductDetailComponent implements OnInit {
       }
     });
     
-    if(this.product && this.product.resources && this.product.resources && this.product.resources.detail && this.product.resources.detail.elements && this.product.resources.detail.elements.length >0 ) {
+    if(this.product.resources.detail && this.product.resources.detail.elements) {
       this.product.resources.detail.elements.forEach((item)=>{
         if(item.video) { 
             const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(item.video.videoUrl);
@@ -133,18 +143,17 @@ export class ProductDetailComponent implements OnInit {
          text: 'Agregar', 
          role: 'destructive', 
          handler: (data) => {
-          if(!this.product.resources || !this.product.resources.detail || !this.product.resources.detail.elements  || this.product.resources.detail.elements.length == 0 ) {
-              this.product.resources = { 'detail': { 'elements': [] } };
-          }
-          this.product.resources.detail.elements.push({'url':data.url,'title':data.title});
-          this.saveProduct('Agregar imágen');
+           if(!this.product.resources.detail || !this.product.resources.detail.elements) {
+              this.product.resources.detail = { 'elements': [] };
+           }
+           
+           this.product.resources.detail.elements.push({'url':data.url,'title':data.title});
+           this.saveProduct('Agregar imágen');
          }
         }]
     });
     await actionAlert.present();
-
   }  
-
   
   async onAddVideo(){
     
@@ -169,9 +178,10 @@ export class ProductDetailComponent implements OnInit {
          role: 'destructive', 
          handler: (data) => {
           
-          if(!this.product.resources || !this.product.resources.detail || !this.product.resources.detail.elements  || !this.product.resources.detail.elements.length || this.product.resources.detail.elements.length == 0 ) {
-              this.product.resources = { 'detail': { 'elements': [] } };
+          if(!this.product.resources.detail || !this.product.resources.detail.elements) {
+            this.product.resources.detail = { 'elements': [] };
           }
+           
           const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(data.videoUrl);
           this.product.resources.detail.elements.push({'video':{'videoUrl':data.videoUrl,'sanitizer': sanitizer},'title':data.title});
           this.saveProduct('Agregar video');
@@ -199,9 +209,11 @@ export class ProductDetailComponent implements OnInit {
          text: 'Agregar', 
          role: 'destructive', 
          handler: (data) => {
-          if(!this.product.resources || !this.product.resources.detail || !this.product.resources.detail.elements  || this.product.resources.detail.elements.length == 0 ) {
-              this.product.resources = { 'detail': { 'elements': [] } };
+          
+          if(!this.product.resources.detail || !this.product.resources.detail.elements) {
+            this.product.resources.detail = { 'elements': [] };
           }
+           
           this.product.resources.detail.elements.push({'paragraph':data.paragraph});
           this.saveProduct('Agregar Párrafo');
          }
@@ -315,7 +327,9 @@ export class ProductDetailComponent implements OnInit {
      
     if(this.product && this.product.resources && this.product.resources.attributes && this.product.resources.attributes.length > 0) {
       for(let attr of this.product.resources.attributes) {
-        this.attributes.push({'name':( attr.name || attr.key ), 'value': attr.value});
+        if(attr.value.length > 0) {
+          this.attributes.push({'name':( attr.name || attr.key ), 'value': attr.value});
+        }
       }
     }
   }

@@ -146,8 +146,8 @@
          <ion-list lines="none" class="border-botton">
             <ion-menu-toggle autoHide="false" *ngIf="showAgenda">
                <ion-item matTooltip="This is simple Tooltip" matTooltipPosition="after" matTooltipClass="custom-tooltip-blue"
-			   
-			   matTooltipHideDelay="200000"
+               
+               matTooltipHideDelay="200000"
                   (click)="showPavilionDetail = null"
                   routerLink="/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
                   <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
@@ -155,7 +155,7 @@
                      Agenda
                   </ion-label>
                </ion-item>
-			   
+               
             </ion-menu-toggle>
          </ion-list>
          <ion-list *ngIf="loggedIn" lines="none" class="border-botton">
@@ -192,11 +192,7 @@
          </ion-list>
       </ion-content>
       <ion-buttons *ngIf="menuHidden">
-         <ion-button 
-            mat-raised-button
-            matTooltip="Info about the action"
-            aria-label="Button that displays a tooltip when focused or hovered over"
-            class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
+         <ion-button class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
             <ion-icon name="chevron-forward-outline"></ion-icon>
          </ion-button>
       </ion-buttons>
@@ -240,7 +236,7 @@
          <ion-menu-toggle autoHide="false">
             <ion-item class="width-icon p-0"
                (click)="showPavilionDetail = null"
-			   title="Agenda"
+               title="Agenda"
                routerLink="/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
                <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
             </ion-item>

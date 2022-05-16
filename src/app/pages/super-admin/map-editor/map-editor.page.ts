@@ -573,6 +573,7 @@ export class MapEditorPage implements OnInit {
   
   onSaveTabMenu(){
       this.resources.menuTabs = this.resources.menuTabs || {'actions':[]};
+      this.resources.menuTabs.id = this.resources.menuTabs.id || this._getId();
       this.resources.menuTabs.actions = this.resources.menuTabs.actions || [];
       if(this.scene.menuTabs.showMenuParent) {
           if(this.tabMenuInstance.isNew) {
@@ -1574,7 +1575,8 @@ export class MapEditorPage implements OnInit {
       });
       
       const main = document.querySelector<HTMLElement>('ion-router-outlet');
-      const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+      let left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+      if(left <=0 ) left = 10;
       const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
       if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
   }
@@ -1731,6 +1733,12 @@ export class MapEditorPage implements OnInit {
       position: 'bottom'
     });  
     toast.present();
+  }
+
+  _getId() {
+      let id =new Date().valueOf() + Math.floor(Math.random() * (1000 + 1));
+      alert(id);
+    return id;
   }
 
 }

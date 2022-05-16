@@ -79,12 +79,10 @@
     </div>
 
     <ion-item>
-      <ion-label>
-        Nuevo producto
-      </ion-label>
       <ion-buttons slot="end">
-        <ion-button slot="end" routerLink="/super-admin/product/{{pavilion.id}}/{{stand.id}}" routerLinkActive="active" routerDirection="root" detail="false">
-          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+        <ion-button color="primary" slot="end" routerLink="/super-admin/product/{{pavilion.id}}/{{stand.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+          Nuevo producto
+          <ion-icon slot="end" name="add-circle-outline"></ion-icon>
         </ion-button>
       </ion-buttons>
     </ion-item>
@@ -109,7 +107,8 @@
                     <h6>{{prod?.description}}</h6>
                     <div class="attributes d-flex mt-2">
                        <div *ngFor="let price of prod?.prices">
-                        <div  *ngIf="price.resources && price.resources && price.resources.attributes && price.resources.attributes.color" class="color-attributte ml-3" [ngStyle]="{'background-color':price.resources.attributes.color}">
+                        <div  *ngIf="price.resources && price.resources.attributes && price.resources.attributes[0]" class="color-attributte ml-3" 
+                        [ngStyle]="{'background-color': price.resources.attributes[0].value}">
                         </div>
                        </div>
                     </div>

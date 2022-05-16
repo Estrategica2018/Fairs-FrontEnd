@@ -212,7 +212,7 @@
                'background-repeat': 'no-repeat',
                'background-color': banner.backgroundColor,
                'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
-                'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+               'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
                'border-radius': banner.border.radius + 'px',
                'border-width': banner.border.width +'px',
                'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
@@ -269,8 +269,9 @@
                      </div></div> 
                 </ion-row>
                </ion-grid>
-               <ion-button class="position-absolute" color="primary" size="small"  (click)="onShowProduct(product)"
-                [ngStyle]="{
+               <ion-button class="position-absolute" color="primary" size="small" 
+               (click)="(profileRole && profileRole.admin) ? presentActionProduct(product) : onShowProduct(product)"
+               [ngStyle]="{
                   'width': banner.productCatalog.buttonWidth + 'px', 
                   'height': banner.productCatalog.buttonHeight + 'px',
                   '--background': banner.productCatalog.buttonBackgroundColor,
@@ -284,6 +285,8 @@
                  <div > {{banner.productCatalog.buttonLabel}}
                  </div>
                </ion-button>
+            </div>
+            <div class="product-calog-end" [ngStyle]="{'top': banner?.__catalog?.productCatalogEnd + 'px'}"> 
             </div>
           </div>
           <!--End if banner is product-catalog -->

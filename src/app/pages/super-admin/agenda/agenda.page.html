@@ -33,7 +33,7 @@
 <ion-content fullscreen="true">
 
     <ion-list lines="" *ngIf="agenda" class="padding-container">
-      <form [formGroup]="agendaForm" (ngSubmit)="onSave()"  [ngClass]="{'mt-3': !errors && !success }">
+      <form [formGroup]="agendaForm" (ngSubmit)="onSave()">
 
       <ion-item class="padding-container agenda-logo mt-4" *ngIf="agenda && agenda.category" button="true">
         <img [src]="agenda?.category?.resources?.url_image" *ngIf="agenda.category.resources && agenda.category.resources.url_image">

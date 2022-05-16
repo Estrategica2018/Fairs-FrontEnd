@@ -3,12 +3,31 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/super-admin/product/{{pavilion?.id}}/{{stand?.id}}/{{product?.id}}"></ion-back-button>
     </ion-buttons>
-    <ion-buttons slot="end" *ngIf="productPrice?.id">
-      <ion-button color="danger" (click)="deleteProductPrice()">
-        <ion-icon slot="start" name="trash-outline"></ion-icon>
-        Borrar
-      </ion-button>
-    </ion-buttons>
+      <ion-buttons slot="end" *ngIf="productPrice">
+         <div [hidden]="!errors" class="not-found" style="font-size: 1.5em;">
+            <div class="alert alert-danger alert-dismissible">
+               <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+               <strong></strong> {{errors}}
+            </div>
+         </div>
+         
+        <div [hidden]="!success" class="alert alert-success m-auto" style="font-size: 1.5em;">
+         <a href="javascript:void(0)" class="close" (click)="success=null" title="close">×</a>
+         <strong></strong> {{success}}
+        </div>
+      
+
+         <ion-button color="primary" 
+         [ngStyle]="{'opacity' : ( !editSave ) ? '0.5' : '1' }" (click)="updateProductPrice()">
+         <ion-icon slot="start" name="save-outline"></ion-icon>
+           Guardar
+         </ion-button>
+         <ion-button color="danger" (click)="deleteProductPrice()" *ngIf="productPrice.id">
+         <ion-icon slot="start" name="trash-outline"></ion-icon>
+           Eliminar
+         </ion-button>
+      </ion-buttons>
+      
     <ion-title>Administrar Precio del producto </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -49,14 +68,9 @@
         </ion-buttons>
       </ion-item>
 
-      <div class="container-attr mb-4" *ngIf="productPrice.id && productPrice.resources && productPrice.resources.attributes">
-          <ion-item lines="none" *ngIf="productPrice.id" [ngClass]="{'mt-4': productPrice.id}">
+      <div class="container-attr mb-4" *ngIf="productPrice.resources && productPrice.resources.attributes">
+          <ion-item lines="none">
              <ion-label class="ion-text-wrap" slot="start">Atributos Físicos</ion-label>
-             <ion-buttons slot="end">
-                <ion-button (click)="newAttr={'name':'','value':''}">
-                  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-                </ion-button>
-             </ion-buttons>
           </ion-item>
           
           <!-- attribute Color-->
@@ -64,7 +78,7 @@
             <ion-label>  
                 Color
             </ion-label>
-            <div (click)="openColors();" class="d-flex color-small">
+            <div (click)="presenterShowColor();" class="d-flex color-small">
               <span class="mr-4" >{{attrColor?.label}}</span>
               <div *ngIf="attrColor?.value" class="label-color-small" 
                [ngStyle]="{'background-color':attrColor?.value}">
@@ -86,7 +100,18 @@
               <ion-grid *ngIf="indexEditAttr == i">
                 <ion-row>
                   <ion-col size="5">
-                    <input class="attribute-key fs-1" [(ngModel)]="attr.name">
+                     
+                     <input class="attribute-key fs-1" [(ngModel)]="attr.name" (click)="showAttr(i+1,attr)"  
+                     (keypress)="showAttr(i+1,attr)">
+                     
+                     <div class="input-attr-down" (click)="showAttr(i+1,attr)">
+                       <ion-icon name="caret-down-outline" aria-label="caret down outline" role="img" class="md hydrated"></ion-icon>
+                     </div>
+                     <div class="attr-list" *ngIf="attrListId == i+1"  style="font-size: 0.8em;">
+                       <div *ngFor="let attrSel of attrFilter" (click)="setAttrName(attrSel,i)">
+                          {{ attrSel }}
+                       </div>
+                     </div>
                   </ion-col>
                   <ion-col size="5">
                     <input class="attribute-value fs-1" [(ngModel)]="attr.value">        
@@ -111,68 +136,50 @@
             
           <!-- end attribute list-->
           
-          <ion-grid class="attribute" button="true" *ngIf="newAttr">
+          <ion-item lines="none">
+          <ion-grid class="attribute" button="true">
             <ion-row>
               <ion-col size="5">
-                <input class="attribute-key" [(ngModel)]="newAttr.name">
+                <input type="text" class="attribute-key fs-1" [(ngModel)]="newAttrName"
+                     (click)="showAttr(0,{'name':newAttrName})"
+                     (blur)="showAttr(0,{'name':newAttrName})"
+                     (keypress)="showAttr(0,{'name':newAttrName})"/>
+                     
+                 <div class="input-attr-down fs-1" (click)="showAttr(0,{'name':newAttrName})">
+                   <ion-icon name="caret-down-outline" aria-label="caret down outline" role="img" class="md hydrated"></ion-icon>
+                 </div>
+                 <div class="attr-list" *ngIf="attrListId == 0" style="font-size: 0.9em;">
+                   <div *ngFor="let attrSel of attrFilter" (click)="setAttrName(attrSel,-1)">
+                      {{ attrSel }}
+                   </div>
+                 </div>
               </ion-col>
               <ion-col size="5">
-                <input class="attribute-value" [(ngModel)]="newAttr.value">        
+                <input class="attribute-value fs-1" [(ngModel)]="newAttrValue"
+                (click)="attrListId = null"
+                (onBlur)="attrListId = null"
+                (blur)="attrListId = null"
+                (focus)="attrListId = null"
+                (keypress)="attrListId = null"
+                >
               </ion-col>
               <ion-col size="2">
-                <ion-button (click)="addAttribute()">
-                Agregar
+                <ion-button (click)="addAttribute()" fill="outline" style="--border-style:none; --border-radius:10px;">
+                  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
                 </ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
+          </ion-item>
+          
+
       </div>
-
-
-      
-      <ion-item [hidden]="!errors">
-        <div class="alert alert-danger m-auto">
-         <a href="javascript:void(0)" class="close" (click)="errors=null" title="close">×</a>
-         <strong></strong> {{errors}}
-        </div>
-      </ion-item>
-
-      <ion-item [hidden]="!success">
-        <div class="alert alert-success m-auto">
-         <a href="javascript:void(0)" class="close" (click)="success=null" title="close">×</a>
-         <strong></strong> {{success}}
-        </div>
-      </ion-item>
       
       <ion-button class="mt-4" expand="block" [disabled]="!editSave" (click)="updateProductPrice()">
-        {{this.product.id? 'Guardar cambios':'Crear Producto'}}
+        Guardar Cambios
         <ion-icon slot="start" name="save"></ion-icon>
       </ion-button>
     
     </ion-list>
 
-  <!--/form-->
-  <div *ngIf="showColor" class="panel-color">
-  <ion-backdrop class="block-window sc-ion-loading-md md backdrop-no-tappable hydrated" tabindex="-1" style=""></ion-backdrop>
-    <ion-card class="card-color">
-      <ion-card-header>
-        <ion-buttons>
-          <ion-card-subtitle  slot="start" >Selecciona la referencia del color</ion-card-subtitle>
-          <ion-button slot="end" (click)="showColor=false;" class="position-absolute r-0">
-            Cerrar <ion-icon slot="end" name="close-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-grid>
-          <ion-row>
-            <ion-col *ngFor="let color of colorList" class="label-color" [ngStyle]="{'background-color':color.value}"
-            (click)="setColor(color)">
-               <span class=" position-absolute" style="top: 47px;">{{color.name}}</span>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card-content>
-    </ion-card>
-  </div>
 </ion-content>

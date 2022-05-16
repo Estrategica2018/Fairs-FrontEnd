@@ -45,8 +45,8 @@
              <img [src]="userData.url_image" *ngIf="userData.url_image">
           </ion-thumbnail>
         
-        <label class="mt-2 label-uploadInput" for="uploadInput">Cambiar Imagen</label>
-        <input id="uploadInput" type="file" class="d-none" (change)="onSelectFile($event)" />
+        <label class="mt-2 label-uploadInput" for="uploadInput" (click)="onSelectFile($event)">Cambiar Imagen</label>
+        <!--input id="uploadInput" type="file" class="d-none" (change)="onSelectFile($event)" /-->
 
         </ion-col>
         <ion-col>

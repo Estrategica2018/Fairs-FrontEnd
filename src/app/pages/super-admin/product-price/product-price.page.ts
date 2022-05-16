@@ -8,6 +8,7 @@ import { AdminProductPricesService } from './../../../api/admin/productPrices.se
 import { Router, ActivatedRoute } from '@angular/router';
 import { ImagenListComponent } from '../imagen-list/imagen-list.component';
 import { AlertController, ModalController,IonRouterOutlet } from '@ionic/angular';
+import { ShowColorComponent } from './../../../pages/super-admin/product/show-color/show-color.component';
 
 @Component({
   selector: 'app-product-price',
@@ -28,13 +29,21 @@ export class ProductPricePage implements OnInit {
   editSave = false;
   showColor = false;
   attributeList: any;
-  newAttr = null;
   indexEditAttr = null;
   attrColor = null;
   attributes = null;
   
   //colorList = [{'name':'Negro','value':'black'},{'name':'Plata','value':'silver'},{'name':'Gris','value':'gray'},{'name':'Blanco','value':'white'},{'name':'Granate','value':'maroon'},{'name':'Rojo','value':'red    '},{'name':'Púrpura','value':'purple'},{'name':'Fucsia','value':'fuchsia'},{'name':'Verde','value':'green'},{'name':'Lima','value':'lime'},{'name':'Aceituna','value':'olive'},{'name':'Amarillo','value':'yellow'},{'name':'Armada','value':'navy'},{'name':'Azul','value':'blue'},{'name':'Verde azulado','value':'teal'},{'name':'Agua','value':'aqua'}];
   colorList : any;
+  attrListId = null;
+  attrFilter = [];
+  attrSelected = [ 'Talla','Precio','Tamaño','Peso','Ancho','Largo','Alto','Material','Diseño','Contenido','Olor','Sensación','Ingredientes ','Clidad ','Orgánico','Libre de transgénicos','Retardante de fuego','Certificado por','Aprobado por'];
+  
+  newAttrName = null;
+  newAttrValue = null;
+
+  
+  modal = null;
   
   constructor(
     private adminProductPricesService: AdminProductPricesService,
@@ -259,38 +268,55 @@ export class ProductPricePage implements OnInit {
     this.showColor = true;
   }
   
-  clearColor() { 
-    this.attrColor.name = 'Color';
-    this.attrColor.value = null;
-    this.attrColor.label = null;
-    this.editSave = true;
+  async presenterShowColor() {
+    
+    //if(this.modal) { this.modal.dismiss(); }
+    
+    this.modal = await this.modalCtrl.create({
+      component: ShowColorComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+    
+    if(data) {
+        this.productPrice.resources.colors = this.productPrice.resources.colors || [];
+        this.attrColor = {'name':'Color','label':data.colorSelected.name,'value':data.colorSelected.value };
+        this.productPrice.resources.attributes[ 0 ] = this.attrColor;
+        this.onChangeItem();
+    }
+  } 
+  
+  closeModal() {
+    this.modalCtrl.dismiss();
   }
   
-  setColor (color){
-    this.showColor = false;
-    this.attrColor = this.productPrice.resources.attributes[0];
-    this.attrColor.name = 'Color';
-    this.attrColor.value = color.value;
-    this.attrColor.label = color.name;
-    this.editSave = true;
+  clearColor(){
+    this.attrColor = {'name':'Color','label':'','value':''};
+    this.product.resources.attributes[ 0 ] = this.attrColor;
   }
+
+
   
-  addNewAttribute(){
-     this.newAttr={'name':'','value':''};
-     this.productPrice.resources.attributes.push(this.newAttr);
-     this.indexEditAttr = this.productPrice.resources.attributes.length - 1;
-  }
-  
-  addAttribute(){
-    if(this.newAttr.name.length > 0 && this.newAttr.value.length > 0) {
-      this.productPrice.resources.attributes.push(this.newAttr);
-      this.newAttr = null;
-      this.editSave = true;
+  addAttribute() {
+    if (this.newAttrName.length > 0 && this.newAttrValue.length > 0) {
+        this.productPrice.resources.attributes.push({
+            'name': this.newAttrName,
+            'value': this.newAttrValue
+        });
+        this.newAttrName = null;
+        this.newAttrValue = null;
+        this.editSave = true;
+        this.attrListId = null;
     }
   }
 
   showModifyAttr(i) {
     this.indexEditAttr = i;
+    this.attrListId = null;
   }
   
   modifyAttr(i) {
@@ -312,6 +338,27 @@ export class ProductPricePage implements OnInit {
     this.productPrice.price = null;
     this.editSave = true;
   }
-  
 
+   showAttr(index, attr) {
+     this.attrListId = index;
+     this.attrFilter = this.attrSelected.filter((attrSel)=>{
+         //return !attr.name || attrSel.toUpperCase().indexOf(attr.name.toUpperCase()) > 0;
+         return true;
+     });
+   }
+   
+   setAttrName(attrSel,i) {
+       if(i === -1) {
+           this.newAttrName = attrSel;
+           this.indexEditAttr = null;
+       }
+       else {
+        this.productPrice.resources.attributes[i].name = attrSel;
+       }
+       this.attrListId = null;
+   }
+   
+  onChangeItem() {
+    this.editSave = true;
+  }
 }

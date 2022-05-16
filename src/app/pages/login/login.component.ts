@@ -28,6 +28,7 @@ export class LoginComponent  implements OnInit {
   dark = false;
   modal = null;
   fair = null;
+  showConfirmAccount = null;
   loginForm: FormGroup;
   registerForm: FormGroup;
   recoveryForm: FormGroup;
@@ -81,6 +82,11 @@ export class LoginComponent  implements OnInit {
   
  ngOnInit() {
      this.showMenu = this.showMenu || 'login';    
+     
+     if(this.showMenu === 'singupConfirm') {
+       this.singupConfirmMsg = `Ingresa el código de verificación enviado al correo electrónico ${this.email_recovery}`;
+       this.showConfirmAccount = true;
+     }
      
      this.registerForm = this.formBuilder.group({
             name: ['', Validators.required],
@@ -166,12 +172,14 @@ export class LoginComponent  implements OnInit {
           const password = this.loginForm.value['password'];
           const email = this.loginForm.value['email'];
           const fairId = this.fair.id || this.fair.name;
+          
+          
           this.usersService.login(email,password, fairId)
           .subscribe(
             data => {
                 this.loading.dismiss();
                 const token = data.data;
-                this.usersService.setUser(Object.assign({password:password},{token:token},data.user)).then(() => {
+                this.usersService.setUser(Object.assign({token:token},data.user)).then(() => {
                   this.router.navigateByUrl('/schedule');
                   window.dispatchEvent(new CustomEvent('user:login'));
                 });
@@ -211,7 +219,7 @@ export class LoginComponent  implements OnInit {
         this.emailActivateError = false;
         //this.loading.dismiss();
         this.emailSingConfirm = this.registerForm.value['email'];
-        this.onSendSignConfirm(this.emailSingConfirm);
+        this.onSendSignConfirm(this.emailSingConfirm, this.fair.name);
       }
     },
     error => {
@@ -275,8 +283,9 @@ export class LoginComponent  implements OnInit {
         data => {
             const token = data.data;
             this.usersService.setUser(Object.assign(userData,{token:token})).then(() => {
-              this.router.navigateByUrl('/schedule');
-              window.dispatchEvent(new CustomEvent('user:signup'));
+              //this.router.navigateByUrl('/schedule');
+              //window.dispatchEvent(new CustomEvent('user:signup'));
+              window.location.reload();
             });
         },
         error => {
@@ -459,19 +468,22 @@ export class LoginComponent  implements OnInit {
      this.saveFair('Borrar elemento');
   }
   
-  onSendSignConfirm(email) {
+  onSendSignConfirm(email, fairName) {
     
     //this.loading.present({message:'Cargando...'});
     
-    this.usersService.sendSignConfirm(email)
+    this.usersService.sendSignConfirm(email, fairName)
     .then(data => {
-            
+        
+        this.singupConfirmMsg = "";
+        
         if(data.success === 201) {
             this.loading.dismiss();
             this.showMenu = 'singupConfirm';
             this.submitted = null;
             this.errors = null;
-            this.singupConfirmMsg = `Hemos enviado un correo electrónico a ${this.registerForm.value['email']} con el código de verificación`;
+            this.showConfirmAccount = true;
+            this.singupConfirmMsg = `Hemos enviado un correo electrónico a ${email} con el código de verificación`;
         }
         else {
             this.loading.dismiss();
@@ -489,7 +501,7 @@ export class LoginComponent  implements OnInit {
     this.loading.present({message:'Cargando...'});
     
     let code = this.singupConfirmForm.value['item1'] + this.singupConfirmForm.value['item2'] + this.singupConfirmForm.value['item3'] + this.singupConfirmForm.value['item4'] + this.singupConfirmForm.value['item5'] + this.singupConfirmForm.value['item6'];
-    
+    this.emailSingConfirm = this.emailSingConfirm || this.email_recovery;
     this.usersService.singupValidate(this.emailSingConfirm, code)
     .then(data => {
         if(data.error ) {
@@ -509,6 +521,7 @@ export class LoginComponent  implements OnInit {
         }
     },
     error => {
+
         this.loading.dismiss();
         this.errors = error;
     });
@@ -567,7 +580,11 @@ export class LoginComponent  implements OnInit {
   
   onDigitInput(event){
 
-    let element;
+    let element = null;
+    if(element == null) {
+        return;
+    }
+
     
     if (event.code !== 'Backspace') {
         

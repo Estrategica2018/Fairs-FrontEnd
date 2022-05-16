@@ -62,9 +62,12 @@ export class StandPage implements OnInit {
               this.merchants = merchants;
               
               if(standId) {
+                  
                   this.standsService.get(pavilionId,standId)
                    .then((stand) => { 
                       this.stand = stand;
+                      this.stand.resources = this.stand.resources || {'scenes':[]};
+                      
                       if(this.stand.merchant) {
                         this.merchant = this.stand.merchant;
                         this.stand.merchant_id = this.stand.merchant.id;
@@ -78,7 +81,15 @@ export class StandPage implements OnInit {
                           //create product catalog list
                           this.productCatalogList = [];
                           products.forEach((product)=>{
-                              product.url_image = product.prices[0].resources.images[0].url_image;
+                              
+                              if( product.prices && product.prices.length > 0 && 
+                                  product.prices[0].resources && product.prices[0].resources.images && 
+                                  product.prices[0].resources.images.length > 0 ) {
+                                product.url_image = product.prices[0].resources.images[0].url_image
+                              }
+                              
+                              product.url_image = product.url_image || 'https://cdn.shopify.com/s/files/1/0259/1467/1186/products/001AAAA854034016_03_500x.jpg?v=1572573226';
+                              
                               let hasCategory = false;
                               let category = null;
                               if(this.productCatalogList.length > 0) {
@@ -93,7 +104,7 @@ export class StandPage implements OnInit {
                                 category = {'id':product.category.id,'name':product.category.name, 'products': []};
                                 this.productCatalogList.push(category);
                               }
-                              product.url_image = product.prices && product.prices.length > 0 && product.prices[0].resources.images[0].url_image ? product.prices[0].resources.images[0].url_image : 'https://cdn.shopify.com/s/files/1/0259/1467/1186/products/001AAAA854034016_03_500x.jpg?v=1572573226';
+                              
                               category.products.push(product);
                           });
                           
@@ -267,10 +278,6 @@ export class StandPage implements OnInit {
     
   }
   
-  
-  addNewProduct() {
-   
-  }
   
   onRouterLink(tab) {
     this.router.navigate([tab]);

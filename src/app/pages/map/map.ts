@@ -12,12 +12,14 @@ import { ProductDetailComponent } from '../product-catalog/product-detail/produc
 import { DomSanitizer } from '@angular/platform-browser';
 import { UsersService } from '../../api/users.service';
 import { ModalController, IonRouterOutlet,ToastController } from '@ionic/angular';
+import { PopoverController, ActionSheetController  } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SpeakerDetailComponent } from '../speaker-list/speaker-detail/speaker-detail.component';
 import { SpeakersService } from '../../api/speakers.service';
 import { ShoppingCartComponent } from '../shopping-cart/shopping-cart-component/shopping-cart-component';
 import { LoginComponent } from '../login/login.component';
 import { environment, SERVER_URL } from '../../../environments/environment';
+
 
 @Component({
   selector: 'page-map',
@@ -72,7 +74,9 @@ export class MapPage implements OnInit {
     private routerOutlet: IonRouterOutlet,
     private formBuilder: FormBuilder,
     private toastCtrl: ToastController,
-    private speakersService: SpeakersService) {
+    private speakersService: SpeakersService,
+    private popoverCtrl: PopoverController,
+    private actionSheetController: ActionSheetController,) {
         
       this.listenForFullScreenEvents();
       this.initializeListeners();
@@ -248,6 +252,7 @@ export class MapPage implements OnInit {
      main.style.top = top + 'px';
     
      let newWidth = offsetWidth;//main.offsetWidth;
+     
      const offsetHeight = window.innerHeight - top;
       
      let deltaW =  this.scene.container.w / newWidth;
@@ -274,31 +279,21 @@ export class MapPage implements OnInit {
             if(banner.fontSize > 0 ) banner.fontSize /= deltaW;
             if(banner.border && banner.border.radius > 0) banner.border.radius /= deltaH;
             if(banner.productCatalog ) {
-               if(banner.productCatalog.buttonWidth > 0) banner.productCatalog.buttonWidth /= deltaW;
-               if(banner.productCatalog.buttonHeight > 0) banner.productCatalog.buttonHeight /= deltaW;
-               if(banner.productCatalog.buttonFontSize > 0) banner.productCatalog.buttonFontSize /= deltaW;
-               if(banner.productCatalog.buttonFontWeight > 0) banner.productCatalog.buttonFontWeight /= deltaW;
-               if(banner.productCatalog.buttonRight > 0) banner.productCatalog.buttonRight /= deltaW;
-               if(banner.productCatalog.buttonBottom > 0) banner.productCatalog.buttonBottom /= deltaW;
-               
-               if(banner.productCatalog.titleFontSize > 0) banner.productCatalog.titleFontSize /= deltaW;
-               if(banner.productCatalog.titleFontWeight > 0) banner.productCatalog.titleFontWeight /= deltaW;
-               if(banner.productCatalog.titleLeft > 0) banner.productCatalog.titleLeft /= deltaW;
-               if(banner.productCatalog.titleTop > 0) banner.productCatalog.titleTop /= deltaW;
-               if(banner.productCatalog.descTop > 0) banner.productCatalog.descTop /= deltaW;
-               if(banner.productCatalog.descLeft > 0) banner.productCatalog.descLeft /= deltaW;
-               if(banner.productCatalog.descWidth > 0) banner.productCatalog.descWidth /= deltaW;
-               if(banner.productCatalog.descFontSize > 0) banner.productCatalog.descFontSize /= deltaW;
-               //if(banner.productCatalog.lineHeight > 0) banner.productCatalog.lineHeight /= deltaH;
-               
-               if(banner.productCatalog.priceTop > 0) banner.productCatalog.priceTop /= deltaW;
-               if(banner.productCatalog.priceLeft > 0) banner.productCatalog.priceLeft /= deltaW;
-               if(banner.productCatalog.priceFontSize > 0) banner.productCatalog.priceFontSize /= deltaW;
-               if(banner.productCatalog.imageTop > 0) banner.productCatalog.imageTop /= deltaW;
-               if(banner.productCatalog.imageLeft > 0) banner.productCatalog.imageLeft /= deltaW;
-               if(banner.productCatalog.imagesWidth > 0) banner.productCatalog.imagesWidth /= deltaW;
-               if(banner.productCatalog.imagesHeight > 0) banner.productCatalog.imagesHeight /= deltaW;
-               if(banner.productCatalog.imagesPriceWidth > 0) banner.productCatalog.imagesPriceWidth /= deltaW;
+               ['buttonWidth','buttonHeight','buttonFontSize','buttonFontWeight','buttonRight',
+                'buttonBottom','titleFontSize','titleFontWeight','titleLeft','titleTop','descTop',
+                'descLeft','descWidth','descFontSize','lineHeight','priceTop','priceLeft','priceFontSize',
+                'imageTop','imageLeft','imagesWidth','imagesHeight','imagesPriceWidth'].forEach((attr)=>{
+                   if(banner.productCatalog[attr] > 0 ) banner.productCatalog[attr] /= deltaW;
+               });
+            }
+            if(banner.speakerCatalog ) {
+               ['descFontSize','descFontWeight','descHeigth','descLeft','descTop','descWidth','titleTop',
+                'imagesHeight','imagesLeft','imagesPriceWidth','imagesTop','imagesWidth','imagestitleWidth',
+                 'lineHeight','lineHeightMili','lineHeightUnit','logoHeight','logoLeft','logoTop','logoWidth',
+                 'nameFontSize','nameFontWeight','nameHeight','nameLeft','nameTop','nameWidth','priceLeft','priceTop',
+                 'professionFontSize','professionLeft','professionTop','titleFontSize','titleLeft'].forEach((attr)=>{
+                   if(banner.speakerCatalog[attr] > 0 ) banner.speakerCatalog[attr] /= deltaW;
+               });
             }
         }
         
@@ -588,10 +583,14 @@ export class MapPage implements OnInit {
           product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
       });
       
+      banner.__catalog.productCatalogEnd =  (( Math.floor( (banner.__catalog.products.length +1) / banner.__factor ) * banner.size.y));
+      
       const main = document.querySelector<HTMLElement>('ion-router-outlet');
-      const left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+      let left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
+      if(left <=0 ) left = 10;
       const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
       if(bannerDom) bannerDom.style.left =  ( left / 2 ) + 'px';
+      
   }
   
   
@@ -661,7 +660,7 @@ export class MapPage implements OnInit {
         'email': form.value.email,
         'subject': form.value.subject,
         'message': form.value.message,
-		'fairId': this.fair.id
+        'fairId': this.fair.id
       };
       
       this.loading.present({message:'Cargando...'});
@@ -775,4 +774,33 @@ export class MapPage implements OnInit {
     console.log($event);
   } 
 
+  async presentActionProduct(product) {
+    
+    const actionSheet = await this.actionSheetController.create({
+      buttons: [{
+        text: 'Ver detalle',
+        role: 'destructive', 
+        cssClass: 'customCSSClass',
+        handler: () => {
+          this.onShowProduct(product);
+        }
+      },{
+        text: 'Editar producto',
+        role: 'destructive',
+        handler: () => {
+          window.dispatchEvent(new CustomEvent( 'map:fullscreenOff'));
+          this.goToEditProduct(product);
+        }
+      }]
+    });
+    await actionSheet.present();
+
+    const { role } = await actionSheet.onDidDismiss();
+    
+  }
+
+  goToEditProduct(product){
+    const uri = '/super-admin/product/' + product.stand.pavilion_id + '/' + product.stand_id + '/' + product.id;
+    this.router.navigate([uri])
+  }
 }

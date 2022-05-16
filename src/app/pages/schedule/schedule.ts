@@ -144,7 +144,7 @@ export class SchedulePage implements OnInit {
   
   transformSchedule() {
   
-        const months = ['Ene','Feb','Marzo','Abr','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        const months = ['Ene','Feb','Marzo','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
         this.groups = [];
         this.categories = [];
         let filterCount = 0;
@@ -158,6 +158,7 @@ export class SchedulePage implements OnInit {
             const strMinutes = timeZone.format('mm');
             
             const time = timeZone.format('YYYY-MM-DD');
+            console.log(time);
             const month = Number(timeZone.format('MM'));
             const strSignature = Number(timeZone.format('HH')) > 12 ? 'PM' : 'AM';
             const strYear = timeZone.format('YYYY');

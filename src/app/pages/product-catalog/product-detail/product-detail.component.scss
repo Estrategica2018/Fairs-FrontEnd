@@ -78,6 +78,7 @@ $blue-light-color: #F5F6FF;
   font-size: 1.2em;
   margin-top: 4em;
   padding: 0em 0.5em;
+  height: 252px;
   .head {
     background: #7163AA;
     text-align: center;
@@ -140,9 +141,10 @@ $blue-light-color: #F5F6FF;
 }
 
 .attribute-scroll {
-  height: 18em;
+  height: 15em;
   overflow: auto;
 }
+
 
 .group-container {
   padding: 0.5em;

@@ -119,7 +119,7 @@ export class AgendaPage implements OnInit {
         'email': form.value.email,
         'subject': form.value.subject,
         'message': form.value.message,
-		'fairId': this.fair.id
+        'fairId': this.fair.id
       };
       
       this.loading.present({message:'Cargando...'});
@@ -344,6 +344,9 @@ export class AgendaPage implements OnInit {
     const meeting_id = this.agenda.id;
       
     if(this.userDataSession!=null) {
+        
+        this.loading.present({message:'Cargando...'});
+        
         const email = this.userDataSession.email;
         this.agendasService.generateVideoToken(fair_id, meeting_id, this.userDataSession)
         .then( response => {
@@ -353,7 +356,10 @@ export class AgendaPage implements OnInit {
           //window.open(url, '_blank').focus();
           const windowReference = window.open();
           windowReference.location.href = url;
+          this.loading.dismiss();
+          
         },error => {
+           this.loading.dismiss();
            this.errors = error;
         });
     }

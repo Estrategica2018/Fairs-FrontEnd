@@ -1,0 +1,21 @@
+
+  <div class="panel-color">
+  
+    <ion-card class="card-color">
+      <ion-card-header>
+        <ion-buttons>
+          <ion-card-subtitle  slot="start" >Selecciona la referencia del color</ion-card-subtitle>
+        </ion-buttons>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col *ngFor="let color of colorList" class="label-color" [ngStyle]="{'background-color':color.value}"
+            (click)="setColor(color)">
+               <span class=" position-absolute" style="top: 47px;">{{color.name}}</span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
