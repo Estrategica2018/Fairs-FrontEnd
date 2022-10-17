@@ -41,6 +41,11 @@ export class SpeakerPage implements OnInit {
       this.speakers = speakers;
     });
   }
+
+  ngDoCheck(){
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
+  
   store() {
 
     this.loading.present({message: 'Cargando...'});

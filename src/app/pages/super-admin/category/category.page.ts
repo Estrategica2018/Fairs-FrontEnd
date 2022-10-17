@@ -33,6 +33,10 @@ export class CategoryPage implements OnInit {
   ) {
   }
 
+  ngDoCheck(){
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
+  
   ngOnInit() {
     this.category = {
       type: '',

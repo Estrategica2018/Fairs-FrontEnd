@@ -1,331 +1,355 @@
 <div class="card w-100">
   <div class="info" [hidden]="admin || showMenu === 'terms'">
-    <ion-icon color="primary" name="person-outline"></ion-icon>    
+    <ion-icon color="primary" name="person-outline"></ion-icon>
   </div>
   <div class="info-background">
   </div>
   <div (click)="showMenu === 'terms' && !admin ?  showMenu = 'singup' : closeModal() " class="close-modal">
-  <ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
-  
+    <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+  </div>
+
   <div *ngIf="showMenu == 'login'">
     <h2 class="name ion-text-center title-modal">Inicio de sesión </h2>
     <div class="padding-container min-height">
-          <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" class="mt-3">
-            <ion-list-header>
-               Ingresa con los datos de tu usuario
-            </ion-list-header>
-              <ion-list>
-                    <ion-grid>
-                      <ion-row>
-                        <ion-col>
-                            <ion-label position="stacked" class="fs-1">
-                                Email <span class="required"> (*) </span>
-                            </ion-label>
-                            <input type="text" formControlName="email" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && l.email.errors }" />
-                            <div *ngIf="submitted && l.email.errors" class="invalid-feedback">
-                                <div *ngIf="l.email.errors.required">Campo requerido</div>
-                                <div *ngIf="l.email.errors.email">Email inválido</div>
-                            </div>
-                        </ion-col>
-                      </ion-row>
-                      <ion-row>
-                        <ion-col>
-                            <ion-label position="stacked" class="fs-1">
-                                Contraseña <span class="required"> (*) </span>
-                            </ion-label>
-                            <input type="password" formControlName="password" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && l.password.errors }" />
-                            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                                <div *ngIf="f.password.errors.required">Campo requerido</div>
-                                <div *ngIf="f.password.errors.minlength">Longitud mínima 6 caracteres</div>
-                            </div>
-                        </ion-col>
-                      </ion-row>
-                      <ion-row>
-                        <ion-col>
-                          <ion-button type="submit" expand="block">Ingresar</ion-button>
-                        </ion-col>
-                        <ion-col>
-                          <ion-button (click)="onCreateRegister()" color="light" expand="block">Registrar usuario</ion-button>
-                        </ion-col>
-                      </ion-row>
-                      <ion-row>
-                        <ion-button class="no-border"
-                        (click)="showMenu = 'recovery'; submitted = false;" shape="round" size="small" fill="outline">Recuperar contraseña</ion-button>
-                      </ion-row>
-                    </ion-grid>
-                  <ion-item [hidden]="!errors" class="not-found">
-                     <div class="alert alert-danger alert-dismissible">
-                      <a href="javascript:void(0)" class="close" aria-label="close" 
-                      (click)="errors=null" title="close">×</a>
-                      <strong></strong> {{errors}}
-                     </div>
-                  </ion-item>
-             </ion-list>
-         
-          </form>
+      <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" class="mt-3">
+        <ion-list-header>
+          Ingresa con los datos de tu usuario
+        </ion-list-header>
+        <ion-list>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label position="stacked" class="fs-1">
+                  Email <span class="required"> (*) </span>
+                </ion-label>
+                <input type="text" formControlName="email" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': submitted && l.email.errors }" />
+                <div *ngIf="submitted && l.email.errors" class="invalid-feedback">
+                  <div *ngIf="l.email.errors.required">Campo requerido</div>
+                  <div *ngIf="l.email.errors.email">Email inválido</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-label position="stacked" class="fs-1">
+                  Contraseña <span class="required"> (*) </span>
+                </ion-label>
+                <input type="password" formControlName="password" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': submitted && l.password.errors }" />
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required">Campo requerido</div>
+                  <div *ngIf="f.password.errors.minlength">Longitud mínima 6 caracteres</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-button type="submit" expand="block">Ingresar</ion-button>
+              </ion-col>
+              <ion-col>
+                <ion-button (click)="onCreateRegister()" color="light" expand="block">Registrar usuario</ion-button>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-button class="no-border" (click)="showMenu = 'recovery'; submitted = false;" shape="round"
+                size="small" fill="outline">Recuperar contraseña</ion-button>
+            </ion-row>
+          </ion-grid>
+          <ion-item [hidden]="!errors" class="not-found">
+            <div class="alert alert-danger alert-dismissible">
+              <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+              <strong></strong> {{errors}}
+            </div>
+          </ion-item>
+        </ion-list>
+
+      </form>
     </div>
   </div>
   <div *ngIf="showMenu == 'singup'">
-    <div> 
-    <ion-buttons slot="primary">
-        <div slot="start"    class="back-button cursor-pointer" (click)="showMenu = 'login'; submitted = false">
+    <div>
+      <ion-buttons slot="primary">
+        <div slot="start" class="back-button cursor-pointer" (click)="showMenu = 'login'; submitted = false">
           <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
           <div> Iniciar sesión</div>
         </div>
-        <div *ngIf="showConfirmAccount" class="forward-button cursor-pointer" (click)="showMenu = 'singupConfirm'; submitted = false">
-          <div> Confirmar cuenta</div> 
+        <div *ngIf="showConfirmAccount" class="forward-button cursor-pointer"
+          (click)="showMenu = 'singupConfirm'; submitted = false">
+          <div> Confirmar cuenta</div>
           <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
         </div>
-    </ion-buttons>    
+      </ion-buttons>
 
     </div>
     <h2 class="name ion-text-center title-modal">Registro de usuario </h2>
     <div class="padding-container scroll-90 min-height-register">
-        <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
-          <ion-list-header style="margin-top: -1em;">
-             Formulario para la creación de usuario
-          </ion-list-header>
-          <ion-list style="    margin-top: -16px;">
-                <ion-grid>
-                  <ion-row>
-                    <ion-col>
-                        <ion-label position="stacked" class="fs-1">
-                            Nombre <span class="required"> (*) </span>
-                        </ion-label>
-                        <input type="text" formControlName="name"  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
-                        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-                            <div *ngIf="f.name.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                    <ion-col>
-                        <ion-label position="stacked" class="fs-1">
-                            Apellido <span class="required"> (*) </span>
-                        </ion-label>
-                        <input type="text" formControlName="last_name" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.last_name.errors }" />
-                        <div *ngIf="submitted && f.last_name.errors" class="invalid-feedback">
-                            <div *ngIf="f.last_name.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                   </ion-row>
-                  <ion-row>
-                    <ion-col>
-                        <ion-label position="stacked" class="fs-1">
-                            Email <span class="required"> (*) </span>
-                        </ion-label>
-                        <input type="text" formControlName="email" class="fs-1 mt-3 form-control" 
-                        [ngClass]="{ 'is-invalid': ( submitted && f.email.errors ) || emailActivateError }" />
-                        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                            <div *ngIf="f.email.errors.required">Campo requerido</div>
-                            <div *ngIf="f.email.errors.email">Email inválido</div>
-                        </div>
-                        <div *ngIf="emailActivateError" class="invalid-feedback">
-                            <div>Esta cuenta ya está en uso</div>
-                        </div>
-                      </ion-col>
-                   </ion-row>
-                  <ion-row>
-                    <ion-col>
-                        <ion-label position="stacked" class="fs-1">
-                            Contraseña <span class="required"> (*) </span>
-                        </ion-label>
-                        <input type="password" formControlName="password" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                            <div *ngIf="f.password.errors.required">Campo requerido</div>
-                            <div *ngIf="f.password.errors.minlength">Longitud mínima 6 caracteres</div>
-                        </div>
-                      </ion-col>
-                   </ion-row>
-                  <ion-row>
-                    <ion-col>
-                        <ion-label position="stacked" class="fs-1">
-                            Confirmar Contraseña <span class="required"> (*) </span>
-                        </ion-label>
-                        <input type="password" formControlName="confirmPassword" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-                        <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-                            <div *ngIf="f.confirmPassword.errors.required">Campo requerido</div>
-                            <div *ngIf="f.confirmPassword.errors.mustMatch">Contraseñas no coinciden</div>
-                        </div>
-                      </ion-col>
-                   </ion-row>
-                  <ion-row>
-                    <ion-col size="8">
-                        <ion-checkbox formControlName="acceptTerms" id="acceptTerms" class="mt-3" [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }"> </ion-checkbox>
-                        <ion-label position="stacked" class="fs-1 acceptTerms ml-3">
-                        Acepto términos y condiciones
-                        <ion-button class="no-border"  (click)="onShowTerms()" shape="round" size="small" fill="outline">
-                        Ver términos y condiciones</ion-button>
-                        </ion-label>
-                        <div *ngIf="submitted && f.acceptTerms.errors" class="invalid-feedback acceptMsg"> Campo requerido</div>
-                      </ion-col>
-                    <ion-col size="4">
-                        <ion-button expand="full" type="submit">Registrar usuario</ion-button>
-                    </ion-col>
-                   </ion-row>
-                </ion-grid>
-              <ion-item [hidden]="!errors" class="not-found">
-                 <div class="alert alert-danger alert-dismissible">
-                  <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+        <ion-list-header style="margin-top: -1em;">
+          Formulario para la creación de usuario
+        </ion-list-header>
+        <ion-list style="    margin-top: -16px;">
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label position="stacked" class="fs-1">
+                  Nombre <span class="required"> (*) </span>
+                </ion-label>
+                <input type="text" formControlName="name" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+                <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                  <div *ngIf="f.name.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+              <ion-col>
+                <ion-label position="stacked" class="fs-1">
+                  Apellido <span class="required"> (*) </span>
+                </ion-label>
+                <input type="text" formControlName="last_name" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': submitted && f.last_name.errors }" />
+                <div *ngIf="submitted && f.last_name.errors" class="invalid-feedback">
+                  <div *ngIf="f.last_name.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-label position="stacked" class="fs-1">
+                  Email <span class="required"> (*) </span>
+                </ion-label>
+                <input type="text" formControlName="email" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': ( submitted && f.email.errors ) || emailActivateError }" />
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Campo requerido</div>
+                  <div *ngIf="f.email.errors.email">Email inválido</div>
+                </div>
+                <div *ngIf="emailActivateError" class="invalid-feedback">
+                  <div>Esta cuenta ya está en uso</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-label position="stacked" class="fs-1">
+                  Contraseña <span class="required"> (*) </span>
+                </ion-label>
+                <input type="password" formControlName="password" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required">Campo requerido</div>
+                  <div *ngIf="f.password.errors.minlength">Longitud mínima 6 caracteres</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-label position="stacked" class="fs-1">
+                  Confirmar Contraseña <span class="required"> (*) </span>
+                </ion-label>
+                <input type="password" formControlName="confirmPassword" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+                <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback" style="position: relative;">
+                  <div *ngIf="f.confirmPassword.errors.required">Campo requerido</div>
+                  <div *ngIf="f.confirmPassword.errors.mustMatch">Contraseñas no coinciden</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row [hidden]="!errors">
+              <ion-item class="not-found">
+                <div class="alert alert-danger alert-dismissible">
+                  <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null"
+                    title="close">×</a>
                   <strong></strong> {{errors}}
-                 </div>
+                </div>
               </ion-item>
-         </ion-list>
+            </ion-row>
+            <ion-row>
+              <ion-col size="8">
+                <ion-checkbox formControlName="acceptTerms" id="acceptTerms" class="mt-3"
+                  [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }"> </ion-checkbox>
+                  <div *ngIf="submitted && f.acceptTerms.errors" class="invalid-feedback accept-termns-condition"> Campo requerido</div>
+                <ion-label position="stacked" class="fs-1 acceptTerms ml-3">
+                  Acepto términos y condiciones
+                  <ion-button class="no-border" (click)="onShowTerms()" shape="round" size="small" fill="outline">
+                    Ver términos y condiciones</ion-button>
+                </ion-label>
+                
+              </ion-col>
+              <ion-col size="4">
+                <ion-button expand="full" type="submit">Registrar usuario</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+        </ion-list>
       </form>
-     </div>
+    </div>
   </div>
   <div *ngIf="showMenu == 'singupConfirm'">
-    <div (click)="showMenu = 'singup'; submitted = false"> 
-        <div ion-button class="back-button cursor-pointer">
-          <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-          <div> Registrar usuario </div>
-        </div>
+    <div (click)="showMenu = 'singup'; submitted = false">
+      <div ion-button class="back-button cursor-pointer">
+        <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+        <div> Registrar usuario </div>
+      </div>
     </div>
     <h2 class="name ion-text-center title-modal" style="margin-top: 2.5em;">Confirmar cuenta</h2>
     <div class="padding-container scroll-90 min-height">
-        <form [formGroup]="singupConfirmForm" (ngSubmit)="onSingupValidate()" class="mt-3'">
-          <ion-item class="not-found">
-             <div class="alert alert-success" *ngIf="singupConfirmMsg">
-              <strong></strong> {{singupConfirmMsg}}
-             </div>
+      <form [formGroup]="singupConfirmForm" (ngSubmit)="onSingupValidate()" class="mt-3'">
+        <ion-item class="not-found">
+          <div class="alert alert-success" *ngIf="singupConfirmMsg">
+            <strong></strong> {{singupConfirmMsg}}
+          </div>
+        </ion-item>
+        <ion-list-header [ngStyle]="{ 'margin-top': ( !errors && !success ) ? '0em' : '-0.8em' }">
+          Ingresa el código de verificación
+        </ion-list-header>
+        <ion-list>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <input maxlength="1" (paste)="paste($event)" #digitSix (keyup)="onDigitInput($event)" type="text"
+                  formControlName="item1" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': submitted && sc.item1.errors }" />
+                <div *ngIf="submitted && sc.item1.errors" class="invalid-feedback">
+                  <div *ngIf="sc.item1.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+              <ion-col>
+                <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item2"
+                  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item2.errors }" />
+                <div *ngIf="submitted && sc.item2.errors" class="invalid-feedback">
+                  <div *ngIf="sc.item2.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+              <ion-col>
+                <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item3"
+                  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item3.errors }" />
+                <div *ngIf="submitted && sc.item3.errors" class="invalid-feedback">
+                  <div *ngIf="sc.item3.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+              <ion-col>
+                <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item4"
+                  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item4.errors }" />
+                <div *ngIf="submitted && sc.item4.errors" class="invalid-feedback">
+                  <div *ngIf="sc.item4.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+              <ion-col>
+                <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item5"
+                  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item5.errors }" />
+                <div *ngIf="submitted && sc.item5.errors" class="invalid-feedback">
+                  <div *ngIf="sc.item5.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+              <ion-col>
+                <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item6"
+                  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item6.errors }" />
+                <div *ngIf="submitted && sc.item6.errors" class="invalid-feedback">
+                  <div *ngIf="sc.item6.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="8" class="m-auto">
+                <ion-button [disabled]="singupConfirmForm.invalid" expand="full" type="submit">Confirmar código
+                </ion-button>
+              </ion-col>
+            </ion-row>
+
+
+          </ion-grid>
+          <ion-item [hidden]="!errors" class="not-found">
+            <div class="alert alert-danger alert-dismissible">
+              <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+              <strong></strong> {{errors}}
+            </div>
           </ion-item>
-          <ion-list-header [ngStyle]="{ 'margin-top': ( !errors && !success ) ? '0em' : '-0.8em' }">
-             Ingresa el código de verificación
-          </ion-list-header>
-          <ion-list>
-                <ion-grid>
-                  <ion-row>
-                    <ion-col>
-                        <input maxlength="1" (paste)="paste($event)" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item1" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item1.errors }" />
-                        <div *ngIf="submitted && sc.item1.errors" class="invalid-feedback">
-                            <div *ngIf="sc.item1.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                    <ion-col>
-                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item2" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item2.errors }" />
-                        <div *ngIf="submitted && sc.item2.errors" class="invalid-feedback">
-                            <div *ngIf="sc.item2.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                    <ion-col>
-                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item3" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item3.errors }" />
-                        <div *ngIf="submitted && sc.item3.errors" class="invalid-feedback">
-                            <div *ngIf="sc.item3.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                    <ion-col>
-                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item4" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item4.errors }" />
-                        <div *ngIf="submitted && sc.item4.errors" class="invalid-feedback">
-                            <div *ngIf="sc.item4.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                    <ion-col>
-                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item5" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item5.errors }" />
-                        <div *ngIf="submitted && sc.item5.errors" class="invalid-feedback">
-                            <div *ngIf="sc.item5.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                    <ion-col>
-                        <input maxlength="1"  #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item6" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item6.errors }" />
-                        <div *ngIf="submitted && sc.item6.errors" class="invalid-feedback">
-                            <div *ngIf="sc.item6.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                   </ion-row>
-                  <ion-row>
-                    <ion-col size="8" class="m-auto">
-                        <ion-button [disabled]="singupConfirmForm.invalid" expand="full" type="submit">Confirmar código</ion-button>
-                    </ion-col>
-                   </ion-row>
-                  
-                  
-                </ion-grid>
-              <ion-item [hidden]="!errors" class="not-found">
-                 <div class="alert alert-danger alert-dismissible">
-                  <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-                  <strong></strong> {{errors}}
-                 </div>
-              </ion-item>
-         </ion-list>
+        </ion-list>
       </form>
-     </div>
+    </div>
   </div>
   <div *ngIf="showMenu == 'recovery'">
-    <div (click)="showMenu = 'login'; submitted = false" [hidden]="userDataSession"> 
-        <div ion-button class="back-button cursor-pointer">
-          <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-          <div> Iniciar sesión</div>
-        </div>
+    <div (click)="showMenu = 'login'; submitted = false" [hidden]="userDataSession">
+      <div ion-button class="back-button cursor-pointer">
+        <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+        <div> Iniciar sesión</div>
+      </div>
     </div>
-    <h2 class="name ion-text-center title-modal">Recuperar contraseña </h2> 
+    <h2 class="name ion-text-center title-modal">Recuperar contraseña </h2>
     <div class="padding-container scroll-90 min-height">
-        <form [formGroup]="recoveryForm" (ngSubmit)="onRecoverySubmit()" class="mt-3">
-          <ion-list-header>
-             Ingresa la dirección de correo electrónico
-          </ion-list-header>
-          <ion-list>
-                <ion-grid>
-                  <ion-row>
-                    <ion-col>
-                        <ion-label position="stacked" class="fs-1">
-                            Email <span class="required"> (*) </span>
-                        </ion-label>
-                        <input type="text" formControlName="email" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && g.email.errors }" />
-                        <div *ngIf="submitted && g.email.errors" class="invalid-feedback">
-                            <div *ngIf="g.email.errors.email">Email inválido</div>
-                            <div *ngIf="g.email.errors.required">Campo requerido</div>
-                        </div>
-                      </ion-col>
-                   </ion-row>
-                  <ion-row>
-                    <ion-col size="8">
-                        <ion-button expand="full" type="submit">Recuperar clave</ion-button>
-                    </ion-col>
-                   </ion-row>
-                </ion-grid>
-              <ion-item *ngIf="errors" class="not-found">
-                 <div class="alert alert-danger alert-dismissible">
-                  <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-                  <strong></strong> {{errors}}
-                 </div>
-              </ion-item>
-              <ion-item *ngIf="success" class="not-found">
-                 <div class="alert alert-success alert-dismissible">
-                  <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
-                  <strong></strong> {{success}}
-                 </div>
-              </ion-item>
-         </ion-list>
+      <form [formGroup]="recoveryForm" (ngSubmit)="onRecoverySubmit()" class="mt-3">
+        <ion-list-header>
+          Ingresa la dirección de correo electrónico
+        </ion-list-header>
+        <ion-list>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label position="stacked" class="fs-1">
+                  Email <span class="required"> (*) </span>
+                </ion-label>
+                <input type="text" formControlName="email" class="fs-1 mt-3 form-control"
+                  [ngClass]="{ 'is-invalid': submitted && g.email.errors }" />
+                <div *ngIf="submitted && g.email.errors" class="invalid-feedback">
+                  <div *ngIf="g.email.errors.email">Email inválido</div>
+                  <div *ngIf="g.email.errors.required">Campo requerido</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="8">
+                <ion-button expand="full" type="submit">Recuperar clave</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-item *ngIf="errors" class="not-found">
+            <div class="alert alert-danger alert-dismissible">
+              <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+              <strong></strong> {{errors}}
+            </div>
+          </ion-item>
+          <ion-item *ngIf="success" class="not-found">
+            <div class="alert alert-success alert-dismissible">
+              <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+              <strong></strong> {{success}}
+            </div>
+          </ion-item>
+        </ion-list>
       </form>
-     </div>
+    </div>
   </div>
   <div *ngIf="showMenu === 'terms'">
     <div (click)="showMenu = 'singup';" [hidden]="showMenu === 'terms'">
-        <div ion-button class="back-button cursor-pointer">
-          <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-          <div> </div>
-        </div>
+      <div ion-button class="back-button cursor-pointer">
+        <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+        <div> </div>
+      </div>
     </div>
-    <h2 class="name ion-text-center title-modal">Términos y condiciones </h2> 
+    <h2 class="name ion-text-center title-modal">Términos y condiciones </h2>
     <ion-list class="padding-container scroll-90" style="height: 49em">
-        <div *ngFor="let item of fair?.resources?.terms?.elements; let i = index;" >
-            <div class="item-add mt-3 mb-3">
-            <div *ngIf="admin" class="delete-terms" [ngClass]="{'video': item.video,'paragraph': item.paragraph}">
-              <ion-button class="fs-0" size="small" color="danger" fill="outline" (click)="onDeleteItemAdded(i)">
-                 <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-              </ion-button>
-            </div>
-            <ion-thumbnail class="thumbnail" slot="start" *ngIf="item.url">
-              <ion-img [src]="item.url"></ion-img>
-            </ion-thumbnail>
-            <iframe *ngIf="item.video" [src]="item.video.sanitizer" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen >
-            </iframe>
-            <h6 *ngIf="item.paragraph" class="description ion-text-justify pr-4 pt-2"><small>{{item.paragraph}}</small></h6>
+      <div *ngFor="let item of fair?.resources?.terms?.elements; let i = index;">
+        <div class="item-add mt-3 mb-3">
+          <div *ngIf="admin" class="delete-terms" [ngClass]="{'video': item.video,'paragraph': item.paragraph}">
+            <ion-button class="fs-0" size="small" color="danger" fill="outline" (click)="onDeleteItemAdded(i)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
           </div>
-       </div>
-       <h6 class="description ion-text-justify pr-4 pt-2"></h6>
-        <ion-button expand="full" color="secondary" (click)="presentActionAdd()" *ngIf="admin">
-          Añadir elemento
-        </ion-button>
-     </ion-list>
+          <ion-thumbnail class="thumbnail" slot="start" *ngIf="item.url">
+            <ion-img [src]="item.url"></ion-img>
+          </ion-thumbnail>
+          <iframe *ngIf="item.video" [src]="item.video.sanitizer" frameborder="0" webkitallowfullscreen
+            mozallowfullscreen allowfullscreen>
+          </iframe>
+          <h6 *ngIf="item.paragraph" class="description ion-text-justify pr-4 pt-2"><small>{{item.paragraph}}</small>
+          </h6>
+        </div>
+      </div>
+      <h6 class="description ion-text-justify pr-4 pt-2"></h6>
+      <ion-button expand="full" color="secondary" (click)="presentActionAdd()" *ngIf="admin">
+        Añadir elemento
+      </ion-button>
+    </ion-list>
   </div>
 
 </div>

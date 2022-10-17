@@ -299,7 +299,7 @@ export class ScheduleDetailComponent {
         this.loading.present({message:'Cargando...'});
         
         const email = this.userDataSession.email;
-        this.agendasService.generateVideoToken(fair_id, meeting_id, this.userDataSession)
+        this.agendasService.generateMeetingToken(fair_id, meeting_id, this.userDataSession)
         .then( response => {
           const token = response.data;                  
           const url = `${this.url}/viewerZoom/meetings/${token}`;

@@ -30,12 +30,12 @@ export class TabMenuScenesComponent {
         const offsetHeight = window.innerHeight - top;
 
         let offsetSizeTab = ( tabMenuObj.icon ) ? 174 : 74; //px
-        if (tabMenuObj.actions) {
-            tabMenuObj.actions.forEach((action) => {
-                offsetSizeTab += 50;
-                offsetSizeTab += ((position == 'bottom' || position == 'top') && action.title) ? action.title.length * 6 : 0;
-            });
-        }
+        tabMenuObj.actions = tabMenuObj.actions || [];
+
+        tabMenuObj.actions.forEach((action) => {
+            offsetSizeTab += 50;
+            offsetSizeTab += ((position == 'bottom' || position == 'top') && action.title) ? action.title.length * 6 : 0;
+        });
         
         if (position === 'left') {
             this.marginMenuTabs = {
@@ -51,13 +51,14 @@ export class TabMenuScenesComponent {
          
         //divTabMenu.offsetLeft
         let size = ( tabMenuObj.icon ? 44 : 20);
+        
         tabMenuObj.actions.forEach((tab)=>{
             size += ( tab.title.length * 8.5 );
         });
         size += tabMenuObj.actions.length * 50;
         
         this.onlyIcon = false;
-        console.log('size ['+size+']  offsetWidth ['+offsetWidth+']');
+        
         let mleft = ( offsetWidth - size ) / 2;
         if( mleft <= 0 ) {
             this.onlyIcon = true;

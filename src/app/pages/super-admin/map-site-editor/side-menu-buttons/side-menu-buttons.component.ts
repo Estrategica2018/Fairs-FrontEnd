@@ -15,7 +15,7 @@ export class SideMenuButtonsComponent implements OnInit {
   themeList = [
     {'name':'blue','backgroundColor': '#1ABACC','fontColor':'rgb(255, 255, 255)','textColor':'black' },
     {'name':'black','backgroundColor':'black','fontColor':'white','textColor':'white' },
-    {'name':'green','backgroundColor':'white','fontColor': '#98A000','textColor':'black' },
+    {'name':'green','backgroundColor':'white','fontColor': '#00B8FF','textColor':'black' },
   ];
   
   constructor() { 

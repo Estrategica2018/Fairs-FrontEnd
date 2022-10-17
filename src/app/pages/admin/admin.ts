@@ -27,7 +27,8 @@ export class AdminPage {
   success: String = null;
   errors: String = null;
   fairDeleted = null;
-  fair = { 'name': '', 'description': '', 'social_media': {'icon':'assets/icon/icon.png'}, 'end_date':'', 'init_date':''};
+  adminList = [];
+  fairDefault = { 'name': '', 'description': '', 'social_media': {'icon':'assets/icon/icon.png'}, 'end_date':'', 'init_date':''};
 
   constructor(
     public menu: MenuController,
@@ -64,7 +65,7 @@ export class AdminPage {
      'halls_number':0,
      'location': '{}',
      'resources': '{"scenes":[]}'
-    },this.fair);
+    },this.fairDefault);
 
     newFair = Object.assign(newFair,{
      'social_media': JSON.stringify(newFair.social_media)
@@ -80,7 +81,7 @@ export class AdminPage {
      
         if(response.success == 201) {
           this.presentToast(`Feria creada exitósamente`);
-          this.fair = { 'name': '', 'description': '', 'social_media': {'icon':'assets/icon/icon.png'}, 'end_date':'', 'init_date':''};
+          this.fairDefault = { 'name': '', 'description': '', 'social_media': {'icon':'assets/icon/icon.png'}, 'end_date':'', 'init_date':''};
           this.ionViewWillEnter();
           this.showNewFair = false;
         }
@@ -244,4 +245,66 @@ export class AdminPage {
     });
     await alert.present();
   }
+
+  async presentNewAdmin(fair) {
+
+      this.success = null;
+      this.errors = null;
+      
+      const alert = await this.alertCtrl.create({
+        cssClass: 'my-custom-class',
+        inputs: [
+          {
+            name: 'email',
+            placeholder: 'Email'
+          }
+        ],
+        subHeader: 'Confirma el correo del usuario administrador a adicionar',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: (blah) => {
+              
+            }
+          }, {
+            text: 'Adicionar',
+            cssClass: 'danger',
+            handler: (data) => {
+      
+              this.loading.present({message:'Cargando...'});
+  
+              this.adminFairsService.addAdmin(fair,data.email)
+                .then((response) => {
+                  if(response.success==201) {
+                    this.success = `Usuario adicionado exitósamente`;
+                    this.presentToast(this.success);
+                    this.ionViewWillEnter();
+                  }
+                  else {
+                    this.errors = `Usuario no existe`;
+                    this.presentToast(this.errors);
+                    this.loading.dismiss();
+                  }
+                },
+                (error) => {
+                   console.log(error);
+                   this.errors = `Ha ocurrido un error al adicionar el usuario`;
+                   this.presentToast(this.errors);
+                   this.loading.dismiss();
+                })
+              .catch(error => {
+                  console.log(error);
+                  this.errors = `Ha ocurrido un error al adicionar el usuario`;
+                  this.presentToast(this.errors);
+                  this.loading.dismiss();
+               });
+            }
+          }
+        ]
+      });
+      await alert.present();
+    }
+    
 }

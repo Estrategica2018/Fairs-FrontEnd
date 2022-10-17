@@ -2,7 +2,7 @@
 export const environment = {
   production: false,
   message: 'hello dev',
-  fairName: 'landing'
+  fairName: 'biblioteca-nacional'
   //fairName: 'admin'
 };
 

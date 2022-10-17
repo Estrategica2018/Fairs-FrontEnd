@@ -133,7 +133,7 @@ export class MapEditorPage implements OnInit {
     private actionSheetController: ActionSheetController,
     private speakersService: SpeakersService) { 
       
-      this.url = environment.production ? SERVER_URL + '/Fair-website/': 'http://localhost:8100/';
+      this.url = document.baseURI;
       this.listenForFullScreenEvents();
       this.initializeListeners();
       this.initializePanel();
@@ -483,13 +483,17 @@ export class MapEditorPage implements OnInit {
                   this.editMenuTabSave = null;
                   this.showPanelTool = false
                   this.bannerSelect = null;
-                  const detail = {'type': 'sceneFair', 'iScene': this.sceneId };
-                  window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
+                  //const detail = {'type': 'sceneFair', 'iScene': this.sceneId };
+                  //window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
                   //this.redirectTo('/super-admin/map-editor/fair/'+this.sceneId);
-                  //window.location.replace(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
+                  console.log(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
+                  window.location.reload();
               }
               else {
+                  //window.location.replace(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
+                  console.log(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
                   window.location.replace(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
+                  
               }
            })
            .catch(error => {
@@ -645,10 +649,13 @@ export class MapEditorPage implements OnInit {
           banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
       break;
       case 'Título':
-          banner = {"textAlign":"center","fontColor":"#98A000","text":"Título de la Escena aquí","size":{"x":571,"y":70}, "fontSize": 59, "position": this.getNewPosition({"x":156,"y":95})};
+          banner = {"textAlign":"center","fontColor":"#00B8FF","text":"Título de la Escena aquí","size":{"x":571,"y":70}, "fontSize": 59, "position": this.getNewPosition({"x":156,"y":95})};
       break;
       case 'Sub-Título':
-          banner = {"size":{"x":114,"y":105},"color": "#98A000"};
+          banner = {"size":{"x":114,"y":105},"fontColor":"#00B8FF"};
+      break;
+      case 'Párrafo':
+          banner = {"size":{"x":200,"y":149},"textAlign":"left","fontColor":"#000000", "text": "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"};
       break;
       case 'SpeakerCatalog':
           banner = { "size":{"x":428,"y":237},

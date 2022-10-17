@@ -67,6 +67,10 @@ export class AgendaPage implements OnInit {
     private speakersService: SpeakersService,
   ) {   
   }
+
+  ngDoCheck(){
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
+  }
   
   ngOnInit() {
       
@@ -348,9 +352,9 @@ export class AgendaPage implements OnInit {
         this.loading.present({message:'Cargando...'});
         
         const email = this.userDataSession.email;
-        this.agendasService.generateVideoToken(fair_id, meeting_id, this.userDataSession)
+        this.agendasService.generateMeetingToken(fair_id, meeting_id, this.userDataSession) 
         .then( response => {
-          const token = response.data;                  
+          const token = response.data;               
           const url = `${this.url}/viewerZoom/meetings/${token}`;
           //this.link = this.dom.bypassSecurityTrustResourceUrl(url);
           //window.open(url, '_blank').focus();

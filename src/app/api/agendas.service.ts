@@ -80,7 +80,7 @@ export class AgendasService {
     });
   }
   
-  generateVideoToken(fair_id : string, meeting_id: string, userDataSession: any): any {
+  generateMeetingToken(fair_id : string, meeting_id: string, userDataSession: any): any {
     return new Promise((resolve, reject) => {
         
       const httpOptions = {
@@ -89,7 +89,7 @@ export class AgendasService {
           })
        };
   
-       this.http.get(`${SERVER_URL}/api/meeting/generate-video-token/${fair_id}/${meeting_id}`,httpOptions)
+       this.http.get(`${SERVER_URL}/api/meeting/generate-meeting-token/${fair_id}/${meeting_id}`,httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {

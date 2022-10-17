@@ -151,4 +151,35 @@ export class AdminFairsService {
         });
     });
   }
+
+  addAdmin(fair: any, email: string): any {
+    return new Promise((resolve, reject) => {
+        this.usersService.getUser().then((userDataSession: any)=>{
+            const httpOptions = {
+              headers: new HttpHeaders({
+                  'Authorization':  'Bearer ' + userDataSession.token
+              })
+            };
+            
+            this.http.post(`${SERVER_URL}/api/fair/add-admin/${fair.id}`,{'email':email},httpOptions)
+            .pipe(
+              timeout(60000),
+              catchError((e: any) => {
+                const msg = (e.error && e.error.message) ? e.error.message : e.status + ' - ' + e.statusText;
+                throw new Error(`${msg}`);
+              })
+            )
+            .subscribe((data : any )=> {
+                if(data.success) {
+                  resolve(processData(data));
+                }
+                else {
+                    reject(JSON.stringify(data));
+                }
+            },error => {
+                reject(error)
+            });
+        });
+    });
+  } 
 }

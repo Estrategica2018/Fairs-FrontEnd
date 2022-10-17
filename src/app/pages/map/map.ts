@@ -583,7 +583,8 @@ export class MapPage implements OnInit {
           product.left = ( (  Math.floor( i % banner.__factor ) * 1.03 ) * banner.size.x );
       });
       
-      banner.__catalog.productCatalogEnd =  (( Math.floor( (banner.__catalog.products.length +1) / banner.__factor ) * banner.size.y));
+	  const maxSize = banner.__catalog.products.length +1;
+      banner.__catalog.productCatalogEnd = (( ( maxSize / banner.__factor ) * banner.size.y) + (banner.size.y * ( maxSize / banner.__factor ) * 0.03) );
       
       const main = document.querySelector<HTMLElement>('ion-router-outlet');
       let left = main.offsetWidth - ( ( ( banner.__factor ) * 1.03 ) * banner.size.x );
