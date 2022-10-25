@@ -106,6 +106,8 @@ export class PavilionPage implements OnInit {
     else {
       this.pavilion.fair_id = this.fair.id;
       this.pavilion.resources = { 'scenes': [this.defaultEscene()] };
+      
+        
       this.adminPavilionsService.create(this.pavilion)
        .then((pavilion) => {
           this.loading.dismiss();
@@ -123,6 +125,7 @@ export class PavilionPage implements OnInit {
          this.loading.dismiss();
          this.errors = error;
       });
+    
     }
   }
   

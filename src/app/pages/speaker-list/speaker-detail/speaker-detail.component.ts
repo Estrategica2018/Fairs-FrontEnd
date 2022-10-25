@@ -60,7 +60,7 @@ export class SpeakerDetailComponent implements OnInit {
   onAgenda(agenda) {
     if(!this.scheduleMode) {
         
-        this.agendasService.get(agenda.id)
+        this.agendasService.get(agenda.id, false)
        .then((agenda) => {
            this.presenterAgendaModal(agenda);
           })

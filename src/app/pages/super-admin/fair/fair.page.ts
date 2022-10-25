@@ -34,7 +34,7 @@ export class FairPage implements OnInit {
   groupsCategoryList = [];
   modal: any;
   userDataSession: any;
-  profileRole: any;
+  profileRole: any = { admin : false};
   showInitDate = false;
   
 
@@ -63,8 +63,10 @@ export class FairPage implements OnInit {
       this.usersService.getUser()
       .then((userDataSession: any)=>{
         this.userDataSession = userDataSession;
+        this.profileRole = { admin : false };
+
         if(this.userDataSession) {
-            this.profileRole = {};
+            
             if(userDataSession && userDataSession.user_roles_fair)  {
               userDataSession.user_roles_fair.forEach((role)=>{
                 if(role.id == 1) { //"super_administrador"
@@ -83,7 +85,7 @@ export class FairPage implements OnInit {
             this.showPrice = fair.price > 0;
             
             
-            this.agendasService.list()
+            this.agendasService.list(this.profileRole.admin)
             .then((agendas) => {
                 this.agendas = agendas;
                 if(agendas)

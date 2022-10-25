@@ -55,7 +55,7 @@ export class SupportPage implements OnInit {
         const sessionId = this.route.snapshot.queryParams.sessionId;
         this.loading.present({message:'Cargando...'});
         
-        this.agendasService.get(sessionId)
+        this.agendasService.get(sessionId, false)
          .then((agenda) => {
             this.loading.dismiss();
             this.errors = null;

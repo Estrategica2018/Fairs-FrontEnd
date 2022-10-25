@@ -59,55 +59,7 @@ const routes: Routes = [
   {     path: 'map/pavilion/:pavilionId/:sceneId',
         loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
-  {     path: 'map/pavilion1/:pavilionId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/pavilion2/:pavilionId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/pavilion3/:pavilionId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/pavilion4/:pavilionId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/pavilion5/:pavilionId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/pavilion6/:pavilionId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/pavilion7/:pavilionId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/pavilion8/:pavilionId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
   {     path: 'map/stand/:pavilionId/:standId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/stand1/:pavilionId/:standId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/stand2/:pavilionId/:standId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/stand3/:pavilionId/:standId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/stand4/:pavilionId/:standId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/stand5/:pavilionId/:standId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/stand6/:pavilionId/:standId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/stand7/:pavilionId/:standId/:sceneId',
-        loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {     path: 'map/stand8/:pavilionId/:standId/:sceneId',
         loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
   {

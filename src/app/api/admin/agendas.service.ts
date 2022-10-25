@@ -64,6 +64,7 @@ export class AdminAgendasService {
                       'Authorization':  'Bearer ' + userDataSession.token
                   })
                 };
+                
                 this.http.patch(`${SERVER_URL}/api/meetings/${agenda.zoom_code}`,processDataToString(agenda), httpOptions)
                 .pipe(
                   timeout(60000),

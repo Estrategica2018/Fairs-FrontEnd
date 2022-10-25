@@ -22,14 +22,16 @@ export class AgendasService {
     private fairsService: FairsService
   ) { }
 
-  list(): Promise<any> {
-    if(this.agendas === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
+  list(fairAdminMode): Promise<any> {
+   // if(fairAdminMode || this.agendas === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
         
         return new Promise((resolve, reject) => {
             
             this.fairsService.getCurrentFair().
               then( fair => {
-                this.http.get(`${SERVER_URL}/api/agenda/list?fair_id=${fair.id}`)
+                let url = `${SERVER_URL}/api/agenda/list?fair_id=${fair.id}`;
+                url += fairAdminMode ? `&zoom_auth=1` : '';
+                this.http.get(url)
                 .pipe(
                   timeout(60000),
                   catchError((e: any) => {
@@ -56,15 +58,12 @@ export class AgendasService {
                     reject(error)
               });
         })
-    }
-    else {
-        return new Promise((resolve, reject) => resolve(this.agendas));
-    }
+   
   }
   
-  get(agendaId: string): any {
+  get(agendaId: string, fairAdminMode: boolean): any {
     return new Promise((resolve, reject) => {
-        this.list()
+        this.list(fairAdminMode)
          .then((data) => {
             for(let agenda of data ) {
                 if(Number(agenda.id)  === Number(agendaId)) {
@@ -73,6 +72,29 @@ export class AgendasService {
                 }
             }
             reject(`No se encontraron datos para la agenda: ${agendaId}`);
+          })
+        .catch(error => {
+            reject(error)
+         });    
+    });
+  }
+
+  getByCategory(categoryId): any {
+    return new Promise((resolve, reject) => {
+        this.list(false)
+         .then((data) => {
+            let agendaList = [];
+            for(let agenda of data ) {
+                if(categoryId == null || categoryId == 'all' || Number(agenda.category.id)  === Number(categoryId)) {
+                  agendaList.push(agenda);
+                }
+            }
+            if(agendaList.length == 0) {
+              reject(`No se encontraron datos para la categoría: ${categoryId}`);
+            }
+            else {
+              resolve(agendaList);
+            }
           })
         .catch(error => {
             reject(error)

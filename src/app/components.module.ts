@@ -17,6 +17,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { AccountComponent } from './pages/account/account.component';
 import { SideMenuButtonsComponent } from './pages/super-admin/map-site-editor/side-menu-buttons/side-menu-buttons.component';
 import { ShowColorComponent } from './pages/super-admin/product/show-color/show-color.component';
+import { AgendaCatalogComponent } from './pages/map/agenda-catalog/agenda-catalog.component';
+
 
 import { TermsPage } from './pages/terms/terms.page';
 
@@ -43,7 +45,8 @@ import { TermsPage } from './pages/terms/terms.page';
     AccountComponent,
     SideMenuButtonsComponent,
     ShowColorComponent,
-    TermsPage
+    TermsPage,
+    AgendaCatalogComponent
   ],
   exports: [
     TabMenuScenesComponent,
@@ -61,7 +64,8 @@ import { TermsPage } from './pages/terms/terms.page';
     AccountComponent,
     SideMenuButtonsComponent,
     ShowColorComponent,
-    TermsPage
+    TermsPage,
+    AgendaCatalogComponent
   ]
   
 })

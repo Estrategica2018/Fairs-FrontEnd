@@ -177,9 +177,13 @@ export class LoginComponent  implements OnInit {
           this.usersService.login(email,password, fairId)
           .subscribe(
             data => {
+
                 this.loading.dismiss();
                 const token = data.data;
-                this.usersService.setUser(Object.assign({token:token},data.user)).then(() => {
+                const auth = data.auth;
+                let user = Object.assign({token:token},data.user);
+                user = Object.assign({auth:auth},user);
+                this.usersService.setUser(user).then(() => {
                   this.router.navigateByUrl('/schedule');
                   window.dispatchEvent(new CustomEvent('user:login'));
                 });
@@ -581,10 +585,6 @@ export class LoginComponent  implements OnInit {
   onDigitInput(event){
 
     let element = null;
-    if(element == null) {
-        return;
-    }
-
     
     if (event.code !== 'Backspace') {
         

@@ -1,6 +1,4 @@
-.side-menu {
-  
-}
+.side-menu {}
 
 .background-transparent {
   background-color: transparent;
@@ -305,6 +303,7 @@ body.backdrop-no-scroll {
   line-height: 10px;
   margin-left: auto;
   margin-right: 18px;
+  line-height: 1em;
 }
 
 @media (max-width: 700px) {
@@ -468,4 +467,27 @@ ng-scrollbar {
 
 select {
   height: 2em;
+}
+
+.icon-agenda-config-mini,
+.icon-agenda-config {
+  position: absolute;
+  top: 1.6em;
+  z-index: 100;
+  font-size: 1em;
+  left: 1.9em;
+}
+
+.icon-agenda-config-mini {
+  left: 1.2em;
+}
+
+.icon-mini-tooltip {
+  position: absolute;
+  z-index: 1;
+  width: 0;
+  max-width: 0;
+  padding: 0;
+  height: 0;
+  max-width: 0;
 }

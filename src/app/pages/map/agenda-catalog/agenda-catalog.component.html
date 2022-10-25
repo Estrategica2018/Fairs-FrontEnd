@@ -1,0 +1,40 @@
+<div class="card-schedule">
+  <div class="head">
+       {{ group.month }}
+  </div>
+  <div class="container-card">
+      <ion-buttons>
+      <div slot="start" class="" style="margin-left: 2em;">
+        <img class="border-card" src="assets/icon/border-card.png">
+        <div class="circle">
+           <div class="text">
+            {{ group.strDay }}
+           </div>
+        </div>
+      </div>
+      <div slot="end" class="container-schedule">
+         <ion-item (click)="openAgenda(session)" button="true" class="d-flex" *ngFor="let session of group.sessions">
+             <div class="hour"> 
+                {{session.hour}}
+             </div>
+             <div class="hour-unit"> 
+               <div>
+                {{session.minutes}}
+               </div>
+               <div class="signature">
+               {{session.signature}}
+               </div>
+             </div>
+             <div style="margin-top: -9px;">
+                 <div class="agenda-name"> 
+                    {{session.name}}
+                 </div>
+                 <div class="speakers-name"> 
+                    {{session.description}}
+                 </div>
+             </div>
+         </ion-item> 
+      </div>
+      </ion-buttons>
+  </div>
+</div>

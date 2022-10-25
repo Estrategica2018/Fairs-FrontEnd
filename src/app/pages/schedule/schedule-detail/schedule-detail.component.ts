@@ -126,7 +126,7 @@ export class ScheduleDetailComponent {
                this.profileRole.admin = true;
             }
             if(role.id == 6) { //"conferencista"
-               this.agendasService.get(this.agenda.id)
+               this.agendasService.get(this.agenda.id, false)
                 .then( (agenda)=>{
                   if(agenda.invited_speakers) {
                       agenda.invited_speakers.forEach((invited_speaker)=>{
@@ -302,9 +302,9 @@ export class ScheduleDetailComponent {
         this.agendasService.generateMeetingToken(fair_id, meeting_id, this.userDataSession)
         .then( response => {
           const token = response.data;                  
-          const url = `${this.url}/viewerZoom/meetings/${token}`;
-          //this.link = this.dom.bypassSecurityTrustResourceUrl(url);
-          //window.open(url, '_blank').focus();
+          const auth = this.userDataSession.auth;
+          const url = `${this.url}/viewerZoom/meetings/${token}/${auth}`;
+          
           const windowReference = window.open();
           windowReference.location.href = url;
           this.loading.dismiss();

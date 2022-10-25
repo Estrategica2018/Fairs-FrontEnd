@@ -1,0 +1,54 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title><small>Selecciona la categoría de agenda</small></ion-card-title>
+    <ion-buttons *ngIf="categorySelected">
+      <ion-label slot="start">Confirma la categoria de la agenda</ion-label>
+      <ion-button slot="end" (click)="dismissModal()">
+        Cancelar
+      </ion-button>
+      <ion-button slot="end" (click)="acceptModal()">
+        Aceptar
+      </ion-button>
+    </ion-buttons>
+  </ion-card-header>
+
+  <ion-card-header>
+    Lista de categorias
+    <select [(ngModel)]="categorySelected" (change)="onChangeItem()">
+      <option value="all" selected> Todas las categorías </option>
+      <option *ngFor="let category of catalogList" value="{{category.id}}">
+        {{category.name}}
+      </option>
+    </select>
+  </ion-card-header>
+
+  <ion-card-content>
+
+    <ion-list class="container-height" *ngIf="catalogList.length > 0">
+
+      <div>
+        <ion-list>
+          <div>
+            <ion-grid>
+              <ion-row>
+                <ion-col *ngFor="let agenda of agendaList" class="col-4" class="product-mini">
+                  <ion-item>
+                    <ion-thumbnail slot="start">
+                      <img [src]="agenda.category.resources.url_image" />
+                    </ion-thumbnail>
+                    <ion-label>Agenda {{agenda.title}}</ion-label>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-list>
+      </div>
+    </ion-list>
+  </ion-card-content>
+
+  <ion-card-header>
+    
+  </ion-card-header>
+
+</ion-card>

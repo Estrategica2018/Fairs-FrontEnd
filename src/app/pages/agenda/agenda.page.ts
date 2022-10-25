@@ -80,7 +80,7 @@ export class AgendaPage implements OnInit {
         
         const agendaId = this.route.snapshot.paramMap.get('agendaId');
         
-          this.agendasService.get(agendaId)
+          this.agendasService.get(agendaId,false)
            .then((agenda) => {
               this.loading.dismiss();
               this.invited_speakers = [];
@@ -92,10 +92,16 @@ export class AgendaPage implements OnInit {
               this.agenda.invited_speakers = null;
               this.agenda.duration_time = this.agenda.duration_time.toString();
               if(this.agenda.category) this.agenda.category.id = this.agenda.category.id.toString();
+              
               const start_time = moment(this.agenda.start_at).format('YYYY-MM-DDTHH:mm');
-              this.agenda.start_at_str = this.agenda.start_time;
-              const date = start_time.substr(0,10); 
-              const hour = start_time.substr(11,5); 
+              //this.agenda.start_at_str = this.agenda.start_time;
+              //const date = start_time.substr(0,10); 
+              //const hour = start_time.substr(11,5); 
+
+              this.agenda.strDay = this.datepipe.transform(new Date(this.agenda.start_at), 'EEEE, MMMM d, y');
+              this.agenda.startTime = this.datepipe.transform(new Date(this.agenda.start_at), 'hh:mm a');
+              this.agenda.endTime = this.datepipe.transform(new Date(this.agenda.start_at + this.agenda.duration_time * 60000), 'hh:mm a');
+              this.agenda.location = this.agenda.room ? this.agenda.room.name : '';
               
               this.initializeAgenda();
           })
@@ -154,7 +160,7 @@ export class AgendaPage implements OnInit {
                this.profileRole.admin = true;
             }
             if(role.id == 6) { //"conferencista"
-               this.agendasService.get(this.agenda.id)
+               this.agendasService.get(this.agenda.id, false)
                 .then( (agenda)=>{
                   if(agenda.invited_speakers) {
                       agenda.invited_speakers.forEach((invited_speaker)=>{
@@ -354,10 +360,10 @@ export class AgendaPage implements OnInit {
         const email = this.userDataSession.email;
         this.agendasService.generateMeetingToken(fair_id, meeting_id, this.userDataSession) 
         .then( response => {
-          const token = response.data;               
-          const url = `${this.url}/viewerZoom/meetings/${token}`;
-          //this.link = this.dom.bypassSecurityTrustResourceUrl(url);
-          //window.open(url, '_blank').focus();
+          const token = response.data;           
+          const auth = this.userDataSession.auth;
+          const url = `${this.url}/viewerZoom/meetings/${token}/${auth}`;
+          
           const windowReference = window.open();
           windowReference.location.href = url;
           this.loading.dismiss();

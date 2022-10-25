@@ -42,13 +42,25 @@
 </div>
 
 <ion-button *ngIf="this.bannerCopy.length > 0" color="warning" class="paste-button" (click)="onPasteBannerBtn()">
-
    <ion-icon name="clipboard-outline"></ion-icon>
 </ion-button>
 
-<ion-content id="ionContent" [scrollEvents]="true" style="background-repeat: no-repeat"
-   [ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }" scroll-x="0"
-   scroll-y="0" scrollX="true" cdkDropList class="content-boundary">
+<ion-content id="ionContent" 
+   style="--background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
+   [scrollEvents]="true" scroll-x="0" scroll-y="0" scrollX="true" cdkDropList class="content-boundary"
+   [ngStyle]="{ 
+      '--background': scene && scene.backgroundColor ? scene.backgroundColor : '',
+      'background-image': scene && scene.url_image ? 'url(' + scene.url_image + ')' : '',
+      'background-position': 'center top',
+      'background-repeat': 'no-repeat',
+      'background-size': 'cover'
+    }" >
+
+
+    <div class="div-container">
+       
+    </div>
+
    <ion-item [hidden]="!errors">
       <div class="alert alert-danger alert-dismissible">
          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
@@ -56,24 +68,6 @@
       </div>
    </ion-item>
 
-   <!--Scene Background Image / Background Color -->
-   <div class="div-container">
-      <!--Scene Background Image-->
-      <div [ngStyle]="{
-      'background-image': 'url(' + scene?.url_image + ')',
-      'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
-      'background-repeat': 'no-repeat',
-      'width':scene?.container?.w + 'px', 
-      'height': scene?.container?.h + 'px'
-      }" (ionScroll)="logScrolling($event)" *ngIf="scene && scene.url_image">
-      </div>
-      <!--Scene Background Color-->
-      <div
-         [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
-         *ngIf="scene && scene.backgroundColor && !scene.url_image">
-      </div>
-   </div>
-   <!--End Scene Background Image / Background Color -->
 
    <!--Banner List-->
    <div *ngFor="let banner of scene?.banners;let i = index" class="banner">
@@ -83,6 +77,7 @@
          [ngStyle]="{
          'left': banner.position?.x + 'px',
          'top': banner.position?.y + 'px',
+         'width': banner.agendaCatalog ? 'auto': '',
          'opacity': bannerSelectHover || bannerSelect ? ( ( bannerSelectHover && bannerSelectHover.id === banner.id ) || ( bannerSelect && bannerSelect == banner ) ?   1 : ( banner.opacity || 1 ) * 0.6   ) : banner.opacity,      
          'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
       }">
@@ -96,10 +91,11 @@
 
          <!--if banner is banner-->
          <div class="cube__face cube__face--right square {{ banner.class}}"
-            [ngClass]="{ 'element-selected': bannerSelectHover === banner || bannerSelect == banner, 'grayscale': banner.grayscale }" [hidden]="" id="obj-{{banner.id}}"
-            (click)="onBannerSelect(banner);" (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
+            [ngClass]="{ 'element-selected': bannerSelectHover === banner || bannerSelect == banner, 'grayscale': banner.grayscale }"
+            [hidden]="" id="obj-{{banner.id}}" (click)="onBannerSelect(banner);"
+            (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
             (mouseout)="isHover = null; bannerSelectHover = null;" [ngStyle]="{
-          'background-image': !banner.speakerCatalog && !banner.productCatalog ? 'url('+banner.image_url+')' : '',
+          'background-image': banner.image_url ? 'url('+banner.image_url+')' : '',
           'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
           'background-repeat': 'no-repeat',
           'background-color': banner.backgroundColor,
@@ -116,8 +112,7 @@
           'text-align': banner.textAlign,    
           'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
           }">
-            <div 
-               [ngStyle]="{'line-height': banner?.lineHeight, 'font-weight': banner.fontWeight }">
+            <div [ngStyle]="{'line-height': banner?.lineHeight, 'font-weight': banner.fontWeight }">
 
                <div *ngIf="banner.isHtml" [ngStyle]="{'font-weight': banner.fontWeight}">
                   <div [innerHTML]="banner.textHtml"></div>
@@ -315,6 +310,29 @@
             </div>
          </div>
          <!--End if banner is product-catalog -->
+
+         <!--if banner is agenda-catalog -->
+         <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)"
+            *ngIf="banner.agendaCatalog">
+            <ion-icon name="create-outline"></ion-icon>
+         </ion-button>
+         <div class="grid" *ngIf="banner.agendaCatalog" id="grid-{{banner.id}}"
+            (mouseover)="startAnimation(banner); bannerSelectHover = banner;"
+            (mouseout)="isHover = null; bannerSelectHover = null;"
+            [ngClass]="{'element-selected': bannerSelectHover === banner || bannerSelect == banner}">
+
+            <ion-grid
+               *ngIf="banner.__agendaCatalog && banner.__agendaCatalog.groups && banner.__agendaCatalog.groups.length > 0"
+               class="not-found">
+               <ion-row>
+                  <ion-col *ngFor="let group of banner.__agendaCatalog.groups">
+                     <app-agenda-catalog [banner]="banner" [group]="group"></app-agenda-catalog>
+                  </ion-col>
+               </ion-row>
+            </ion-grid>
+
+         </div>
+         <!--End if banner is agenda-catalog -->
 
          <!--if banner is Speakers-->
          <ion-button color="light" class="edit-carousel-button" (click)="onBannerSelect(banner)"
@@ -681,13 +699,17 @@
                <small>Productos</small>
                <ion-icon style="font-size: 24px" name="grid-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('Contact');">
+            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('ContactCatalog');">
                <small>Contáctenos</small>
                <ion-icon style="font-size: 24px" name="list-outline"></ion-icon>
             </div>
             <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('SpeakerCatalog');">
-               <small>Conferencistas</small>
+               <small>Expositores</small>
                <ion-icon style="font-size: 24px" name="people-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('AgendaCatalog');">
+               <small>Agenda</small>
+               <ion-icon style="font-size: 24px" name="calendar-outline"></ion-icon>
             </div>
          </div>
       </ion-card-content>
@@ -768,6 +790,10 @@
                   </ion-tab-button>
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'productCatalog' }"
                      (click)="tabSelect = 'productCatalog'" *ngIf="bannerSelect.productCatalog">
+                     <ion-label class="tool-special"> Catálogo</ion-label>
+                  </ion-tab-button>
+                  <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'agendaCatalog' }"
+                     (click)="tabSelect = 'agendaCatalog'" *ngIf="bannerSelect.agendaCatalog">
                      <ion-label class="tool-special"> Catálogo</ion-label>
                   </ion-tab-button>
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'speakerCatalog' }"
@@ -858,8 +884,12 @@
             <ion-buttons slot="end">
                <ion-card-subtitle>
                   <input class="mt-2 ml-2 input-form" type="number" (change)="onResize()"
-                     [(ngModel)]="bannerSelect.size.x" />
-                  px
+                     [(ngModel)]="bannerSelect.size.x" />px
+                  <!--select [(ngModel)]="bannerSelect.size.typeX">
+                     <option value="px" selected>px</option>
+                     <option value="vw" selected>vw</option>
+                     <option value="%" >%</option>
+                  </select!-->
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -871,7 +901,11 @@
                <ion-card-subtitle>
                   <input class="mt-2 ml-2 input-form" (change)="onResize()" type="number"
                      [(ngModel)]="bannerSelect.size.y" />
-                  px
+                  <!--select [(ngModel)]="bannerSelect.size.typeY">
+                        <option value="px" selected>px</option>
+                        <option value="%" >%</option>
+                        <option value="vh" selected>vh</option>
+                     </select--> px
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -2045,6 +2079,11 @@
 
          </ion-list>
       </ion-card-content>
+
+      <ion-card-content *ngIf="tabSelect == 'agendaCatalog'" class="content-scroll">
+
+      </ion-card-content>
+
       <ion-card-content *ngIf="tabSelect == 'font'">
          <ion-toolbar>
             <ion-buttons slot="start">

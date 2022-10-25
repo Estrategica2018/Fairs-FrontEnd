@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
   showPavilionDetail: string = null;
   showStandDetail: string = null;
   _toolbarHeight = 56;
-  profileRole: any;
+  profileRole: any = { admin: false };
   userDataSession: any;
   lTotal = 0;
   url: string;
@@ -53,6 +53,8 @@ export class AppComponent implements OnInit {
   location: Location;
   fairList = [];
   fairAdminMode = false;
+  menuHover: string = null;
+  miniMenu: any = {};
 
   constructor(
     private alertCtrl: AlertController,
@@ -76,8 +78,10 @@ export class AppComponent implements OnInit {
   ) {
 
     this.initializeFair();
+
     this.url = document.baseURI;
     this.location = locationComn;
+    this.onHidenMenu();
   }
 
   initializeFair() {
@@ -112,7 +116,7 @@ export class AppComponent implements OnInit {
 
           this.initializeSceneMenu();
 
-          this.agendasService.list()
+          this.agendasService.list(this.fairAdminMode)
             .then((data) => {
               this.showAgenda = data.length > 0;
             }, error => {
@@ -123,6 +127,7 @@ export class AppComponent implements OnInit {
   }
 
   initializeSceneMenu() {
+
     this.lTotal = 0;
     this.sceneLayoutList = [];
     this.fair.resources = this.fair.resources || { 'scenes': [] };
@@ -158,7 +163,7 @@ export class AppComponent implements OnInit {
       return indx;
     }
 
-    
+
     for (let i = 0; i < this.lTotal; i++) {
 
       let mbControl = false;
@@ -168,7 +173,7 @@ export class AppComponent implements OnInit {
         //if(!scene.show || (this.editMenu && this.profileRole && this.profileRole.admin)) continue;
         scene.menuPosition = findScenePosition(this.fair, 'sceneFair', iScene, (i + 1));
         scene.id = scene.id || this._getId();
-        if (scene.menuPosition == i + 1) { 
+        if (scene.menuPosition == i + 1) {
           this.sceneLayoutList.push({ 'type': 'sceneFair', 'scene': scene, 'iScene': iScene });
           mbControl = true;
           break;
@@ -180,14 +185,15 @@ export class AppComponent implements OnInit {
         for (let iScene = 0, pavilion = null; iScene < this.fair.pavilions.length; iScene++) {
           pavilion = this.fair.pavilions[iScene];
           pavilion.menuPosition = findScenePosition(this.fair, 'scenePavilion', iScene, (i + 1));
-          if(pavilion.menuPosition == i + 1) { 
-          
+          if (pavilion.menuPosition == i + 1) {
+
             this.sceneLayoutList.push({ 'type': 'scenePavilion', 'menuPosition': pavilion.menuPosition, 'pavilion': pavilion, 'iScene': iScene });
             break;
           }
         }
       }
 
+      this.initializeToopTipMenu();
     }
   }
 
@@ -201,24 +207,26 @@ export class AppComponent implements OnInit {
 
     for (let iScene = 0, scene = null; iScene < this.fair.resources.scenes.length; iScene++) {
       scene = this.fair.resources.scenes[iScene];
-      this.lTotal ++;
+      this.lTotal++;
       scene.menuPosition = this.lTotal;
       scene.id = scene.id || this._getId();
 
       this.sceneLayoutList.push({ 'scene': scene, 'type': 'sceneFair', 'iScene': iScene });
-      this.fair.location.push({ 'type': 'sceneFair', 'iScene': iScene, 'menuPosition':  this.lTotal });
+      this.fair.location.push({ 'type': 'sceneFair', 'iScene': iScene, 'menuPosition': this.lTotal });
     }
 
     for (let iScene = 0, pavilion = null; iScene < this.fair.pavilions.length; iScene++) {
-      
+
       pavilion = this.fair.pavilions[iScene];
-      this.lTotal ++;
-      
+      this.lTotal++;
+
       pavilion.menuPosition = this.lTotal;
-      
-      this.sceneLayoutList.push({  'pavilion': pavilion, 'type': 'scenePavilion', 'iScene': iScene });
-      this.fair.location.push({ 'type': 'scenePavilion', 'iScene': iScene, 'menuPosition':  this.lTotal });
+
+      this.sceneLayoutList.push({ 'pavilion': pavilion, 'type': 'scenePavilion', 'iScene': iScene });
+      this.fair.location.push({ 'type': 'scenePavilion', 'iScene': iScene, 'menuPosition': this.lTotal });
     }
+    
+    ////this.initializeToopTipMenu();
 
   }
 
@@ -260,7 +268,6 @@ export class AppComponent implements OnInit {
 
   listenForLoginEvents() {
     window.addEventListener('user:login', (user) => {
-      //this.updateLoggedInStatus(user);
       window.location.reload();
     });
 
@@ -277,7 +284,8 @@ export class AppComponent implements OnInit {
       //this.updateLoggedInStatus(null);
       //this.getShoppingCart();
       //window.location.reload();
-      window.location.href = window.location.host;
+      //window.location.href = window.location.host;
+      window.location.href = window.origin;
     });
 
     window.addEventListener('user:shoppingCart', () => {
@@ -343,14 +351,10 @@ export class AppComponent implements OnInit {
           .subscribe(
             data => {
               this.loading.dismiss();
-
-
               this.usersService.setUser(null).then(() => {
                 window.dispatchEvent(new CustomEvent('user:logout'));
               });
-              window.location.href = window.location.host;
-              window.location.reload();
-              console.log('window.location.reload();');
+              window.dispatchEvent(new CustomEvent('user:logout'));
 
             },
             error => {
@@ -359,8 +363,8 @@ export class AppComponent implements OnInit {
               console.log(this.errors);
               this.usersService.setUser(null).then(() => {
                 window.dispatchEvent(new CustomEvent('user:logout'));
-                //this.router.navigateByUrl(`/schedule`);
               });
+              window.dispatchEvent(new CustomEvent('user:logout'));
             }
           );
       }
@@ -370,8 +374,7 @@ export class AppComponent implements OnInit {
         this.usersService.setUser(null).then(() => {
           window.dispatchEvent(new CustomEvent('user:logout'));
         });
-        window.location.href = window.location.host;
-        window.location.reload();
+        window.dispatchEvent(new CustomEvent('user:logout'));
       }
     });
 
@@ -727,4 +730,67 @@ export class AppComponent implements OnInit {
     this.editMenu = false;
   }
 
+  initializeToopTipMenu() {
+
+
+    setTimeout(() => {
+      
+      let topMenu = 93;
+
+      let icon = document.getElementById('mini-menu-admin-agenda');
+      if(icon)
+      this.miniMenu.adminAgenda = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+
+      icon = document.getElementById('mini-menu-admin-fair');
+      if(icon)
+      this.miniMenu.adminFair = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+
+      icon = document.getElementById('mini-menu-first');
+      if(icon)
+      topMenu += icon.offsetHeight;
+
+      let i = 0;
+      for (let sceneLayout of this.sceneLayoutList) {
+
+        if (sceneLayout.type == 'sceneFair' && (sceneLayout.scene.show || (this.editMenu && this.profileRole && this.profileRole.admin))) {
+          icon = document.getElementById('mini-menu-scene-' + i);
+        }
+        if (sceneLayout.type == 'scenePavilion') {
+          icon = document.getElementById('mini-menu-pavilion-' + i);
+        }
+
+        if (icon) {
+          this.miniMenu['menuScene'+i] = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+        }
+
+        i++;
+      }
+
+      icon = document.getElementById('mini-menu-second');
+      if(icon)
+      topMenu += icon.offsetHeight;
+
+      icon = document.getElementById('mini-menu-third');
+      if(icon)
+      topMenu += icon.offsetHeight;
+
+      icon = document.getElementById('mini-menu-account');
+      if(icon) {
+        topMenu += icon.offsetTop;
+        this.miniMenu.account = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+      }
+
+      icon = document.getElementById('mini-menu-logout');
+      if(icon) 
+      this.miniMenu.logout = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+
+    }, 1000);
+
+  }
+
+  onMenuHover($event,id) {
+    this.menuHover = id;
+    if(this.miniMenu[this.menuHover])
+    this.miniMenu[this.menuHover].top = $event.pageY - $event.offsetY;
+  }
 }
