@@ -766,6 +766,9 @@ export class MapEditorPage implements OnInit {
       case 'AgendaCatalog':
         banner = { "groupMode": true, "size": { "x": 367, "y": 408 }, "agendaCatalog": { "category": "" }, "class": "w-100vw" };
         break;
+      case 'FormCatalog':
+        banner = { "groupMode": true, "position": this.getNewPosition({ "x": 117, "y": 74 }), "size": { "x": 170, "y":50 }, "formCatalog": { "category": "" } , "image_url":"https://files.pucp.education/departamento/teologia/2021/09/25213139/Boton-inscripcion-300x90.png","class":"cursor-pointer"};
+      break;
     }
 
     this.scene.banners.push(Object.assign(_defaultBanner, banner));
@@ -773,6 +776,7 @@ export class MapEditorPage implements OnInit {
     this.bannerSelect = this.scene.banners[this.scene.banners.length - 1];
     if (this.bannerSelect.productCatalog) this.presentNewProductListCatalog(this.bannerSelect);
     if (this.bannerSelect.agendaCatalog) this.presentNewAgendaListCatalog(this.bannerSelect);
+    if (this.bannerSelect.formCatalog) this.presentNewFormListCatalog(this.bannerSelect);
     if (this.bannerSelect.speakerCatalog) this.initializeSpeakers(this.bannerSelect);
     this.onChangeItem();
     this.showPanelTool = 'settingsBanner';
@@ -783,6 +787,7 @@ export class MapEditorPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: ProductListComponent,
       swipeToClose: true,
+      backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion, 'stand': this.stand }
     });
@@ -794,13 +799,17 @@ export class MapEditorPage implements OnInit {
       banner.__catalog = {};
       banner.__catalog.products = data.products;
     }
+    else {
+      this.onDeleteBanner(banner);
+    }
   }
 
   async presentNewAgendaListCatalog(banner) {
 
     const modal = await this.modalCtrl.create({
       component: AgendaListComponent,
-      swipeToClose: true,
+      swipeToClose: false,
+      backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { 'template': this.template, 'fair': this.fair }
     });
@@ -811,8 +820,37 @@ export class MapEditorPage implements OnInit {
       banner.agendaCatalog.category = data.categorySelected;
       banner.__agendaCatalog = {};
       banner.__agendaCatalog.agendas = data.agendaList;
+      banner.__agendaCatalog.groups = [];
       this.transformSchedule(banner);
       this.initializeAgendaCatalogs(banner);
+    }
+    else {
+      this.onDeleteBanner(banner);
+    }
+  }
+
+  async presentNewFormListCatalog(banner) {
+
+    const modal = await this.modalCtrl.create({
+      component: AgendaListComponent,
+      swipeToClose: false,
+      backdropDismiss:false,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { 'template': this.template, 'fair': this.fair }
+    });
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      banner.formCatalog.category = data.categorySelected;
+      banner.__formCatalog = {};
+      banner.__formCatalog.agendas = data.agendaList;
+      banner.__formCatalog.groups = [];
+      this.transformSchedule(banner);
+      this.initializeAgendaCatalogs(banner);
+    }
+    else {
+      this.onDeleteBanner(banner);
     }
   }
 
@@ -1677,6 +1715,8 @@ export class MapEditorPage implements OnInit {
       });
   }
 
+  c
+
   resizeAgendaCatalogs(banner) {
     for (var i = 10; i > 0; i--) {
       if ((banner.position.x + i * banner.size.x <= this.scene.container.w) ||
@@ -1860,10 +1900,20 @@ export class MapEditorPage implements OnInit {
   transformSchedule(banner) {
 
     const months = ['Ene', 'Feb', 'Marzo', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    banner.__agendaCatalog.groups = [];
+    let groups = null;
+    let agendas = null;
+    if(banner.__formCatalog) {
+      groups = banner.__formCatalog.groups;
+      agendas = banner.__formCatalog.agendas;
+    }
 
-    for (let agenda of banner.__agendaCatalog.agendas) {
+    if(banner.__agendaCatalog) {
+      groups = banner.__agendaCatalog.groups; 
+      agendas = banner.__agendaCatalog.agendas; 
+    }
 
+    for (let agenda of agendas) {
+      
       agenda.hide = false;
 
       const timeZone = moment(agenda.start_at);
@@ -1878,7 +1928,7 @@ export class MapEditorPage implements OnInit {
       const strDay = timeZone.format('DD');
 
       let groupTemp = null;
-      for (let group of banner.__agendaCatalog.groups) {
+      for (let group of  groups) {
         if (group.time === time) {
           groupTemp = group;
           break;
@@ -1891,31 +1941,27 @@ export class MapEditorPage implements OnInit {
           month: strMonth + ' ' + strYear,
           sessions: []
         };
-        banner.__agendaCatalog.groups.push(groupTemp);
+         groups.push(groupTemp);
       }
 
       const endHour = moment(agenda.start_at).add(agenda.duration_time, 'milliseconds').format('hh:mm a');
 
-      const location = agenda.room ? agenda.room.name : '';
+      const location = agenda.room ? agenda.room.name : ''; 
 
-      groupTemp.sessions.push({
-        name: agenda.title,
-        startTime: strHour + ':' + strMinutes,
-        endTime: endHour,
-        time: time,
-        hour: strHour,
-        minutes: strMinutes,
-        signature: strSignature,
-        month: strMonth + ' ' + strYear,
-        start_at: agenda.start_at,
-        location: location,
-        room: agenda.room,
-        duration_time: agenda.duration_time,
-        audience_config: agenda.audience_config,
-        category: agenda.category
-      });
+      groupTemp.sessions.push(
+        Object.assign({
+          name: agenda.title,
+          startTime: strHour + ':' + strMinutes,
+          endTime: endHour,
+          time: time,
+          hour: strHour,
+          minutes: strMinutes,
+          signature: strSignature,
+          month: strMonth + ' ' + strYear,
+          location: location,
+        }, agenda));
     }
-
+  
   }
 
 }

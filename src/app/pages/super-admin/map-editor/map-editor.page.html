@@ -46,7 +46,7 @@
 </ion-button>
 
 <ion-content id="ionContent" 
-   style="--background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
+   style="background-size: cover; background-repeat: no-repeat; --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
    [scrollEvents]="true" scroll-x="0" scroll-y="0" scrollX="true" cdkDropList class="content-boundary"
    [ngStyle]="{ 
       '--background': scene && scene.backgroundColor ? scene.backgroundColor : '',
@@ -710,6 +710,10 @@
             <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('AgendaCatalog');">
                <small>Agenda</small>
                <ion-icon style="font-size: 24px" name="calendar-outline"></ion-icon>
+            </div>
+            <div class="icon-panel-scene ml-2 p-2" style="font-size: 13px" (click)="addBanner('FormCatalog');">
+               <small>Formulario</small>
+               <ion-icon style="font-size: 24px" name="list-outline"></ion-icon>
             </div>
          </div>
       </ion-card-content>

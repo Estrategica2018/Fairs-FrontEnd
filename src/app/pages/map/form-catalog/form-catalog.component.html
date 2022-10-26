@@ -1,0 +1,93 @@
+<div class="card w-100 h-auto">
+  <div class="info">
+    <ion-icon color="primary" name="person-outline"></ion-icon>
+  </div>
+  <div class="info-background">
+  </div>
+  <div (click)="closeModal() " class="close-modal">
+    <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+  </div>
+
+  <!--if banner is Form Catalog-->
+  <h2 class="name ion-text-center title-modal">Formulario de inscripción </h2>
+
+  <form [formGroup]="registerForm" (ngSubmit)="sendForm(registerForm)" class="p-5">
+    <p>
+      1) Autorizo al Ministerio de Cultura para dar tratamiento a mis datos personales aquí registrados,
+      conforme a la Ley 1581 del 2012 y la política de tratamiento de datos personales, con la finalidad de efectuar
+      las funciones propias y procedentes de la entidad. Consulte nuestra política de tratamiento de datos en la página:
+      <a
+        href="https://www.mincultura.gov.co/prensa/noticias/Documents/Patrimonio/Politica%20de%20Datos%20Personales%20V4.pdf">
+        https://www.mincultura.gov.co/prensa/noticias/Documents/Patrimonio/Politica%20de%20Datos%20Personales%20V4.pdf
+      </a>
+    </p>
+    <p class="d-flex ml-3 mt-3">
+      <span style="color: rgb(224, 62, 45);">*</span>
+      <span> 2. ) Nombre Completo</span>
+    </p>
+    <ion-input formControlName="name" type="text" class=" ion-text-start">
+    </ion-input>
+
+
+    <p class="d-flex ml-3 mt-3">
+      <span style="color: rgb(224, 62, 45);">*</span>
+      <span> 3. ) Tipo de documento </span>
+    </p>
+    <ion-input formControlName="email" type="text" class=" ion-text-start">
+    </ion-input>
+    <div class="contact-line"></div>
+
+    <p class="d-flex ml-3 mt-3">
+      <span style="color: rgb(224, 62, 45);">*</span>
+      <span> 4. ) Número de documento (por favor, escribir sin puntos) </span>
+    </p>
+    <ion-input formControlName="email" type="text" class=" ion-text-start">
+    </ion-input>
+
+
+    <p class="d-flex ml-3 mt-3">
+      <span style="color: rgb(224, 62, 45);">*</span>
+      <span> 5. ) Correo electrónico </span>
+    </p>
+    <ion-input formControlName="email" type="text" class=" ion-text-start">
+    </ion-input>
+
+
+    <p class="d-flex ml-3 mt-3">
+      <span style="color: rgb(224, 62, 45);">*</span>
+      <span> 6. ) Correo electrónico adicional </span>
+    </p>
+    <ion-input formControlName="email" type="text" class=" ion-text-start">
+    </ion-input>
+
+
+    <p class="d-flex ml-3 mt-3">
+      <span style="color: rgb(224, 62, 45);">*</span>
+      <span> 7. ) Seleccione el taller al que quiere inscribirse. Le recomendamos leer la información de todos los
+        talleres antes de elegir el de su preferencia.
+      </span>
+    </p>
+
+    <h3> Lista de talleres </h3>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let agenda of banner.__formCatalog.agendas" size="5" class="product-mini d-flex">
+            <ion-checkbox></ion-checkbox>
+            <ion-thumbnail>
+              <img [src]="agenda.category.resources.url_image" />
+            </ion-thumbnail>
+            <ion-label>Agenda {{agenda.title}}</ion-label>
+          
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+
+    <ion-button color="primary" type="submit" class="" [disabled]="registerForm.valid">
+      <ion-label> Enviar Solicitud</ion-label>
+      <ion-icon slot="end" name="paper-plane-outline"></ion-icon>
+    </ion-button>
+  </form>
+  <!--End if form Catalog-->
+</div>

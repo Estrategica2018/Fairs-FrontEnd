@@ -18,6 +18,7 @@ import { AccountComponent } from './pages/account/account.component';
 import { SideMenuButtonsComponent } from './pages/super-admin/map-site-editor/side-menu-buttons/side-menu-buttons.component';
 import { ShowColorComponent } from './pages/super-admin/product/show-color/show-color.component';
 import { AgendaCatalogComponent } from './pages/map/agenda-catalog/agenda-catalog.component';
+import { FormCatalogComponent } from './pages/map/form-catalog/form-catalog.component';
 
 
 import { TermsPage } from './pages/terms/terms.page';
@@ -46,7 +47,8 @@ import { TermsPage } from './pages/terms/terms.page';
     SideMenuButtonsComponent,
     ShowColorComponent,
     TermsPage,
-    AgendaCatalogComponent
+    AgendaCatalogComponent,
+    FormCatalogComponent
   ],
   exports: [
     TabMenuScenesComponent,
@@ -65,7 +67,8 @@ import { TermsPage } from './pages/terms/terms.page';
     SideMenuButtonsComponent,
     ShowColorComponent,
     TermsPage,
-    AgendaCatalogComponent
+    AgendaCatalogComponent,
+    FormCatalogComponent
   ]
   
 })

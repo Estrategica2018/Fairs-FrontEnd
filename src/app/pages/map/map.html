@@ -12,7 +12,7 @@
 </ion-button>
  
 <ion-content id="ionContent" 
-  style="--background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
+  style="background-size: cover; background-repeat: no-repeat; --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
   [scrollEvents]="true" scroll-x="0" scroll-y="0" scrollX="true"
   [ngStyle]="{ 
      '--background': scene && scene.backgroundColor ? scene.backgroundColor : '',
@@ -179,6 +179,7 @@
         </form>
       </div>
       <!--End if banner is Contact-->
+      
 
       <!--if banner is Video-->
       <iframe *ngIf="banner.video" [src]="banner.video.sanitizer" frameborder="0" title="asdfasdfasdf"

@@ -95,6 +95,10 @@ html {
   display: flex;
 }
 
+.h-auto {
+  height: auto !important;
+}
+
 .center {
     align-items: center;
     justify-content: center;
@@ -284,8 +288,14 @@ ion-router-outlet {
   overflow: hidden;
 }
 
+app-form-catalog,
+.overflow-auto {
+  overflow: auto !important;
+}
+
 .product-modal .modal-wrapper {
   --width: 68em;
+  overflow: auto;
 }
 
 .speaker-modal .modal-wrapper,

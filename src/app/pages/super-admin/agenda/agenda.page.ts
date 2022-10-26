@@ -176,7 +176,7 @@ export class AgendaPage implements OnInit {
     const startTimeStr = this.agendaForm.value['date'] + 'T' + this.agendaForm.value['hour'] + ':00';
     const startTime = moment(startTimeStr, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DDTHH:mm:ss');
 
-    const data = {
+    let data = {
       'topic': this.agendaForm.value['title'],
       'agenda': this.agendaForm.value['description'],
       'start_time': startTime,
@@ -184,13 +184,16 @@ export class AgendaPage implements OnInit {
       'timezone': this.agendaForm.value['timezone'],
       'category_id': this.agendaForm.value['category'],
       'fair_id': this.fair.id,
-      'resources': '{}',
+      'resources': {},
       'audience_config': this.agendaForm.value['audience_config'],
       'price': this.agenda.price,
       'zoom_password': this.agendaForm.value['zoom_password'],
       'zoom_code': this.agendaForm.value['zoom_code']
     };
 
+    if(this.agenda.audience_config == 5) {
+      data.resources =  {"guests": this.agendaForm.value.guests};
+    }
 
     this.adminAgendasService.create(data)
       .then((agenda) => {
@@ -223,7 +226,8 @@ export class AgendaPage implements OnInit {
     const startTimeStr = this.agendaForm.value['date'].substr(0, 10) + 'T' + this.agendaForm.value['hour'] + ':00';
     const startTime = moment(startTimeStr, 'YYYY-MM-DDTHH:mm').format('YYYY-MM-DDTHH:mm');
 
-    const data = {
+    
+    let data = {
       'id': this.agenda.id,
       'topic': this.agendaForm.value['title'],
       'agenda': this.agendaForm.value['description'],
@@ -232,12 +236,16 @@ export class AgendaPage implements OnInit {
       'timezone': this.agendaForm.value['timezone'],
       'category_id': this.agendaForm.value['category'],
       'fair_id': this.fair.id,
-      'resources': (this.agenda.audience_config == 5 ? "{'guests': "+this.agenda.resources.guests+"}" : "{}"),
+      'resources': {},
       'audience_config': this.agendaForm.value['audience_config'],
       'zoom_code': this.agendaForm.value['zoom_code'],
       'price': this.agenda.price,
       'zoom_password': this.agendaForm.value['zoom_password']
     };
+
+    if(this.agenda.audience_config == 5) {
+      data.resources =  {"guests": this.agendaForm.value.guests};
+    }
 
     this.errors = null;
     this.success = null;

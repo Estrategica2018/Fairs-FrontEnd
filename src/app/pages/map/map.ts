@@ -10,6 +10,7 @@ import { LoadingService } from './../../providers/loading.service';
 import { Animation, AnimationController } from '@ionic/angular';
 import { TabMenuScenesComponent } from '../map/tab-menu-scenes/tab-menu-scenes.component';
 import { ProductDetailComponent } from '../product-catalog/product-detail/product-detail.component';
+import { FormCatalogComponent } from './form-catalog/form-catalog.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UsersService } from '../../api/users.service';
 import { ModalController, IonRouterOutlet, ToastController } from '@ionic/angular';
@@ -51,6 +52,7 @@ export class MapPage implements OnInit {
   template = null;
   bannerSelectHover = null;
   bannerSpeakerSelectHover = null;
+  userDataSession = null;
 
   profileRole: any;
   slideOpts = {
@@ -86,6 +88,9 @@ export class MapPage implements OnInit {
     this.listenForFullScreenEvents();
     this.initializeListeners();
     this.usersService.getUser().then((userDataSession: any) => {
+      
+      this.userDataSession = userDataSession;
+
       if (userDataSession && userDataSession.user_roles_fair) {
         this.profileRole = {};
         userDataSession.user_roles_fair.forEach((role) => {
@@ -197,6 +202,10 @@ export class MapPage implements OnInit {
 
         if (banner.speakerCatalog) {
           this.initializeSpeakers(banner);
+        }
+
+        if (banner.formCatalog) {
+          this.initializeFormsCatalogs(banner);
         }
 
         if (banner.contact) {
@@ -402,6 +411,36 @@ export class MapPage implements OnInit {
     if (banner.internalUrl && banner.internalUrl.length > 0) {
       this.redirectTo(banner.internalUrl);
     }
+    if (banner.formCatalog ) {
+      this.presentActionFormCatalog(banner);
+    }
+  }
+  
+  async presentActionFormCatalog(banner: any) {
+
+    let formCatalog = banner.formCatalog;
+
+    if (this.modal) { this.modal.dismiss(); }
+
+    this.modal = await this.modalCtrl.create({
+      component: FormCatalogComponent,
+      swipeToClose: false,
+      cssClass: 'product-modal',
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        '_parent': this,
+        'fair': this.fair, 
+        'formCatalog':  formCatalog,
+        'userDataSession':  this.userDataSession,
+        'banner': banner
+      }
+    });
+    await this.modal.present();
+
+    const { data } = await this.modal.onWillDismiss();
+    if (data) {
+
+    }
   }
 
   initializeHtmlTexts(banners) {
@@ -425,6 +464,32 @@ export class MapPage implements OnInit {
         elm.onResize();
       });
     }
+  }
+
+  initializeFormsCatalogs(banner) {
+
+    banner.__formCatalog = { "agendas": [], "groups": [] };
+
+    banner.__factor = 3;
+
+    const category = banner.formCatalog.category || 'all';
+
+    this.agendasService.list(null)
+      .then((agendas) => {
+        if (agendas.length > 0) {
+          agendas.forEach((agenda) => {
+            if (category == 'all' || agenda.category_id == category) {
+              banner.__formCatalog.agendas.push(agenda);
+            }
+          });
+          banner.__formCatalog.groups = [];
+          this.transformSchedule(banner);
+        }
+
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   onToMapEditor(scene) {
@@ -620,7 +685,7 @@ export class MapPage implements OnInit {
               banner.__agendaCatalog.agendas.push(agenda);
             }
           });
-
+          banner.__agendaCatalog.groups = [];
           this.transformSchedule(banner);
         }
         this.resizeAgendaCatalogs(banner);
@@ -863,9 +928,19 @@ export class MapPage implements OnInit {
   transformSchedule(banner) {
 
     const months = ['Ene', 'Feb', 'Marzo', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    banner.__agendaCatalog.groups = []; 
+    let groups = null;
+    let agendas = null;
+    if(banner.__formCatalog) {
+      groups = banner.__formCatalog.groups;
+      agendas = banner.__formCatalog.agendas;
+    }
 
-    for (let agenda of banner.__agendaCatalog.agendas) {
+    if(banner.__agendaCatalog) {
+      banner.__agendaCatalog.groups = []; 
+      agendas = banner.__agendaCatalog.agendas; 
+    }
+
+    for (let agenda of agendas) {
       
       agenda.hide = false;
 
@@ -881,7 +956,7 @@ export class MapPage implements OnInit {
       const strDay = timeZone.format('DD');
 
       let groupTemp = null;
-      for (let group of banner.__agendaCatalog.groups) {
+      for (let group of  groups) {
         if (group.time === time) {
           groupTemp = group;
           break;
@@ -894,7 +969,7 @@ export class MapPage implements OnInit {
           month: strMonth + ' ' + strYear,
           sessions: []
         };
-        banner.__agendaCatalog.groups.push(groupTemp);
+         groups.push(groupTemp);
       }
 
       const endHour = moment(agenda.start_at).add(agenda.duration_time, 'milliseconds').format('hh:mm a');
