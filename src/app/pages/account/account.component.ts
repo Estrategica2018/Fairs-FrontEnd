@@ -268,7 +268,7 @@ export class AccountComponent implements AfterViewInit {
               this.userData.last_name = data.data.last_name;
               this.url_image = data.data.url_image;
               this.usersService.setUser(this.userData).then((data) => {
-                this.presentToast('Registro guardado Exitosamente');
+                this.presentToast('Registro guardado exitosamente');
               });
               this.loading.dismiss();
             }

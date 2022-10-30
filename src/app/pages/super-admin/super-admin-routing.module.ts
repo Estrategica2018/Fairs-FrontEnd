@@ -110,7 +110,8 @@ const routes: Routes = [
   {
     path: 'product-price/:pavilionId/:standId/:productId/:productPriceId',
     loadChildren: () => import('./product-price/product-price.module').then( m => m.ProductPricePageModule)
-  },  {
+  },
+  {
     path: 'map-site-editor',
     loadChildren: () => import('./map-site-editor/map-site-editor.module').then( m => m.MapSiteEditorPageModule)
   },
@@ -118,6 +119,7 @@ const routes: Routes = [
     path: 'agenda-list',
     loadChildren: () => import('./agenda-list/agenda-list.module').then( m => m.AgendaListPageModule)
   }
+
 
 ];
 

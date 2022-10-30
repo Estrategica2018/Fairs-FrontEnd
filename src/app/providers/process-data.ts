@@ -48,9 +48,9 @@ export function processDataToString(obj) {
         if (obj.resources && obj.resources.scenes) {
             for (let scenes of obj.resources.scenes) {
                 for (let banner of scenes.banners) {
-                    if (banner.__agendaCatalog) {
-                        banner.__agendaCatalog = {};
-                    }
+                    if (banner.__agendaCatalogList) { banner.__agendaCatalogList = {}; }
+                    if (banner.__formCatalogList) { banner.__formCatalogList = {}; }
+                    if (banner.__speakerCatalogList) { banner.__speakerCatalogList = {}; }
                 }
             }
         }

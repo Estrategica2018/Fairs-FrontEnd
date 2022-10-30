@@ -1,141 +1,102 @@
 <ion-header class="mt-5">
   <ion-toolbar>
-    <ion-buttons slot="start">
-
+    <ion-buttons slot="end">
+      <ion-button color="priary" (click)="uploadFileForm = true">Carga Masiva</ion-button>
     </ion-buttons>
 
-    <ion-title>Conferencista</ion-title>
+    <ion-list-header [hidden]="!errors">
+      <div class="alert alert-danger fade show alert-dismissible">
+        <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+        <strong>Error!</strong> {{errors}}
+      </div>
+    </ion-list-header>
+    
+    <ion-list-header [hidden]="!success">
+      <div class="alert alert-success fade show alert-dismissible">
+        <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+        <strong></strong> {{success}}
+      </div>
+    </ion-list-header>
+
+    <ion-buttons slot="primary">
+    <div class="text-center d-flex" *ngIf="uploadFileForm">
+      <input class="form-control" type="file" (change)="onChangefile($event)">
+      <button (click)="onUploadSpeakerFile()" class="btn btn-success">
+        Upload
+      </button>
+    </div>
+  </ion-buttons>
+    
+  <ion-buttons slot="start">
+    <ion-title>Conferencistas</ion-title>
+  </ion-buttons>
   </ion-toolbar>
+
 </ion-header>
 
-<ion-list-header [hidden]="!errors">
-  <div class="alert alert-danger fade show alert-dismissible">
-    <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-    <strong>Error!</strong> {{errors}}
-  </div>
-</ion-list-header>
-
-<ion-list-header [hidden]="!success">
-  <div class="alert alert-success fade show alert-dismissible">
-    <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
-    <strong></strong> {{success}}
-  </div>
-</ion-list-header>
 <ion-content fullscreen="true">
-<ion-list lines=""  class="padding-container">
-  <ion-grid class="ion-text-center">
-    <ion-row class="ion-margin">
-      <ion-col>
-        <ion-title>
-          <ion-text color="default">
-            Lista conferencistas
+  <ion-item lines="" class="mt-4 padding-container" lines="full">
+    <ion-title slot="start" class="ion-text-center" size="large">
+      Lista conferencistas
+    </ion-title>
+    <ion-buttons class="" slot="end">
+        <ion-button  (click)="presentActionSpeaker('new',null)">
+          Nuevo <ion-icon slot="end" name="add-circle-outline"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+  </ion-item>
+  <ion-list lines="" class="padding-container mt-4">
+    <ion-grid class="ion-text-center">
+      <ion-row class="header-row">
+        <ion-col>
+          <ion-text>Nombre</ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text>Cargo / Rol</ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text>Profesión</ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text>Correo</ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text>Acción</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let speaker of speakers;let i = index">
+        <ion-col>
+          <ion-text>
+            {{speaker.user.name+' '+speaker.user.last_name}}
           </ion-text>
-        </ion-title>
-      </ion-col>
-    </ion-row>
-    <ion-row class="header-row">
-      <ion-col>
-        <ion-text>Nombre</ion-text>
-      </ion-col>
+        </ion-col>
+        <ion-col>
+          <ion-text>
+            {{speaker.position}}
+          </ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text>
+            {{speaker.profession}}
+          </ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text>
+            {{speaker.user.email}}
+          </ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text>
+            <ion-button size="small" style="font-size: 9px;" color="primary" (click)="get(speaker.id)">Editar
+            </ion-button>
+            <ion-button size="small" style="font-size: 9px;" color="{{speaker.active == true ? 'warning' : 'success'}}"
+              (click)="delete(speaker.id)">{{speaker.active
+              == true ? 'Inactivar' : 'Activar'}}</ion-button>
+          </ion-text>
+        </ion-col>
 
-      <!--ion-col>
-        <ion-text>Cargo</ion-text>
-      </ion-col-->
-
-      <ion-col>
-        <ion-text>Profesión</ion-text>
-      </ion-col>
-
-      <ion-col>
-        <ion-text>Correo</ion-text>
-      </ion-col>
-      <ion-col>
-        <ion-text>Acción</ion-text>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngFor="let speaker of speakers;let i = index">
-      <ion-col>
-        <ion-text>
-          {{speaker.user.name+' '+speaker.user.last_name}}
-        </ion-text>
-      </ion-col>
-
-      <!--ion-col>
-        <ion-text>
-          {{speaker.position}}
-        </ion-text>
-      </ion-col-->
-
-      <ion-col>
-        <ion-text>
-          {{speaker.profession}}
-        </ion-text>
-      </ion-col>
-      <ion-col>
-        <ion-text>
-          {{speaker.user.email}}
-        </ion-text>
-      </ion-col>
-      <ion-col>
-        <ion-text>
-          <ion-button size="small" style="font-size: 9px;" color="primary" (click)="get(speaker.id)">Editar</ion-button>
-          <ion-button size="small" style="font-size: 9px;" color="{{speaker.active == true ? 'warning' : 'success'}}" (click)="delete(speaker.id)">{{speaker.active == true ? 'Inactivar' : 'Activar'}}</ion-button>
-        </ion-text>
-      </ion-col>
-
-    </ion-row>
-  </ion-grid>
-  <ion-button  color="success" size="small" (click)="new()" *ngIf="speaker.id">
-    <ion-label > Nuevo </ion-label>
-    <ion-icon slot="end" name="plus-outline"></ion-icon>
-  </ion-button>
-  <ion-item button="true">
-    <ion-label> Nombre </ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.name" name="name"></ion-input>
-  </ion-item>
-  <ion-item button="true">
-    <ion-label> Apellido </ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.last_name" name="last_name"></ion-input>
-  </ion-item>
-  <ion-item button="true">
-    <ion-label> Imagen de perfil </ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.profile_picture" name="profile_picture"></ion-input>
-  </ion-item>
-  <ion-item button="true">
-    <ion-label> Logo de empresa </ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.company_logo" name="company_logo"></ion-input>
-  </ion-item>
-  <ion-item button="true" [ngClass]="{'mt-4': 1}">
-    <ion-label> Descripción 1</ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.description_one" name="description_one"></ion-input>
-  </ion-item>
-  <!--ion-item button="true" [ngClass]="{'mt-4': 1}">
-    <ion-label> Descripción 2</ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.description_two" name="description_two"></ion-input>
-  </ion-item-->
-  <ion-item button="true">
-    <ion-label> Cargo </ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.position" name="position"></ion-input>
-  </ion-item>
-  <ion-item button="true">
-    <ion-label> Profesión </ion-label>
-    <ion-input class="ml-auto" class="text-right"  [(ngModel)]="speaker.profession" name="profession"></ion-input>
-  </ion-item>
-  <ion-item button="true">
-    <ion-label> Correo electrónico </ion-label>
-    <ion-input class="ml-auto" class="text-right" [(ngModel)]="speaker.email" name="email"></ion-input>
-  </ion-item>
-
-  <div class="ion-padding mt-2">
-    <ion-button  size="small" (click)="store()" [hidden]="speaker.id">
-      <ion-label > Guardar </ion-label>
-      <ion-icon slot="end" name="save-outline"></ion-icon>
-    </ion-button>
-    <ion-button  color="warning" size="small" (click)="update()" *ngIf="speaker.id">
-      <ion-label > Editar </ion-label>
-      <ion-icon slot="end" name="pencil-outline"></ion-icon>
-    </ion-button>
-  </div>
-</ion-list>
-</ion-content>
-
+      </ion-row>
+    </ion-grid>
+  
+  </ion-list>
+</ion-content> 

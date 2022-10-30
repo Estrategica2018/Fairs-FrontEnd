@@ -30,4 +30,12 @@ ion-input {
 ion-thumbnail {
     width: 9em;
     height: auto;
+    width: 7em;
+    height: auto;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+
+    img {
+        width: 9em;
+    }
 }

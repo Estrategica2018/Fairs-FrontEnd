@@ -67,6 +67,17 @@
                <ion-list-header routerLink="/super-admin/admin" routerLinkActive="active" routerDirection="root"
                   detail="false">Super Administrador </ion-list-header>
                <ion-menu-toggle autoHide="false">
+
+                  <ion-item class="background-transparent" routerLink="/super-admin/fair" routerLinkActive="active"
+                     routerDirection="root" detail="false">
+                     <ion-icon slot="start" name="archive-outline"></ion-icon>
+                     <ion-icon slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
+                     <ion-label>
+                        Administrar Feria
+                     </ion-label>
+                  </ion-item>
+               </ion-menu-toggle>
+               <ion-menu-toggle autoHide="false">
                   <ion-item class="background-transparent" routerLink="/super-admin/agenda-list"
                      routerLinkActive="active" routerDirection="root" detail="false">
                      <ion-icon slot="start" name="calendar-outline"></ion-icon>
@@ -76,14 +87,14 @@
                      </ion-label>
                   </ion-item>
                </ion-menu-toggle>
-               <ion-menu-toggle autoHide="false">
 
-                  <ion-item class="background-transparent" routerLink="/super-admin/fair" routerLinkActive="active"
-                     routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="archive-outline"></ion-icon>
+               <ion-menu-toggle autoHide="false">
+                  <ion-item class="background-transparent" routerLink="/super-admin/speaker"
+                     routerLinkActive="active" routerDirection="root" detail="false">
+                     <ion-icon slot="start" name="people-outline"></ion-icon>
                      <ion-icon slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
                      <ion-label>
-                        Administrar Feria
+                        Conferencistas
                      </ion-label>
                   </ion-item>
                </ion-menu-toggle>
@@ -168,21 +179,7 @@
                      </div>
                   </div>
                </ion-menu-toggle>
-            </ion-list>
-            <ion-list lines="none" class="border-botton background-transparent">
-               <ion-menu-toggle autoHide="false" *ngIf="showAgenda">
-                  <ion-item matTooltip="This is simple Tooltip" matTooltipPosition="after"
-                     matTooltipClass="custom-tooltip-blue" matTooltipHideDelay="200000"
-                     (click)="showPavilionDetail = null" routerLink="/schedule" routerLinkActive="selected"
-                     routerDirection="root" detail="false">
-                     <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
-                     <ion-label>
-                        Agenda
-                     </ion-label>
-                  </ion-item>
-
-               </ion-menu-toggle>
-            </ion-list>
+            </ion-list> 
             <ion-list *ngIf="loggedIn" lines="none" class="border-botton background-transparent">
                <ion-menu-toggle autoHide="false">
                   <ion-item button="true" (click)="presentAccount()" detail="false">
@@ -229,18 +226,26 @@
                *ngIf="profileRole && profileRole.admin">
 
                <ion-menu-toggle autoHide="false">
-                  <ion-item id="mini-menu-admin-agenda" class="width-icon p-0" routerLink="/super-admin/agenda-list"
-                     routerLinkActive="active" (mouseover)="onMenuHover($event,'adminAgenda')" (mouseout)="menuHover = ''"
+                  <ion-item id="mini-menu-admin-fair" class=" width-icon p-0" routerLink="/super-admin/fair"
+                     routerLinkActive="active" (mouseover)="onMenuHover($event,'adminFair')" (mouseout)="menuHover = ''"
                      routerDirection="root" detail="false">
+                     <ion-icon slot="start" name="archive-outline"></ion-icon>
+                     <ion-icon slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
+                  </ion-item>
+               </ion-menu-toggle>
+               <ion-menu-toggle autoHide="false">
+                  <ion-item id="mini-menu-admin-agenda" class="width-icon p-0" routerLink="/super-admin/agenda-list"
+                     routerLinkActive="active" (mouseover)="onMenuHover($event,'adminAgenda')"
+                     (mouseout)="menuHover = ''" routerDirection="root" detail="false">
                      <ion-icon slot="start" name="calendar-outline"></ion-icon>
                      <ion-icon slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
                   </ion-item>
                </ion-menu-toggle>
                <ion-menu-toggle autoHide="false">
-                  <ion-item id="mini-menu-admin-fair" class=" width-icon p-0" routerLink="/super-admin/fair"
-                     routerLinkActive="active" (mouseover)="onMenuHover($event,'adminFair')" (mouseout)="menuHover = ''"
+                  <ion-item id="mini-menu-admin-speaker" class=" width-icon p-0" routerLink="/super-admin/speaker"
+                     routerLinkActive="active" (mouseover)="onMenuHover($event,'adminSpeaker')" (mouseout)="menuHover = ''"
                      routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="archive-outline"></ion-icon>
+                     <ion-icon slot="start" name="people-outline"></ion-icon>
                      <ion-icon slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
                   </ion-item>
                </ion-menu-toggle>
@@ -258,7 +263,7 @@
                      <ion-label (click)="onClickFairScene(sceneLayout.iScene)" class="ion-text-wrap"
                         style="min-width: 11em;"
                         [ngClass]="{'label-scene-move': (editMenu && profileRole && profileRole.admin)}">
-                        
+
                      </ion-label>
                   </ion-item>
                   <!-- If its pavilion scene-->
@@ -268,20 +273,12 @@
                         (mouseover)="onMenuHover($event,'menuScene' + iLayout)" (mouseout)="menuHover = ''">
                         <ion-icon slot="start" name="albums-outline"></ion-icon>
                         <ion-label class="menu-label ion-text-wrap">
-                           
+
                         </ion-label>
                      </ion-item>
                   </div>
                </ion-menu-toggle>
-            </ion-list>
-            <ion-list id="mini-menu-third" lines="none" class="border-botton ion-list-mini">
-               <ion-menu-toggle autoHide="false">
-                  <ion-item class="width-icon p-0" (click)="showPavilionDetail = null" title="Agenda"
-                     routerLink="/schedule" routerLinkActive="selected" routerDirection="root" detail="false">
-                     <ion-icon slot="start" [name]="'calendar-outline'"></ion-icon>
-                  </ion-item>
-               </ion-menu-toggle>
-            </ion-list>
+            </ion-list> 
 
             <ion-list id="mini-menu-four" *ngIf="loggedIn" lines="none" class="border-botton ion-list-mini">
                <ion-menu-toggle autoHide="false">
@@ -289,7 +286,7 @@
                      (click)="presentAccount()" detail="false" (mouseover)="onMenuHover($event,'account')"
                      (mouseout)="menuHover = ''">
                      <ion-icon slot="start" name="person"></ion-icon>
-                     
+
                   </ion-item>
                </ion-menu-toggle>
                <ion-menu-toggle autoHide="false">
@@ -297,7 +294,7 @@
                      (click)="presentLogout()" detail="false" (mouseover)="onMenuHover($event,'logout')"
                      (mouseout)="menuHover = ''">
                      <ion-icon slot="start" name="log-out"></ion-icon>
-                     
+
                   </ion-item>
                </ion-menu-toggle>
             </ion-list>
@@ -316,6 +313,12 @@
             Administrar Feria
          </span>
       </ion-label>
+      <ion-label class="icon-mini-tooltip" [ngStyle]="{'top': miniMenu.adminSpeaker ? miniMenu.adminSpeaker.top +'px' : ''}">
+         <span class="tooltip-text arrow--4"
+            [ngStyle]="{'width': '11em', 'display': menuHover == 'adminSpeaker' ? 'block' : 'none'}">
+            Conferencistas
+         </span>
+      </ion-label>
       <ion-label class="icon-mini-tooltip" [ngStyle]="{'top': miniMenu.account ? miniMenu.account.top +'px' : ''}">
          <span class="tooltip-text arrow--4"
             [ngStyle]="{'width': '11em', 'display': menuHover == 'account' ? 'block' : 'none'}">
@@ -328,16 +331,15 @@
             Salir
          </span>
       </ion-label>
-      
-      <ion-label *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index"
-        class="icon-mini-tooltip"
+
+      <ion-label *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index" class="icon-mini-tooltip"
          [ngStyle]="{'top': ( miniMenu['menuScene'+iLayout] ? miniMenu['menuScene'+iLayout].top : '' ) + 'px' }">
-        
+
          <!-- If its fair scene -->
          <span class="tooltip-text arrow--4"
-           *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )"
-           [ngStyle]="{'width': '11em', 'display': menuHover == 'menuScene' + iLayout ? 'block' : 'none'}">
-           {{sceneLayout?.scene?.title}}
+            *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )"
+            [ngStyle]="{'width': '11em', 'display': menuHover == 'menuScene' + iLayout ? 'block' : 'none'}">
+            {{sceneLayout?.scene?.title}}
          </span>
 
          <!-- If its pavilion scene-->

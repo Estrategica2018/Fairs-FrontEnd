@@ -19,6 +19,8 @@ import { SideMenuButtonsComponent } from './pages/super-admin/map-site-editor/si
 import { ShowColorComponent } from './pages/super-admin/product/show-color/show-color.component';
 import { AgendaCatalogComponent } from './pages/map/agenda-catalog/agenda-catalog.component';
 import { FormCatalogComponent } from './pages/map/form-catalog/form-catalog.component';
+import { SpeakerCatalogComponent } from './pages/map/speaker-catalog/speaker-catalog.component';
+import { SpeakerAdminDetailComponent } from './pages/super-admin/speaker/speaker-admin-detail/speaker-admin-detail.component';
 
 
 import { TermsPage } from './pages/terms/terms.page';
@@ -48,7 +50,9 @@ import { TermsPage } from './pages/terms/terms.page';
     ShowColorComponent,
     TermsPage,
     AgendaCatalogComponent,
-    FormCatalogComponent
+    FormCatalogComponent,
+    SpeakerCatalogComponent,
+    SpeakerAdminDetailComponent
   ],
   exports: [
     TabMenuScenesComponent,
@@ -68,13 +72,15 @@ import { TermsPage } from './pages/terms/terms.page';
     ShowColorComponent,
     TermsPage,
     AgendaCatalogComponent,
-    FormCatalogComponent
+    FormCatalogComponent,
+    SpeakerCatalogComponent,
+    SpeakerAdminDetailComponent
   ]
-  
+
 })
 
 export class ComponentsModule {
-    constructor() {
-        
-    }
+  constructor() {
+
+  }
 }

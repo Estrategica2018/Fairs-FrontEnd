@@ -494,7 +494,7 @@ export class MapSiteEditorPage implements OnInit {
             "nameFontWeight":"100",
             "descHeigth": 69,
             "descTop":139,"descLeft":198,"descWidth":208,"descFontSize":14,"descTextAlign":"justify","lineHeightMili":0,"lineHeightUnit":1,"lineHeight":1,"descFontFamily":"YoutubeSansLight","descFontWeight":100,"titleFontColor":"#000","titleFontFamily":"YoutubeSansMedium","titleFontSize":19,"titleFontWeight":"bold","titleLeft":0,"titleTop":113,"imagesTop":0,"imagesLeft":0,"imagesWidth":187,"imagesHeight":224,"imagesPriceWidth":16,"imagestitleWidth":null,"priceTop":38,"priceLeft":27,"priceFontColor":"#ff1a1a","nameWidth":177,"nameHeight":0,"logoLeft":142,"logoTop":26,"logoWidth":74,"logoHeight":69,"professionFontColor":"#ffffff","professionTop":97,"professionLeft":199,"descFontColor":"","professionFontSize":15},"backgroundColor":"#109be0",
-            "class":"rounded-withradius grayscale cursor-pointer  overflow-hidden","fontColor":"#ffffff"};
+            "class":"rounded-withradius grayscale cursor-pointer overflow-hidden","fontColor":"#ffffff"};
           banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
       break;
       case 'ProductCatalog': 

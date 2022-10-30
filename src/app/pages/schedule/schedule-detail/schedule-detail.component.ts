@@ -216,6 +216,7 @@ export class ScheduleDetailComponent {
       component: this.speakerDetailComponent,
       cssClass: ['speaker-modal','boder-radius-modal'],
       swipeToClose: true,
+      //backdropDismiss:false,
       //presentingElement: this.routerOutlet.nativeEl,
       componentProps: { speaker: speaker, scheduleMode: true }
     });
@@ -302,8 +303,7 @@ export class ScheduleDetailComponent {
         this.agendasService.generateMeetingToken(fair_id, meeting_id, this.userDataSession)
         .then( response => {
           const token = response.data;                  
-          const auth = this.userDataSession.auth;
-          const url = `${this.url}/viewerZoom/meetings/${token}/${auth}`;
+          const url = `${this.url}/viewerZoom/meetings/${token}`;
           
           const windowReference = window.open();
           windowReference.location.href = url;

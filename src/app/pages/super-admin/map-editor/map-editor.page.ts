@@ -22,11 +22,13 @@ import { PopoverController, ActionSheetController } from '@ionic/angular';
 import { environment, SERVER_URL } from '../../../../environments/environment';
 import { ProductListComponent } from '../../super-admin/map-editor/product-list/product-list.component';
 import { AgendaListComponent } from '../../super-admin/map-editor/agenda-list/agenda-list.component';
+import { SpeakerListComponent } from '../../super-admin/map-editor/speaker-list/speaker-list.component';
 import { SpeakersService } from '../../../api/speakers.service';
 import { ProductDetailComponent } from '../../product-catalog/product-detail/product-detail.component';
 import { BannerEditorComponent } from './banner-editor/banner-editor.component';
 import * as moment from 'moment-timezone';
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
+import { CategoryService } from './../../../api/category.service';
 
 declare var tinymce;
 
@@ -107,6 +109,9 @@ export class MapEditorPage implements OnInit {
     { 'label': 'Helvetica Narrow', 'value': '"Helvetica Narrow", sans-serif' }
   ];
 
+  speakerTypeList = [];
+  speakerList = [];
+
   fontWeightList = ['100', '200', '300', '400', '500', '600', '700', '800', '900', 'bold', 'bolder', 'inherit', 'initial', 'lighter', 'normal', 'revert', 'unset'];
 
   menuIcons = ["accessibility-outline", "add-outline", "add-circle-outline", "airplane-outline", "alarm-outline", "albums-outline", "alert-outline", "alert-circle-outline", "american-football-outline", "analytics-outline", "aperture-outline", "apps-outline", "archive-outline", "arrow-back-outline", "arrow-back-circle-outline", "arrow-down-outline", "arrow-down-circle-outline", "arrow-forward-outline", "arrow-forward-circle-outline", "arrow-redo-outline", "arrow-redo-circle-outline", "arrow-undo-outline", "arrow-undo-circle-outline", "arrow-up-outline", "arrow-up-circle-outline", "at-outline", "at-circle-outline", "attach-outline", "backspace-outline", "bag-outline", "bag-add-outline", "bag-check-outline", "bag-handle-outline", "bag-remove-outline", "balloon-outline", "ban-outline", "bandage-outline", "bar-chart-outline", "barbell-outline", "barcode-outline", "baseball-outline", "basket-outline", "basketball-outline", "battery-charging-outline", "battery-dead-outline", "battery-full-outline", "battery-half-outline", "beaker-outline", "bed-outline", "beer-outline", "bicycle-outline", "bluetooth-outline", "boat-outline", "body-outline", "bonfire-outline", "book-outline", "bookmark-outline", "bookmarks-outline", "bowling-ball-outline", "briefcase-outline", "browsers-outline", "brush-outline", "bug-outline", "build-outline", "bulb-outline", "bus-outline", "business-outline", "cafe-outline", "calculator-outline", "calendar-outline", "calendar-clear-outline", "calendar-number-outline", "call-outline", "camera-outline", "camera-reverse-outline", "car-outline", "car-sport-outline", "card-outline", "caret-back-outline", "caret-back-circle-outline", "caret-down-outline", "caret-down-circle-outline", "caret-forward-outline", "caret-forward-circle-outline", "caret-up-outline", "caret-up-circle-outline", "cart-outline", "cash-outline", "cellular-outline", "chatbox-outline", "chatbox-ellipses-outline", "chatbubble-outline", "chatbubble-ellipses-outline", "chatbubbles-outline", "checkbox-outline", "checkmark-outline", "checkmark-circle-outline", "checkmark-done-outline", "checkmark-done-circle-outline", "chevron-back-outline", "chevron-back-circle-outline", "chevron-down-outline", "chevron-down-circle-outline", "chevron-forward-outline", "chevron-forward-circle-outline", "chevron-up-outline", "chevron-up-circle-outline", "clipboard-outline", "close-outline", "close-circle-outline", "cloud-outline", "cloud-circle-outline", "cloud-done-outline", "cloud-download-outline", "cloud-offline-outline", "cloud-upload-outline", "cloudy-outline", "cloudy-night-outline", "code-outline", "code-download-outline", "code-slash-outline", "code-working-outline", "cog-outline", "color-fill-outline", "color-filter-outline", "color-palette-outline", "color-wand-outline", "compass-outline", "construct-outline", "contract-outline", "contrast-outline", "copy-outline", "create-outline", "crop-outline", "cube-outline", "cut-outline", "desktop-outline", "diamond-outline", "dice-outline", "disc-outline", "document-outline", "document-attach-outline", "document-lock-outline", "document-text-outline", "documents-outline", "download-outline", "duplicate-outline", "ear-outline", "earth-outline", "easel-outline", "egg-outline", "ellipse-outline", "ellipsis-horizontal-outline", "ellipsis-horizontal-circle-outline", "ellipsis-vertical-outline", "ellipsis-vertical-circle-outline", "enter-outline", "exit-outline", "expand-outline", "extension-puzzle-outline", "eye-outline", "eye-off-outline", "eyedrop-outline", "fast-food-outline", "female-outline", "file-tray-outline", "file-tray-full-outline", "file-tray-stacked-outline", "film-outline", "filter-outline", "filter-circle-outline", "finger-print-outline", "fish-outline", "fitness-outline", "flag-outline", "flame-outline", "flash-outline", "flash-off-outline", "flashlight-outline", "flask-outline", "flower-outline", "folder-outline", "folder-open-outline", "football-outline", "footsteps-outline", "funnel-outline", "game-controller-outline", "gift-outline", "git-branch-outline", "git-commit-outline", "git-compare-outline", "git-merge-outline", "git-network-outline", "git-pull-request-outline", "glasses-outline", "globe-outline", "golf-outline", "grid-outline", "hammer-outline", "hand-left-outline", "hand-right-outline", "happy-outline", "hardware-chip-outline", "headset-outline", "heart-outline", "heart-circle-outline", "heart-dislike-outline", "heart-dislike-circle-outline", "heart-half-outline", "help-outline", "help-buoy-outline", "help-circle-outline", "home-outline", "hourglass-outline", "ice-cream-outline", "id-card-outline", "image-outline", "images-outline", "infinite-outline", "information-outline", "information-circle-outline", "invert-mode-outline", "journal-outline", "key-outline", "keypad-outline", "language-outline", "laptop-outline", "layers-outline", "leaf-outline", "library-outline", "link-outline", "list-outline", "list-circle-outline", "locate-outline", "location-outline", "lock-closed-outline", "lock-open-outline", "log-in-outline", "log-out-outline", "magnet-outline", "mail-outline", "mail-open-outline", "mail-unread-outline", "male-outline", "male-female-outline", "man-outline", "map-outline", "medal-outline", "medical-outline", "medkit-outline", "megaphone-outline", "menu-outline", "mic-outline", "mic-circle-outline", "mic-off-outline", "mic-off-circle-outline", "moon-outline", "move-outline", "musical-note-outline", "musical-notes-outline", "navigate-outline", "navigate-circle-outline", "newspaper-outline", "notifications-outline", "notifications-circle-outline", "notifications-off-outline", "notifications-off-circle-outline", "nuclear-outline", "nutrition-outline", "open-outline", "options-outline", "paper-plane-outline", "partly-sunny-outline", "pause-outline", "pause-circle-outline", "paw-outline", "pencil-outline", "people-outline", "people-circle-outline", "person-outline", "person-add-outline", "person-circle-outline", "person-remove-outline", "phone-landscape-outline", "phone-portrait-outline", "pie-chart-outline", "pin-outline", "pint-outline", "pizza-outline", "planet-outline", "play-outline", "play-back-outline", "play-back-circle-outline", "play-circle-outline", "play-forward-outline", "play-forward-circle-outline", "play-skip-back-outline", "play-skip-back-circle-outline", "play-skip-forward-outline", "play-skip-forward-circle-outline", "podium-outline", "power-outline", "pricetag-outline", "pricetags-outline", "print-outline", "prism-outline", "pulse-outline", "push-outline", "qr-code-outline", "radio-outline", "radio-button-off-outline", "radio-button-on-outline", "rainy-outline", "reader-outline", "receipt-outline", "recording-outline", "refresh-outline", "refresh-circle-outline", "reload-outline", "reload-circle-outline", "remove-outline", "remove-circle-outline", "reorder-four-outline", "reorder-three-outline", "reorder-two-outline", "repeat-outline", "resize-outline", "restaurant-outline", "return-down-back-outline", "return-down-forward-outline", "return-up-back-outline", "return-up-forward-outline", "ribbon-outline", "rocket-outline", "rose-outline", "sad-outline", "save-outline", "scale-outline", "scan-outline", "scan-circle-outline", "school-outline", "search-outline", "search-circle-outline", "send-outline", "server-outline", "settings-outline", "shapes-outline", "share-outline", "share-social-outline", "shield-outline", "shield-checkmark-outline", "shield-half-outline", "shirt-outline", "shuffle-outline", "skull-outline", "snow-outline", "sparkles-outline", "speedometer-outline", "square-outline", "star-outline", "star-half-outline", "stats-chart-outline", "stop-outline", "stop-circle-outline", "stopwatch-outline", "storefront-outline", "subway-outline", "sunny-outline", "swap-horizontal-outline", "swap-vertical-outline", "sync-outline", "sync-circle-outline", "tablet-landscape-outline", "tablet-portrait-outline", "telescope-outline", "tennisball-outline", "terminal-outline", "text-outline", "thermometer-outline", "thumbs-down-outline", "thumbs-up-outline", "thunderstorm-outline", "ticket-outline", "time-outline", "timer-outline", "today-outline", "toggle-outline", "trail-sign-outline", "train-outline", "transgender-outline", "trash-outline", "trash-bin-outline", "trending-down-outline", "trending-up-outline", "triangle-outline", "trophy-outline", "tv-outline", "umbrella-outline", "unlink-outline", "videocam-outline", "videocam-off-outline", "volume-high-outline", "volume-low-outline", "volume-medium-outline", "volume-mute-outline", "volume-off-outline", "walk-outline", "wallet-outline", "warning-outline", "watch-outline", "water-outline", "wifi-outline", "wine-outline", "woman-outline", "logo-alipay", "logo-amazon", "logo-amplify", "logo-android", "logo-angular", "logo-apple", "logo-apple-appstore", "logo-apple-ar", "logo-behance", "logo-bitbucket", "logo-bitcoin", "logo-buffer", "logo-capacitor", "logo-chrome", "logo-closed-captioning", "logo-codepen", "logo-css3", "logo-designernews", "logo-deviantart", "logo-discord", "logo-docker", "logo-dribbble", "logo-dropbox", "logo-edge", "logo-electron", "logo-euro", "logo-facebook", "logo-figma", "logo-firebase", "logo-firefox", "logo-flickr", "logo-foursquare", "logo-github", "logo-gitlab", "logo-google", "logo-google-playstore", "logo-hackernews", "logo-html5", "logo-instagram", "logo-ionic", "logo-ionitron", "logo-javascript", "logo-laravel", "logo-linkedin", "logo-markdown", "logo-mastodon", "logo-medium", "logo-microsoft", "logo-no-smoking", "logo-nodejs", "logo-npm", "logo-octocat", "logo-paypal", "logo-pinterest", "logo-playstation", "logo-pwa", "logo-python", "logo-react", "logo-reddit", "logo-rss", "logo-sass", "logo-skype", "logo-slack", "logo-snapchat", "logo-soundcloud", "logo-stackoverflow", "logo-steam", "logo-stencil", "logo-tableau", "logo-tiktok", "logo-tumblr", "logo-tux", "logo-twitch", "logo-twitter", "logo-usd", "logo-venmo", "logo-vercel", "logo-vimeo", "logo-vk", "logo-vue", "logo-web-component", "logo-wechat", "logo-whatsapp", "logo-windows", "logo-wordpress", "logo-xbox", "logo-xing", "logo-yahoo", "logo-yen"];
@@ -115,6 +120,7 @@ export class MapEditorPage implements OnInit {
   internalUrlList: any;
   typeCarouselList = [{ 'label': 'Horizontal', 'value': 'horizontal' }, { 'label': 'Horizontal 1', 'value': 'horizontal-1' }, { 'label': 'Horizontal 2', 'value': 'horizontal-2' }];
   carouselOptionList = ['slidesPerView', 'rotate', 'stretch', 'depth', 'modifier'];
+  toolBarSize = 0;
 
   constructor(
     private alertCtrl: AlertController,
@@ -137,7 +143,8 @@ export class MapEditorPage implements OnInit {
     private popoverCtrl: PopoverController,
     private actionSheetController: ActionSheetController,
     private speakersService: SpeakersService,
-    private datepipe: DatePipe) {
+    private datepipe: DatePipe,
+    private categoryService: CategoryService,) {
 
     this.url = document.baseURI;
     this.listenForFullScreenEvents();
@@ -160,6 +167,7 @@ export class MapEditorPage implements OnInit {
 
   ngAfterViewInit() {
     this.initializeScreen();
+
     //window.dispatchEvent(new CustomEvent( 'map:fullscreenIn'));
   }
 
@@ -197,6 +205,8 @@ export class MapEditorPage implements OnInit {
 
       this.fair = fair;
 
+      this.initSpeakerTypeList();
+
       if (this.template === 'fair') {
 
         this.resources = fair.resources;
@@ -231,12 +241,15 @@ export class MapEditorPage implements OnInit {
         });
       }
 
+
+
     }, error => {
       this.loading.dismiss();
-      this.errors = `Consultando el servicio del mapa general de la feria ${error}`;
+      this.errors = `Consultando las categorias de conferencistas ${error}`;
     });
 
   }
+
 
   initializeScene() {
 
@@ -353,11 +366,11 @@ export class MapEditorPage implements OnInit {
     const main = document.querySelector<HTMLElement>('ion-router-outlet');
     const menu = document.querySelector<HTMLElement>('.menu-main-content');
     const offsetWidth = window.innerWidth - menu.offsetWidth;
-    const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
-    main.style.top = top + 'px';
+    this.toolBarSize = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
+    main.style.top = this.toolBarSize + 'px';
 
     let newWidth = offsetWidth;//main.offsetWidth;
-    const offsetHeight = window.innerHeight - top;
+    const offsetHeight = window.innerHeight - this.toolBarSize;
 
     let deltaW = this.scene.container.w / newWidth;
     let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
@@ -423,7 +436,7 @@ export class MapEditorPage implements OnInit {
   }
 
   initializeCatalogs(banner) {
-    if (banner.__catalog || banner.speakerCatalog || banner.type === 'Título') {
+    if (banner.__productCatalogList || banner.speakerCatalog || banner.type === 'Título') {
       for (var i = 10; i > 0; i--) {
 
         if ((i * banner.size.x <= this.scene.container.w) || ((i - 0.5) * banner.size.x <= this.scene.container.w)) {
@@ -694,7 +707,7 @@ export class MapEditorPage implements OnInit {
             "descHeigth": 69,
             "descTop": 139, "descLeft": 198, "descWidth": 208, "descFontSize": 14, "descTextAlign": "justify", "lineHeightMili": 0, "lineHeightUnit": 1, "lineHeight": 1, "descFontFamily": "YoutubeSansLight", "descFontWeight": 100, "titleFontColor": "#000", "titleFontFamily": "YoutubeSansMedium", "titleFontSize": 19, "titleFontWeight": "bold", "titleLeft": 0, "titleTop": 113, "imagesTop": 0, "imagesLeft": 0, "imagesWidth": 187, "imagesHeight": 224, "imagesPriceWidth": 16, "imagestitleWidth": null, "priceTop": 38, "priceLeft": 27, "priceFontColor": "#ff1a1a", "nameWidth": 177, "nameHeight": 0, "logoLeft": 142, "logoTop": 26, "logoWidth": 74, "logoHeight": 69, "professionFontColor": "#ffffff", "professionTop": 97, "professionLeft": 199, "descFontColor": "", "professionFontSize": 15
           }, "backgroundColor": "#109be0",
-          "class": "rounded-withradius grayscale cursor-pointer", "fontColor": "#ffffff"
+          "class": "rounded-withradius grayscale cursor-pointer overflow-hidden", "fontColor": "#ffffff"
         };
         banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
         break;
@@ -767,8 +780,8 @@ export class MapEditorPage implements OnInit {
         banner = { "groupMode": true, "size": { "x": 367, "y": 408 }, "agendaCatalog": { "category": "" }, "class": "w-100vw" };
         break;
       case 'FormCatalog':
-        banner = { "groupMode": true, "position": this.getNewPosition({ "x": 117, "y": 74 }), "size": { "x": 170, "y":50 }, "formCatalog": { "category": "" } , "image_url":"https://files.pucp.education/departamento/teologia/2021/09/25213139/Boton-inscripcion-300x90.png","class":"cursor-pointer"};
-      break;
+        banner = { "groupMode": true, "position": this.getNewPosition({ "x": 117, "y": 74 }), "size": { "x": 170, "y": 50 }, "formCatalog": { "category": "" }, "image_url": "https://files.pucp.education/departamento/teologia/2021/09/25213139/Boton-inscripcion-300x90.png", "class": "cursor-pointer" };
+        break;
     }
 
     this.scene.banners.push(Object.assign(_defaultBanner, banner));
@@ -777,6 +790,7 @@ export class MapEditorPage implements OnInit {
     if (this.bannerSelect.productCatalog) this.presentNewProductListCatalog(this.bannerSelect);
     if (this.bannerSelect.agendaCatalog) this.presentNewAgendaListCatalog(this.bannerSelect);
     if (this.bannerSelect.formCatalog) this.presentNewFormListCatalog(this.bannerSelect);
+    if (this.bannerSelect.speakerCatalog) this.presentNewSpeakerListCatalog(this.bannerSelect, 'new');
     if (this.bannerSelect.speakerCatalog) this.initializeSpeakers(this.bannerSelect);
     this.onChangeItem();
     this.showPanelTool = 'settingsBanner';
@@ -787,7 +801,7 @@ export class MapEditorPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: ProductListComponent,
       swipeToClose: true,
-      backdropDismiss:false,
+      backdropDismiss: false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion, 'stand': this.stand }
     });
@@ -796,8 +810,8 @@ export class MapEditorPage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data) {
       banner.productCatalog.list = data.categorySelected;
-      banner.__catalog = {};
-      banner.__catalog.products = data.products;
+      banner.__productCatalogList = {};
+      banner.__productCatalogList.products = data.products;
     }
     else {
       this.onDeleteBanner(banner);
@@ -809,7 +823,7 @@ export class MapEditorPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: AgendaListComponent,
       swipeToClose: false,
-      backdropDismiss:false,
+      backdropDismiss: false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { 'template': this.template, 'fair': this.fair }
     });
@@ -818,9 +832,9 @@ export class MapEditorPage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data) {
       banner.agendaCatalog.category = data.categorySelected;
-      banner.__agendaCatalog = {};
-      banner.__agendaCatalog.agendas = data.agendaList;
-      banner.__agendaCatalog.groups = [];
+      banner.__agendaCatalogList = {};
+      banner.__agendaCatalogList.agendas = data.agendaList;
+      banner.__agendaCatalogList.groups = [];
       this.transformSchedule(banner);
       this.initializeAgendaCatalogs(banner);
     }
@@ -834,7 +848,7 @@ export class MapEditorPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: AgendaListComponent,
       swipeToClose: false,
-      backdropDismiss:false,
+      backdropDismiss: false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { 'template': this.template, 'fair': this.fair }
     });
@@ -847,10 +861,38 @@ export class MapEditorPage implements OnInit {
       banner.__formCatalog.agendas = data.agendaList;
       banner.__formCatalog.groups = [];
       this.transformSchedule(banner);
-      this.initializeAgendaCatalogs(banner);
     }
     else {
       this.onDeleteBanner(banner);
+    }
+  }
+
+  async presentNewSpeakerListCatalog(banner, action) {
+
+    const modal = await this.modalCtrl.create({
+      component: SpeakerListComponent,
+      swipeToClose: false,
+      backdropDismiss: false,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { 'template': this.template, 'allElementList': this.speakerList, 'catalogList': this.speakerTypeList }
+    });
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      banner.speakerCatalog.speakerType = data.categorySelected;
+      banner.__speakerCatalogList = data.elementList;
+      banner.__factor = 3;
+      if (action == 'new') {
+        this.filterSpeakerList(banner);
+        this.onChangeSpeakerStyle(banner);
+      }
+      this.resizeSpeakers(banner);
+    }
+    else {
+      if (action == 'new') {
+        this.onDeleteBanner(banner);
+      }
     }
   }
 
@@ -1384,6 +1426,7 @@ export class MapEditorPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: ProductListComponent,
       swipeToClose: true,
+      //backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { 'template': this.template, 'fair': this.fair, 'pavilion': this.pavilion, 'stand': this.stand }
     });
@@ -1639,7 +1682,7 @@ export class MapEditorPage implements OnInit {
 
   initializeProductCatalogs(banner) {
 
-    banner.__catalog = { "products": [] };
+    banner.__productCatalogList = { "products": [] };
     banner.__factor = 3;
     let remark = banner.productCatalog.list;
 
@@ -1656,7 +1699,7 @@ export class MapEditorPage implements OnInit {
           products.forEach((product) => {
             if (category == 'all' || product.category_id == category) {
               product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
-              banner.__catalog.products.push(product);
+              banner.__productCatalogList.products.push(product);
               product.priceSelected = product.prices[0];
               product.priceSelectedIndex = 0;
             }
@@ -1678,7 +1721,7 @@ export class MapEditorPage implements OnInit {
         break;
       }
     }
-    banner.__catalog.products.forEach((product, i: any) => {
+    banner.__productCatalogList.products.forEach((product, i: any) => {
       product.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
       product.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
     });
@@ -1692,7 +1735,7 @@ export class MapEditorPage implements OnInit {
 
   initializeAgendaCatalogs(banner) {
 
-    banner.__agendaCatalog = { "agendas": [], "groups": [] };
+    banner.__agendaCatalogList = { "agendas": [], "groups": [] };
     banner.__factor = 3;
 
     const category = banner.agendaCatalog.category || 'all';
@@ -1702,7 +1745,7 @@ export class MapEditorPage implements OnInit {
         if (agendas.length > 0) {
           agendas.forEach((agenda) => {
             if (category == 'all' || agenda.category_id == category) {
-              banner.__agendaCatalog.agendas.push(agenda);
+              banner.__agendaCatalogList.agendas.push(agenda);
             }
           });
 
@@ -1725,7 +1768,7 @@ export class MapEditorPage implements OnInit {
         break;
       }
     }
-    banner.__agendaCatalog.groups.forEach((group, i: any) => {
+    banner.__agendaCatalogList.groups.forEach((group, i: any) => {
       group.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
       group.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
     });
@@ -1749,25 +1792,33 @@ export class MapEditorPage implements OnInit {
 
   initializeSpeakers(banner) {
 
-    banner.__speakers = [];
+    banner.__speakerCatalogList = [];
+    banner.speakerCatalog.speakerType = banner.speakerCatalog.speakerType || 'Conferencista';
+    if (this.speakerList.length == 0) {
+      this.speakersService.list()
+        .then((speakers) => {
+          banner.__factor = banner.__factor || 3;
+          this.speakerList = speakers;
+          this.filterSpeakerList(banner);
+          this.onChangeSpeakerStyle(banner);
+          this.resizeSpeakers(banner);
+        })
+        .catch(error => {
 
-    this.speakersService.list()
-      .then((speakers) => {
-        if (speakers) {
-          speakers.forEach((speaker, indx) => {
-            banner.__speakers.push(speaker);
-          });
-        }
-        this.onChangeSpeakerStyle(banner);
-        this.resizeSpeakers(banner);
-      })
-      .catch(error => {
+        });
+    }
+    else {
 
-      });
+      this.filterSpeakerList(banner);
+      this.onChangeSpeakerStyle(banner);
+      this.resizeSpeakers(banner);
+
+    }
+
   }
 
   resizeSpeakers(banner) {
-    for (var i = 10; i > 0; i--) {
+    for (let i = 10; i > 0; i--) {
       if ((banner.position.x + i * banner.size.x <= this.scene.container.w) ||
         (banner.position.x + (i - 1.3) * banner.size.x <= this.scene.container.w)) {
         banner.__factor = i - 1;
@@ -1775,7 +1826,7 @@ export class MapEditorPage implements OnInit {
       }
     }
 
-    banner.__speakers.forEach((speaker, i: any) => {
+    banner.__speakerCatalogList.forEach((speaker, i: any) => {
       speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
       speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
     });
@@ -1852,6 +1903,7 @@ export class MapEditorPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: BannerEditorComponent,
       swipeToClose: true,
+      //backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl
     });
     await modal.present();
@@ -1902,18 +1954,18 @@ export class MapEditorPage implements OnInit {
     const months = ['Ene', 'Feb', 'Marzo', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     let groups = null;
     let agendas = null;
-    if(banner.__formCatalog) {
+    if (banner.__formCatalog) {
       groups = banner.__formCatalog.groups;
       agendas = banner.__formCatalog.agendas;
     }
 
-    if(banner.__agendaCatalog) {
-      groups = banner.__agendaCatalog.groups; 
-      agendas = banner.__agendaCatalog.agendas; 
+    if (banner.__agendaCatalogList) {
+      groups = banner.__agendaCatalogList.groups;
+      agendas = banner.__agendaCatalogList.agendas;
     }
 
     for (let agenda of agendas) {
-      
+
       agenda.hide = false;
 
       const timeZone = moment(agenda.start_at);
@@ -1928,7 +1980,7 @@ export class MapEditorPage implements OnInit {
       const strDay = timeZone.format('DD');
 
       let groupTemp = null;
-      for (let group of  groups) {
+      for (let group of groups) {
         if (group.time === time) {
           groupTemp = group;
           break;
@@ -1941,12 +1993,12 @@ export class MapEditorPage implements OnInit {
           month: strMonth + ' ' + strYear,
           sessions: []
         };
-         groups.push(groupTemp);
+        groups.push(groupTemp);
       }
 
       const endHour = moment(agenda.start_at).add(agenda.duration_time, 'milliseconds').format('hh:mm a');
 
-      const location = agenda.room ? agenda.room.name : ''; 
+      const location = agenda.room ? agenda.room.name : '';
 
       groupTemp.sessions.push(
         Object.assign({
@@ -1961,7 +2013,28 @@ export class MapEditorPage implements OnInit {
           location: location,
         }, agenda));
     }
-  
+
   }
 
+  filterSpeakerList(banner) {
+    banner.__speakerCatalogList =
+      this.speakerList.filter((speaker) => {
+        return speaker.position == banner.speakerCatalog.speakerType;
+      });
+  }
+
+  initSpeakerTypeList() {
+    this.categoryService.list('SpeakerCategory', this.fair).then((response) => {
+      if (response.success == 201) {
+        this.speakerTypeList = [];
+
+        for (let type of response.data) {
+          this.speakerTypeList.push({ "type": type.name, "label": type.name });
+        }
+      }
+      else {
+        this.errors = `Consultando las categorias de conferencistas`;
+      }
+    });
+  }
 }

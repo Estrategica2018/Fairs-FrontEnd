@@ -263,6 +263,7 @@ export class AgendaPage implements OnInit {
       component: this.speakerDetailComponent,
       cssClass: 'speaker-modal',
       swipeToClose: true,
+      //backdropDismiss:false,
       //presentingElement: this.routerOutlet.nativeEl,
       componentProps: { speaker: speaker, scheduleMode: true }
     });
@@ -360,9 +361,8 @@ export class AgendaPage implements OnInit {
         const email = this.userDataSession.email;
         this.agendasService.generateMeetingToken(fair_id, meeting_id, this.userDataSession) 
         .then( response => {
-          const token = response.data;           
-          const auth = this.userDataSession.auth;
-          const url = `${this.url}/viewerZoom/meetings/${token}/${auth}`;
+          const token = response.data;
+          const url = `${this.url}/viewerZoom/meetings/${token}`;
           
           const windowReference = window.open();
           windowReference.location.href = url;

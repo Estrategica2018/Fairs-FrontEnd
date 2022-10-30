@@ -226,6 +226,7 @@ export class ProductPricePage implements OnInit {
     const modal : any= await this.modalCtrl.create({
       component: ImagenListComponent,
       swipeToClose: true,
+      //backdropDismiss:false,
       componentProps: { parent: parent, element: element }
     });
     await modal.present();

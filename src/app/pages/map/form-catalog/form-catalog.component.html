@@ -72,7 +72,7 @@
 
     <ion-grid>
       <ion-row>
-        <ion-col *ngFor="let agenda of banner.__formCatalog.agendas" size="5" class="product-mini d-flex">
+        <ion-col *ngFor="let agenda of banner.__formCatalogList.agendas" size="5" class="product-mini d-flex">
             <ion-checkbox></ion-checkbox>
             <ion-thumbnail>
               <img [src]="agenda.category.resources.url_image" />

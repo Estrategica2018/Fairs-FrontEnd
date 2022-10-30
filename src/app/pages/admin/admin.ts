@@ -64,7 +64,7 @@ export class AdminPage {
     let newFair = Object.assign({ 
      'halls_number':0,
      'location': '{}',
-     'resources': '{"scenes":[]}'
+     'resources': '{"scenes":[{"banners":[],"container":{"w":1366,"h":960},"show":true,"menuIcon":"map-outline","title":"Escena Principal"}]}'
     },this.fairDefault);
 
     newFair = Object.assign(newFair,{

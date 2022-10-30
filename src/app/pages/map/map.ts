@@ -53,6 +53,7 @@ export class MapPage implements OnInit {
   bannerSelectHover = null;
   bannerSpeakerSelectHover = null;
   userDataSession = null;
+  speakerList = [];
 
   profileRole: any;
   slideOpts = {
@@ -64,6 +65,8 @@ export class MapPage implements OnInit {
   offsetHeight: 0;
   sceneId: any = '0';
   modal: any;
+
+  toolBarSize = 0;
 
   constructor(
     private standService: StandsService,
@@ -88,7 +91,7 @@ export class MapPage implements OnInit {
     this.listenForFullScreenEvents();
     this.initializeListeners();
     this.usersService.getUser().then((userDataSession: any) => {
-      
+
       this.userDataSession = userDataSession;
 
       if (userDataSession && userDataSession.user_roles_fair) {
@@ -266,12 +269,12 @@ export class MapPage implements OnInit {
     const main = document.querySelector<HTMLElement>('ion-router-outlet');
     const menu = document.querySelector<HTMLElement>('.menu-main-content');
     const offsetWidth = window.innerWidth - menu.offsetWidth;
-    const top = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
+    this.toolBarSize = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
     main.style.top = top + 'px';
 
     let newWidth = offsetWidth;//main.offsetWidth;
 
-    const offsetHeight = window.innerHeight - top;
+    const offsetHeight = window.innerHeight - this.toolBarSize;
 
     let deltaW = this.scene.container.w / newWidth;
     let newHeight = newWidth * this.scene.container.h / this.scene.container.w;
@@ -290,7 +293,7 @@ export class MapPage implements OnInit {
 
 
     this.scene.banners.forEach((banner) => {
-
+      console.log(banner);
       if (this.scene.render) {
         if (banner.size) { banner.size.x /= deltaW; banner.size.y /= deltaH; }
         if (banner.position) { banner.position.x /= deltaW; banner.position.y /= deltaH; }
@@ -330,7 +333,7 @@ export class MapPage implements OnInit {
   }
 
   initializeCatalogs(banner) {
-    if (banner.__catalog || banner.speakerCatalog || banner.type === 'Título') {
+    if (banner.__productCatalogList || banner.speakerCatalog || banner.type === 'Título') {
       for (var i = 10; i > 0; i--) {
         if ((i * banner.size.x <= this.scene.container.w) || ((i - 0.5) * banner.size.x <= this.scene.container.w)) {
           banner.__factor = i - 1;
@@ -411,11 +414,11 @@ export class MapPage implements OnInit {
     if (banner.internalUrl && banner.internalUrl.length > 0) {
       this.redirectTo(banner.internalUrl);
     }
-    if (banner.formCatalog ) {
+    if (banner.formCatalog) {
       this.presentActionFormCatalog(banner);
     }
   }
-  
+
   async presentActionFormCatalog(banner: any) {
 
     let formCatalog = banner.formCatalog;
@@ -429,9 +432,9 @@ export class MapPage implements OnInit {
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
         '_parent': this,
-        'fair': this.fair, 
-        'formCatalog':  formCatalog,
-        'userDataSession':  this.userDataSession,
+        'fair': this.fair,
+        'formCatalog': formCatalog,
+        'userDataSession': this.userDataSession,
         'banner': banner
       }
     });
@@ -614,7 +617,7 @@ export class MapPage implements OnInit {
 
   initializeProductCatalogs(banner) {
 
-    banner.__catalog = { "products": [] };
+    banner.__productCatalogList = { "products": [] };
     banner.__factor = 3;
     let remark = banner.productCatalog.list;
 
@@ -631,7 +634,7 @@ export class MapPage implements OnInit {
           products.forEach((product) => {
             if (category == 'all' || product.category_id == category) {
               product.url_image = product.resources && product.resources.main_url_image ? product.resources.main_url_image : product.prices[0].resources.images[0].url_image;
-              banner.__catalog.products.push(product);
+              banner.__productCatalogList.products.push(product);
               product.priceSelected = product.prices[0];
               product.priceSelectedIndex = 0;
             }
@@ -654,13 +657,13 @@ export class MapPage implements OnInit {
       }
     }
 
-    banner.__catalog.products.forEach((product, i: any) => {
+    banner.__productCatalogList.products.forEach((product, i: any) => {
       product.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
       product.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
     });
 
-    const maxSize = banner.__catalog.products.length + 1;
-    banner.__catalog.productCatalogEnd = (((maxSize / banner.__factor) * banner.size.y) + (banner.size.y * (maxSize / banner.__factor) * 0.03));
+    const maxSize = banner.__productCatalogList.products.length + 1;
+    banner.__productCatalogList.productCatalogEnd = (((maxSize / banner.__factor) * banner.size.y) + (banner.size.y * (maxSize / banner.__factor) * 0.03));
 
     const main = document.querySelector<HTMLElement>('ion-router-outlet');
     let left = main.offsetWidth - (((banner.__factor) * 1.03) * banner.size.x);
@@ -672,9 +675,9 @@ export class MapPage implements OnInit {
 
   initializeAgendaCatalogs(banner) {
 
-    banner.__agendaCatalog = { "agendas": [], "groups": [] };
+    banner.__agendaCatalogList = { "agendas": [], "groups": [] };
     banner.__factor = 3;
-    
+
     const category = banner.agendaCatalog.category || 'all';
 
     this.agendasService.list(null)
@@ -682,16 +685,16 @@ export class MapPage implements OnInit {
         if (agendas.length > 0) {
           agendas.forEach((agenda) => {
             if (category == 'all' || agenda.category_id == category) {
-              banner.__agendaCatalog.agendas.push(agenda);
+              banner.__agendaCatalogList.agendas.push(agenda);
             }
           });
-          banner.__agendaCatalog.groups = [];
+          banner.__agendaCatalogList.groups = [];
           this.transformSchedule(banner);
         }
         this.resizeAgendaCatalogs(banner);
       })
       .catch(error => {
-          console.log(error);
+        console.log(error);
       });
   }
 
@@ -703,7 +706,7 @@ export class MapPage implements OnInit {
         break;
       }
     }
-    banner.__agendaCatalog.groups.forEach((group, i: any) => {
+    banner.__agendaCatalogList.groups.forEach((group, i: any) => {
       group.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
       group.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
     });
@@ -717,16 +720,12 @@ export class MapPage implements OnInit {
 
   initializeSpeakers(banner) {
 
-    banner.__speakers = [];
+    banner.__speakerCatalogList = [];
 
     this.speakersService.list()
       .then((speakers) => {
-        if (speakers) {
-
-          speakers.forEach((speaker, indx) => {
-            banner.__speakers.push(speaker);
-          });
-        }
+        this.speakerList = speakers;
+        this.filterSpeakerList(banner);
         this.onChangeSpeakerStyle(banner);
         this.resizeSpeakers(banner);
       })
@@ -744,7 +743,7 @@ export class MapPage implements OnInit {
       }
     }
 
-    banner.__speakers.forEach((speaker, i: any) => {
+    banner.__speakerCatalogList.forEach((speaker, i: any) => {
       speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
       speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
     });
@@ -821,6 +820,7 @@ export class MapPage implements OnInit {
       component: SpeakerDetailComponent,
       cssClass: 'speaker-modal',
       swipeToClose: true,
+      //backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { speaker: speaker }
     });
@@ -930,18 +930,18 @@ export class MapPage implements OnInit {
     const months = ['Ene', 'Feb', 'Marzo', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     let groups = null;
     let agendas = null;
-    if(banner.__formCatalog) {
+    if (banner.__formCatalog) {
       groups = banner.__formCatalog.groups;
       agendas = banner.__formCatalog.agendas;
     }
 
-    if(banner.__agendaCatalog) {
-      banner.__agendaCatalog.groups = []; 
-      agendas = banner.__agendaCatalog.agendas; 
+    if (banner.__agendaCatalogList) {
+      groups = banner.__agendaCatalogList.groups;
+      agendas = banner.__agendaCatalogList.agendas;
     }
 
     for (let agenda of agendas) {
-      
+
       agenda.hide = false;
 
       const timeZone = moment(agenda.start_at);
@@ -956,7 +956,7 @@ export class MapPage implements OnInit {
       const strDay = timeZone.format('DD');
 
       let groupTemp = null;
-      for (let group of  groups) {
+      for (let group of groups) {
         if (group.time === time) {
           groupTemp = group;
           break;
@@ -969,12 +969,12 @@ export class MapPage implements OnInit {
           month: strMonth + ' ' + strYear,
           sessions: []
         };
-         groups.push(groupTemp);
+        groups.push(groupTemp);
       }
 
       const endHour = moment(agenda.start_at).add(agenda.duration_time, 'milliseconds').format('hh:mm a');
 
-      const location = agenda.room ? agenda.room.name : ''; 
+      const location = agenda.room ? agenda.room.name : '';
 
       groupTemp.sessions.push(
         Object.assign({
@@ -989,7 +989,15 @@ export class MapPage implements OnInit {
           location: location,
         }, agenda));
     }
-  
+
   }
+
+  filterSpeakerList(banner) {
+    banner.__speakerCatalogList =
+      this.speakerList.filter((speaker) => {
+        return speaker.position == banner.speakerCatalog.speakerType;
+      });
+  }
+
 
 }

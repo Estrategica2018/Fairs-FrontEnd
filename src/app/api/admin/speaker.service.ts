@@ -14,6 +14,7 @@ import { environment, SERVER_URL } from '../../../environments/environment';
 })
 export class AdminSpeakersService {
 
+
   url = '';
   pavilions = {};
 
@@ -26,34 +27,34 @@ export class AdminSpeakersService {
 
     return new Promise((resolve, reject) => {
 
-       this.usersService.getUser().then((userDataSession: any)=>{
+      this.usersService.getUser().then((userDataSession: any) => {
         const httpOptions = {
           headers: new HttpHeaders({
-              'Authorization':  'Bearer ' + userDataSession.token
+            'Authorization': 'Bearer ' + userDataSession.token
           })
-      };
+        };
 
-      this.http.post(`${SERVER_URL}/api/speakers/create`, processDataToString(data),httpOptions)
-        .pipe(
-          timeout(60000),
-          catchError(e => {
-            if (e.status && e.statusText) {
-              const statusText = e.statusText + (e.error ? e.error.message : '');
-              throw new Error(`Consultando el servicio para crear conferencista : ${e.status} - ${statusText}`);
+        this.http.post(`${SERVER_URL}/api/speakers/create`, processDataToString(data), httpOptions)
+          .pipe(
+            timeout(60000),
+            catchError(e => {
+              if (e.status && e.statusText) {
+                const statusText = e.statusText + (e.error ? e.error.message : '');
+                throw new Error(`Consultando el servicio para crear conferencista : ${e.status} - ${statusText}`);
+              } else {
+                throw new Error(`Consultando el servicio para crear conferencista`);
+              }
+            })
+          )
+          .subscribe((data: any) => {
+            if (data.success) {
+              resolve(processData(data.data));
             } else {
-              throw new Error(`Consultando el servicio para crear conferencista`);
+              reject(JSON.stringify(data));
             }
-          })
-        )
-        .subscribe(( data: any ) => {
-          if (data.success) {
-            resolve(processData(data.data));
-          } else {
-            reject(JSON.stringify(data));
-          }
-        },error => {
-          reject( error )
-        });
+          }, error => {
+            reject(error)
+          });
       });
     });
   }
@@ -63,7 +64,7 @@ export class AdminSpeakersService {
       this.usersService.getUser().then((userDataSession: any) => {
         const httpOptions = {
           headers: new HttpHeaders({
-            Authorization:  'Bearer ' + userDataSession.token
+            Authorization: 'Bearer ' + userDataSession.token
           })
         };
         this.http.post(`${SERVER_URL}/api/speakers/update`, processDataToString(data), httpOptions)
@@ -78,14 +79,14 @@ export class AdminSpeakersService {
               }
             })
           )
-          .subscribe(( data : any ) => {
+          .subscribe((data: any) => {
             if (data.success) {
               resolve(processData(data.data));
             } else {
               reject(JSON.stringify(data));
             }
           }, error => {
-            reject( error );
+            reject(error);
           });
       });
     });
@@ -96,7 +97,7 @@ export class AdminSpeakersService {
       this.usersService.getUser().then((userDataSession: any) => {
         const httpOptions = {
           headers: new HttpHeaders({
-            Authorization:  'Bearer ' + userDataSession.token
+            Authorization: 'Bearer ' + userDataSession.token
           })
         };
         this.http.post(`${SERVER_URL}/api/speakers/delete`, processDataToString(data), httpOptions)
@@ -111,14 +112,57 @@ export class AdminSpeakersService {
               }
             })
           )
-          .subscribe(( data : any ) => {
+          .subscribe((data: any) => {
             if (data.success) {
               resolve(processData(data.data));
             } else {
               reject(JSON.stringify(data));
             }
           }, error => {
-            reject( error );
+            reject(error);
+          });
+      });
+    });
+  }
+
+
+  uploadSpeakerFile(file): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.usersService.getUser().then((userDataSession: any) => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            Authorization: 'Bearer ' + userDataSession.token
+          })
+        };
+
+
+        // Create form data
+        const formData = new FormData(); 
+                
+        // Store form name as "file" with file data
+        formData.append("fileToUpload", file, file.name);
+          
+        // Make http post request over api with formData as req
+        return this.http.post(`${SERVER_URL}/api/speakers/upload`, formData, httpOptions)
+          .pipe(
+            timeout(60000),
+            catchError(e => {
+              if (e.status && e.statusText) {
+                const statusText = e.statusText + (e.error ? e.error.message : '');
+                throw new Error(`Carga Masiva : ${e.status} - ${statusText}`);
+              } else {
+                throw new Error(`Consultando el servicio para carga masiva`);
+              }
+            })
+          )
+          .subscribe((data: any) => {
+            if (data.success) {
+              resolve(processData(data.data));
+            } else {
+              reject(JSON.stringify(data));
+            }
+          }, error => {
+            reject(error);
           });
       });
     });

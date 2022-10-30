@@ -273,6 +273,7 @@ export class SchedulePage implements OnInit {
       component: ScheduleFilterPage,
       cssClass: 'boder-radius-modal',
       swipeToClose: true,
+      //backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { categories: this.categoriesFilter }
     });
@@ -395,6 +396,7 @@ export class SchedulePage implements OnInit {
       component: TermsPage,
       cssClass: 'boder-radius-modal',
       swipeToClose: true,
+      //backdropDismiss:false,
       //presentingElement: this.routerOutlet.nativeEl
     });
     await modal.present();

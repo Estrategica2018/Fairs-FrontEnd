@@ -52,6 +52,7 @@ export class SpeakerListPage {
       component: SpeakerDetailComponent,
       cssClass: 'speaker-modal',
       swipeToClose: true,
+      //backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: { speaker: speaker }
     });

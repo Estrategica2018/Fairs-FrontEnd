@@ -377,6 +377,7 @@ export class AgendaPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: SpeakersSelectPage,
       swipeToClose: true,
+      backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
         'invited_speakers': this.invited_speakers,
@@ -436,6 +437,7 @@ export class AgendaPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: AudienceSelectPage,
       swipeToClose: true,
+      //backdropDismiss:false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
         'invited_speakers': this.invited_emails,

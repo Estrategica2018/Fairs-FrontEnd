@@ -745,6 +745,10 @@ export class AppComponent implements OnInit {
       if(icon)
       this.miniMenu.adminFair = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
 
+      icon = document.getElementById('mini-menu-admin-speaker');
+      if(icon)
+      this.miniMenu.adminSpeaker = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+
       icon = document.getElementById('mini-menu-first');
       if(icon)
       topMenu += icon.offsetHeight;

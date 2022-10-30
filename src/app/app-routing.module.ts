@@ -36,26 +36,6 @@ const routes: Routes = [
     path: 'map/fair/:sceneId',
     loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
-  {
-    path: 'map/fair1/:sceneId',
-    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {
-    path: 'map/fair2/:sceneId',
-    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {
-    path: 'map/fair3/:sceneId',
-    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {
-    path: 'map/fair4/:sceneId',
-    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
-  {
-    path: 'map/fair5/:sceneId',
-    loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
-  },
   {     path: 'map/pavilion/:pavilionId/:sceneId',
         loadChildren: () => import('./pages/map/map.module').then(m => m.MapModule)
   },
