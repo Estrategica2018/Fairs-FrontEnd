@@ -293,7 +293,7 @@ export class MapPage implements OnInit {
 
 
     this.scene.banners.forEach((banner) => {
-      console.log(banner);
+      
       if (this.scene.render) {
         if (banner.size) { banner.size.x /= deltaW; banner.size.y /= deltaH; }
         if (banner.position) { banner.position.x /= deltaW; banner.position.y /= deltaH; }

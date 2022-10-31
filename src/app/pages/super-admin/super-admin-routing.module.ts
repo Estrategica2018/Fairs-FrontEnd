@@ -84,7 +84,7 @@ const routes: Routes = [
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
   },
   {
-    path: 'map-editor/product/:pavilionId/:standId/:product/:sceneId',
+    path: 'map-editor/product/:pavilionId/:standId/:productId/:sceneId',
     loadChildren: () => import('./map-editor/map-editor.module').then( m => m.MapEditorPageModule)
   },
   {

@@ -10,6 +10,7 @@ import { processData } from '../../../providers/process-data';
 import { LoadingService } from '../../../providers/loading.service';
 import { LoginComponent } from '../../login/login.component';
 import { NewSceneComponent } from './new-scene/new-scene.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-fair',
@@ -49,6 +50,7 @@ export class FairPage implements OnInit {
     private modalCtrl: ModalController,
     private usersService: UsersService,
     private toastCtrl: ToastController,
+    private router: Router,
   ) { 
      this.maxYear = new Date().getFullYear() + 5;
   }
@@ -361,6 +363,19 @@ export class FairPage implements OnInit {
     });  
     toast.present();
   }
+  
+  onClickFairScene(scene,iScene) {
+    if(scene.rows) {
+      this.redirectTo('/super-admin/map-site-editor/fair/' + iScene);
+    }
+    else {
+      this.redirectTo('/super-admin/map-editor/fair/' + iScene);
+    }
+  }
 
-
+  redirectTo(uri: string) {
+    this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
+      this.router.navigate([uri])
+    });
+  }
 } 

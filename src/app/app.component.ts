@@ -55,6 +55,7 @@ export class AppComponent implements OnInit {
   fairAdminMode = false;
   menuHover: string = null;
   miniMenu: any = {};
+  menuChangeList = [];
 
   constructor(
     private alertCtrl: AlertController,
@@ -170,6 +171,7 @@ export class AppComponent implements OnInit {
 
       for (let iScene = 0, scene = null; iScene < this.fair.resources.scenes.length; iScene++) {
         scene = this.fair.resources.scenes[iScene];
+
         //if(!scene.show || (this.editMenu && this.profileRole && this.profileRole.admin)) continue;
         scene.menuPosition = findScenePosition(this.fair, 'sceneFair', iScene, (i + 1));
         scene.id = scene.id || this._getId();
@@ -225,9 +227,10 @@ export class AppComponent implements OnInit {
       this.sceneLayoutList.push({ 'pavilion': pavilion, 'type': 'scenePavilion', 'iScene': iScene });
       this.fair.location.push({ 'type': 'scenePavilion', 'iScene': iScene, 'menuPosition': this.lTotal });
     }
-    
-    ////this.initializeToopTipMenu();
 
+    ////this.initializeToopTipMenu();
+    this.menuChangeList = [];
+    this.menuChangeList.push({'type':'Fair'});
   }
 
   ngOnDestroy(): void {
@@ -255,15 +258,10 @@ export class AppComponent implements OnInit {
     });
   }
 
-
   checkLoginStatus() {
     return this.usersService.isLoggedIn().then(user => {
-      return this.updateLoggedInStatus(user);
+      return this.loggedIn = (user !== null);
     });
-  }
-
-  updateLoggedInStatus(user: any) {
-    this.loggedIn = (user !== null);
   }
 
   listenForLoginEvents() {
@@ -272,11 +270,11 @@ export class AppComponent implements OnInit {
     });
 
     window.addEventListener('addScene:menu', (event: any) => {
-      this.addSceneMenu(event.detail.type, event.detail.iScene);
+      //this.addSceneMenu(event.detail.type, event.detail.iScene);
     });
 
     window.addEventListener('removeScene:menu', (event: any) => {
-      this.removeSceneMenu(event.detail.type, event.detail.iScene);
+      //this.removeSceneMenu(event.detail.type, event.detail.iScene);
     });
 
 
@@ -295,7 +293,6 @@ export class AppComponent implements OnInit {
     window.addEventListener('open:shoppingCart', () => {
       this.openShoppingCart();
     });
-
   }
 
   listenForFullScreenEvents() {
@@ -405,9 +402,14 @@ export class AppComponent implements OnInit {
     });
   }
 
-  onClickFairScene(sceneId) {
-    this.showPavilionDetail = null
-    this.redirectTo('/map/fair/' + sceneId);
+  onClickFairScene(sceneLayout) {
+    this.showPavilionDetail = null;
+    if (sceneLayout.scene.rows) {
+      this.redirectTo('/map-site/fair/' + sceneLayout.iScene);
+    }
+    else {
+      this.redirectTo('/map/fair/' + sceneLayout.iScene);
+    }
   }
 
   onClickPavilion(pavilion) {
@@ -558,7 +560,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  goToSceneUp(sceneLayout, menuPosition, obj) {
+  /*goToSceneUp(sceneLayout, menuPosition, obj) {
     if (menuPosition == 0 || !obj || !obj.resources || !obj.resources.scenes) return;
 
     let list = [];
@@ -584,6 +586,16 @@ export class AppComponent implements OnInit {
       }
     }
     this.sceneLayoutList = list;
+
+    let mbcontrol = false;
+    for(let menuChange of this.menuChangeList) {
+      if(menuChange.type == 'Fair') {
+        mbcontrol = true;
+      }
+    }
+
+    if(!mbcontrol) this.menuChangeList.push({'type':'Fair'});
+    
   }
 
   goToSceneDown(sceneLayout, menuPosition, obj) {
@@ -613,6 +625,179 @@ export class AppComponent implements OnInit {
       }
     }
     this.sceneLayoutList = list;
+
+    let mbcontrol = false;
+    for(let menuChange of this.menuChangeList) {
+      if(menuChange.type == 'Fair') {
+        mbcontrol = true;
+      }
+    }
+
+    if(!mbcontrol) this.menuChangeList.push({'type':'Fair'});
+  }*/
+
+  goToFairSceneUp(event, positionBefore, positionAfter) {
+    event.stopPropagation();
+
+    if (!this.fair.location) return;
+
+    let scenesList = [];
+    let scenes = this.sceneLayoutList;
+    let sceneTemp = null;
+    for (let i = scenes.length - 1, scene = null; i >= 0; i--) {
+      scene = scenes[i];
+      if (i == positionAfter) {
+        scenesList.push(sceneTemp);
+      }
+      else if (i == positionBefore) {
+        sceneTemp = scene;
+        scenesList.push(scenes[positionAfter]);
+      }
+      else {
+        scenesList.push(scene);
+      }
+    }
+
+    const scenesListRevert = [];
+    this.fair.location = [];
+    for (let i = scenesList.length - 1, scene = null; i >= 0; i--) {
+      scene = scenesList[i];
+      scenesListRevert.push(scene);
+    }
+
+    this.sceneLayoutList = scenesListRevert;
+
+    for (let i = 0, scene = null; i < scenesListRevert.length; i++) {
+      scene = scenesListRevert[i];
+      this.fair.location.push({"type":scene.type,"iScene":scene.iScene,"menuPosition": i + 1});
+    }
+
+    let mbcontrol = false;
+    for(let menuChange of this.menuChangeList) {
+      if(menuChange.type == 'Fair') {
+        mbcontrol = true;
+      }
+    }
+
+    if(!mbcontrol) this.menuChangeList.push({'type':'Fair'});
+    this.initializeToopTipMenu();
+  }
+
+  goToFairSceneDown(event, positionBefore, positionAfter) {
+    event.stopPropagation();
+
+    if (!this.fair.location || positionBefore == this.fair.location.length) return;
+
+    let scenesList = [];
+    this.fair.location = [];
+
+    const scenes = this.sceneLayoutList;
+    let sceneTemp = null;
+    for (let i = 0, scene = null; i < scenes.length; i++) {
+      scene = scenes[i];
+      if (i == positionAfter) {
+        scenesList.push(sceneTemp);
+      }
+      else if (i == positionBefore) {
+        sceneTemp = scene;
+        scenesList.push(scenes[positionAfter]);
+      }
+      else {
+        scenesList.push(scene);
+      }
+    }
+
+    this.sceneLayoutList = scenesList;
+
+    for (let i = 0, scene = null; i < scenesList.length; i++) {
+      scene = scenesList[i];
+      this.fair.location.push({"type":scene.type,"iScene":scene.iScene,"menuPosition": i + 1});
+    }
+
+    let mbcontrol = false;
+    for(let menuChange of this.menuChangeList) {
+      if(menuChange.type == 'Fair') {
+        mbcontrol = true;
+      }
+    }
+    
+    if(!mbcontrol) this.menuChangeList.push({'type':'Fair'});
+    this.initializeToopTipMenu();
+
+  }
+
+  goToPavilionSceneDown(pavilion, positionBefore, positionAfter) {
+
+    if (!pavilion.resources || !pavilion.resources.scenes || positionBefore == pavilion.resources.scenes.length) return;
+
+    let scenesList = [];
+    const scenes = pavilion.resources.scenes;
+    let sceneTemp = null;
+    for (let i = 0, scene = null; i < scenes.length; i++) {
+      scene = scenes[i];
+      if (i == positionAfter) {
+        scenesList.push(sceneTemp);
+      }
+      else if (i == positionBefore) {
+        sceneTemp = scene;
+        scenesList.push(scenes[positionAfter]);
+      }
+      else {
+        scenesList.push(scene);
+      }
+    }
+    pavilion.resources.scenes = scenesList;
+
+    let mbcontrol = false;
+    for(let menuChange of this.menuChangeList) {
+      if(menuChange.type == 'Pavilion' && menuChange.pavilion.id == pavilion.id) {
+        mbcontrol = true;
+      }
+    }
+    
+    if(!mbcontrol) this.menuChangeList.push({'type':'Pavilion', 'pavilion': pavilion});
+
+  }
+
+  goToPavilionSceneUp(pavilion, positionBefore, positionAfter) {
+
+    if (!pavilion.resources || !pavilion.resources.scenes || positionBefore == 0) return;
+
+    let scenesList = [];
+    let scenes = pavilion.resources.scenes;
+    let sceneTemp = null;
+    for (let i = scenes.length - 1, scene = null; i >= 0; i--) {
+      scene = scenes[i];
+      if (i == positionAfter) {
+        scenesList.push(sceneTemp);
+      }
+      else if (i == positionBefore) {
+        sceneTemp = scene;
+        scenesList.push(scenes[positionAfter]);
+      }
+      else {
+        scenesList.push(scene);
+      }
+    }
+
+    const scenesListRevert = [];
+
+    for (let i = scenesList.length - 1, scene = null; i >= 0; i--) {
+      scene = scenesList[i];
+      scenesListRevert.push(scene);
+    }
+
+    pavilion.resources.scenes = scenesListRevert;
+
+    let mbcontrol = false;
+    for(let menuChange of this.menuChangeList) {
+      if(menuChange.type == 'Pavilion' && menuChange.pavilion.id == pavilion.id) {
+        mbcontrol = true;
+      }
+    }
+
+    if(!mbcontrol) this.menuChangeList.push({'type':'Pavilion', 'pavilion': pavilion});
+    
   }
 
   addEditedScene(list, sceneLayout, indx) {
@@ -640,8 +825,41 @@ export class AppComponent implements OnInit {
     toast.present();
   }
 
-  updateSceneMenu(isExternal) {
+  updateSceneMenu() {
+    
     this.loading.present({ message: 'Cargando...' });
+    let finish = false;
+
+    if (this.menuChangeList && this.menuChangeList.length > 0) {
+      for (let menuChange of this.menuChangeList) {
+        if (menuChange.type == 'Fair') {
+          const fair = Object.assign({}, { 'id': this.fair.id, 'location': JSON.stringify(this.fair.location) });
+          this.adminFairsService.updateFair(fair)
+            .then((response) => {
+              if (!finish) {
+                this.loading.dismiss();
+                finish = true;
+                this.menuChangeList = [];
+                this.editMenu = false;
+              }
+            });
+        }
+        if (menuChange.type == 'Pavilion' ) {
+          const pavilion = Object.assign({}, { 'id': menuChange.pavilion.id, 'fair_id': this.fair.id,'resources': menuChange.pavilion.resources});
+          this.adminPavilionsService.update(pavilion)
+            .then((response) => {
+              if (!finish) {
+                this.loading.dismiss();
+                finish = true;
+                this.menuChangeList = [];
+                this.editMenu = false;
+              }
+            });
+        }
+      }
+    }
+    
+    /*this.loading.present({ message: 'Cargando...' });
     console.log(this.fair.location);
 
     const fair = Object.assign({}, { 'id': this.fair.id, 'location': JSON.stringify(this.fair.location) });
@@ -679,14 +897,14 @@ export class AppComponent implements OnInit {
         this.loading.dismiss();
         console.log(error);
         this.presentToast(`Consultando el servicio para actualizar menú ${error}`);
-      });
+      });*/
   }
 
   _getId() {
     return new Date().valueOf() + Math.floor(Math.random() * 1000);
   }
 
-  addSceneMenu(type, iScene) {
+  /*addSceneMenu(type, iScene) {
     var list = [];
     var indx = 1;
     list.push({ 'type': type, 'iScene': iScene, 'menuPosition': indx });
@@ -718,7 +936,7 @@ export class AppComponent implements OnInit {
     this.fair.location = list;
 
     this.updateSceneMenu({ 'type': type, 'sceneId': iScene, 'typeAction': 'remove' });
-  }
+  }*/
 
 
   onEditMenuClick() {
@@ -734,24 +952,24 @@ export class AppComponent implements OnInit {
 
 
     setTimeout(() => {
-      
+
       let topMenu = 93;
 
       let icon = document.getElementById('mini-menu-admin-agenda');
-      if(icon)
-      this.miniMenu.adminAgenda = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+      if (icon)
+        this.miniMenu.adminAgenda = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
 
       icon = document.getElementById('mini-menu-admin-fair');
-      if(icon)
-      this.miniMenu.adminFair = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+      if (icon)
+        this.miniMenu.adminFair = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
 
       icon = document.getElementById('mini-menu-admin-speaker');
-      if(icon)
-      this.miniMenu.adminSpeaker = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+      if (icon)
+        this.miniMenu.adminSpeaker = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
 
       icon = document.getElementById('mini-menu-first');
-      if(icon)
-      topMenu += icon.offsetHeight;
+      if (icon)
+        topMenu += icon.offsetHeight;
 
       let i = 0;
       for (let sceneLayout of this.sceneLayoutList) {
@@ -764,37 +982,37 @@ export class AppComponent implements OnInit {
         }
 
         if (icon) {
-          this.miniMenu['menuScene'+i] = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+          this.miniMenu['menuScene' + i] = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
         }
 
         i++;
       }
 
       icon = document.getElementById('mini-menu-second');
-      if(icon)
-      topMenu += icon.offsetHeight;
+      if (icon)
+        topMenu += icon.offsetHeight;
 
       icon = document.getElementById('mini-menu-third');
-      if(icon)
-      topMenu += icon.offsetHeight;
+      if (icon)
+        topMenu += icon.offsetHeight;
 
       icon = document.getElementById('mini-menu-account');
-      if(icon) {
+      if (icon) {
         topMenu += icon.offsetTop;
         this.miniMenu.account = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
       }
 
       icon = document.getElementById('mini-menu-logout');
-      if(icon) 
-      this.miniMenu.logout = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+      if (icon)
+        this.miniMenu.logout = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
 
     }, 1000);
 
   }
 
-  onMenuHover($event,id) {
+  onMenuHover($event, id) {
     this.menuHover = id;
-    if(this.miniMenu[this.menuHover])
-    this.miniMenu[this.menuHover].top = $event.pageY - $event.offsetY;
+    if (this.miniMenu[this.menuHover])
+      this.miniMenu[this.menuHover].top = $event.pageY - $event.offsetY;
   }
 }

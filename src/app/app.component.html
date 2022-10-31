@@ -42,7 +42,7 @@
                *ngIf="profileRole && profileRole.admin" [hidden]="editMenu">
                Editar Menú
             </ion-button>
-            <ion-button class="w-100" slot="start" (click)="updateSceneMenu(null)"
+            <ion-button class="w-100" slot="start" (click)="updateSceneMenu()" [disabled]="menuChangeList.length == 0"
                *ngIf="profileRole && profileRole.admin && editMenu" [color]="editMenu ? 'primary' : 'medium'">
                Guardar Menú
                <ion-icon slot="end" name="save-outline"></ion-icon>
@@ -70,7 +70,7 @@
 
                   <ion-item class="background-transparent" routerLink="/super-admin/fair" routerLinkActive="active"
                      routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="archive-outline"></ion-icon>
+                     <ion-icon slot="start" name="home-outline"></ion-icon>
                      <ion-icon slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
                      <ion-label>
                         Administrar Feria
@@ -89,8 +89,8 @@
                </ion-menu-toggle>
 
                <ion-menu-toggle autoHide="false">
-                  <ion-item class="background-transparent" routerLink="/super-admin/speaker"
-                     routerLinkActive="active" routerDirection="root" detail="false">
+                  <ion-item class="background-transparent" routerLink="/super-admin/speaker" routerLinkActive="active"
+                     routerDirection="root" detail="false">
                      <ion-icon slot="start" name="people-outline"></ion-icon>
                      <ion-icon slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
                      <ion-label>
@@ -102,18 +102,19 @@
             <ion-list lines="none" class="border-botton background-transparent">
                <ion-menu-toggle autoHide="false" *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index">
                   <!-- If its fair scene -->
-                  <ion-item (click)="onClickFairScene(sceneLayout.iScene)" button="true" class="background-transparent"
+                  <ion-item (click)="onClickFairScene(sceneLayout)" button="true" class="background-transparent"
                      *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )">
                      <ion-icon slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
-                     <ion-label (click)="onClickFairScene(sceneLayout.iScene)" class="ion-text-wrap"
-                        style="min-width: 11em;"
+                     <ion-label class="ion-text-wrap" style="min-width: 11em;"
                         [ngClass]="{'label-scene-move': (editMenu && profileRole && profileRole.admin)}">
                         {{sceneLayout.scene.title}}
                      </ion-label>
                      <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
-                        <ion-button (click)="goToSceneUp(sceneLayout, iLayout + 1, fair)" *ngIf="iLayout > 0"
+                        <ion-button (click)="goToFairSceneUp($event,iLayout, iLayout - 1)"
+                         *ngIf="iLayout > 0"
                            class="icon-up"> &#8593; </ion-button>
-                        <ion-button (click)="goToSceneDown(sceneLayout, iLayout + 1, fair)" *ngIf="iLayout + 1 < lTotal"
+                        <ion-button (click)="goToFairSceneDown($event,iLayout, iLayout + 1)"
+                        *ngIf="iLayout + 1 < lTotal"
                            class="icon-down"> &#8595; </ion-button>
                      </ion-buttons>
                   </ion-item>
@@ -132,9 +133,9 @@
                               *ngIf="showPavilionDetail === 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
                         </ion-buttons>
                         <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
-                           <ion-button (click)="goToSceneUp(sceneLayout, iLayout + 1, sceneLayout.pavilion)"
+                           <ion-button (click)="goToFairSceneUp($event,iLayout, iLayout - 1)"
                               *ngIf="iLayout > 0" class="icon-up"> &#8593; </ion-button>
-                           <ion-button (click)="goToSceneDown(sceneLayout, iLayout + 1, sceneLayout.pavilion)"
+                           <ion-button (click)="goToFairSceneDown($event,iLayout, iLayout + 1)"
                               *ngIf="iLayout + 1 < lTotal" class="icon-down"> &#8595; </ion-button>
                         </ion-buttons>
                      </ion-item>
@@ -143,8 +144,20 @@
                            <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
                               (click)="onClickPavilionScene(sceneLayout.pavilion,k)" lines="none" button="true"
                               class="sub-menu">
-                              <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
+                              <ion-icon slot="end" name="chevron-forward-outline" size="small"
+                                 [hidden]="(editMenu && profileRole && profileRole.admin)"></ion-icon>
+
+                              <ion-buttons slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
+                                 <ion-button class="icon-up"
+                                    (click)="goToPavilionSceneUp(sceneLayout.pavilion, k, k - 1)" *ngIf="k > 0">
+                                    &#8593; </ion-button>
+                                 <ion-button class="icon-down"
+                                    (click)="goToPavilionSceneDown(sceneLayout.pavilion, k, k + 1)"
+                                    *ngIf="k + 1 < sceneLayout.pavilion.resources.scenes.length"> &#8595; </ion-button>
+                              </ion-buttons>
+
                               <ion-label class="menu-label ml-4 ion-text-wrap"> {{ scene.title}} </ion-label>
+
                            </ion-item>
                         </div>
                         <ion-item (click)="onClickPavilionLocal(sceneLayout.pavilion)" lines="none" button="true"
@@ -179,7 +192,7 @@
                      </div>
                   </div>
                </ion-menu-toggle>
-            </ion-list> 
+            </ion-list>
             <ion-list *ngIf="loggedIn" lines="none" class="border-botton background-transparent">
                <ion-menu-toggle autoHide="false">
                   <ion-item button="true" (click)="presentAccount()" detail="false">
@@ -229,7 +242,7 @@
                   <ion-item id="mini-menu-admin-fair" class=" width-icon p-0" routerLink="/super-admin/fair"
                      routerLinkActive="active" (mouseover)="onMenuHover($event,'adminFair')" (mouseout)="menuHover = ''"
                      routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="archive-outline"></ion-icon>
+                     <ion-icon slot="start" name="home-outline"></ion-icon>
                      <ion-icon slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
                   </ion-item>
                </ion-menu-toggle>
@@ -243,8 +256,8 @@
                </ion-menu-toggle>
                <ion-menu-toggle autoHide="false">
                   <ion-item id="mini-menu-admin-speaker" class=" width-icon p-0" routerLink="/super-admin/speaker"
-                     routerLinkActive="active" (mouseover)="onMenuHover($event,'adminSpeaker')" (mouseout)="menuHover = ''"
-                     routerDirection="root" detail="false">
+                     routerLinkActive="active" (mouseover)="onMenuHover($event,'adminSpeaker')"
+                     (mouseout)="menuHover = ''" routerDirection="root" detail="false">
                      <ion-icon slot="start" name="people-outline"></ion-icon>
                      <ion-icon slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
                   </ion-item>
@@ -255,13 +268,12 @@
                <ion-menu-toggle autoHide="false" *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index">
 
                   <!-- If its fair scene -->
-                  <ion-item id="mini-menu-scene-{{iLayout}}" (click)="onClickFairScene(sceneLayout.iScene)"
-                     button="true" class="background-transparent width-icon p-0"
+                  <ion-item id="mini-menu-scene-{{iLayout}}" (click)="onClickFairScene(sceneLayout)" button="true"
+                     class="background-transparent width-icon p-0"
                      *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )"
                      (mouseover)="onMenuHover($event,'menuScene' + iLayout)" (mouseout)="menuHover = ''">
                      <ion-icon slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
-                     <ion-label (click)="onClickFairScene(sceneLayout.iScene)" class="ion-text-wrap"
-                        style="min-width: 11em;"
+                     <ion-label (click)="onClickFairScene(sceneLayout)" class="ion-text-wrap" style="min-width: 11em;"
                         [ngClass]="{'label-scene-move': (editMenu && profileRole && profileRole.admin)}">
 
                      </ion-label>
@@ -278,7 +290,7 @@
                      </ion-item>
                   </div>
                </ion-menu-toggle>
-            </ion-list> 
+            </ion-list>
 
             <ion-list id="mini-menu-four" *ngIf="loggedIn" lines="none" class="border-botton ion-list-mini">
                <ion-menu-toggle autoHide="false">
@@ -313,7 +325,8 @@
             Administrar Feria
          </span>
       </ion-label>
-      <ion-label class="icon-mini-tooltip" [ngStyle]="{'top': miniMenu.adminSpeaker ? miniMenu.adminSpeaker.top +'px' : ''}">
+      <ion-label class="icon-mini-tooltip"
+         [ngStyle]="{'top': miniMenu.adminSpeaker ? miniMenu.adminSpeaker.top +'px' : ''}">
          <span class="tooltip-text arrow--4"
             [ngStyle]="{'width': '11em', 'display': menuHover == 'adminSpeaker' ? 'block' : 'none'}">
             Conferencistas

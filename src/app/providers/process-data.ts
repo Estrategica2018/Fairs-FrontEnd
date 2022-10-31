@@ -25,6 +25,7 @@ export function processData(obj) {
                 console.log(obj);
             }
         }
+        
         let objItem = null;
         for (let key of Object.keys(obj)) {
             if (key.indexOf('__') < 0 && obj[key]) {
@@ -47,6 +48,7 @@ export function processDataToString(obj) {
 
         if (obj.resources && obj.resources.scenes) {
             for (let scenes of obj.resources.scenes) {
+                if(scenes.banners)
                 for (let banner of scenes.banners) {
                     if (banner.__agendaCatalogList) { banner.__agendaCatalogList = {}; }
                     if (banner.__formCatalogList) { banner.__formCatalogList = {}; }

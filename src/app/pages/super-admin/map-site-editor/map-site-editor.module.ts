@@ -5,7 +5,7 @@ import { DragAndDropModule } from 'angular-draggable-droppable';
 import { IonicModule } from '@ionic/angular';
 import { MapSiteEditorPageRoutingModule } from './map-site-editor-routing.module';
 import { MapSiteEditorPage } from './map-site-editor.page';
-import { SceneComponent } from './scene-component/scene.component';
+import { ComponentsModule } from '../../../components.module';
 import { LayoutComponent } from './layout-component/layout.component';
 import { BannerSettingPanelComponent } from './banner-setting-panel/banner-setting-panel.component';
 import { NgxPopperModule } from 'ngx-popper';
@@ -16,12 +16,13 @@ import { NgxPopperModule } from 'ngx-popper';
     FormsModule,
     IonicModule,
     DragAndDropModule,
+    ComponentsModule,
     MapSiteEditorPageRoutingModule,
     NgxPopperModule.forRoot({
       hideOnClickOutside: false
     })
   ],
-  declarations: [MapSiteEditorPage, SceneComponent, LayoutComponent, BannerSettingPanelComponent],
-  entryComponents: [SceneComponent, LayoutComponent, BannerSettingPanelComponent]
+  declarations: [MapSiteEditorPage, LayoutComponent, BannerSettingPanelComponent],
+  entryComponents: [LayoutComponent, BannerSettingPanelComponent]
 })
 export class MapSiteEditorPageModule {}

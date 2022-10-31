@@ -77,7 +77,24 @@ const routes: Routes = [
   {
     path: 'app-dialog/:dialogType/:email',
     loadChildren: () => import('./pages/app-dialog/app-dialog.module').then( m => m.AppDialogPageModule)
+  },
+  {
+    path: 'map-site/fair/:sceneId',
+    loadChildren: () => import('./pages/map-site/map-site.module').then( m => m.MapSitePageModule)
+  },
+  {
+    path: 'map-site/pavilion/:pavilionId/:sceneId',
+    loadChildren: () => import('./pages/map-site/map-site.module').then( m => m.MapSitePageModule)
+  },
+  {
+    path: 'map-site/stand/:pavilionId/:standId/:sceneId',
+    loadChildren: () => import('./pages/map-site/map-site.module').then( m => m.MapSitePageModule)
+  },
+  {
+    path: 'map-site/product/:pavilionId/:standId/:productId/:sceneId',
+    loadChildren: () => import('./pages/map-site/map-site.module').then( m => m.MapSitePageModule)
   }
+
 
 
 ];

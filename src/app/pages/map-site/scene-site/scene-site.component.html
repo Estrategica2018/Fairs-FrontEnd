@@ -124,7 +124,7 @@
            </h1>
             
            <!-- Recursive scene Template -->
-           <app-scene-component 
+           <app-scene-site 
              *ngFor="let subChild of banner?.scenes"
              [editMode]="editMode"
              [scene]="subChild" 
@@ -136,7 +136,7 @@
              [bannerSelectHover]="bannerSelectHover"
              [level]=" level + 1"
              [router]="router">
-           </app-scene-component>
+           </app-scene-site>
         </div>
     </ion-col>
   </ion-row>

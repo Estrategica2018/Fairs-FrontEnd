@@ -506,28 +506,22 @@ export class MapEditorPage implements OnInit {
       this.fair.resources = this.resources;
       this.adminFairsService.updateFair(this.fair)
         .then((response) => {
-          this.loading.dismiss();
-          this.success = `Escena modificada correctamente`;
-          this.fairsService.refreshCurrentFair();
-          this.changeEditSave(false);
-          this.errors = null;
           if (!this.sceneId) {
-            this.resources = processData(response.data_fair.resources);
+            this.fair = processData(response.data_fair);
+            this.resources = processData(this.fair.resources);
             this.sceneId = this.resources.scenes.length - 1;
-            this.editMenuTabSave = null;
-            this.showPanelTool = false
-            this.bannerSelect = null;
-            //const detail = {'type': 'sceneFair', 'iScene': this.sceneId };
-            //window.dispatchEvent(new CustomEvent('addScene:menu',{ detail: detail }));
-            //this.redirectTo('/super-admin/map-editor/fair/'+this.sceneId);
-            console.log(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
-            window.location.reload();
+            this.fair.location = JSON.parse(this.fair.location);
+            this.fair.location.push({ 'type': 'sceneFair', 'iScene': this.sceneId, 'menuPosition': this.fair.location.length + 1 });
+            const fair = Object.assign({}, { 'id': this.fair.id, 'location': JSON.stringify(this.fair.location) });
+            this.adminFairsService.updateFair(fair)
+              .then((response) => {
+                this.redirectTo(`super-admin/map-editor/fair/${this.sceneId}`);
+                this.reload();
+              });
           }
           else {
-            //window.location.replace(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
-            console.log(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
-            window.location.replace(`${this.url}/super-admin/map-editor/fair/${this.sceneId}`);
-
+            this.redirectTo(`super-admin/map-editor/fair/${this.sceneId}`);
+            this.reload();
           }
         })
         .catch(error => {
@@ -539,19 +533,14 @@ export class MapEditorPage implements OnInit {
       this.pavilion.resources = this.resources;
       this.adminPavilionsService.update(this.pavilion)
         .then((pavilion) => {
-          this.loading.dismiss();
-          this.errors = null;
+
           if (!this.sceneId) {
             this.resources = processData(pavilion.resources);
             this.sceneId = this.resources.scenes.length - 1;
-            const detail = { 'type': 'scenePavilions', 'iScene': this.sceneId, 'pavilionId': this.pavilion.id };
-            window.dispatchEvent(new CustomEvent('addScene:menu', { detail: detail }));
           }
-          else {
-            //this.router.navigateByUrl(`/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
-            //this.redirectTo('/super-admin/map-editor/pavilion/' + this.pavilion.id + '/' + this.sceneId);
-            window.location.replace(`${this.url}/super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
-          }
+
+          this.redirectTo(`super-admin/map-editor/pavilion/${this.pavilion.id}/${this.sceneId}`);
+          this.reload();
 
         })
         .catch(error => {
@@ -563,21 +552,14 @@ export class MapEditorPage implements OnInit {
       this.stand.resources = this.resources;
       this.adminStandsService.update(this.stand)
         .then((stand) => {
-          this.loading.dismiss();
+
           if (!this.sceneId) {
+            this.resources = processData(stand.resources);
             this.sceneId = this.resources.scenes.length - 1;
           }
-          this.fairsService.refreshCurrentFair();
-          this.pavilionsService.refreshCurrentPavilion();
-          this.errors = null;
-          this.editMenuTabSave = null;
-          this.changeEditSave(false);
-          this.showPanelTool = false
-          this.bannerSelect = null;
-          //this.redirectTo('/super-admin/map-editor/stand/' + this.pavilion.id + '/' + this.stand.id + '/' + this.sceneId);
-          window.location.replace(`${this.url}/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
-          //this.router.navigateByUrl(`/super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
 
+          this.redirectTo(`super-admin/map-editor/stand/${this.pavilion.id}/${this.stand.id}/${this.sceneId}`);
+          this.reload();
         })
         .catch(error => {
           this.loading.dismiss();
@@ -590,17 +572,11 @@ export class MapEditorPage implements OnInit {
         .then((product) => {
           this.loading.dismiss();
           if (!this.sceneId) {
+            this.resources = processData(product.resources);
             this.sceneId = this.resources.scenes.length - 1;
           }
-          this.errors = null;
-          this.editMenuTabSave = null;
-          this.changeEditSave(false);
-          this.showPanelTool = false
-          this.bannerSelect = null;
-          //window.location.replace(`${this.url}/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
-          this.redirectTo('/super-admin/map-editor/product/' + this.pavilion.id + '/' + this.stand.id + '/' + this.product.id + '/' + this.sceneId);
-          //this.router.navigateByUrl(`/super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}`);
-
+          this.redirectTo(`super-admin/map-editor/product/${this.pavilion.id}/${this.stand.id}/${this.product.id}/${this.sceneId}' + this.pavilion.id + '/' + this.stand.id + '/' + this.product.id + '/' + this.sceneId`);
+          this.reload();
         })
         .catch(error => {
           this.loading.dismiss();
@@ -1098,12 +1074,8 @@ export class MapEditorPage implements OnInit {
               this.fair.resources = this.resources;
               this.adminFairsService.updateFair(this.fair)
                 .then((response) => {
-                  this.loading.dismiss();
-                  this.fairsService.refreshCurrentFair();
-                  const detail = { 'type': 'sceneFair', 'iScene': sceneId };
-                  window.dispatchEvent(new CustomEvent('removeScene:menu', { detail: detail }));
-                  //window.location.replace(`${this.url}/super-admin/fair`);
-                  //this.router.navigateByUrl(`/super-admin/fair`);
+                  this.router.navigateByUrl(`/super-admin/fair`);
+                  this.reload();
                 })
                 .catch(error => {
                   this.loading.dismiss();
@@ -1114,11 +1086,8 @@ export class MapEditorPage implements OnInit {
               this.pavilion.resources = this.resources;
               this.adminPavilionsService.update(this.pavilion)
                 .then((response) => {
-                  this.loading.dismiss();
-                  this.fairsService.refreshCurrentFair();
-                  this.pavilionsService.refreshCurrentPavilion();
-                  window.location.replace(`${this.url}/super-admin/pavilion/${this.pavilion.id}`);
-                  //this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
+                  this.router.navigateByUrl(`/super-admin/pavilion/${this.pavilion.id}`);
+                  this.reload();
                 })
                 .catch(error => {
                   this.loading.dismiss();
@@ -1129,10 +1098,8 @@ export class MapEditorPage implements OnInit {
               this.stand.resources = this.resources;
               this.adminStandsService.update(this.stand)
                 .then((response) => {
-                  this.loading.dismiss();
-                  this.fairsService.refreshCurrentFair();
-                  //this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
-                  window.location.replace(`${this.url}/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                  this.router.navigateByUrl(`/super-admin/stand/${this.pavilion.id}/${this.stand.id}`);
+                  this.reload();
                 })
                 .catch(error => {
                   this.loading.dismiss();
@@ -2036,5 +2003,9 @@ export class MapEditorPage implements OnInit {
         this.errors = `Consultando las categorias de conferencistas`;
       }
     });
+  }
+
+  reload() {
+    setTimeout(() => { window.location.reload(); }, 100);
   }
 }

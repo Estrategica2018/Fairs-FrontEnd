@@ -21,7 +21,7 @@ import { AgendaCatalogComponent } from './pages/map/agenda-catalog/agenda-catalo
 import { FormCatalogComponent } from './pages/map/form-catalog/form-catalog.component';
 import { SpeakerCatalogComponent } from './pages/map/speaker-catalog/speaker-catalog.component';
 import { SpeakerAdminDetailComponent } from './pages/super-admin/speaker/speaker-admin-detail/speaker-admin-detail.component';
-
+import { SceneSiteComponent } from './pages/map-site/scene-site/scene-site.component';
 
 import { TermsPage } from './pages/terms/terms.page';
 
@@ -52,7 +52,8 @@ import { TermsPage } from './pages/terms/terms.page';
     AgendaCatalogComponent,
     FormCatalogComponent,
     SpeakerCatalogComponent,
-    SpeakerAdminDetailComponent
+    SpeakerAdminDetailComponent,
+    SceneSiteComponent
   ],
   exports: [
     TabMenuScenesComponent,
@@ -74,7 +75,8 @@ import { TermsPage } from './pages/terms/terms.page';
     AgendaCatalogComponent,
     FormCatalogComponent,
     SpeakerCatalogComponent,
-    SpeakerAdminDetailComponent
+    SpeakerAdminDetailComponent,
+    SceneSiteComponent
   ]
 
 })
