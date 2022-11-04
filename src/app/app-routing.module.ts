@@ -79,6 +79,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/app-dialog/app-dialog.module').then( m => m.AppDialogPageModule)
   },
   {
+    path: 'user-register',
+    loadChildren: () => import('./pages/user-register/register.module').then( m => m.RegisterPageModule)
+  },
+  {
     path: 'map-site/fair/:sceneId',
     loadChildren: () => import('./pages/map-site/map-site.module').then( m => m.MapSitePageModule)
   },

@@ -281,7 +281,9 @@ ion-router-outlet {
   background-clip: content-box, border-box;
 }
 
-.rounded-withradius:hover {}
+.rounded-withradius:hover {
+
+}
 
 .overflow-hidden {
   overflow: hidden;
@@ -466,6 +468,9 @@ ion-icon {
   width: 100vw !important;
 }
 
-.float-buttons {
-  position: absolute;
+
+
+.alert-wrapper.ion-overlay-wrapper.sc-ion-alert-md {
+  max-width: 50% !important;
+  width: 50% !important;
 }

@@ -21,9 +21,9 @@
             <ion-badge [hidden]="showBannerSideMenu" class="icon-badge" color="danger"
                *ngIf="userDataSession && shoppingCartCount > 0">{{shoppingCartCount}}</ion-badge>
             <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex end-menu-button" color="secondary"
-               (click)="presenterLogin()" *ngIf="!loggedIn" fill="outline" shape="round">
+                        (click)="presenterLogin()" *ngIf="!loggedIn" fill="outline" shape="round">
                <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-               Ingresar
+               Accede con tu usuario
             </ion-button>
             <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn"
                (click)="presentAccount()">
@@ -64,7 +64,7 @@
          <ion-content class="scroll-container background-transparent" [hidden]="menuHidden">
             <ion-list lines="none" class="border-botton background-transparent"
                *ngIf="profileRole && profileRole.admin">
-               <ion-list-header routerLink="/super-admin/admin" routerLinkActive="active" routerDirection="root"
+               <ion-list-header routerLink="/super-admin/register" routerLinkActive="active" routerDirection="root"
                   detail="false">Super Administrador </ion-list-header>
                <ion-menu-toggle autoHide="false">
 
@@ -345,7 +345,8 @@
          </span>
       </ion-label>
 
-      <ion-label *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index" class="icon-mini-tooltip"
+      <ion-label *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index"
+        class="icon-mini-tooltip"
          [ngStyle]="{'top': ( miniMenu['menuScene'+iLayout] ? miniMenu['menuScene'+iLayout].top : '' ) + 'px' }">
 
          <!-- If its fair scene -->
