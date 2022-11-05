@@ -24,6 +24,7 @@ import { SpeakerAdminDetailComponent } from './pages/super-admin/speaker/speaker
 import { SceneSiteComponent } from './pages/map-site/scene-site/scene-site.component';
 
 import { TermsPage } from './pages/terms/terms.page';
+import { SpeakerListComponent } from './pages/super-admin/map-editor/speaker-list/speaker-list.component';
 
 @NgModule({
   imports: [
@@ -53,7 +54,8 @@ import { TermsPage } from './pages/terms/terms.page';
     FormCatalogComponent,
     SpeakerCatalogComponent,
     SpeakerAdminDetailComponent,
-    SceneSiteComponent
+    SceneSiteComponent,
+    SpeakerListComponent
   ],
   exports: [
     TabMenuScenesComponent,
@@ -76,7 +78,8 @@ import { TermsPage } from './pages/terms/terms.page';
     FormCatalogComponent,
     SpeakerCatalogComponent,
     SpeakerAdminDetailComponent,
-    SceneSiteComponent
+    SceneSiteComponent,
+    SpeakerListComponent
   ]
 
 })

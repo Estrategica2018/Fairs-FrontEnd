@@ -1,7 +1,7 @@
 <ion-header>
 </ion-header>
 
-<ion-content cdkDropList>
+<ion-content>
 
   <app-scene-site [hidden]="layoutModel"
    [editMode]="editMode"
@@ -68,6 +68,30 @@
             <ion-buttons slot="end">
                <ion-card-subtitle>
                   <input class="mt-2 ml-2" type="text"  (change)="onChangeItem()" [(ngModel)]="scene.title"/> 
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle>Imagen de Fondo </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <input class="mt-2 ml-2" type="text" (change)="onChangeBackgroundStyle()"
+                     [(ngModel)]="scene.url_image" />
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle>Color de Fondo</ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-label (click)="scene.backgroundColor = '';">Clear </ion-label>
+               <ion-icon name="close-outline" (click)="bannerSelect.backgroundColor = '';"> </ion-icon>
+               <ion-card-subtitle>
+                  <input [ngStyle]="{'opacity': scene.backgroundColor == '' ? '0.5' : '1' }" class="mt-2 ml-2"
+                     type="color" [(ngModel)]="scene.backgroundColor" (change)="onChangeBackgroundStyle()" />
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>
@@ -190,16 +214,13 @@
                <ion-label slot="start"> Texto </ion-label>
                <ion-icon class="ml-2" style="font-size: 24px" name="text-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Imágen');">
-               Imágen
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('imagen');">
+               imagen
                <ion-icon style="font-size: 24px" name="image-outline"></ion-icon>
             </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Carrete Imágenes');">
-               Carrete
-               <ion-icon style="font-size: 24px" name="albums-outline"></ion-icon>
-            </div>
-            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Video');">
-               Video
+            <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Carrete imagenes');">
+>
+ Video
                <ion-icon style="font-size: 24px" name="videocam-outline"></ion-icon>
             </div>
          </div>

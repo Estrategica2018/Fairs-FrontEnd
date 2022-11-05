@@ -35,7 +35,7 @@
 
 <ion-content fullscreen="true">
 
-  <form #submitForm="ngForm" novalidate class="padding-container">
+  <form #submitForm="ngForm" novalidate class="padding-container" *ngIf="fair">
     <ion-list lines="" *ngIf="fair" class="padding-container">
       <ion-item lines="none" class="mt-3">
         <ion-label style="max-width: 75px;" slot="start">Escenas</ion-label>
@@ -82,7 +82,11 @@
         <ion-label> Título de la feria </ion-label>
         <ion-input type="text" class="ml-auto text-right" required [(ngModel)]="fair.description"
           [ngModelOptions]="{standalone: true}" (ionChange)="ionChange()" (ionInput)="ionChange()"></ion-input>
+          <input type="color" style="width: 1.9em;" class="ml-3 text-right" required [(ngModel)]="fair.social_media.iconMenuColorTitle"
+          [ngModelOptions]="{standalone: true}" (change)="ionChangeColor()"/> 
       </ion-item>
+
+
       <ion-item>
         <ion-label>Fecha Inicio</ion-label>
         <ion-datetime presentation="date" monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"
@@ -155,6 +159,56 @@
           </ion-button>
         </ion-buttons>
       </ion-item>
+
+      <ion-item [lines]=" showColors ? '' : 'none'">
+        <ion-label slot="start">Colores</ion-label>
+        <ion-buttons class="" slot="end">
+          <ion-button (click)="showColors = !showColors">
+            <ion-icon slot="icon-only" [name]=" showColors ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+
+      <ion-item lines="none"  *ngIf="showColors">
+        <ion-label slot="start">Color Iconos Menú</ion-label>
+        <ion-buttons class="" slot="end">
+          <input type="color" class="ml-auto text-right" required [(ngModel)]="fair.social_media.iconMenuColor"
+          [ngModelOptions]="{standalone: true}" (change)="ionChangeColor()" style="width: 1.9em;" /> 
+        </ion-buttons>
+      </ion-item>
+
+      <ion-item lines="none"  *ngIf="showColors">
+        <ion-label slot="start">Color Texto Menu</ion-label>
+        <ion-buttons class="" slot="end">
+          <input type="color" class="ml-auto text-right" required [(ngModel)]="fair.social_media.iconMenuColorText"
+          [ngModelOptions]="{standalone: true}" (change)="ionChangeColor()" style="width: 1.9em;" /> 
+        </ion-buttons>
+      </ion-item>
+
+      <ion-item lines="none"  *ngIf="showColors">
+        <ion-label slot="start">Color Texto</ion-label>
+        <ion-buttons class="" slot="end">
+          <input type="color" class="ml-auto text-right" required [(ngModel)]="fair.social_media.iconColorText"
+          [ngModelOptions]="{standalone: true}" (change)="ionChangeColor()" style="width: 1.9em;" /> 
+        </ion-buttons>
+      </ion-item>
+
+      <ion-item lines="none"  *ngIf="showColors">
+        <ion-label slot="start">Color Botón Login</ion-label>
+        <ion-buttons class="" slot="end">
+          <input type="color" class="ml-auto text-right" required [(ngModel)]="fair.social_media.iconMenuLogin"
+          [ngModelOptions]="{standalone: true}" (change)="ionChangeColor()" style="width: 1.9em;" /> 
+        </ion-buttons>
+      </ion-item>
+      
+      <ion-item lines="none"  *ngIf="showColors">
+        <ion-label slot="start">Color cabecera</ion-label>
+        <ion-buttons class="" slot="end">
+          <input type="color" class="ml-auto text-right" required [(ngModel)]="fair.social_media.iconColorToolbar"
+          [ngModelOptions]="{standalone: true}" (change)="ionChangeColor()" style="width: 1.9em;" /> 
+        </ion-buttons>
+      </ion-item>
+
 
       <ion-button class="mt-4" expand="full" [disabled]="!editSave" (click)="updateFair()">
         <ion-label> Guardar cambios </ion-label>

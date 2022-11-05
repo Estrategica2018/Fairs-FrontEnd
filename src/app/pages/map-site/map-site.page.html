@@ -1,14 +1,20 @@
+<ion-header>
+</ion-header>
 
 <ion-content>
 
-  <app-scene-site [hidden]="layoutModel"
-   [editMode]="false"
-   [windowScreenSm]="windowScreenSm" 
-   [windowScreenLg]="windowScreenLg" 
-   [scene]="sceneEdited"
-   [level]="1"
-   [router]="routerView">
+  <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-back-button"
+    (click)="onToBackEditor(scene)">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-button>
+
+  <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-edit-button"
+    (click)="onToMapEditor(scene)">
+    <ion-icon name="create-outline"></ion-icon>
+  </ion-button>
+
+  <app-scene-site [hidden]="layoutModel" [editMode]="false" [windowScreenSm]="windowScreenSm"
+    [windowScreenLg]="windowScreenLg" [scene]="sceneEdited" [level]="1" [router]="routerView">
   </app-scene-site>
- 
-  
-</ion-content>
+
+

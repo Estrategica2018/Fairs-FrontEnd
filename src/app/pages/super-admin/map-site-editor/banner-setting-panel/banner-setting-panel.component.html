@@ -35,7 +35,7 @@
                
                
                <ion-tab-button   [ngClass]="{'tool-selected': tabSelect == 'background' }" 
-               (click)="tabSelect = 'background'" [hidden]="banner.line || banner.triangle || banner.styles.image ">
+               (click)="tabSelect = 'background'" [hidden]="banner.line || banner.triangle || (banner.styles &&banner.styles.image) ">
                <ion-label>Fondo</ion-label>
                </ion-tab-button>
                

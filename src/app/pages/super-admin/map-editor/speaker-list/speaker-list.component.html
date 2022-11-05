@@ -14,11 +14,15 @@
 
   <ion-card-header>
     Lista de categorias
-    <select [(ngModel)]="categorySelected" (change)="onChangeItem()">
+    <select>
       <option *ngFor="let category of catalogList" value="{{category.label}}">
         {{category.label}}
       </option>
     </select>
+  </ion-card-header>
+  <ion-card-header>
+    Lista de categorias
+    <input [(ngModel)]="categorySelected"  (change)="onChangeItem()">
   </ion-card-header>
 
   <ion-card-content>

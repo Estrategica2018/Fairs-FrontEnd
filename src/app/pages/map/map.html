@@ -14,26 +14,27 @@
 <ion-content id="ionContent"
   style="background-size: cover; background-repeat: no-repeat; --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
   [scrollEvents]="true" scroll-x="0" scroll-y="0" scrollX="true" [ngStyle]="{ 
-     '--background': scene && scene.backgroundColor ? scene.backgroundColor : '',
-     'background-image': scene && scene.url_image ? 'url(' + scene.url_image + ')' : '',
+     '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
      'background-position': 'center top',
      'background-repeat': 'no-repeat',
      'background-size': 'cover'
    }">
 
+  <!--if banner is Video-->
   <video [ngStyle]="{'opacity': scene?.videoUrl ? 1 : 0, 'position': scene?.videoUrl ? 'block' : 'absolute'}"
-    crossOrigin="anonymous" webkit-playsinline autoplay [src]="scene?.videoUrl" playsinline preload="metadata"
+    crossOrigin="anonymous" webkit-playsinline autoplay [src]="scene?.videoSanitizerUrl" playsinline preload="metadata"
     data-aos="fade-up" id="videoFair" class="video">
   </video>
+
   <ion-item [hidden]="!errors">
     <div class="alert alert-danger alert-dismissible">
       <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
       <strong></strong> {{errors}}
-    </div>
+    </div>  
   </ion-item>
 
-  <div class="div-container">
-    <!--Scene Background Image->
+  <div class="div-container">   
+    <!--Scene Background Image-->
     <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
       'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
@@ -42,12 +43,12 @@
       'height': scene?.container?.h + 'px'
       }" (ionScroll)="logScrolling($event)" *ngIf="scene && scene.url_image">
     </div>
-    <--Scene Background Color->
+    <!--Scene Background Color-->
     <div
       [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
       *ngIf="scene && scene.backgroundColor && !scene.url_image">
     </div>
-    <--Scene Background Color-->
+    <!--Scene Background Color--->
   </div>
 
   <!--Banner List-->
@@ -90,8 +91,8 @@
        'color': banner.fontColor,
        'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
        'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-       'border-radius': banner.border.radius + 'px',
-       'border-width': banner.border.width  + 'px',
+       'border-radius': banner.border ? banner.border.radius + 'px' : '',
+       'border-width': banner.border ? banner.border.width  + 'px' : '',
        'text-align': banner.textAlign,
        'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
        }">
@@ -107,7 +108,6 @@
         </div>
       </div>
 
-
       <!--if banner is Contact-->
       <div *ngIf="banner.contact && banner.__contactForm" class="p-3" [ngStyle]="{
            'background-color': banner.backgroundColor,
@@ -119,8 +119,8 @@
            'color': banner.fontColor,
            'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
            'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-           'border-radius': banner.border.radius + 'px',
-           'border-width': banner.border.width  + 'px',
+           'border-radius': banner.border ? banner.border.radius + 'px' : '',
+           'border-width': banner.border ? banner.border.width  + 'px' : '',
            'text-align': banner.textAlign,
            'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
          }">
@@ -130,7 +130,7 @@
             <span style="color: rgb(224, 62, 45);">*</span>
             <span [ngStyle]="{'color': banner.fontColor}"> Nombre </span>
           </p>
-          <ion-input formControlName="name" type="text" class="position-absolute ion-text-start"
+          <ion-input pontrolName="name" type="text" class="position-absolute ion-text-start"
             [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px','top': ( banner.size.y * 0.6 / 10) + 'px', 'height': ( banner.size.y * 0.8 / 10) + 'px'}">
           </ion-input>
           <div [ngStyle]="{'width':( banner.size.x * 0.91 ) + 'px','top': ( banner.size.y * 1.4 / 10) + 'px'}"
@@ -167,7 +167,6 @@
             'top': ( banner.size.y * 8.2 / 10) + 'px', 'left':( banner.size.x * 0.8 / 10) + 'px', 
             'width':( banner.size.x * 0.85 ) + 'px'}"> caracteres {{banner?.__contactForm?.value?.message?.length}} /
             500</div>
-
 
           <ion-button color="primary" type="submit" class="position-absolute" [disabled]="!banner.__contactForm?.valid"
             [ngStyle]="{'left':( banner.size.x * 0.8 / 10) + 'px', 'width':( banner.size.x * 0.85 ) + 'px', 
@@ -387,10 +386,7 @@
           </ion-img>
         </div>
       </div>
-
       <!--End if banner is Speakers-->
-
-
 
     </div>
     <!--Tooltip-->
@@ -414,11 +410,11 @@
     [ngClass]="{'cursor-pointer': banner.internalUrl?.length > 0 || banner.externalUrl?.length > 0}"
     *ngIf="banner.floatButton" [ngStyle]="{'top': 
       banner.floatButton.indexOf('top-') >= 0 ? '1em' : 
-      banner.floatButton.indexOf('bottom-') >= 0 ? 'calc( 100% - ' + ( banner.size.y + toolBarSize) + 'px )' :
+      banner.floatButton.indexOf('bottom-') >= 0 ? 'calc( 100% - ' + ( banner.size.y + 15 + toolBarSize  ) + 'px )' :
       banner.floatButton.indexOf('-center') >= 0 ? 'calc( 50% - '+banner.size.y + 'px )' :
       '' ,'left': 
       banner.floatButton.indexOf('left') >= 0 ? '1em' : 
-      banner.floatButton.indexOf('right') >= 0 ? 'calc( 100% - '+banner.size.x + 'px )' :
+      banner.floatButton.indexOf('right') >= 0 ? 'calc( 100% - '+ ( banner.size.x + 15 ) + 'px )' :
       banner.floatButton.indexOf('center') >= 0 ? 'calc( 50% - '+banner.size.x + 'px )' :
       ''
      }">
@@ -473,7 +469,6 @@
           </div>
         </div>
       </div>
-
 
       <!--if banner is Contact-->
       <div *ngIf="banner.contact && banner.__contactForm" class="p-3" [ngStyle]="{
@@ -739,10 +734,7 @@
           </ion-img>
         </div>
       </div>
-
       <!--End if banner is Speakers-->
-
-
 
     </div>
     <!--Tooltip-->

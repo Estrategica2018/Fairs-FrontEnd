@@ -15,8 +15,8 @@ import { AdminFairsService } from './../../api/admin/fairs.service';
   templateUrl: 'login.html',
   styleUrls: ['./login.scss']
 })
-export class LoginComponent  implements OnInit {
-
+export class  LoginComponent  implements OnInit {
+  
   @Input() _parent: any;
   @Input() showMenu: string;
   @Input() admin: string;
@@ -38,7 +38,7 @@ export class LoginComponent  implements OnInit {
   singupConfirmMsg: any;
   emailActivateError: any;
   emailSingConfirm: any;
-
+  
   @ViewChildren('digitSix') digitSix: any;
 
   constructor(
@@ -55,9 +55,9 @@ export class LoginComponent  implements OnInit {
     private adminFairsService: AdminFairsService
 
   ) {
-
+    
     this.usersService.getUser().then((userDataSession: any)=>{
-      this.userDataSession = userDataSession;
+      this.userDataSession = userDataSession;    
       if(userDataSession && userDataSession.user_roles_fair)  {
         this.profileRole = {};
         userDataSession.user_roles_fair.forEach((role)=>{
@@ -65,11 +65,11 @@ export class LoginComponent  implements OnInit {
                this.profileRole.admin = true;
             }
          });
-
+         
       }
     });
-
-
+    
+    
     this.fairsService.getCurrentFair().
     then( fair => {
         this.fair = fair;
@@ -79,15 +79,15 @@ export class LoginComponent  implements OnInit {
     });
 
   }
-
+  
  ngOnInit() {
-     this.showMenu = this.showMenu || 'login';
-
+     this.showMenu = this.showMenu || 'login';    
+     
      if(this.showMenu === 'singupConfirm') {
        this.singupConfirmMsg = `Ingresa el código de verificación enviado al correo electrónico ${this.email_recovery}`;
        this.showConfirmAccount = true;
      }
-
+     
      this.registerForm = this.formBuilder.group({
             name: ['', Validators.required],
             last_name: ['', Validators.required],
@@ -98,7 +98,7 @@ export class LoginComponent  implements OnInit {
         }, {
             validator: MustMatch('password', 'confirmPassword')
         });
-
+     
      this.recoveryForm = this.formBuilder.group({
         email: [ (this.email_recovery || ''), [Validators.required, Validators.email]]
      });
@@ -111,17 +111,17 @@ export class LoginComponent  implements OnInit {
         item5: ['', [Validators.required, Validators.maxLength(1)]],
         item6: ['', [Validators.required, Validators.maxLength(1)]]
      });
-
+     
      this.loginForm = this.formBuilder.group({
        email: ['', [Validators.required, Validators.email]],
        password: ['', [Validators.required, Validators.minLength(6)]],
      });
   }
-
+  
   ngDoCheck(){
      document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
   }
-
+  
   ngOnDestroy(): void {
      if(this.modal) { this.modal.dismiss(); }
   }
@@ -145,17 +145,17 @@ export class LoginComponent  implements OnInit {
 
   presentSignup() {
     this._parent.presentSignup();
-  }
+  } 
 
   closeModal() {
     this.modalCtrl.dismiss();
   }
-
+  
   get l() { return this.loginForm.controls; }
   get f() { return this.registerForm.controls; }
   get g() { return this.recoveryForm.controls; }
   get sc() { return this.singupConfirmForm.controls; }
-
+  
   onLoginSubmit() {
     this.submitted = true;
     this.errors = null;
@@ -172,8 +172,8 @@ export class LoginComponent  implements OnInit {
           const password = this.loginForm.value['password'];
           const email = this.loginForm.value['email'];
           const fairId = this.fair.id || this.fair.name;
-
-
+          
+          
           this.usersService.login(email,password, fairId)
           .subscribe(
             data => {
@@ -211,10 +211,10 @@ export class LoginComponent  implements OnInit {
     }
 
     this.loading.present({message:'Cargando...'});
-
+      
     this.usersService.findEmail(this.registerForm.value['email'])
     .then( response => {
-
+        
       if(response.status === 201) {
         this.emailActivateError = true;
         this.loading.dismiss();
@@ -231,7 +231,7 @@ export class LoginComponent  implements OnInit {
       this.errors = error;
     });
   }
-
+  
   onRecoverySubmit() {
     this.submitted = true;
     this.errors = null;
@@ -243,7 +243,7 @@ export class LoginComponent  implements OnInit {
     }
 
     this.loading.present({message:'Cargando...'});
-
+      
       this.fairsService.getCurrentFair().
       then( fair => {
           const recoveryData = {
@@ -297,33 +297,30 @@ export class LoginComponent  implements OnInit {
             this.errors = error;
       });
   }
-
+  
   onSendEmailPassword() {
-
+      
   }
-
-  onCreateRegister() {
+ 
+  onCreateRegister() {    
+    //this.showMenu = 'singup'; 
     this.closeModal()
     this.router.navigateByUrl('/user-register');
-    /*
-    this.showMenu = 'singup';
     this.submitted = false;
     this.errors = null;
     this.success = null;
-    */
-
   }
 
   onShowTerms() {
     this.showMenu = 'terms';
   }
-
+  
   async presentActionAdd() {
     const actionSheet = await this.actionSheetController.create({
       header: 'Tipo de elemento a agregar',
       cssClass: 'my-custom-class',
       buttons: [{
-        text: 'Imágen',
+        text: 'imagen',
         role: 'destructive',
         icon: 'image-outline',
         handler: () => {
@@ -347,11 +344,11 @@ export class LoginComponent  implements OnInit {
 
     const { role } = await actionSheet.onDidDismiss();
   }
-
+  
   async onAddImg(){
-
+    
     const actionAlert = await this.alertCtrl.create({
-      message: "Ingresa la ruta de la imágen",
+      message: "Ingresa la ruta de la imagen",
       inputs: [
         {
           name: 'url',
@@ -360,29 +357,29 @@ export class LoginComponent  implements OnInit {
         },
         {
           name: 'title',
-          value: 'Título de imágen'
+          value: 'Título de imagen'
         },
       ],
       buttons: [{
           text: 'Cancel',
           role: 'cancel'
         },{
-         text: 'Agregar',
-         role: 'destructive',
+         text: 'Agregar', 
+         role: 'destructive', 
          handler: (data) => {
           this.fair.resources.terms = this.fair.resources.terms || {'elements': []};
           this.fair.resources.terms.elements.push({'url':data.url,'title':data.title});
-          this.saveFair('Agregar imágen');
+          this.saveFair('Agregar imagen');
          }
         }]
     });
     await actionAlert.present();
 
-  }
+  }  
 
-
+  
   async onAddVideo(){
-
+    
     const actionAlert = await this.alertCtrl.create({
       message: "Ingresa la ruta del video",
       inputs: [
@@ -400,8 +397,8 @@ export class LoginComponent  implements OnInit {
           text: 'Cancel',
           role: 'cancel'
         },{
-         text: 'Agregar',
-         role: 'destructive',
+         text: 'Agregar', 
+         role: 'destructive', 
          handler: (data) => {
            this.fair.resources.terms = this.fair.resources.terms || {'elements': []};
            const sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(data.videoUrl);
@@ -411,10 +408,10 @@ export class LoginComponent  implements OnInit {
         }]
     });
     await actionAlert.present();
-  }
+  } 
 
   async onAddParagraph(){
-
+    
     const actionAlert = await this.alertCtrl.create({
       message: "Ingresa el Párrafo",
       inputs: [
@@ -428,8 +425,8 @@ export class LoginComponent  implements OnInit {
           text: 'Cancel',
           role: 'cancel'
         },{
-         text: 'Agregar',
-         role: 'destructive',
+         text: 'Agregar', 
+         role: 'destructive', 
          handler: (data) => {
            this.fair.resources.terms = this.fair.resources.terms || {'elements': []};
            this.fair.resources.terms.elements.push({'paragraph':data.paragraph});
@@ -438,25 +435,25 @@ export class LoginComponent  implements OnInit {
         }]
     });
     await actionAlert.present();
-  }
-
+  }  
+  
   saveFair(action) {
-
+  
    this.loading.present({message:'Cargando...'});
-
+   
    const fairObj = Object.assign({},this.fair);
    this.adminFairsService.updateFair(fairObj).
       then( response => {
         this.presentToast('Acción '+action+' exitosa', 'success');
-        this.loading.dismiss();
+        this.loading.dismiss(); 
       }, errors => {
           this.errors = `Consultando el servicio para modificar feria`;
           this.loading.dismiss();
       })
     .catch(error => {
-       this.loading.dismiss();
+       this.loading.dismiss(); 
        this.presentToast('Acción '+action+' generó error', 'danger');
-     });
+     });      
   }
 
 
@@ -466,26 +463,26 @@ export class LoginComponent  implements OnInit {
       //color: color,
       duration: 3000,
       position: 'bottom'
-    });
+    });  
     toast.present();
   }
-
+  
   onDeleteItemAdded(index){
       this.fair.resources.terms.elements = this.fair.resources.terms.elements.filter((item, ind)=>{
           return ind != index;
      });
      this.saveFair('Borrar elemento');
   }
-
+  
   onSendSignConfirm(email, fairName) {
-
+    
     //this.loading.present({message:'Cargando...'});
-
+    
     this.usersService.sendSignConfirm(email, fairName)
     .then(data => {
-
+        
         this.singupConfirmMsg = "";
-
+        
         if(data.success === 201) {
             this.loading.dismiss();
             this.showMenu = 'singupConfirm';
@@ -506,9 +503,9 @@ export class LoginComponent  implements OnInit {
   }
 
   onSingupValidate() {
-
+    
     this.loading.present({message:'Cargando...'});
-
+    
     let code = this.singupConfirmForm.value['item1'] + this.singupConfirmForm.value['item2'] + this.singupConfirmForm.value['item3'] + this.singupConfirmForm.value['item4'] + this.singupConfirmForm.value['item5'] + this.singupConfirmForm.value['item6'];
     this.emailSingConfirm = this.emailSingConfirm || this.email_recovery;
     this.usersService.singupValidate(this.emailSingConfirm, code)
@@ -521,7 +518,7 @@ export class LoginComponent  implements OnInit {
             //this.loading.dismiss();
             this.errors = null;
             this.success = 'Código validado exitósamente';
-
+            
             this.onSingup();
         }
         else {
@@ -568,12 +565,12 @@ export class LoginComponent  implements OnInit {
         this.errors = error;
     });
   }
-
+  
   paste(event){
-
+    
     let clipboardData = event.clipboardData || (<any>window).clipboardData; //typecasting to any
-    let pastedText = clipboardData.getData('text');
-
+    let pastedText = clipboardData.getData('text');    
+    
     if(pastedText.length == 6 ) {
        this.singupConfirmForm = this.formBuilder.group({
           item1: [pastedText[0], [Validators.required, Validators.maxLength(1)]],
@@ -584,17 +581,17 @@ export class LoginComponent  implements OnInit {
           item6: [pastedText[5], [Validators.required, Validators.maxLength(1)]]
        });
     }
-
+     
   }
-
+  
   onDigitInput(event){
 
     let element = null;
-
+    
     if (event.code !== 'Backspace') {
-
+        
         if(this.digitSix.last.nativeElement !== event.srcElement ) {
-
+           
             for(let i=0; i < this.digitSix._results.length; i++) {
               if(event.srcElement == this.digitSix._results[i].nativeElement) {
                  element = this.digitSix._results[i+1].nativeElement;

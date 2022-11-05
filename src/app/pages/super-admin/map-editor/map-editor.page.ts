@@ -259,6 +259,10 @@ export class MapEditorPage implements OnInit {
       return;
     }
 
+    if (this.scene.videoUrl) {
+      this.scene.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.scene.videoUrl);
+    }
+
     this.scene.menuTabs = this.scene.menuTabs || { 'showMenuParent': true };
     this.resources.menuTabs = this.resources.menuTabs || {};
 
@@ -1984,9 +1988,18 @@ export class MapEditorPage implements OnInit {
   }
 
   filterSpeakerList(banner) {
+
+    console.log(banner.speakerCatalog.speakerType);
     banner.__speakerCatalogList =
       this.speakerList.filter((speaker) => {
-        return speaker.position == banner.speakerCatalog.speakerType;
+        let mbControl = false;
+        for (let cat of banner.speakerCatalog.speakerType.split(',')) {
+          if (speaker.position == cat) {
+            mbControl = true;
+          }
+        }
+        return mbControl;
+
       });
   }
 
@@ -2002,7 +2015,15 @@ export class MapEditorPage implements OnInit {
       else {
         this.errors = `Consultando las categorias de conferencistas`;
       }
-    });
+    });   
+
+    this.speakersService.list()
+        .then((speakers) => {
+          this.speakerList = speakers; 
+        })
+        .catch(error => {
+
+        });
   }
 
   reload() {

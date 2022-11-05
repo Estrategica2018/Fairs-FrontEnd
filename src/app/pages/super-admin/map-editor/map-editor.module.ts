@@ -9,7 +9,6 @@ import { DragAndDropModule } from 'angular-draggable-droppable';
 import { ComponentsModule } from '../../../components.module';
 import { ProductListComponent } from './product-list/product-list.component';
 import { AgendaListComponent } from './agenda-list/agenda-list.component';
-import { SpeakerListComponent } from './speaker-list/speaker-list.component';
 import { ProductDetailComponent } from '../../product-catalog/product-detail/product-detail.component';
 import { SpeakerDetailComponent } from '../../speaker-list/speaker-detail/speaker-detail.component';
 import { BannerEditorComponent } from './banner-editor/banner-editor.component';
@@ -24,7 +23,7 @@ import { BannerEditorComponent } from './banner-editor/banner-editor.component';
     MapEditorPageRoutingModule,
     ComponentsModule
   ],
-  declarations: [MapEditorPage, PanelEditorComponent,ProductListComponent,AgendaListComponent,SpeakerListComponent], 
-  entryComponents: [PanelEditorComponent,ProductListComponent, AgendaListComponent,ProductDetailComponent, SpeakerDetailComponent, BannerEditorComponent,SpeakerListComponent]
+  declarations: [MapEditorPage, PanelEditorComponent,ProductListComponent,AgendaListComponent], 
+  entryComponents: [PanelEditorComponent,ProductListComponent, AgendaListComponent,ProductDetailComponent, SpeakerDetailComponent, BannerEditorComponent]
 })
 export class MapEditorPageModule {}

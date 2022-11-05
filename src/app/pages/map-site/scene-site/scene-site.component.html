@@ -36,7 +36,7 @@
           (mouseout)="bannerSelectHover = null; layoutColHover = null;">
            
            <!-- Image Template -->
-           <img *ngIf="banner.styles.image" [src]="banner.styles.image.src" 
+           <img *ngIf="banner.styles && banner.styles.image" [src]="banner.styles.image.src" 
            [ngClass]="{'cursor-pointer': editMode, 'banner-selected': editMode && bannerSelectHover && bannerSelectHover.id === banner.id }"
            [ngStyle]="{
             'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
@@ -103,9 +103,105 @@
           [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
           </iframe>
           </div>
+
+
+         <!--if banner is Speakers-->
+         <ion-button color="light" class="edit-carousel-button" (click)="goToOnHoverBanner(banner,col,row,scene)"
+            *ngIf="banner.speakerCatalog">
+            <ion-icon name="create-outline"></ion-icon>
+         </ion-button>
+         <div class="grid" *ngIf="banner.speakerCatalog" id="grid-{{banner.id}}"
+            [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
+            {{banner.__speakerCatalogList.list}}
+            <div class="card card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.class}}"
+               *ngFor="let speaker of banner.__speakerCatalogList; let i = index;"
+               (mouseover)="startAnimation(banner); bannerSpeakerSelectHover = banner.id + '-' + i;"
+               (mouseout)="isHover = null; bannerSpeakerSelectHover = null;"
+               [ngClass]="{ 'element-selected': bannerSpeakerSelectHover == banner.id + '-' + i }"
+                [ngStyle]="{
+               'position': 'absolute',
+               'top': speaker.top + 'px',
+               'left': speaker.left + 'px',
+               'width': banner.size.x + 'px', 
+               'height': banner.size.y + 'px',
+               'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
+               'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
+               'background-repeat': 'no-repeat',
+               'background-color': banner.backgroundColor,
+               'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+                'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+               'border-radius': banner.border.radius + 'px',
+               'border-width': banner.border.width  + 'px',
+               'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '')
+              }">
+
+               <div class="position-absolute cursor-pointer name"
+                 (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'ImageProfile'; tabSelect = 'speakerCatalog';"
+                  [ngStyle]="{
+                      'top': banner.speakerCatalog.imagesTop + 'px',
+                      'left': banner.speakerCatalog.imagesLeft + 'px',
+                      'width': banner.speakerCatalog.imagesWidth + 'px',
+                      'height': banner.speakerCatalog.imagesHeight + 'px'
+                     }">
+                  <img [src]="speaker.profile_picture" [ngStyle]="{
+                      'width': banner.speakerCatalog.imagesWidth + 'px',
+                      'height': banner.speakerCatalog.imagesHeight + 'px'
+                     }" />
+               </div>
+
+               <div class="ion-text-center position-absolute "
+                  (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'Name'; tabSelect = 'speakerCatalog';"
+                  [ngStyle]="{
+                  'font-size': banner.speakerCatalog.nameFontSize + 'px',
+                  'font-family': ( banner.speakerCatalog.nameFontFamily ? banner.speakerCatalog.nameFontFamily : 'YoutubeSansMedium' ),
+                  'font-weight':  banner.speakerCatalog.nameFontWeight,
+                  'width': banner.speakerCatalog.nameWidth + 'px',
+                  'height': banner.speakerCatalog.nameHeight + 'px',
+                  'top': banner.speakerCatalog.nameTop + 'px',
+                  'left': banner.speakerCatalog.nameLeft + 'px'
+                 }">{{speaker.user?.name}} {{speaker.user?.last_name}}
+               </div>
+               <div class="position-absolute desc"
+               (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'Description';  tabSelect = 'speakerCatalog';"
+                  [ngStyle]="{
+                  'font-size': banner.speakerCatalog.descFontSize + 'px',
+                  'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
+                  'height': banner.speakerCatalog.descHeigth + 'px',
+                  'overflow': 'hidden',
+                  'top': banner.speakerCatalog.descTop + 'px',
+                  'left': banner.speakerCatalog.descLeft + 'px',
+                  'width': banner.speakerCatalog.descWidth + 'px',
+                  'font-weight':  banner.speakerCatalog.descFontWeight,
+                  'line-height': banner.speakerCatalog.lineHeight,
+                  'text-align': banner.speakerCatalog.descTextAlign
+                 }">{{speaker.description_one}}
+               </div>
+               <div class="position-absolute"
+                  (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'Profession'; tabSelect = 'speakerCatalog';"
+                  [ngStyle]="{
+                  'font-size': banner.speakerCatalog.professionFontSize + 'px',
+                  'font-family': ( banner.speakerCatalog.professionFontFamily ? banner.speakerCatalog.professionFontFamily : 'YoutubeSansMedium' ),
+                  'top': banner.speakerCatalog.professionTop + 'px',
+                  'left': banner.speakerCatalog.professionLeft + 'px',
+                  'font-weight':  banner.speakerCatalog.professionFontWeight
+                 }">{{speaker.profession}}
+               </div>
+               <ion-img [src]="speaker.company_logo" class="position-absolute" color="primary" size="small"
+                  (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'Logo'; tabSelect = 'speakerCatalog';"
+                  [ngStyle]="{
+                  'width': banner.speakerCatalog.logoWidth + 'px', 
+                  'height': banner.speakerCatalog.logoHeight + 'px',
+                  'left': banner.speakerCatalog.logoLeft + 'px',
+                  'top': banner.speakerCatalog.logoTop + 'px'
+               }">
+               </ion-img>
+            </div>
+         </div>
+         <!--End if banner is Speakers-->
+
           
           <!-- Text Template -->
-           <h1 *ngIf="banner.styles.text"
+           <h1 *ngIf="banner.styles"
            [ngClass]="{'cursor-pointer':editMode}"
            [ngStyle]="{
              'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',

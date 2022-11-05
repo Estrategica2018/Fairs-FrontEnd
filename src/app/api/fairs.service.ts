@@ -98,6 +98,22 @@ export class FairsService {
                            }
                          }
                       }
+                      this.fair.social_media = this.fair.social_media  || {};
+
+                      const themeWrapper = document.querySelector('body');
+                      let root = document.documentElement;
+                      this.fair.social_media.iconMenuColor = this.fair.social_media.iconMenuColor || '#1A1A1A';
+                      this.fair.social_media.iconMenuColorText = this.fair.social_media.iconMenuColorText || '#1A1A1A';
+                      this.fair.social_media.iconColorText = this.fair.social_media.iconColorText || '#1A1A1A';
+                      this.fair.social_media.iconMenuLogin = this.fair.social_media.iconMenuLogin || '#3171e0';
+                      this.fair.social_media.iconColorToolbar = this.fair.social_media.iconColorToolbar || '#f4f5f8';
+
+                      root.style.setProperty('--iconMenuColor', this.fair.social_media.iconMenuColor);
+                      root.style.setProperty('--iconMenuColorText', this.fair.social_media.iconMenuColorText);
+                      root.style.setProperty('--iconColorText', this.fair.social_media.iconColorText);
+                      root.style.setProperty('--iconMenuLogin', this.fair.social_media.iconMenuLogin);
+                      root.style.setProperty('--iconColorToolbar', this.fair.social_media.iconColorToolbar);
+
                       resolve(this.fair);
                       return;
                     }

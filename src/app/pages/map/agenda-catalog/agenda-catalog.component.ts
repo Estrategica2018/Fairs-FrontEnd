@@ -4,6 +4,7 @@ import * as moment from 'moment-timezone';
 import { DatePipe } from '@angular/common'
 import { SpeakerDetailComponent } from '../../speaker-list/speaker-detail/speaker-detail.component';
 import { ScheduleDetailComponent } from '../../schedule/schedule-detail/schedule-detail.component';
+import { LoginComponent } from '../../login/login.component';
 
 @Component({
   selector: 'app-agenda-catalog',
@@ -43,6 +44,11 @@ export class AgendaCatalogComponent implements OnInit {
 
     if (data) {
     }
+  }
+  
+  async presenterLogin() {
+
+  
   }
 
 }

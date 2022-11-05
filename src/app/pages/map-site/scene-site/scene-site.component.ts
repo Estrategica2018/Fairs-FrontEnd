@@ -25,12 +25,21 @@ export class SceneSiteComponent implements OnInit {
   @Output() onHoverBanner = new EventEmitter<any>();
   @Output() selectLayout = new EventEmitter<any>();
   layoutBannerSelectTime = 0;
+  showSpeakerCatalogActions = '';
+  showProductCatalogActions = '';
+  tabSelect = '';
+  bannerSpeakerSelectHover: any;
+  isHover: any;
 
   ngOnInit() {
 
   }
 
   goToOnHoverBanner(banner, col, row, scene) {
+
+    this.showSpeakerCatalogActions = null;
+    
+
     if (banner && this.editMode) {
       this.layoutBannerSelectTime = Date.now();
       this.onHoverBanner.emit({ 'banner': banner, 'col': col, 'row': row, 'scene': scene });

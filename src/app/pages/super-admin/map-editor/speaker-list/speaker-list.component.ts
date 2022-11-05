@@ -11,7 +11,7 @@ export class SpeakerListComponent implements OnInit {
 
   @Input() catalogList;
   @Input() allElementList;
-  categorySelected: string;
+  categorySelected: string = '';
   elementList = [];
 
   constructor(
@@ -19,6 +19,14 @@ export class SpeakerListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    for (let i = 1; i <= this.catalogList.length; i++) {
+      if (this.categorySelected !== null && this.categorySelected.length > 0) {
+        this.categorySelected += ',';
+      }
+      this.categorySelected += this.catalogList[i-1].label;
+    }
+
+    console.log(this.categorySelected);
     this.onChangeItem();
   }
 
@@ -34,10 +42,13 @@ export class SpeakerListComponent implements OnInit {
   onChangeItem() {
     this.elementList = [];
     for (let speaker of this.allElementList) {
-      if (this.categorySelected == null || this.categorySelected == speaker.position) {
-        this.elementList.push(speaker);
+      for (let indx of this.categorySelected.split(',')) {
+        if (indx == speaker.position) {
+          this.elementList.push(speaker);
+        }
       }
     }
   }
+ 
 
 }

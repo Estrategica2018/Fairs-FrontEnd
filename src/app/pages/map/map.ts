@@ -90,6 +90,7 @@ export class MapPage implements OnInit {
 
     this.listenForFullScreenEvents();
     this.initializeListeners();
+    
     this.usersService.getUser().then((userDataSession: any) => {
 
       this.userDataSession = userDataSession;
@@ -137,8 +138,8 @@ export class MapPage implements OnInit {
     this.sceneId = this.route.snapshot.paramMap.get('sceneId');
 
     this.fairsService.getCurrentFair().then((fair) => {
+      
       this.fair = fair;
-
 
       if (!this.fair.resources) {
         this.loading.dismiss();
@@ -188,6 +189,18 @@ export class MapPage implements OnInit {
       this.scene.banners = this.scene.banners || [];
       this.onChangeBackgroundStyle();
 
+      if (this.scene.videoUrl) {
+        this.scene.videoSanitizerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.scene.videoUrl);
+      }
+
+
+      this.speakersService.list()
+      .then((speakers) => {
+        this.speakerList = speakers;
+      })
+      .catch(error => {
+
+      });
 
       this.scene.banners.forEach((banner) => {
 
@@ -293,7 +306,7 @@ export class MapPage implements OnInit {
 
 
     this.scene.banners.forEach((banner) => {
-      
+
       if (this.scene.render) {
         if (banner.size) { banner.size.x /= deltaW; banner.size.y /= deltaH; }
         if (banner.position) { banner.position.x /= deltaW; banner.position.y /= deltaH; }
@@ -421,29 +434,9 @@ export class MapPage implements OnInit {
 
   async presentActionFormCatalog(banner: any) {
 
-    let formCatalog = banner.formCatalog;
 
-    if (this.modal) { this.modal.dismiss(); }
+    this.redirectTo('form-mincultura-catalog');
 
-    this.modal = await this.modalCtrl.create({
-      component: FormCatalogComponent,
-      swipeToClose: false,
-      cssClass: 'product-modal',
-      presentingElement: this.routerOutlet.nativeEl,
-      componentProps: {
-        '_parent': this,
-        'fair': this.fair,
-        'formCatalog': formCatalog,
-        'userDataSession': this.userDataSession,
-        'banner': banner
-      }
-    });
-    await this.modal.present();
-
-    const { data } = await this.modal.onWillDismiss();
-    if (data) {
-
-    }
   }
 
   initializeHtmlTexts(banners) {
@@ -721,17 +714,9 @@ export class MapPage implements OnInit {
   initializeSpeakers(banner) {
 
     banner.__speakerCatalogList = [];
-
-    this.speakersService.list()
-      .then((speakers) => {
-        this.speakerList = speakers;
-        this.filterSpeakerList(banner);
-        this.onChangeSpeakerStyle(banner);
-        this.resizeSpeakers(banner);
-      })
-      .catch(error => {
-
-      });
+    this.filterSpeakerList(banner);
+    this.onChangeSpeakerStyle(banner);
+    this.resizeSpeakers(banner);
   }
 
   resizeSpeakers(banner) {
@@ -995,9 +980,16 @@ export class MapPage implements OnInit {
   filterSpeakerList(banner) {
     banner.__speakerCatalogList =
       this.speakerList.filter((speaker) => {
-        return speaker.position == banner.speakerCatalog.speakerType;
+        let mbControl = false;
+        for (let cat of banner.speakerCatalog.speakerType.split(',')) {
+          if (speaker.position == cat) {
+            mbControl = true;
+          }
+        }
+        return mbControl;
+
       });
   }
 
 
-}
+} 

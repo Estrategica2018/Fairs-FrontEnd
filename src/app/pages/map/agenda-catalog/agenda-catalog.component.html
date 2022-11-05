@@ -1,40 +1,52 @@
 <div class="card-schedule">
-  <div class="head">
-       {{ group.month }}
-  </div>
-  <div class="container-card">
-      <ion-buttons>
-      <div slot="start" class="" style="margin-left: 2em;">
-        <img class="border-card" src="assets/icon/border-card.png">
-        <div class="circle">
-           <div class="text">
-            {{ group.strDay }}
-           </div>
-        </div>
-      </div>
-      <div slot="end" class="container-schedule">
-         <ion-item (click)="openAgenda(session)" button="true" class="d-flex" *ngFor="let session of group.sessions">
-             <div class="hour"> 
-                {{session.hour}}
-             </div>
-             <div class="hour-unit"> 
-               <div>
-                {{session.minutes}}
+   <div class="head" [ngStyle]="{
+      'color': banner.agendaCatalog.colorHour,
+      'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+      'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+      'border-width': banner.border.width  + 'px'
+   }">
+      {{ group.month }}
+   </div>
+   <div class="container-card" [ngStyle]="{
+      'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
+      'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
+      'border-width': banner.border.width  + 'px',
+      'margin-top': banner.border.width ? '-4px' : '',
+      'box-shadow': ( banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+    }">
+      <ion-buttons class="h-100">
+         <div slot="start" class="" style="margin-left: 2em;">
+            <img class="border-card" src="assets/icon/border-card.png">
+            <div class="circle" style="top: calc(50% - 2.5em)"
+               [ngStyle]="{'background': banner.agendaCatalog.bgButton}">
+               <div class="text">
+                  {{ group.strDay }}
+               </div> 
+            </div>
+         </div>
+         <div slot="end" class="container-schedule">
+            <ion-item (click)="openAgenda(session)" button="true" class="d-flex" *ngFor="let session of group.sessions">
+               <div class="hour" [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
+                  {{session.hour}}
                </div>
-               <div class="signature">
-               {{session.signature}}
+               <div class="hour-unit">
+                  <div [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
+                     {{session.minutes}}
+                  </div>
+                  <div class="signature" [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
+                     {{session.signature}}
+                  </div>
                </div>
-             </div>
-             <div style="margin-top: -9px;">
-                 <div class="agenda-name"> 
-                    {{session.name}}
-                 </div>
-                 <div class="speakers-name"> 
-                    {{session.description}}
-                 </div>
-             </div>
-         </ion-item> 
-      </div>
+               <div style="margin-top: -9px;">
+                  <div class="agenda-name" [ngStyle]="{'color': banner.agendaCatalog.colorName}">
+                     {{session.name}}
+                  </div>
+                  <div class="speakers-name" [ngStyle]="{'color': banner.agendaCatalog.colorDescription}">
+                     {{session.description}}
+                  </div>
+               </div>
+            </ion-item>
+         </div>
       </ion-buttons>
-  </div>
+   </div>
 </div>

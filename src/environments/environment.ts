@@ -2,7 +2,7 @@
 export const environment = {
   production: false,
   message: 'hello dev',
-  fairName: 'feriatecnologica2021',
+  fairName: 'cnbp2022',
   sendEmail: false,
 };
 

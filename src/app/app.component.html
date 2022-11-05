@@ -1,7 +1,7 @@
 <!--ion-app [class.dark-theme]="dark"-->
 <ion-app>
    <ion-header translucent="true" [hidden]="fairAdminMode">
-      <ion-toolbar color="light" [ngClass]="{'full-screen': fullScreen}" class="app-toolbar-header color-1">
+      <ion-toolbar color="light" class="header-toolbar" [ngClass]="{'full-screen': fullScreen}" class="app-toolbar-header color-1">
          <ion-buttons slot="start">
             <ion-menu-button (click)="onShowMenu()"></ion-menu-button>
          </ion-buttons>
@@ -12,22 +12,24 @@
 
             <app-side-menu-buttons *ngIf="showBannerSideMenu"></app-side-menu-buttons>
 
-            <ion-label class="fair-title" [hidden]="showBannerSideMenu">
+            <ion-label class="fair-title" [hidden]="showBannerSideMenu"  [ngStyle]="{'color':fair?.social_media.iconMenuColorTitle}">
                {{fair?.description}}
             </ion-label>
-            <ion-button (click)="openShoppingCart()" *ngIf="userDataSession" [hidden]="showBannerSideMenu">
-               <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+            <!--ion-button (click)="openShoppingCart()" *ngIf="userDataSession" [hidden]="showBannerSideMenu">
+               <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}"  slot="icon-only" name="cart-outline"></ion-icon>
             </ion-button>
             <ion-badge [hidden]="showBannerSideMenu" class="icon-badge" color="danger"
-               *ngIf="userDataSession && shoppingCartCount > 0">{{shoppingCartCount}}</ion-badge>
-            <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex end-menu-button" color="secondary"
-                        (click)="presenterLogin()" *ngIf="!loggedIn" fill="outline" shape="round">
+               *ngIf="userDataSession && shoppingCartCount > 0">{{shoppingCartCount}}</ion-badge-->
+            <ion-button  [hidden]="showBannerSideMenu" 
+                class="d-none d-md-flex end-menu-button" color="secondary"
+               (click)="presenterLogin()" *ngIf="!loggedIn"  shape="round" fill="solid">
                <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
                Accede con tu usuario
             </ion-button>
-            <ion-button [hidden]="showBannerSideMenu" class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn"
+            <ion-button [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" [hidden]="showBannerSideMenu" 
+               class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn" color="secondary"
                (click)="presentAccount()">
-               <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+               <ion-icon  slot="start" ios="ios-person" md="person"></ion-icon>
                Cuenta
             </ion-button>
          </ion-buttons>
@@ -37,7 +39,7 @@
       <ion-menu contentId="main-content" class="menu-main-content side-menu scroll-container"
          [ngClass]="{ 'show-menu-mini': menuHidden, 'd-none': fullScreen }" [hidden]="fairAdminMode"
          (mouseover)="onMenuOver()">
-         <ion-buttons class="ion-hide-lg-down" [hidden]="menuHidden">
+         <ion-buttons [ngStyle]="{'color':fair?.social_media.iconMenuColor}" class="ion-hide-lg-down" [hidden]="menuHidden">
             <ion-button class="w-100" slot="start" color="primary" (click)="onEditMenuClick()"
                *ngIf="profileRole && profileRole.admin" [hidden]="editMenu">
                Editar Menú
@@ -64,15 +66,14 @@
          <ion-content class="scroll-container background-transparent" [hidden]="menuHidden">
             <ion-list lines="none" class="border-botton background-transparent"
                *ngIf="profileRole && profileRole.admin">
-               <ion-list-header routerLink="/super-admin/register" routerLinkActive="active" routerDirection="root"
+               <ion-list-header routerLink="/super-admin/admin" routerLinkActive="active" routerDirection="root"
                   detail="false">Super Administrador </ion-list-header>
                <ion-menu-toggle autoHide="false">
-
                   <ion-item class="background-transparent" routerLink="/super-admin/fair" routerLinkActive="active"
                      routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="home-outline"></ion-icon>
-                     <ion-icon slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
-                     <ion-label>
+                     <ion-icon  [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="home-outline"></ion-icon>
+                     <ion-icon  [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
+                     <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" >
                         Administrar Feria
                      </ion-label>
                   </ion-item>
@@ -80,9 +81,9 @@
                <ion-menu-toggle autoHide="false">
                   <ion-item class="background-transparent" routerLink="/super-admin/agenda-list"
                      routerLinkActive="active" routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="calendar-outline"></ion-icon>
-                     <ion-icon slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
-                     <ion-label>
+                     <ion-icon slot="start" [ngStyle]="{'color':fair?.social_media.iconMenuColor}" name="calendar-outline"></ion-icon>
+                     <ion-icon slot="start" [ngStyle]="{'color':fair?.social_media.iconMenuColor}" name="cog-outline" class="icon-agenda-config"></ion-icon>
+                     <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" >
                         Administrar Agenda
                      </ion-label>
                   </ion-item>
@@ -91,9 +92,9 @@
                <ion-menu-toggle autoHide="false">
                   <ion-item class="background-transparent" routerLink="/super-admin/speaker" routerLinkActive="active"
                      routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="people-outline"></ion-icon>
-                     <ion-icon slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
-                     <ion-label>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="people-outline"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="cog-outline" class="icon-agenda-config"></ion-icon>
+                     <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" >
                         Conferencistas
                      </ion-label>
                   </ion-item>
@@ -104,8 +105,8 @@
                   <!-- If its fair scene -->
                   <ion-item (click)="onClickFairScene(sceneLayout)" button="true" class="background-transparent"
                      *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )">
-                     <ion-icon slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
-                     <ion-label class="ion-text-wrap" style="min-width: 11em;"
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
+                     <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" class="ion-text-wrap" style="min-width: 11em;"
                         [ngClass]="{'label-scene-move': (editMenu && profileRole && profileRole.admin)}">
                         {{sceneLayout.scene.title}}
                      </ion-label>
@@ -122,14 +123,14 @@
                   <div *ngIf="sceneLayout.type == 'scenePavilion'">
                      <ion-item class="pavilions-menu" button="true" lines="none" class="background-transparent"
                         (click)="onClickPavilion(sceneLayout.pavilion)">
-                        <ion-icon slot="start" name="albums-outline"></ion-icon>
-                        <ion-label class="menu-label ion-text-wrap">
+                        <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="albums-outline"></ion-icon>
+                        <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" class="menu-label ion-text-wrap">
                            {{sceneLayout.pavilion.name}}
                         </ion-label>
                         <ion-buttons class="m-0" slot="end" [hidden]="profileRole && profileRole.admin && editMenu">
-                           <ion-icon slot="end" name="chevron-down-outline" size="small"
+                           <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="end" name="chevron-down-outline" size="small"
                               *ngIf="showPavilionDetail !== 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
-                           <ion-icon slot="end" name="chevron-up-outline" size="small"
+                           <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="end" name="chevron-up-outline" size="small"
                               *ngIf="showPavilionDetail === 'pavilion_id_'+sceneLayout.pavilion.id"></ion-icon>
                         </ion-buttons>
                         <ion-buttons class="m-0" slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
@@ -144,7 +145,7 @@
                            <ion-item *ngIf="scene.show || (profileRole && profileRole.admin)"
                               (click)="onClickPavilionScene(sceneLayout.pavilion,k)" lines="none" button="true"
                               class="sub-menu">
-                              <ion-icon slot="end" name="chevron-forward-outline" size="small"
+                              <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="end" name="chevron-forward-outline" size="small"
                                  [hidden]="(editMenu && profileRole && profileRole.admin)"></ion-icon>
 
                               <ion-buttons slot="end" *ngIf="(editMenu && profileRole && profileRole.admin)">
@@ -156,24 +157,24 @@
                                     *ngIf="k + 1 < sceneLayout.pavilion.resources.scenes.length"> &#8595; </ion-button>
                               </ion-buttons>
 
-                              <ion-label class="menu-label ml-4 ion-text-wrap"> {{ scene.title}} </ion-label>
+                              <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" class="menu-label ml-4 ion-text-wrap"> {{ scene.title}} </ion-label>
 
                            </ion-item>
                         </div>
                         <ion-item (click)="onClickPavilionLocal(sceneLayout.pavilion)" lines="none" button="true"
                            class="sub-menu" *ngIf="sceneLayout.pavilion.stands.length > 0">
                            <ion-label class="menu-label ml-4">Locales comerciales </ion-label>
-                           <ion-icon slot="end" name="chevron-down-outline" size="small"
+                           <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="end" name="chevron-down-outline" size="small"
                               [hidden]="sceneLayout.pavilion.showStandDetail"></ion-icon>
-                           <ion-icon slot="end" name="chevron-up-outline" size="small"
+                           <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="end" name="chevron-up-outline" size="small"
                               *ngIf="sceneLayout.pavilion.showStandDetail"></ion-icon>
                         </ion-item>
                         <div *ngIf="sceneLayout.pavilion.showStandDetail">
                            <div *ngFor="let stand of sceneLayout.pavilion.stands;let i_stand = index">
                               <ion-item (click)="onClickPavilionStand(sceneLayout.pavilion,stand)" button="true"
                                  lines="none" class="sub-menu-stand">
-                                 <ion-icon slot="end" name="chevron-forward-outline" size="small"></ion-icon>
-                                 <ion-label class="menu-label ml-6 ion-text-wrap" style="margin-left: 2em;">
+                                 <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="end" name="chevron-forward-outline" size="small"></ion-icon>
+                                 <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" class="menu-label ml-6 ion-text-wrap" style="margin-left: 2em;">
                                     {{stand.merchant.name}}</ion-label>
                               </ion-item>
                               <div *ngIf="stand.standShowSelect && stand.resources.scenes.length > 1">
@@ -181,8 +182,8 @@
                                     <ion-item *ngIf="profileRole && profileRole.admin"
                                        (click)="onClickPavilionStandScene(sceneLayout.pavilion,stand,i_scene)"
                                        button="true" lines="none" class="sub-menu-stand">
-                                       <ion-icon slot="start" name="chevron-forward-outline" size="small"></ion-icon>
-                                       <ion-label class="menu-label ion-text-wrap" style="margin-left: 2em;">
+                                       <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="chevron-forward-outline" size="small"></ion-icon>
+                                       <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" class="menu-label ion-text-wrap" style="margin-left: 2em;">
                                           {{scene.title }}</ion-label>
                                     </ion-item>
                                  </div>
@@ -196,16 +197,16 @@
             <ion-list *ngIf="loggedIn" lines="none" class="border-botton background-transparent">
                <ion-menu-toggle autoHide="false">
                   <ion-item button="true" (click)="presentAccount()" detail="false">
-                     <ion-icon slot="start" name="person"></ion-icon>
-                     <ion-label>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="person"></ion-icon>
+                     <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" >
                         Cuenta
                      </ion-label>
                   </ion-item>
                </ion-menu-toggle>
                <ion-menu-toggle autoHide="false">
                   <ion-item button="true" (click)="presentLogout()" detail="false">
-                     <ion-icon slot="start" name="log-out"></ion-icon>
-                     <ion-label>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="log-out"></ion-icon>
+                     <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" >
                         Salir
                      </ion-label>
                   </ion-item>
@@ -213,23 +214,23 @@
             </ion-list>
             <ion-list *ngIf="!loggedIn" class="border-botton ion-text-center access background-transparent">
                <ion-menu-toggle autoHide="false" class="ion-text-center">
-                  <ion-note class="login-note ion-text-start font-light">Accede con tu usuario para participar en los
+                  <ion-note [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" class="login-note ion-text-start font-light">Accede con tu usuario para participar en los
                      eventos, realizar solicitudes y gestionar tu usuario.</ion-note>
-                  <ion-button color="secondary" fill="outline" shape="round" (click)="presenterLogin()">
-                     <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
+                  <ion-button color="secondary" shape="round" (click)="presenterLogin()">
+                     <ion-icon  slot="start" ios="ios-person" md="person"></ion-icon>
                      Ingresar
                   </ion-button>
                </ion-menu-toggle>
             </ion-list>
             <ion-list class="border-botton ion-text-center background-transparent">
                <ion-item>
-                  <ion-label class="font-light menu-label">© 2022 E-logic </ion-label>
+                  <ion-label [ngStyle]="{'color':fair?.social_media.iconMenuColorText}"  class="font-light menu-label">© 2022 E-logic </ion-label>
                </ion-item>
             </ion-list>
          </ion-content>
          <ion-buttons *ngIf="menuHidden">
             <ion-button class="close-menu-right ion-hide-lg-down" (click)="onShowMenu()">
-               <ion-icon name="chevron-forward-outline"></ion-icon>
+               <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" name="chevron-forward-outline"></ion-icon>
             </ion-button>
          </ion-buttons>
 
@@ -242,24 +243,24 @@
                   <ion-item id="mini-menu-admin-fair" class=" width-icon p-0" routerLink="/super-admin/fair"
                      routerLinkActive="active" (mouseover)="onMenuHover($event,'adminFair')" (mouseout)="menuHover = ''"
                      routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="home-outline"></ion-icon>
-                     <ion-icon slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="home-outline"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
                   </ion-item>
                </ion-menu-toggle>
                <ion-menu-toggle autoHide="false">
                   <ion-item id="mini-menu-admin-agenda" class="width-icon p-0" routerLink="/super-admin/agenda-list"
                      routerLinkActive="active" (mouseover)="onMenuHover($event,'adminAgenda')"
                      (mouseout)="menuHover = ''" routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="calendar-outline"></ion-icon>
-                     <ion-icon slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="calendar-outline"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
                   </ion-item>
                </ion-menu-toggle>
                <ion-menu-toggle autoHide="false">
                   <ion-item id="mini-menu-admin-speaker" class=" width-icon p-0" routerLink="/super-admin/speaker"
                      routerLinkActive="active" (mouseover)="onMenuHover($event,'adminSpeaker')"
                      (mouseout)="menuHover = ''" routerDirection="root" detail="false">
-                     <ion-icon slot="start" name="people-outline"></ion-icon>
-                     <ion-icon slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="people-outline"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="cog-outline" class="icon-agenda-config-mini"></ion-icon>
                   </ion-item>
                </ion-menu-toggle>
             </ion-list>
@@ -272,7 +273,7 @@
                      class="background-transparent width-icon p-0"
                      *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )"
                      (mouseover)="onMenuHover($event,'menuScene' + iLayout)" (mouseout)="menuHover = ''">
-                     <ion-icon slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" [name]="sceneLayout.scene.menuIcon"></ion-icon>
                      <ion-label (click)="onClickFairScene(sceneLayout)" class="ion-text-wrap" style="min-width: 11em;"
                         [ngClass]="{'label-scene-move': (editMenu && profileRole && profileRole.admin)}">
 
@@ -283,7 +284,7 @@
                      <ion-item id="mini-menu-pavilion-{{iLayout}}" class="background-transparent width-icon p-0"
                         button="true" lines="none" (click)="onClickPavilion(sceneLayout.pavilion)"
                         (mouseover)="onMenuHover($event,'menuScene' + iLayout)" (mouseout)="menuHover = ''">
-                        <ion-icon slot="start" name="albums-outline"></ion-icon>
+                        <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="albums-outline"></ion-icon>
                         <ion-label class="menu-label ion-text-wrap">
 
                         </ion-label>
@@ -297,7 +298,7 @@
                   <ion-item button="true" id="mini-menu-account" class=" width-icon p-0 cursor-pointer"
                      (click)="presentAccount()" detail="false" (mouseover)="onMenuHover($event,'account')"
                      (mouseout)="menuHover = ''">
-                     <ion-icon slot="start" name="person"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="person"></ion-icon>
 
                   </ion-item>
                </ion-menu-toggle>
@@ -305,7 +306,7 @@
                   <ion-item button="true" id="mini-menu-logout" class=" width-icon p-0 cursor-pointer"
                      (click)="presentLogout()" detail="false" (mouseover)="onMenuHover($event,'logout')"
                      (mouseout)="menuHover = ''">
-                     <ion-icon slot="start" name="log-out"></ion-icon>
+                     <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="start" name="log-out"></ion-icon>
 
                   </ion-item>
                </ion-menu-toggle>
@@ -345,14 +346,13 @@
          </span>
       </ion-label>
 
-      <ion-label *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index"
-        class="icon-mini-tooltip"
+      <ion-label *ngFor="let sceneLayout of sceneLayoutList; let iLayout = index" class="icon-mini-tooltip"
          [ngStyle]="{'top': ( miniMenu['menuScene'+iLayout] ? miniMenu['menuScene'+iLayout].top : '' ) + 'px' }">
 
          <!-- If its fair scene -->
          <span class="tooltip-text arrow--4"
             *ngIf="sceneLayout.type == 'sceneFair' && ( sceneLayout.scene.show || (editMenu && profileRole && profileRole.admin) )"
-            [ngStyle]="{'width': '11em', 'display': menuHover == 'menuScene' + iLayout ? 'block' : 'none'}">
+            [ngStyle]="{'width': '11em', 'display':   menuHover == 'menuScene' + iLayout ? 'block' : 'none'}">
             {{sceneLayout?.scene?.title}}
          </span>
 

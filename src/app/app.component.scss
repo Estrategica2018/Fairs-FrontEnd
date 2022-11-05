@@ -1,3 +1,16 @@
+:root {
+  /* Set the background of the entire app */
+  --ion-color-primary: var(--iconMenuColor);
+  --ion-color-secondary: var(--iconMenuLogin);
+  --ion-color-base: var(--iconMenuColor);
+  --ion-text-color: var(--iconColorText);
+  --ion-color-light: var(--iconColorToolbar);
+}
+
+body {
+  color: var(--iconColorText);
+}
+
 .side-menu {}
 
 .background-transparent {
@@ -78,10 +91,7 @@ ion-menu.md ion-item.selected ion-icon {
   color: var(--ion-color-primary);
 }
 
-ion-menu.md ion-item ion-icon {
-  color: #00B8FF;
-}
-
+ 
 ion-menu.md ion-item ion-label {
   font-weight: 500;
 }
@@ -111,7 +121,7 @@ ion-menu.ios ion-item.selected ion-icon {
 
 ion-menu.ios ion-item ion-icon {
   font-size: 24px;
-  color: #73849a;
+  color: var(--ion-color-primary);
 }
 
 ion-menu.ios ion-list#labels-list ion-list-header {
@@ -239,13 +249,25 @@ ion-header {
 }
 
 .icon-logo {
-  width: 112px;
-  height: 47px;
+    width: auto;
+    height: 5.5em;
 }
 
 @media (min-width: 992px) {
   .icon-logo {
     margin-left: 46px;
+  }
+}
+
+@media (max-width: 1062px) {
+  .icon-logo {
+    display: none;
+  }
+}
+
+@media (max-width: 1150px) {
+  .icon-logo {
+   height: 4.5em;
   }
 }
 
@@ -365,7 +387,6 @@ body.backdrop-no-scroll {
     ion-icon {
       font-size: 3.2em;
       margin: 0.14em;
-      --ion-color-base: #004782 !important;
     }
   }
 
@@ -492,8 +513,8 @@ select {
   max-width: 0;
 }
 
-  .alert-wrapper .ion-overlay-wrapper .sc-ion-alert-md {
-    max-width: 50% !important;
-    width: 50% !important;
-  }
 
+.alert-wrapper .ion-overlay-wrapper .sc-ion-alert-md {
+  max-width: 50% !important;
+  width: 50% !important;
+}

@@ -37,6 +37,8 @@ export class FairPage implements OnInit {
   userDataSession: any;
   profileRole: any = { admin : false};
   showInitDate = false;
+  changeColor = false;
+  showColors = false;
   
 
   constructor(
@@ -135,6 +137,11 @@ export class FairPage implements OnInit {
   ionChange() {
     this.editSave = true;
   }  
+
+  ionChangeColor() {
+    this.editSave = true;
+    this.changeColor = true;
+  }  
   
   updateFair() {
       
@@ -150,6 +157,10 @@ export class FairPage implements OnInit {
         this.fair.pavilions = this.pavilions;
         this.fair = processData(this.fair);
         this.success = `Feria modificada exitosamente`;
+
+        if(this.changeColor) {
+          this.reload();
+        }
         this.loading.dismiss();      
       }, errors => {
           this.errors = `Consultando el servicio para modificar feria`;
@@ -377,5 +388,9 @@ export class FairPage implements OnInit {
     this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
       this.router.navigate([uri])
     });
+  }
+
+  reload() {
+    setTimeout(() => { window.location.reload(); }, 100);
   }
 } 

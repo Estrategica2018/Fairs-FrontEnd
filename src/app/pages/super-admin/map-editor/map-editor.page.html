@@ -19,7 +19,7 @@
 
 <div class="goto-back-button">
    <ion-button color="light" class="tool-tip" (click)="onToBackEditor(scene)">
-      <ion-icon name="arrow-back-outline"></ion-icon>
+      <ion-icon name="arrow-back-outline"></ion-icon> 
    </ion-button>
    <span class="tooltip-text arrow--4">Atrás</span>
 </div>
@@ -56,8 +56,23 @@
 
 
    <div class="div-container">
-
+      <!--Scene Background Image->
+      <div [ngStyle]="{
+        'background-image': 'url(' + scene?.url_image + ')',
+        'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
+        'background-repeat': 'no-repeat',
+        'width':scene?.container?.w + 'px', 
+        'height': scene?.container?.h + 'px'
+        }" (ionScroll)="logScrolling($event)" *ngIf="scene && scene.url_image">
+      </div>
+      <--Scene Background Color->
+      <div
+         [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
+         *ngIf="scene && scene.backgroundColor && !scene.url_image">
+      </div>
+      <--Scene Background Color-->
    </div>
+   
 
    <ion-item [hidden]="!errors">
       <div class="alert alert-danger alert-dismissible">
@@ -75,7 +90,6 @@
          id="banner-drag-{{banner.id}}" [ngStyle]="{
          'left': banner.position?.x + 'px',
          'top': banner.position?.y + 'px',
-         'width': banner.agendaCatalog ? 'auto': '',
          'opacity': bannerSelectHover || bannerSelect ? ( ( bannerSelectHover && bannerSelectHover.id === banner.id ) || ( bannerSelect && bannerSelect == banner ) ?   1 : ( banner.opacity || 1 ) * 0.6   ) : banner.opacity,      
          'transform': 'rotateX(' + banner.rotation.x + 'deg) rotateY(' + banner.rotation.y + 'deg) rotateZ(' + banner.rotation.z + 'deg)'
       }">
@@ -105,10 +119,10 @@
           'color': banner.fontColor,
           'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
           'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-          'border-radius': banner.border.radius + 'px',
-          'border-width': banner.border.width  + 'px',
+          'border-radius': banner.border ? banner.border.radius + 'px' : '',
+          'border-width': banner.border ? banner.border.width  + 'px' : '',
           'text-align': banner.textAlign,    
-          'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+          'box-shadow': (!banner.agendaCatalog && banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
           }">
             <div [ngStyle]="{'line-height': banner?.lineHeight, 'font-weight': banner.fontWeight }">
 
@@ -135,8 +149,8 @@
            'color': banner.fontColor,
            'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
            'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-           'border-radius': banner.border.radius + 'px',
-           'border-width': banner.border.width  + 'px',
+           'border-radius': banner.border ? banner.border.radius + 'px' : '',
+           'border-width': banner.border ? banner.border.width  + 'px' : '',
            'text-align': banner.textAlign,
            'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
          }">
@@ -236,8 +250,8 @@
                'background-color': banner.backgroundColor,
                'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
                 'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-               'border-radius': banner.border.radius + 'px',
-               'border-width': banner.border.width  + 'px',
+               'border-radius': banner.border ? banner.border.radius + 'px' : '',
+               'border-width': banner.border ? banner.border.width  + 'px' : '',
                'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
               }">
                <ion-grid class=" w-100">
@@ -323,7 +337,7 @@
                *ngIf="banner.__agendaCatalogList && banner.__agendaCatalogList.groups && banner.__agendaCatalogList.groups.length > 0"
                class="not-found">
                <ion-row>
-                  <ion-col *ngFor="let group of banner.__agendaCatalogList.groups">
+                  <ion-col *ngFor="let group of banner.__agendaCatalogList.groups" >
                      <app-agenda-catalog [banner]="banner" [group]="group"></app-agenda-catalog>
                   </ion-col>
                </ion-row>
@@ -355,8 +369,8 @@
                'background-color': banner.backgroundColor,
                'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
                 'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-               'border-radius': banner.border.radius + 'px',
-               'border-width': banner.border.width  + 'px',
+               'border-radius': banner.border ? banner.border.radius + 'px' : '',
+               'border-width': banner.border ? banner.border.width  + 'px' : '',
                'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '')
               }">
 
@@ -963,7 +977,7 @@
                <ion-card-subtitle> Tipo de línea </ion-card-subtitle>
             </ion-buttons>
             <ion-buttons slot="end">
-               <ion-card-subtitle>
+               <ion-card-subtitle *ngIf="bannerSelect.line">
                   <select [(ngModel)]="bannerSelect.line.style" (change)="onChangeItem()">
                      <option selected="selected" value="container-arrow--curve">curve</option>
                      <option selected="selected" value="container-arrow--rect">rect</option>
@@ -1067,7 +1081,7 @@
             </ion-buttons>
          </ion-toolbar>
          <ion-toolbar>
-            <ion-card-subtitle slot="start"> Lista de {{bannerSelect.carousel.images?.length}} Imágene(s)
+            <ion-card-subtitle slot="start"> Lista de {{bannerSelect.carousel.images?.length}} imagene(s)
             </ion-card-subtitle>
             <ion-button slot="end" size="small" (click)="presentActionAddCarrousel()">
                <ion-icon name="add-outline"></ion-icon>
@@ -1113,8 +1127,7 @@
             <ion-toolbar class="">
                <ion-buttons slot="primary" class="w-100">
                   <ion-button class="d-none d-md-flex end-menu-button m-auto" color="secondary"
-                     (click)="presentNewSpeakerListCatalog(bannerSelect,'edit')"  fill="outline"
-                     shape="round">
+                     (click)="presentNewSpeakerListCatalog(bannerSelect,'edit')" fill="outline" shape="round">
                      <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
                      Categoría {{bannerSelect.speakerCatalog.speakerType}}
                   </ion-button>
@@ -1518,7 +1531,7 @@
             <ion-toolbar class="separator-text"
                (click)="showSpeakerCatalogActions == 'ImageProfile' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'ImageProfile'">
                <ion-buttons slot="start">
-                  <ion-card-subtitle> Imágen Conferencista
+                  <ion-card-subtitle> imagen Conferencista
                   </ion-card-subtitle>
                </ion-buttons>
                <ion-buttons slot="end">
@@ -2042,7 +2055,7 @@
             <ion-toolbar class="separator-text"
                (click)="showProductCatalogActions == 'Images' ? showProductCatalogActions = null : showProductCatalogActions = 'Images'">
                <ion-buttons slot="start">
-                  <ion-card-subtitle> Carrete de Imágenes
+                  <ion-card-subtitle> Carrete de imagenes
                   </ion-card-subtitle>
                </ion-buttons>
                <ion-buttons slot="end">
@@ -2116,7 +2129,54 @@
       </ion-card-content>
 
       <ion-card-content *ngIf="tabSelect == 'agendaCatalog'" class="content-scroll">
-
+         <ion-toolbar>
+            <ion-card-subtitle> Color botón</ion-card-subtitle>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <ion-label (click)="bannerSelect.agendaCatalog.bgButton = '';">Clear </ion-label>
+                  <ion-icon name="close-outline" (click)="bannerSelect.agendaCatalog.bgButton = '';">
+                  </ion-icon>
+                  <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
+                     [(ngModel)]="bannerSelect.agendaCatalog.bgButton" />
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-card-subtitle> Color Hora</ion-card-subtitle>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <ion-label (click)="bannerSelect.agendaCatalog.colorHour = '';">Clear </ion-label>
+                  <ion-icon name="close-outline" (click)="bannerSelect.agendaCatalog.colorHour = '';">
+                  </ion-icon>
+                  <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
+                     [(ngModel)]="bannerSelect.agendaCatalog.colorHour" />
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-card-subtitle> Color Titulo</ion-card-subtitle>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <ion-label (click)="bannerSelect.agendaCatalog.colorName = '';">Clear </ion-label>
+                  <ion-icon name="close-outline" (click)="bannerSelect.agendaCatalog.colorName = '';">
+                  </ion-icon>
+                  <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
+                     [(ngModel)]="bannerSelect.agendaCatalog.colorName" />
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+         <ion-toolbar>
+            <ion-card-subtitle> Color Descripción</ion-card-subtitle>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <ion-label (click)="bannerSelect.agendaCatalog.colorDescription = '';">Clear </ion-label>
+                  <ion-icon name="close-outline" (click)="bannerSelect.agendaCatalog.colorDescription = '';">
+                  </ion-icon>
+                  <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
+                     [(ngModel)]="bannerSelect.agendaCatalog.colorDescription" />
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
       </ion-card-content>
 
       <ion-card-content *ngIf="tabSelect == 'font'">
@@ -2271,7 +2331,7 @@
             </ion-buttons>
          </ion-toolbar>
       </ion-card-content>
-      <ion-card-content *ngIf="tabSelect == 'border'">
+      <ion-card-content *ngIf="tabSelect == 'border' && bannerSelect.border">
          <ion-toolbar line="solid">
             <ion-buttons slot="start">
                <ion-card-subtitle> Estilo del borde </ion-card-subtitle>
@@ -2705,11 +2765,11 @@
 <div *ngFor="let banner of scene?.banners; let i = index">
    <div class="banner float-buttons" *ngIf="banner.floatButton" [ngStyle]="{'top': 
        banner.floatButton.indexOf('top-') >= 0 ? '1em' : 
-       banner.floatButton.indexOf('bottom-') >= 0 ? 'calc( 100% - ' + ( banner.size.y - toolBarSize) + 'px )' :
+       banner.floatButton.indexOf('bottom-') >= 0 ? 'calc( 100% - ' + ( banner.size.y + 32 + toolBarSize) + 'px )' :
        banner.floatButton.indexOf('-center') >= 0 ? 'calc( 50% - '+banner.size.y + 'px )' :
        '' ,'left': 
        banner.floatButton.indexOf('left') >= 0 ? '1em' : 
-       banner.floatButton.indexOf('right') >= 0 ? 'calc( 100% - '+banner.size.x + 'px )' :
+       banner.floatButton.indexOf('right') >= 0 ? 'calc( 100% - '+ ( banner.size.x + 32 )+ 'px )' :
        banner.floatButton.indexOf('center') >= 0 ? 'calc( 50% - '+banner.size.x + 'px )' :
        ''
       }">
@@ -2745,8 +2805,8 @@
           'color': banner.fontColor,
           'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
           'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-          'border-radius': banner.border.radius + 'px',
-          'border-width': banner.border.width  + 'px',
+          'border-radius': banner.border ? banner.border.radius + 'px' : '',
+          'border-width': banner.border ? banner.border.width  + 'px' : '',
           'text-align': banner.textAlign,    
           'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
           }">
@@ -2775,8 +2835,8 @@
            'color': banner.fontColor,
            'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
            'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-           'border-radius': banner.border.radius + 'px',
-           'border-width': banner.border.width  + 'px',
+           'border-radius': banner.border ? banner.border.radius + 'px' : '',
+           'border-width': banner.border ? banner.border.width  + 'px' : '',
            'text-align': banner.textAlign,
            'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
          }">
@@ -2876,8 +2936,8 @@
                'background-color': banner.backgroundColor,
                'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
                 'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-               'border-radius': banner.border.radius + 'px',
-               'border-width': banner.border.width  + 'px',
+               'border-radius': banner.border ? banner.border.radius + 'px' : '',
+               'border-width': banner.border ? banner.border.width  + 'px' : '',
                'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
               }">
                <ion-grid class=" w-100">

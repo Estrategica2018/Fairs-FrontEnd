@@ -97,7 +97,16 @@ const routes: Routes = [
   {
     path: 'map-site/product/:pavilionId/:standId/:productId/:sceneId',
     loadChildren: () => import('./pages/map-site/map-site.module').then( m => m.MapSitePageModule)
-  }
+  },
+  {
+    path: 'form-mincultura-catalog',
+    loadChildren: () => import('./pages/form-mincultura-catalog/form-mincultura-catalog.module').then( m => m.FormMinculturaCatalogPageModule)
+  },
+  {
+    path: 'user-register',
+    loadChildren: () => import('./pages/user-register/register.module').then( m => m.RegisterPageModule)
+  },
+
 
 
 
