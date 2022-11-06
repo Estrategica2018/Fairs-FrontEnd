@@ -12,10 +12,10 @@
            <strong></strong> {{errors}}
           </div>
         </ion-list-header>
-        <ion-list [hidden]="showSupportDetail">
-            <ion-grid *ngIf="session" class="mt-4">
-                  <ion-row>
-                    <ion-col>
+        <ion-list [hidden]="showSupportDetail"> 
+            <ion-grid *ngIf="session" class="mt-4 agenda-detail-container" [ngStyle]="{ 'height': !largeScreen ? clientHeight + 'px' : '' }">
+                  <ion-row> 
+                    <ion-col [size]="largeScreen ? '' : '12'">
                       <div>
                         <img [src]="session.category?.resources?.url_image"/>
                         <br/>
@@ -31,10 +31,10 @@
                         (click)="onAgendaPrice()" button>
                           <ion-label color="primary">Entrar al Evento por $ {{agenda.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
                         </ion-item>
-                        
+
                         <ion-item *ngIf="loaded && profileRole && ( profileRole.speaker || profileRole.admin )"
                         (click)="onViewerMeeting()" button>
-                          <ion-label color="primary"> Iniciar conferencia </ion-label>
+                          <ion-label color="primary"> Iniciar conferencia</ion-label>
                         </ion-item>
                         
                         <ion-item *ngIf="loaded && agenda.audience_config == 1 " [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"

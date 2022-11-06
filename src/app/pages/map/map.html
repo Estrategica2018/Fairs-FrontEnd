@@ -34,7 +34,7 @@
   </ion-item>
 
   <div class="div-container">   
-    <!--Scene Background Image-->
+    <!--Scene Background Image->
     <div [ngStyle]="{
       'background-image': 'url(' + scene?.url_image + ')',
       'background-size': scene?.container?.w + 'px ' +scene?.container?.h+ 'px',
@@ -43,12 +43,12 @@
       'height': scene?.container?.h + 'px'
       }" (ionScroll)="logScrolling($event)" *ngIf="scene && scene.url_image">
     </div>
-    <!--Scene Background Color-->
+    <--Scene Background Color->
     <div
       [ngStyle]="{'width':scene?.container?.w + 'px', 'height': scene?.container?.h + 'px', 'background-color': scene?.backgroundColor}"
       *ngIf="scene && scene.backgroundColor && !scene.url_image">
     </div>
-    <!--Scene Background Color--->
+    <--Scene Background Color-->
   </div>
 
   <!--Banner List-->

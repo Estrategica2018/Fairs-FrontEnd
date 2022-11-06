@@ -29,9 +29,9 @@ export class SideMenuButtonsComponent implements OnInit {
   }
   
   onSave() {
-    if(this.editSave) {
+    //if(this.editSave) {
       window.dispatchEvent(new CustomEvent('side-menu-button:onSave'));
-    }
+    //}
     
     this.onSelectPanel('none');
   }

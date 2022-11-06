@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 
 import { ConferenceData } from '../../../providers/conference-data';
 import { ActivatedRoute } from '@angular/router';
@@ -42,6 +42,9 @@ export class ScheduleDetailComponent {
   showSupportDetail = false;
   contactForm: FormGroup;
   url = SERVER_URL;
+  largeScreen : boolean;
+  innerWidth = window.innerWidth;
+  clientHeight: any;
   
   constructor(
     private dataProvider: ConferenceData,
@@ -110,9 +113,13 @@ export class ScheduleDetailComponent {
     this.fairsService.getCurrentFair().
     then( fair => {
         this.fair = fair;
+        this.onResize(event);
     },error => {
         this.errors = error;
     });
+
+    var m = document.querySelector('app-schedule-detail');
+    this.clientHeight = m.clientHeight;
 
 
     this.usersService.getUser().then((userDataSession: any)=>{
@@ -319,5 +326,11 @@ export class ScheduleDetailComponent {
     }
       
   }  
- 
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.largeScreen = window.innerWidth >= 485;
+    var m = document.querySelector('app-schedule-detail');
+    this.clientHeight = m.clientHeight;
+  }
 }

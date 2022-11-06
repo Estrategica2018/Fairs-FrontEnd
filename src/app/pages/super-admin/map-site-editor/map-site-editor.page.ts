@@ -103,7 +103,8 @@ export class MapSiteEditorPage implements OnInit {
 
   sceneTemplatesTypes: any = [
     { 'label': 'Libre', 'template': 'blank', 'url_image': 'https://res.cloudinary.com/deueufyac/image/upload/v1646545505/temporales/blank_spui2b.png', 'resources': '{"styles":{},"rows":[{"id":1649481341273,         "cols":[{"styles":{},"id":1649481340897,"banners":[]}]}],"show":true,"menuIcon":"map-outline","title":"Escena #3","menuTabs":{"showMenuParent":true,"position":"none"}}' },
-    { 'label': 'Bloques', 'template': 'block', 'url_image': 'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/block_nq1tek.png', 'resources': '{"styles":{},"rows":[{"cols":[{"styles":{},"banners":[{"id":1646546787662,"styles":{"backgroundColor":"#f7f7f7","textAlign":"center","width":"100%","position":{"type":"relative"},"text":{"value":"Título de página","color":"green","fontSize":"5"},"style":{"opacity":0.55}}}]}]},         {"cols":[{"styles":{},"banners":[{"styles":{"position":{"type":"relative"},"width":"100%","backgroundColor":"rgb(228, 238, 241)","image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}},"scenes":         [{"rows":[{"cols":[{"styles":{},"banners":[{"id":1646546787611,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}}},{"id":1646546787634,"styles":{"backgroundColor":"","textAlign":"center","width":"100%","position":{"type":"absolute"},"text":{"value":"Hola Mundo","color":"white","fontSize":"12"}}}]}]},         {"cols":[{"styles":{},"banners":[{"id":1646546787638,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://images.ctfassets.net/hrltx12pl8hq/qGOnNvgfJIe2MytFdIcTQ/429dd7e2cb176f93bf9b21a8f89edc77/Images.jpg"}}}]}]}]}]}]},{             "styles":{},"banners":[{"id":1646546787643,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://m.media-amazon.com/images/I/61y8grFG24L._AC_SX466_.jpg"}}}]}]}],"show":true,"menuIcon":"map-outline","title":"Escena #3","menuTabs":{"showMenuParent":true,"position":"none"}}' },
+    //{ 'label': 'Bloques', 'template': 'block', 'url_image': 'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/block_nq1tek.png', 'resources': '{"styles":{},"rows":[{"cols":[{"styles":{},"banners":[{"id":1646546787662,"styles":{"backgroundColor":"#f7f7f7","textAlign":"center","width":"100%","position":{"type":"relative"},"text":{"value":"Título de página","color":"green","fontSize":"5"},"style":{"opacity":0.55}}}]}]},         {"cols":[{"styles":{},"banners":[{"styles":{"position":{"type":"relative"},"width":"100%","backgroundColor":"rgb(228, 238, 241)","image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}},"scenes":         [{"rows":[{"cols":[{"styles":{},"banners":[{"id":1646546787611,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://www.adobe.com/es/express/create/media_115f4c973bb913890cf9f7da8aa6f288f8419f1b9.jpeg?width=750&format=jpeg&optimize=medium"}}},{"id":1646546787634,"styles":{"backgroundColor":"","textAlign":"center","width":"100%","position":{"type":"absolute"},"text":{"value":"Hola Mundo","color":"white","fontSize":"12"}}}]}]},         {"cols":[{"styles":{},"banners":[{"id":1646546787638,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://images.ctfassets.net/hrltx12pl8hq/qGOnNvgfJIe2MytFdIcTQ/429dd7e2cb176f93bf9b21a8f89edc77/Images.jpg"}}}]}]}]}]}]},{             "styles":{},"banners":[{"id":1646546787643,"styles":{"width":"100%","backgroundColor":"","position":{"type":"relative"},"image":{"src":"https://m.media-amazon.com/images/I/61y8grFG24L._AC_SX466_.jpg"}}}]}]}],"show":true,"menuIcon":"map-outline","title":"Escena #3","menuTabs":{"showMenuParent":true,"position":"none"}}' },
+    { 'label': 'Bloques', 'template': 'block', 'url_image': '', 'resources': '{"styles":{},"rows":[{"cols":[{"styles":{},"banners":[{"id":1646546787662,"styles":{"textAlign":"center","width":"100%","position":{"type":"relative"},"text":{"value":"Título de página","color":"green","fontSize":"5"},"style":{"opacity":0.55}}}],"id":1667674827708}],"id":1667674827742},{"cols":[{"styles":{},"banners":[],"id":1667674827234},{"styles":{},"banners":[],"id":1667674834186}],"id":1667674827245},{"styles":{},"id":1667674836502,"cols":[{"styles":{},"banners":[],"id":1667674836452}]}],"show":true,"menuIcon":"map-outline","title":"Escena #4","menuTabs":{"showMenuParent":true,"position":"none"}}' },
     { 'label': 'Presentación', 'template': 'presentation', 'url_image': 'https://res.cloudinary.com/deueufyac/image/upload/v1646545403/temporales/presentation_uven0s.png' },
     { 'label': 'Galería', 'template': 'gallery', 'url_image': 'https://res.cloudinary.com/deueufyac/image/upload/v1646545505/temporales/gallery_wsdga2.png' },
   ];
@@ -179,6 +180,7 @@ export class MapSiteEditorPage implements OnInit {
       }
 
       this.sceneEdited = this.scene;
+      this.initializeBanners(this.scene);
       this.initSpeakerTypeList();
 
       setTimeout(() => {
@@ -192,6 +194,26 @@ export class MapSiteEditorPage implements OnInit {
       this.errors = `Consultando el servicio del mapa general de la feria ${error}`;
     });
 
+  }
+  
+  initializeBanners(scene: any) {
+    let rows = scene.rows;
+    rows.forEach((row) => {
+      row.cols.forEach((col) => {
+        col.banners.forEach((banner) => {
+
+          if (banner.video) {
+            banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+          }
+
+          if (banner.scenes) {
+            banner.scenes.forEach((sceneChild) => {
+              this.initializeBanners(sceneChild);
+            });
+          }
+        });
+      });
+    });
   }
 
   setIdForRow(rows) {
@@ -285,6 +307,7 @@ export class MapSiteEditorPage implements OnInit {
   }
 
   onSave() {
+
     this.loading.present({ message: 'Cargando...' });
     if (this.sceneId) {
       this.resources.scenes[this.sceneId] = this.scene;
@@ -454,6 +477,7 @@ export class MapSiteEditorPage implements OnInit {
         "fontColor": "#000000", "fontWeight": 100, "textAlign": "center", "width": "100%", "fontFamily": 'YoutubeSansMedium',
         "fontSize": "1", "fontSizeUnit": "em", "lineHeight": "1.0", "lineHeightUnit": 1, "lineHeightMili": 0,
         "widthUnit": "em", "heightUnit": "em",
+        "minWidthUnit": "em", "minHeightUnit": "em",
         "marginType": "none", "paddingType": "none",
         "paddingTop": 0, "paddingBottom": 0, "paddingLeft": 0, "paddingRight": 0,
         "marginTop": 0, "marginBottom": 0, "marginLeft": 0, "marginRight": 0,
@@ -467,6 +491,7 @@ export class MapSiteEditorPage implements OnInit {
       case 'Texto':
         banner.styles.text = { "value": "Texto aquí" };
         banner.styles.textAlign = "left";
+        banner.styles.fontColor = this.fair.social_media.iconColorText;
         break;
       case 'Imágen':
         banner.styles.image = { "src": "https://dummyimage.com/114x105/EFEFEF/000.png" };
@@ -484,32 +509,28 @@ export class MapSiteEditorPage implements OnInit {
       case 'Video':
         banner.size = { "x": 114, "y": 105 };
         banner.video = { "url": "https://player.vimeo.com/video/286898202" };
-        banner.styles.text = { "fontSize": 5, "value": "Título de la Escena aquí", "color": "#00B8FF" };
         banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
         break;
       case 'Título':
         banner.styles.fontSize = 5;
-        banner.styles.fontColor = this.themeSelected.fontColor;
-
+        banner.styles.fontColor = this.fair.social_media.iconMenuColorTitle;
         banner.styles.text = { "value": "Título de la Escena aquí" };
         break;
       case 'Sub-Título':
         banner.styles.fontSize = 2;
-        banner.styles.fontColor = this.themeSelected.fontColor;
+        banner.styles.fontColor = this.fair.social_media.iconMenuColorText;
         banner.styles.text = { "value": "Sub Título aquí" };
         break;
       case 'SpeakerCatalog':
-        banner = {
-          "size": { "x": 428, "y": 237 },
-          "position": this.getNewPosition({ "x": 64, "y": 29 }),
-          "speakerCatalog": {
-            "nameFontSize": 24, "nameFontColor": "#ff0000", "nameTop": 10, "nameLeft": 216, "nameFontFamily": "YoutubeSansMedium",
-            "nameFontWeight": "100",
-            "descHeigth": 69,
-            "descTop": 139, "descLeft": 198, "descWidth": 208, "descFontSize": 14, "descTextAlign": "justify", "lineHeightMili": 0, "lineHeightUnit": 1, "lineHeight": 1, "descFontFamily": "YoutubeSansLight", "descFontWeight": 100, "titleFontColor": "#000", "titleFontFamily": "YoutubeSansMedium", "titleFontSize": 19, "titleFontWeight": "bold", "titleLeft": 0, "titleTop": 113, "imagesTop": 0, "imagesLeft": 0, "imagesWidth": 187, "imagesHeight": 224, "imagesPriceWidth": 16, "imagestitleWidth": null, "priceTop": 38, "priceLeft": 27, "priceFontColor": "#ff1a1a", "nameWidth": 177, "nameHeight": 0, "logoLeft": 142, "logoTop": 26, "logoWidth": 74, "logoHeight": 69, "professionFontColor": "#ffffff", "professionTop": 97, "professionLeft": 199, "descFontColor": "", "professionFontSize": 15
-          }, "backgroundColor": "#109be0",
-          "class": "rounded-withradius grayscale cursor-pointer overflow-hidden", "fontColor": "#ffffff"
-        };
+        banner.size = { "x": 428, "y": 237 };
+        banner.speakerCatalog = {
+          "nameFontSize": 24, "nameFontColor": "#ff0000", "nameTop": 10, "nameLeft": 216, "nameFontFamily": "YoutubeSansMedium",
+          "nameFontWeight": "100",
+          "descHeigth": 69,
+          "descTop": 139, "descLeft": 198, "descWidth": 208, "descFontSize": 14, "descTextAlign": "justify", "lineHeightMili": 0, "lineHeightUnit": 1, "lineHeight": 1, "descFontFamily": "YoutubeSansLight", "descFontWeight": 100, "titleFontColor": "#000", "titleFontFamily": "YoutubeSansMedium", "titleFontSize": 19, "titleFontWeight": "bold", "titleLeft": 0, "titleTop": 113, "imagesTop": 0, "imagesLeft": 0, "imagesWidth": 187, "imagesHeight": 224, "imagesPriceWidth": 16, "imagestitleWidth": null, "priceTop": 38, "priceLeft": 27, "priceFontColor": "#ff1a1a", "nameWidth": 177, "nameHeight": 0, "logoLeft": 142, "logoTop": 26, "logoWidth": 74, "logoHeight": 69, "professionFontColor": "#ffffff", "professionTop": 97, "professionLeft": 199, "descFontColor": "", "professionFontSize": 15
+        }
+        banner.backgroundColor = "#109be0";
+        banner.class = "rounded-withradius grayscale cursor-pointer overflow-hidden";
         banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
         break;
       case 'ProductCatalog':
@@ -572,7 +593,7 @@ export class MapSiteEditorPage implements OnInit {
         break;
       case 'Banner':
         banner.styles.text = { "value": "Texto aquí" };
-        banner.styles.backgroundColor = this.themeSelected.backgroundColor
+        banner.styles.backgroundColor = this.fair.social_media.iconMenuLogin;
         banner.styles.border = { "style": "solid", "color": "#000", "radius": 20, "width": 1 };
         break;
       case 'Tabla':
@@ -1130,7 +1151,7 @@ export class MapSiteEditorPage implements OnInit {
         this.filterSpeakerList(banner);
         this.onChangeSpeakerStyle(banner);
       }
-     // this.resizeSpeakers(banner);
+      // this.resizeSpeakers(banner);
     }
     else {
       if (action == 'new') {
@@ -1208,10 +1229,11 @@ export class MapSiteEditorPage implements OnInit {
       }
     }
 
-    banner.__speakerCatalogList.forEach((speaker, i: any) => {
-      speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
-      speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
-    });
+    if (banner.__speakerCatalogList)
+      banner.__speakerCatalogList.forEach((speaker, i: any) => {
+        speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
+        speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
+      });
 
     const main = document.querySelector<HTMLElement>('ion-router-outlet');
     const left = main.offsetWidth - (((banner.__factor) * 1.03) * banner.size.x);
@@ -1304,14 +1326,15 @@ export class MapSiteEditorPage implements OnInit {
     banner.__agendaCatalogList = { "agendas": [], "groups": [] };
     banner.__factor = 3;
 
-    const category = banner.agendaCatalog.category || 'all';
 
     this.agendasService.list(null)
       .then((agendas) => {
         if (agendas.length > 0) {
           agendas.forEach((agenda) => {
-            if (category == 'all' || agenda.category_id == category) {
-              banner.__agendaCatalogList.agendas.push(agenda);
+            for (let cat of banner.agendaCatalog.category.split(',')) {
+              if (cat == 'all' || agenda.category.name == cat) {
+                banner.__agendaCatalogList.agendas.push(agenda);
+              }
             }
           });
 

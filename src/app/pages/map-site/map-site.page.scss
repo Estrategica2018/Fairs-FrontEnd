@@ -183,3 +183,18 @@
     border-color: var(--highlight-color) transparent transparent;
     top: 2em;
 }
+
+
+.goto-edit-button {
+  position: absolute;
+  top: 0px;
+  left: 58px;
+  z-index: 11;
+}
+
+.goto-back-button {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 11;
+}

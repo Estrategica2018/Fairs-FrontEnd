@@ -26,7 +26,6 @@ export class SpeakerListComponent implements OnInit {
       this.categorySelected += this.catalogList[i-1].label;
     }
 
-    console.log(this.categorySelected);
     this.onChangeItem();
   }
 

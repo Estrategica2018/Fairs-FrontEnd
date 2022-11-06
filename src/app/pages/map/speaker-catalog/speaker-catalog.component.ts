@@ -14,8 +14,8 @@ export class SpeakerCatalogComponent implements OnInit {
 
   @Input() bannerSpeakerSelectHover;
   @Input() banner;
-  @Input() speaker;
-  @Input() index;
+  @Input() showSpeakerCatalogActions;
+  @Input() tabSelect;
 
   modal: any;
   speakerDetailComponent = SpeakerDetailComponent;
@@ -25,7 +25,7 @@ export class SpeakerCatalogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.index = this.index || 0;
+    
   }
 
 
@@ -42,4 +42,5 @@ export class SpeakerCatalogComponent implements OnInit {
     const { data } = await this.modal.onWillDismiss();
   }
 
+  goToOnHoverBanner(banner, col, row, scene){}
 }

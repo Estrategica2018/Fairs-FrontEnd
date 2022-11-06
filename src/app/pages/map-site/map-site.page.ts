@@ -22,6 +22,7 @@ import { UsersService } from 'src/app/api/users.service';
 })
 export class MapSitePage implements OnInit {
 
+
   constructor(
     private alertCtrl: AlertController,
     private fairsService: FairsService,
@@ -81,9 +82,17 @@ export class MapSitePage implements OnInit {
   errors: String = null;
   profileRole: any;
   userDataSession: any;
+  mobileApp: boolean = false;
 
   ngOnInit() {
     this.routerView = this.router;
+    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
+      this.mobileApp = true;
+    }
+  }
+
+  ngDoCheck() {
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
   }
 
   ngOnDestroy(): void {
@@ -110,7 +119,6 @@ export class MapSitePage implements OnInit {
     this.fairsService.getCurrentFair().then((fair) => {
 
       this.fair = fair;
-
 
       this.usersService.getUser().then((userDataSession: any) => {
         this.userDataSession = userDataSession;
@@ -154,6 +162,7 @@ export class MapSitePage implements OnInit {
       }
 
       this.sceneEdited = this.scene;
+      this.initializeBanners(this.scene);
 
       setTimeout(() => {
         this.onResize();
@@ -166,6 +175,26 @@ export class MapSitePage implements OnInit {
       this.errors = `Consultando el servicio del mapa general de la feria ${error}`;
     });
 
+  }
+
+  initializeBanners(scene: any) {
+    let rows = scene.rows;
+    rows.forEach((row) => {
+      row.cols.forEach((col) => {
+        col.banners.forEach((banner) => {
+
+          if (banner.video) {
+            banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+          }
+
+          if (banner.scenes) {
+            banner.scenes.forEach((sceneChild) => {
+              this.initializeBanners(sceneChild);
+            });
+          }
+        });
+      });
+    });
   }
 
   setIdForRow(rows) {
@@ -213,6 +242,13 @@ export class MapSitePage implements OnInit {
               }
             }
           }
+
+          if (banner.externalUrl) {
+            if (this.mobileApp) {
+              banner.externalUrl = banner.externalUrl.replace("web.whatsapp", "api.whatsapp");
+            }
+          }
+
         });
       });
     });

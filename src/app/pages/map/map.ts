@@ -65,7 +65,7 @@ export class MapPage implements OnInit {
   offsetHeight: 0;
   sceneId: any = '0';
   modal: any;
-
+  mobileApp = false;
   toolBarSize = 0;
 
   constructor(
@@ -90,7 +90,12 @@ export class MapPage implements OnInit {
 
     this.listenForFullScreenEvents();
     this.initializeListeners();
-    
+
+
+    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
+      this.mobileApp = true;
+    }
+
     this.usersService.getUser().then((userDataSession: any) => {
 
       this.userDataSession = userDataSession;
@@ -138,7 +143,7 @@ export class MapPage implements OnInit {
     this.sceneId = this.route.snapshot.paramMap.get('sceneId');
 
     this.fairsService.getCurrentFair().then((fair) => {
-      
+
       this.fair = fair;
 
       if (!this.fair.resources) {
@@ -193,15 +198,6 @@ export class MapPage implements OnInit {
         this.scene.videoSanitizerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.scene.videoUrl);
       }
 
-
-      this.speakersService.list()
-      .then((speakers) => {
-        this.speakerList = speakers;
-      })
-      .catch(error => {
-
-      });
-
       this.scene.banners.forEach((banner) => {
 
         if (banner.video) {
@@ -217,7 +213,15 @@ export class MapPage implements OnInit {
         }
 
         if (banner.speakerCatalog) {
-          this.initializeSpeakers(banner);
+
+          this.speakersService.list()
+            .then((speakers) => {
+              this.speakerList = speakers;
+              this.initializeSpeakers(banner);
+            })
+            .catch(error => {
+
+            });
         }
 
         if (banner.formCatalog) {
@@ -227,6 +231,13 @@ export class MapPage implements OnInit {
         if (banner.contact) {
           this.initializeContact(banner);
         }
+
+        if (banner.externalUrl) {
+          if (this.mobileApp) {
+            banner.externalUrl = banner.externalUrl.replace("web.whatsapp", "api.whatsapp");
+          }
+        }
+
       });
 
       setTimeout(() => {
@@ -671,14 +682,15 @@ export class MapPage implements OnInit {
     banner.__agendaCatalogList = { "agendas": [], "groups": [] };
     banner.__factor = 3;
 
-    const category = banner.agendaCatalog.category || 'all';
-
     this.agendasService.list(null)
       .then((agendas) => {
         if (agendas.length > 0) {
           agendas.forEach((agenda) => {
-            if (category == 'all' || agenda.category_id == category) {
-              banner.__agendaCatalogList.agendas.push(agenda);
+
+            for (let cat of banner.agendaCatalog.category.split(',')) {
+              if (cat == 'all' || agenda.category.name == cat) {
+                banner.__agendaCatalogList.agendas.push(agenda);
+              }
             }
           });
           banner.__agendaCatalogList.groups = [];
@@ -727,7 +739,7 @@ export class MapPage implements OnInit {
         break;
       }
     }
-
+    if(banner.__speakerCatalogList)
     banner.__speakerCatalogList.forEach((speaker, i: any) => {
       speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
       speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
@@ -981,6 +993,7 @@ export class MapPage implements OnInit {
     banner.__speakerCatalogList =
       this.speakerList.filter((speaker) => {
         let mbControl = false;
+
         for (let cat of banner.speakerCatalog.speakerType.split(',')) {
           if (speaker.position == cat) {
             mbControl = true;

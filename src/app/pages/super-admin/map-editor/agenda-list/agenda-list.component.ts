@@ -10,7 +10,7 @@ import { LoadingService } from './../../../../providers/loading.service';
 })
 export class AgendaListComponent implements OnInit {
 
-  
+
   template: any;
   catalogList: any = [];
   fair: any;
@@ -18,41 +18,47 @@ export class AgendaListComponent implements OnInit {
   stand: any;
   category: any;
   showAgendas = false;
-  categorySelected = 'all';
+  categorySelected: string = '';
   showOnlyOne = false;
   agendaList: any;
-  
+
   constructor(private modalCtrl: ModalController,
     private navParams: NavParams,
     private loading: LoadingService,
     private agendasService: AgendasService) { }
 
   ngOnInit() {
-      
-      this.loading.present({message:'Cargando...'});
-      this.template = this.navParams.get('template');
-      this.fair = this.navParams.get('fair');
-      this.pavilion = this.navParams.get('pavilion');
-      this.stand = this.navParams.get('stand');
-      this.agendaList = [];
-      
-      this.agendasService.getByCategory(null)
+
+    this.loading.present({ message: 'Cargando...' });
+    this.template = this.navParams.get('template');
+    this.fair = this.navParams.get('fair');
+    this.pavilion = this.navParams.get('pavilion');
+    this.stand = this.navParams.get('stand');
+    this.agendaList = [];
+
+    this.agendasService.getByCategory(null)
       .then((agendas) => {
-          this.loading.dismiss();
-          for(let agenda of agendas) {
-            this.addCategory(agenda);
-            this.agendaList.push(agenda);
+        this.loading.dismiss();
+        for (let agenda of agendas) {
+          this.addCategory(agenda);
+          this.agendaList.push(agenda);
+        }
+
+        for (let i = 1; i <= this.catalogList.length; i++) {
+          if (this.categorySelected !== null && this.categorySelected.length > 0) {
+            this.categorySelected += ',';
           }
-          
+          this.categorySelected += this.catalogList[i - 1].name;
+        }
       })
       .catch(error => {
-          this.loading.dismiss();
+        this.loading.dismiss();
       });
   }
 
- addCategory(agenda) {
-    for( let cat of this.catalogList) {
-      if(agenda.category.id == cat.id) {
+  addCategory(agenda) {
+    for (let cat of this.catalogList) {
+      if (agenda.category.id == cat.id) {
         cat.agendas = cat.agendas || [];
         cat.agendas.push(agenda);
         return cat;
@@ -62,31 +68,33 @@ export class AgendaListComponent implements OnInit {
     this.catalogList.push(agenda.category);
     agenda.category.agendas = agenda.category.agendas || [];
     agenda.category.agendas.push(agenda);
-    console.log(agenda.category);
+    
     return agenda.category;
   }
-  
+
   dismissModal() {
-     this.modalCtrl.dismiss(null);
+    this.modalCtrl.dismiss(null);
   }
 
   acceptModal() {
-     this.modalCtrl.dismiss( { "categorySelected":this.categorySelected, "agendaList":this.agendaList } );
+    this.modalCtrl.dismiss({ "categorySelected": this.categorySelected, "agendaList": this.agendaList });
   }
 
-  onChangeItem(){
+  onChangeItem() {
     this.agendaList = [];
-      
-    
-       for(let cat of this.catalogList) {
-        for(let agenda of cat.agendas) {
-          if(this.categorySelected == 'all' || this.categorySelected == agenda.category.id) {
-             this.agendaList.push(agenda);
+
+
+    for (let cat of this.catalogList) {
+      for (let agenda of cat.agendas) {
+        for (let cat of this.categorySelected.split(',')) {
+          if (cat == 'all' || cat == agenda.category.name) {
+            this.agendaList.push(agenda);
           }
         }
+      }
 
     }
-    
+
   }
 
 }

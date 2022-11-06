@@ -1,25 +1,23 @@
-<ion-grid [ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }">
-  
+<ion-grid [ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }"
+  class="overflow-auto">
+
   <ion-row *ngFor="let row of scene?.rows; let indexRow = index">
-    <ion-col
-      id="col-{{col.id}}" 
-      [size]="( level == 1 ? windowScreenSm ? '12' : row.cols.length == 2 && windowScreenLg ? '6' : '' : '' )" 
+    <ion-col id="col-{{col.id}}"
+      [size]="( level == 1 ? windowScreenSm ? '12' : row.cols.length == 2 && windowScreenLg ? '6' : '' : '' )"
       *ngFor="let col of row.cols; let indexCol = index;"
       [ngClass]="{'layout-selected': editMode && (layoutColSel?.id == col?.id || layoutColHover?.id == col?.id) }"
-      class="layout-col p-0 w-100 h-100" style="min-height: 6em;"
-      [ngStyle]="{
+      class="layout-col p-0 w-100 h-100" style="min-height: 6em;" [ngStyle]="{
         'background-color': col.styles?.backgroundColor,
         'background-image': 'url('+col.styles?.imageUrl+')',
         'opacity': editMode && (layoutColHover && layoutColHover.id !== col.id ? 0.3 : 1)
-      }"
-      (click)="goToSelectLayout(col,row,scene)"
-      (mouseover)="layoutColHover = col; bannerSelectHover = null;"
+      }" (click)="goToSelectLayout(col,row,scene)" (mouseover)="layoutColHover = col; bannerSelectHover = null;"
       (mouseout)="bannerSelectHover = null; layoutColHover = null;">
-    
-        <div *ngFor="let banner of col.banners" 
-          [ngStyle]="{
-            'width': '100%',
-            'height': '100%',
+
+      <div *ngFor="let banner of col.banners" class="{{banner.styles.class}}" [ngStyle]="{
+            'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
+            'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
+            'minWidth': banner.styles.minWidth ? banner.styles?.minWidth + '' + banner.styles?.minWidthUnit : 'auto',
+            'minHeight': banner.styles.minHeight ? banner.styles?.minHeight + '' + banner.styles?.minHeightUnit : 'auto',
             'background-color': banner.styles?.backgroundColor,
             'margin-top': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginTop + banner.styles?.marginTopUnit,
             'margin-bottom': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginBottom + banner.styles?.marginBottomUnit,
@@ -31,27 +29,25 @@
             'position': banner.styles?.position?.type,
             'top': banner.styles?.position?.top + 'em',
             'left': banner.styles?.position?.left + 'em'
-          }"
-          (mouseover)="startAnimation(banner); layoutColHover = col; bannerSelectHover = banner;"
-          (mouseout)="bannerSelectHover = null; layoutColHover = null;">
-           
-           <!-- Image Template -->
-           <img *ngIf="banner.styles && banner.styles.image" [src]="banner.styles.image.src" 
-           [ngClass]="{'cursor-pointer': editMode, 'banner-selected': editMode && bannerSelectHover && bannerSelectHover.id === banner.id }"
-           [ngStyle]="{
+          }" (mouseover)="startAnimation(banner); layoutColHover = col; bannerSelectHover = banner;"
+        (mouseout)="bannerSelectHover = null; layoutColHover = null;">
+
+        <!-- Image Template -->
+        <img *ngIf="banner.styles && banner.styles.image" [src]="banner.styles.image.src"
+          [ngClass]="{'cursor-pointer': editMode, 'banner-selected': editMode && bannerSelectHover && bannerSelectHover.id === banner.id }"
+          [ngStyle]="{
             'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
             'padding-bottom': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingBottom + banner.styles?.paddingBottomUnit,            
             'padding-right': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingRight + banner.styles?.paddingRightUnit,
             'padding-left': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingLeft + banner.styles?.paddingLeftUnit,
-            'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
-            'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
+            
             'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : (10 - banner.styles?.opacity) / 10
-           }" (click)="goToOnHoverBanner(banner,col,row,scene)"/>
-           
-           <!-- Triangle Template -->
-           <div class="w-0 h-0 p-0 m-0" *ngIf="banner.triangle && banner.styles"
-           [ngClass]="{ 'cursor-pointer': editMode, 'banner-selected': editMode && bannerSelectHover && bannerSelectHover.id === banner.id }"
-           [ngStyle]="{
+           }" (click)="goToOnHoverBanner(banner,col,row,scene)" />
+
+        <!-- Triangle Template -->
+        <div class="w-0 h-0 p-0 m-0" *ngIf="banner.triangle && banner.styles"
+          [ngClass]="{ 'cursor-pointer': editMode, 'banner-selected': editMode && bannerSelectHover && bannerSelectHover.id === banner.id }"
+          [ngStyle]="{
              'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
              'padding-bottom': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingBottom + banner.styles?.paddingBottomUnit,            
              'padding-right': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingRight + banner.styles?.paddingRightUnit,
@@ -62,12 +58,12 @@
              'border-color': banner.styles.triangleColor + ' ' + banner.styles.triangleColor1  + ' ' + banner.styles.triangleColor2 + ' ' + banner.styles.triangleColor3,
              'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : (10 - banner.styles?.opacity) / 10
            }" (click)="goToOnHoverBanner(banner,col,row,scene)"
-           (mouseover)="startAnimation(banner); layoutColHover = col; bannerSelectHover = banner;"
-           (mouseout)="bannerSelectHover = null; layoutColHover = null;">
-           </div>
-           
-          <!-- Line Template --> 
-          <div *ngIf="banner.line" 
+          (mouseover)="startAnimation(banner); layoutColHover = col; bannerSelectHover = banner;"
+          (mouseout)="bannerSelectHover = null; layoutColHover = null;">
+        </div>
+
+        <!-- Line Template -->
+        <div *ngIf="banner.line"
           [ngClass]="{ 'cursor-pointer': editMode, 'banner-selected': editMode && bannerSelectHover && bannerSelectHover.id === banner.id }"
           [ngStyle]="{
             'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
@@ -79,131 +75,40 @@
             'margin': 'auto',
             'border-bottom': banner.styles.lineWeight + 'px ' + ( banner.styles.lineType ? banner.styles.lineType : 'solid' ) + ' ' + banner.styles.colorLine,
             'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : (10 - banner.styles?.opacity) / 10
-          }"
-          (click)="goToOnHoverBanner(banner,col,row,scene)">
-          </div>
-          
-          <!-- Video Template -->
-          <div *ngIf="banner.video">
-          <video class="nectar-video-bg" width="1800" height="700" preload="auto" loop="" autoplay="" muted="" playsinline="" style="visibility: visible; width: 1366px; height: 769px; opacity: 1;">
-              <source src="https://variopinto.tv/wp-content/uploads/2021/09/REEL_21_V06_WEB_VERSION_v2.webm" type="video/webm">
-              <source src="https://variopinto.tv/wp-content/uploads/2021/09/REEL_21_V06_WEB_VERSION_v2.mp4" type="video/mp4">
-              <source src="https://variopinto.tv/wp-content/uploads/2021/09/REEL_21_V06_WEB_VERSION_v2.ogv" type="video/ogg">
-          </video>
-          <ion-button color="light" class="edit-carousel-button" 
-          (click)="goToOnHoverBanner(banner,col,row,scene)"
-          *ngIf="banner.video" >
+          }" (click)="goToOnHoverBanner(banner,col,row,scene)">
+        </div>
+
+        <!-- Video Template -->
+        <div *ngIf="banner.video">
+          <ion-button color="light" class="edit-carousel-button" (click)="goToOnHoverBanner(banner,col,row,scene)"
+            *ngIf="banner.video">
             <ion-icon name="create-outline"></ion-icon>
           </ion-button>
-          <iframe *ngIf="banner.video" [src]="banner.video.sanitizer"
-          frameborder="0" title="asdfasdfasdf" webkitallowfullscreen mozallowfullscreen allowfullscreen
-          id="video-id-{{banner.id}}"
-          class="{{banner.class}}"
-          (click)="goToOnHoverBanner(banner,col,row,scene)"
-          [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
+          <iframe *ngIf="banner.video" [src]="banner.video.sanitizer" frameborder="0" title="asdfasdfasdf"
+            webkitallowfullscreen mozallowfullscreen allowfullscreen id="video-id-{{banner.id}}"
+            class="{{banner.class}}" (click)="goToOnHoverBanner(banner,col,row,scene)"
+            [ngStyle]="{
+            'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
+            'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
+            'minWidth': banner.styles.minWidth ? banner.styles?.minWidth + '' + banner.styles?.minWidthUnit : 'auto',
+            'minHeight': banner.styles.minHeight ? banner.styles?.minHeight + '' + banner.styles?.minHeightUnit : 'auto'}">
           </iframe>
-          </div>
+        </div>
 
 
-         <!--if banner is Speakers-->
-         <ion-button color="light" class="edit-carousel-button" (click)="goToOnHoverBanner(banner,col,row,scene)"
-            *ngIf="banner.speakerCatalog">
-            <ion-icon name="create-outline"></ion-icon>
-         </ion-button>
-         <div class="grid" *ngIf="banner.speakerCatalog" id="grid-{{banner.id}}"
-            [ngStyle]="{'width': ( ( banner.size.x * 3.108) )   +'px'}">
-            {{banner.__speakerCatalogList.list}}
-            <div class="card card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.class}}"
-               *ngFor="let speaker of banner.__speakerCatalogList; let i = index;"
-               (mouseover)="startAnimation(banner); bannerSpeakerSelectHover = banner.id + '-' + i;"
-               (mouseout)="isHover = null; bannerSpeakerSelectHover = null;"
-               [ngClass]="{ 'element-selected': bannerSpeakerSelectHover == banner.id + '-' + i }"
-                [ngStyle]="{
-               'position': 'absolute',
-               'top': speaker.top + 'px',
-               'left': speaker.left + 'px',
-               'width': banner.size.x + 'px', 
-               'height': banner.size.y + 'px',
-               'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
-               'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
-               'background-repeat': 'no-repeat',
-               'background-color': banner.backgroundColor,
-               'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
-                'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-               'border-radius': banner.border.radius + 'px',
-               'border-width': banner.border.width  + 'px',
-               'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '')
-              }">
+        <!--if banner is Speakers-->
+        <ion-button color="light" class="edit-carousel-button" (click)="goToOnHoverBanner(banner,col,row,scene)"
+          *ngIf="banner.speakerCatalog && editMode">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <app-speaker-catalog *ngIf="banner.speakerCatalog" [bannerSpeakerSelectHover]="bannerSpeakerSelectHover"
+        [showSpeakerCatalogActions]="showSpeakerCatalogActions" [tabSelect]="tabSelect" [banner]="banner">
+        </app-speaker-catalog>
+        <!--End if banner is Speakers-->
 
-               <div class="position-absolute cursor-pointer name"
-                 (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'ImageProfile'; tabSelect = 'speakerCatalog';"
-                  [ngStyle]="{
-                      'top': banner.speakerCatalog.imagesTop + 'px',
-                      'left': banner.speakerCatalog.imagesLeft + 'px',
-                      'width': banner.speakerCatalog.imagesWidth + 'px',
-                      'height': banner.speakerCatalog.imagesHeight + 'px'
-                     }">
-                  <img [src]="speaker.profile_picture" [ngStyle]="{
-                      'width': banner.speakerCatalog.imagesWidth + 'px',
-                      'height': banner.speakerCatalog.imagesHeight + 'px'
-                     }" />
-               </div>
 
-               <div class="ion-text-center position-absolute "
-                  (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'Name'; tabSelect = 'speakerCatalog';"
-                  [ngStyle]="{
-                  'font-size': banner.speakerCatalog.nameFontSize + 'px',
-                  'font-family': ( banner.speakerCatalog.nameFontFamily ? banner.speakerCatalog.nameFontFamily : 'YoutubeSansMedium' ),
-                  'font-weight':  banner.speakerCatalog.nameFontWeight,
-                  'width': banner.speakerCatalog.nameWidth + 'px',
-                  'height': banner.speakerCatalog.nameHeight + 'px',
-                  'top': banner.speakerCatalog.nameTop + 'px',
-                  'left': banner.speakerCatalog.nameLeft + 'px'
-                 }">{{speaker.user?.name}} {{speaker.user?.last_name}}
-               </div>
-               <div class="position-absolute desc"
-               (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'Description';  tabSelect = 'speakerCatalog';"
-                  [ngStyle]="{
-                  'font-size': banner.speakerCatalog.descFontSize + 'px',
-                  'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
-                  'height': banner.speakerCatalog.descHeigth + 'px',
-                  'overflow': 'hidden',
-                  'top': banner.speakerCatalog.descTop + 'px',
-                  'left': banner.speakerCatalog.descLeft + 'px',
-                  'width': banner.speakerCatalog.descWidth + 'px',
-                  'font-weight':  banner.speakerCatalog.descFontWeight,
-                  'line-height': banner.speakerCatalog.lineHeight,
-                  'text-align': banner.speakerCatalog.descTextAlign
-                 }">{{speaker.description_one}}
-               </div>
-               <div class="position-absolute"
-                  (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'Profession'; tabSelect = 'speakerCatalog';"
-                  [ngStyle]="{
-                  'font-size': banner.speakerCatalog.professionFontSize + 'px',
-                  'font-family': ( banner.speakerCatalog.professionFontFamily ? banner.speakerCatalog.professionFontFamily : 'YoutubeSansMedium' ),
-                  'top': banner.speakerCatalog.professionTop + 'px',
-                  'left': banner.speakerCatalog.professionLeft + 'px',
-                  'font-weight':  banner.speakerCatalog.professionFontWeight
-                 }">{{speaker.profession}}
-               </div>
-               <ion-img [src]="speaker.company_logo" class="position-absolute" color="primary" size="small"
-                  (click)="goToOnHoverBanner(banner,col,row,scene); showSpeakerCatalogActions = 'Logo'; tabSelect = 'speakerCatalog';"
-                  [ngStyle]="{
-                  'width': banner.speakerCatalog.logoWidth + 'px', 
-                  'height': banner.speakerCatalog.logoHeight + 'px',
-                  'left': banner.speakerCatalog.logoLeft + 'px',
-                  'top': banner.speakerCatalog.logoTop + 'px'
-               }">
-               </ion-img>
-            </div>
-         </div>
-         <!--End if banner is Speakers-->
-
-          
-          <!-- Text Template -->
-           <h1 *ngIf="banner.styles"
-           [ngClass]="{'cursor-pointer':editMode}"
-           [ngStyle]="{
+        <!-- Text Template -->
+        <h1 *ngIf="banner.styles" [ngClass]="{'cursor-pointer':editMode}" [ngStyle]="{
              'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
               'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
              'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
@@ -216,24 +121,16 @@
              'fontFamily': banner.styles?.fontFamily,
              'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : (10 - banner.styles?.opacity) / 10
            }" (click)="goToOnHoverBanner(banner,col,row,scene)">
-           {{ banner.styles?.text?.value }}
-           </h1>
-            
-           <!-- Recursive scene Template -->
-           <app-scene-site 
-             *ngFor="let subChild of banner?.scenes"
-             [editMode]="editMode"
-             [scene]="subChild" 
-             [windowScreenSm]="windowScreenSm" 
-             [windowScreenLg]="windowScreenLg"
-             [layoutColSel]="layoutColSel"
-             (selectLayout)="layoutColSelect($event)"
-             (onHoverBanner)="goToOnHoverBannerReciclyer($event)"
-             [bannerSelectHover]="bannerSelectHover"
-             [level]=" level + 1"
-             [router]="router">
-           </app-scene-site>
-        </div>
+          {{ banner.styles?.text?.value }}
+        </h1>
+
+        <!-- Recursive scene Template -->
+        <app-scene-site *ngFor="let subChild of banner?.scenes" [editMode]="editMode" [scene]="subChild"
+          [windowScreenSm]="windowScreenSm" [windowScreenLg]="windowScreenLg" [layoutColSel]="layoutColSel"
+          (selectLayout)="layoutColSelect($event)" (onHoverBanner)="goToOnHoverBannerReciclyer($event)"
+          [bannerSelectHover]="bannerSelectHover" [level]=" level + 1" [router]="router">
+        </app-scene-site>
+      </div>
     </ion-col>
   </ion-row>
 </ion-grid>

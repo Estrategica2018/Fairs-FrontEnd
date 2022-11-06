@@ -38,7 +38,6 @@ export class SceneSiteComponent implements OnInit {
   goToOnHoverBanner(banner, col, row, scene) {
 
     this.showSpeakerCatalogActions = null;
-    
 
     if (banner && this.editMode) {
       this.layoutBannerSelectTime = Date.now();

@@ -1715,10 +1715,13 @@ export class MapEditorPage implements OnInit {
       .then((agendas) => {
         if (agendas.length > 0) {
           agendas.forEach((agenda) => {
-            if (category == 'all' || agenda.category_id == category) {
-              banner.__agendaCatalogList.agendas.push(agenda);
-            }
-          });
+
+            for (let cat of banner.agendaCatalog.category.split(',')) {
+              if (cat == 'all' || agenda.category.name == cat) {
+                banner.__agendaCatalogList.agendas.push(agenda);
+              }
+            }            
+          })
 
           this.transformSchedule(banner);
         }
@@ -1796,7 +1799,7 @@ export class MapEditorPage implements OnInit {
         break;
       }
     }
-
+    if(banner.__speakerCatalogList)
     banner.__speakerCatalogList.forEach((speaker, i: any) => {
       speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
       speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
