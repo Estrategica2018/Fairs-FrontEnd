@@ -188,7 +188,8 @@ export class AgendaPage implements OnInit {
       'audience_config': this.agendaForm.value['audience_config'],
       'price': this.agenda.price,
       'zoom_password': this.agendaForm.value['zoom_password'],
-      'zoom_code': this.agendaForm.value['zoom_code']
+      'zoom_code': this.agendaForm.value['zoom_code'],
+      'description_large': this.agendaForm.value['description_large']
     };
 
     if(this.agenda.audience_config == 5) {
@@ -240,7 +241,8 @@ export class AgendaPage implements OnInit {
       'audience_config': this.agendaForm.value['audience_config'],
       'zoom_code': this.agendaForm.value['zoom_code'],
       'price': this.agenda.price,
-      'zoom_password': this.agendaForm.value['zoom_password']
+      'zoom_password': this.agendaForm.value['zoom_password'],
+      'description_large': this.agendaForm.value['description_large']
     };
 
     if(this.agenda.audience_config == 5) {
@@ -570,7 +572,8 @@ export class AgendaPage implements OnInit {
           audience_config: [this.agenda.audience_config, [Validators.required]],
           zoom_code: [this.agenda.zoom_code, []],
           zoom_password: [this.agenda.zoom_password, []],
-          guests: [this.agenda.resources.guests, [Validators.required]]
+          guests: [this.agenda.resources.guests, [Validators.required]],
+          description_large: [this.agenda.description_large, []]
         });
       }
       else {
@@ -584,7 +587,8 @@ export class AgendaPage implements OnInit {
           category: [this.agenda.category.id, [Validators.required]],
           audience_config: [this.agenda.audience_config, [Validators.required]],
           zoom_code: [this.agenda.zoom_code, []],
-          zoom_password: [this.agenda.zoom_password, []]
+          zoom_password: [this.agenda.zoom_password, []],
+          description_large: [this.agenda.description_large, []]
         });
       }
       
@@ -605,7 +609,8 @@ export class AgendaPage implements OnInit {
         category: [this.categories[0].id, [Validators.required]],
         audience_config: ['1', [Validators.required]],
         zoom_code: ['', []],
-        zoom_password: ['', []]
+        zoom_password: ['', []],
+        description_large: ['', []]
       });
     }
   }

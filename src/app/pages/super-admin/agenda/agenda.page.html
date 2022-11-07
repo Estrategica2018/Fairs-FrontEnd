@@ -79,6 +79,16 @@
             </div>
           </ion-col>
           <ion-col size="12" class="fs-1">
+            <ion-label position="stacked">
+              Descripción Larga 
+            </ion-label>
+            <input type="text" formControlName="description_large" class="fs-0 mt-3 form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.description.errors }" />
+            <div *ngIf="submitted && f.description_large.errors" class="invalid-feedback">
+              <div *ngIf="f.description_large.errors.required">Campo requerido</div>
+            </div>
+          </ion-col>
+          <ion-col size="12" class="fs-1">
             <ion-grid>
               <ion-row>
                 <ion-col>
@@ -261,8 +271,7 @@
             </ion-avatar>
             <ion-label>
               <h2>{{invited_speaker.speaker.user.name + ' ' + invited_speaker.speaker.user.last_name}}</h2>
-              <h3>{{speakers.description}}</h3>
-              <p>{{speakers.stands?.length }} locales asociados</p>
+              <h3>{{invited_speaker.speakers.description}}</h3>
             </ion-label>
           </ion-col>
         </ion-row>

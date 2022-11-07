@@ -12,6 +12,9 @@ export class FormMinculturaCatalogPage implements OnInit {
   scheduleList: any;
   clientHeight: any;
   largeScreen: any;
+  agendaSelect: any;
+  mediumScreen : any;
+  smallScreen : any;
 
   constructor(private agendasService: AgendasService,
     private datepipe: DatePipe) { }
@@ -44,7 +47,6 @@ export class FormMinculturaCatalogPage implements OnInit {
           agendas.forEach((agenda) => {
             if (category == 'all' || agenda.category.name == category) {
               this.scheduleList.push(agenda);
-              console.log(agenda);
               let name;
               agenda._nameSpeakers = '';
               for (let speaker of agenda.invited_speakers) {
@@ -76,22 +78,26 @@ export class FormMinculturaCatalogPage implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.largeScreen = window.innerWidth >= 485;
-    var child = document.querySelector<HTMLElement>('app-form-mincultura-catalog');
-    var parent = <HTMLElement>child.parentNode;
-    //this.clientHeight = parent.offsetHeight - child.offsetHeight;
-    //this.clientHeight = child.scrollHeight - child.clientHeight;
-    this.clientHeight = window.outerHeight;
+    this.largeScreen = window.innerWidth >= 1308;
+    this.mediumScreen = window.innerWidth >= 859 && window.innerWidth <= 1308;
+    this.smallScreen = window.innerWidth <= 859;
+  }
 
-    let range = document.querySelector<HTMLElement>('ion-content');
-    console.log(range.getBoundingClientRect());
-    console.log(range.scrollHeight);
+  changeSelect(agenda){
 
+    let check: any = document.querySelector<HTMLElement>('#check-agenda-'+agenda.id);
+    if(check.checked) {
+      this.agendaSelect = agenda;
 
-    console.log(parent.offsetHeight);
-    console.log(child.offsetHeight);
-    console.log(child.scrollHeight);
-
+      let lista = document.querySelectorAll('.ckech-agenda');
+      lista.forEach((checkAgenda: any)=>{
+        checkAgenda.checked = false;
+      });
+      check.checked = true;
+    }
+    else {
+      this.agendaSelect = false;
+    }
     
   }
 }

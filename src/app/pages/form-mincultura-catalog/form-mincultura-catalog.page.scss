@@ -14,9 +14,15 @@
     margin-top: -1.5em;
 }
 
-@media screen and (max-width:914px) {
+@media screen and (max-width:1095px) {
     .ml--2 {
         margin-top: -1em;
+    }
+}
+
+@media screen and (max-width:564px) {
+    .ml--2 {
+        margin-top: 0em;
     }
 }
 
@@ -61,15 +67,18 @@ input {
 
     .agenda-detail {
         padding: 1em;
+        color: #4C2505;
     }
 
 }
 
-.ckech-agenda {
+.check-agenda {
     border-color: #0BB0B0;
     width: 1.5em;
     margin-left: 0.3em;
     height: 1.5em;
+    top: 0.1em;
+    position: absolute;
 }
 
 .mt-col {
@@ -85,10 +94,10 @@ input {
     margin-bottom: 3em;
 }
 
-.patter {
-}
+.patter {}
+
 .patter::before {
-    content: "♥";
+    content: " ";
     z-index: 1;
     position: absolute;
     top: 5em;
@@ -98,3 +107,14 @@ input {
     background-image: url(https://res.cloudinary.com/deueufyac/image/upload/v1667571545/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/ESCARAPELA/pattern_hqvvoa.png);
     background-size: 5em;
 }
+
+
+@media screen and (max-width:1200px) {
+
+    .patter::before {
+        content: " ";
+        height: 0%;
+    }
+}
+
+ 
