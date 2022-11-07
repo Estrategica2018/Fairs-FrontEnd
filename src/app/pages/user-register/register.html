@@ -1,399 +1,424 @@
-<ion-header>
-</ion-header>
-
 <ion-content>
-
-  <div class="card w-100 p-3">
-    <div class="info">
-      <ion-icon color="primary" name="calendar-outline"></ion-icon>
-    </div>
-    <div class="padding-container min-height">
-      <ion-list-header [hidden]="!errors">
-        <div class="alert alert-danger fade show alert-dismissible">
-          <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-          <strong></strong> {{errors}}
-        </div>
-      </ion-list-header>
-      <div *ngIf="showMenu != 'singupConfirm'">
-        <form [formGroup]="register" (ngSubmit)="onRegisterSubmit()">
-
-
-          <ion-grid>
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1">
-                  Nombres <span class="required"> (*) </span>
-                </ion-label>
-                <input type="text" formControlName="name" class="fs-1 mt-3 form-control"
-                       [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
-                <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-                  <div >Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1">Apellidos<span class="required"> (*) </span></ion-label>
-                <input type="text" formControlName="last_name" name="last_name" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.last_name.errors }"/>
-                <div *ngIf="submitted && f.last_name.errors" class="invalid-feedback">
-                  <div *ngIf="f.last_name.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1"> Tipo de documento <span class="required"> (*) </span> </ion-label>
-                <ion-select name="select_tipo" formControlName="documento_tipo" class="fs-1 mt-3 form-control"  [ngClass]="{ 'is-invalid': submitted && f.documento_tipo.errors }">
-                  <ion-select-option value="Cédula de ciudadanía colombiana ">Cédula de ciudadanía colombiana</ion-select-option>
-                  <ion-select-option value="Cédula de extranjería  ">Cédula de extranjería </ion-select-option>
-                  <ion-select-option value="Pasaporte ">Pasaporte</ion-select-option>
-                </ion-select>
-                <div *ngIf="submitted && f.documento_tipo.errors" class="invalid-feedback">
-                  <div *ngIf="f.documento_tipo.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">Número de documento (por favor, escribir sin puntos) <span class="required"> (*) </span></ion-label>
-                <input type="text" formControlName="documento_numero" name="documento_numero" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.documento_numero.errors }"/>
-                <div *ngIf="submitted && f.documento_numero.errors" class="invalid-feedback">
-                  <div *ngIf="f.documento_numero.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1">Correo electrónico <span class="required"> (*) </span></ion-label>
-                <input formControlName="email" name="email"  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }"/>
-                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                  <div *ngIf="f.email.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1">Correo electrónico adicional  <span class="required"> (*) </span></ion-label>
-                <input formControlName="correo_electronico_adicional" name="correo_electronico_adicional" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.correo_electronico_adicional.errors }"/>
-                <div *ngIf="submitted && f.correo_electronico_adicional.errors" class="invalid-feedback">
-                  <div *ngIf="f.correo_electronico_adicional.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1">Número celular<span class="required"> (*) </span> </ion-label>
-                <input type="text" formControlName="numero_celular" name="numero_celular" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.numero_celular.errors }"/>
-                <div *ngIf="submitted && f.numero_celular.errors" class="invalid-feedback">
-                  <div *ngIf="f.numero_celular.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">País desde el que realiza la inscripción <span class="required"> (*) </span></ion-label>
-                <input formControlName="pais_inscripcion" name="pais_inscripcion" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.numero_celular.errors }"/>
-                <div *ngIf="submitted && f.pais_inscripcion.errors" class="invalid-feedback">
-                  <div *ngIf="f.pais_inscripcion.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1"> ¿Usted se encuentra en?   <span class="required"> (*) </span></ion-label>
-                <ion-select name="zona_se_encuentra_en" formControlName="zona_se_encuentra_en" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.zona_se_encuentra_en.errors }">
-                  <ion-select-option value="Zona urbana">Zona urbana </ion-select-option>
-                  <ion-select-option value="Zona rural">Zona rural  </ion-select-option>
-                  <ion-select-option value="Otra">¿Otra? </ion-select-option>
-                </ion-select>
-                <div *ngIf="submitted && f.zona_se_encuentra_en.errors" class="invalid-feedback">
-                  <div *ngIf="f.zona_se_encuentra_en.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col  *ngIf="f.zona_se_encuentra_en.value === 'Otra'">
-                <ion-label position="stacked" class="fs-1">¿Cual zona? <span class="required"> (*) </span></ion-label>
-                <input type="text" formControlName="zona_se_encuentra_en_otra" name="zona_se_encuentra_en_otra" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.zona_se_encuentra_en_otra.errors }"/>
-                <div *ngIf="submitted && f.zona_se_encuentra_en_otra.errors" class="invalid-feedback">
-                  <div *ngIf="f.zona_se_encuentra_en_otra.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%"> ¿Usted se reconoce como?  <span class="required"> (*) </span> </ion-label>
-                <ion-select name="sexo_se_reconoce_como" formControlName="sexo_se_reconoce_como" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.sexo_se_reconoce_como.errors }">
-                  <ion-select-option value="Mujer">Mujer </ion-select-option>
-                  <ion-select-option value="Hombre">Hombre  </ion-select-option>
-                  <ion-select-option value="Mujer transgénero/Mujer trans/Hombre a mujer">Mujer transgénero/Mujer trans/Hombre a mujer </ion-select-option>
-                  <ion-select-option value="Hombre transgénero/Hombre trans/Mujer a hombre">Hombre transgénero/Hombre trans/Mujer a hombre </ion-select-option>
-                  <ion-select-option value="Hombre transgénero/Hombre trans/Mujer a hombre">Hombre transgénero/Hombre trans/Mujer a hombre </ion-select-option>
-                  <ion-select-option value="No binario">No binario  </ion-select-option>
-                  <ion-select-option value="Sin género">Sin género   </ion-select-option>
-                  <ion-select-option value="Otro">Otro   </ion-select-option>
-                  <ion-select-option value="Prefiero no responder">Prefiero no responder   </ion-select-option>
-                </ion-select>
-                <div *ngIf="submitted && f.sexo_se_reconoce_como.errors" class="invalid-feedback">
-                  <div *ngIf="f.sexo_se_reconoce_como.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col *ngIf="f.sexo_se_reconoce_como.value === 'Otro'">
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">Se reconoce como otro, ¿cual? <span class="required"> (*) </span> </ion-label>
-                <input type="text" formControlName="sexo_se_reconoce_como_otro" name="sexo_se_reconoce_como_otro" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.sexo_se_reconoce_como_otro.errors }"/>
-                <div *ngIf="submitted && f.sexo_se_reconoce_como_otro.errors" class="invalid-feedback">
-                  <div *ngIf="f.sexo_se_reconoce_como_otro.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">¿Qué sexo le asignaron al nacer en su registro civil de nacimiento original? (Marque uno) <span class="required"> (*) </span></ion-label>
-                <ion-select name="sexo_registro_civil" formControlName="sexo_registro_civil" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.sexo_registro_civil.errors }">
-                  <ion-select-option value="Hombre">Hombre </ion-select-option>
-                  <ion-select-option value="Mujer">Mujer  </ion-select-option>
-                  <ion-select-option value="Otro">Otro  </ion-select-option>
-                  <ion-select-option value="Prefiero no responder">Prefiero no responder  </ion-select-option>
-                </ion-select>
-                <div *ngIf="submitted && f.sexo_registro_civil.errors" class="invalid-feedback">
-                  <div *ngIf="f.sexo_registro_civil.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col *ngIf="f.sexo_registro_civil.value === 'Otro'">
-                <ion-label position="stacked" class="fs-1">¿Cual sexo le asignaron? <span class="required"> (*) </span></ion-label>
-                <input type="text" formControlName="sexo_registro_civil_otro" name="sexo_registro_civil_otro" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.sexo_registro_civil_otro.errors }"/>
-                <div *ngIf="submitted && f.sexo_registro_civil_otro.errors" class="invalid-feedback">
-                  <div *ngIf="f.sexo_registro_civil_otro.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">De acuerdo con su cultura, pueblo o rasgos físicos, ¿usted se reconoce como? <span class="required"> (*) </span></ion-label>
-                <ion-select name="cultura_se_reconoce_como" formControlName="cultura_se_reconoce_como" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.cultura_se_reconoce_como.errors }">
-                  <ion-select-option value="Indígena">Indígena </ion-select-option>
-                  <ion-select-option value="Negro(a), mulato(a), afrodescendiente o afrocolombiano(a)">Negro(a), mulato(a), afrodescendiente o afrocolombiano(a)   </ion-select-option>
-                  <ion-select-option value="Gitano(a) o ROM">Gitano(a) o ROM   </ion-select-option>
-                  <ion-select-option value="Raizal del Archipiélago de San Andrés, Providencia y Santa Catalina">Raizal del Archipiélago de San Andrés, Providencia y Santa Catalina   </ion-select-option>
-                  <ion-select-option value="Palenquero de San Basilio">Palenquero de San Basilio    </ion-select-option>
-                  <ion-select-option value="Ningún grupo étnico">Ningún grupo étnico     </ion-select-option>
-                  <ion-select-option value="Otro">Otro</ion-select-option>
-                </ion-select>
-                <div *ngIf="submitted && f.cultura_se_reconoce_como.errors" class="invalid-feedback">
-                  <div *ngIf="f.cultura_se_reconoce_como.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col *ngIf="f.cultura_se_reconoce_como.value === 'Otro'"  >
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">Otra cultura, pueblo o rasgos físicos, ¿cual? <span class="required"> (*) </span> </ion-label>
-                <input formControlName="cultura_se_reconoce_como_otro" type="text" name="cultura_se_reconoce_como_otro"  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.cultura_se_reconoce_como_otro.errors }"/>
-                <div *ngIf="submitted && f.cultura_se_reconoce_como_otro.errors" class="invalid-feedback">
-                  <div *ngIf="f.cultura_se_reconoce_como_otro.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">¿Es usted una persona con discapacidad/diversidad funcional? Si es así, seleccione el tipo de discapacidad/diversidad funcional. <span class="required"> (*) </span></ion-label>
-                <ion-select class="select-full-width" name="discapacidad_cual" formControlName="discapacidad_cual" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.discapacidad_cual.errors }">
-                  <ion-select-option value="Discapacidad/diversidad funcional motora">Discapacidad/diversidad funcional motora </ion-select-option>
-                  <ion-select-option value="Discapacidad/diversidad funcional visual">Discapacidad/diversidad funcional visual </ion-select-option>
-                  <ion-select-option value="Discapacidad/diversidad funcional auditiva">Discapacidad/diversidad funcional auditiva </ion-select-option>
-                  <ion-select-option value="Discapacidad/diversidad funcional cognitiva">Discapacidad/diversidad funcional cognitiva </ion-select-option>
-                  <ion-select-option value="Discapacidad/diversidad funciona psicosocial">Discapacidad/diversidad funciona psicosocial </ion-select-option>
-                  <ion-select-option value="Discapacidad/diversidad funcional múltiple">Discapacidad/diversidad funcional múltiple</ion-select-option>
-                  <ion-select-option value="Ninguna discapacidad/diversidad funcional">Ninguna discapacidad/diversidad funcional </ion-select-option>
-                </ion-select>
-                <div *ngIf="submitted && f.discapacidad_cual.errors" class="invalid-feedback">
-                  <div *ngIf="f.discapacidad_cual.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">¿Usted se relaciona con el sector de las bibliotecas y/o de la lectura, la escritura y la oralidad desde el rol de? <span class="required"> (*) </span></ion-label>
-                <ion-select name="relacion_sector_rol" formControlName="relacion_sector_rol" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.relacion_sector_rol.errors }">
-                  <ion-select-option value="Bibliotecario(a) publico(a)">Bibliotecario(a) publico(a)  </ion-select-option>
-                  <ion-select-option value="Promotor(a) o mediador(a) de lectura, escritura y oralidad">Promotor(a) o mediador(a) de lectura, escritura y oralidad</ion-select-option>
-                  <ion-select-option value="Mediador(a) rural (Bibliotecas Rurales Itinerantes)">Mediador(a) rural (Bibliotecas Rurales Itinerantes)</ion-select-option>
-                  <ion-select-option value="Lector voluntario/Integrante del Grupo de Amigos de la Biblioteca">Lector voluntario/Integrante del Grupo de Amigos de la Biblioteca</ion-select-option>
-                  <ion-select-option value="Bibliotecario(a) comunitario(a) o popular">Bibliotecario(a) comunitario(a) o popular </ion-select-option>
-                  <ion-select-option value="Bibliotecario(a) escolar">Bibliotecario(a) escolar</ion-select-option>
-                  <ion-select-option value="Bibliotecario(a) universitario(a)">Bibliotecario(a) universitario(a)</ion-select-option>
-                  <ion-select-option value="Auxiliar de biblioteca">Auxiliar de biblioteca</ion-select-option>
-                  <ion-select-option value="Gestor(a) cultural, social o educativo(a)">Gestor(a) cultural, social o educativo(a)</ion-select-option>
-                  <ion-select-option value="Profesor(a) de educación preescolar">Profesor(a) de educación preescolar</ion-select-option>
-                  <ion-select-option value="Profesor(a) de educación básica">Profesor(a) de educación básica</ion-select-option>
-                  <ion-select-option value="Profesor(a) de educación media">Profesor(a) de educación media</ion-select-option>
-                  <ion-select-option value="Profesor(a) de educación superior">Profesor(a) de educación superior</ion-select-option>
-                  <ion-select-option value="Estudiante universitario(a)">Estudiante universitario(a)</ion-select-option>
-                  <ion-select-option value="Investigador(a)">Investigador(a)</ion-select-option>
-                  <ion-select-option value="Coordinador(a) de sistemas o redes de bibliotecas">Coordinador(a) de sistemas o redes de bibliotecas</ion-select-option>
-                  <ion-select-option value="Personal administrativo de bibliotecas, sistemas o redes bibliotecarias">Personal administrativo de bibliotecas, sistemas o redes bibliotecarias</ion-select-option>
-                  <ion-select-option value="Profesional vinculado a la formulación de políticas públicas de lectura, escritura, oralidad y bibliotecas">Profesional vinculado a la formulación de políticas públicas de lectura, escritura, oralidad y bibliotecas</ion-select-option>
-                  <ion-select-option value="Ciudadano(a) interesado(a) en el tema">Ciudadano(a) interesado(a) en el tema</ion-select-option>
-                  <ion-select-option value="Otro">Otro</ion-select-option>
-                </ion-select>
-                <div *ngIf="submitted && f.relacion_sector_rol.errors" class="invalid-feedback">
-                  <div *ngIf="f.relacion_sector_rol.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col *ngIf="f.relacion_sector_rol.value === 'Otro'">
-                <ion-label position="stacked" class="fs-1">¿Con cual rol se identifica? <span class="required"> (*) </span></ion-label>
-                <input formControlName="relacion_sector_rol_otro" type="text" name="relacion_sector_rol_otro" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.relacion_sector_rol_otro.errors }"/>
-                <div *ngIf="submitted && f.relacion_sector_rol_otro.errors" class="invalid-feedback">
-                  <div *ngIf="f.relacion_sector_rol_otro.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-
-
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">Escriba el nombre de la institución a la que se encuentra vinculado. En caso de trabajar en una biblioteca, escriba el nombre completo de la misma: <span class="required"> (*) </span></ion-label>
-                <input formControlName="institucion_vinculo" type="text" name="institucion_vinculo" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.institucion_vinculo.errors }"/>
-                <div *ngIf="submitted && f.institucion_vinculo.errors" class="invalid-feedback">
-                  <div *ngIf="f.institucion_vinculo.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-
-            <ion-row>
-
-              <ion-col>
-                <ion-label position="stacked" class="fs-1" style="max-width: 100%">Escriba los nombres del municipio o departamento donde está ubicada la institución a la que está vinculado(a).<span class="required"> (*) </span></ion-label>
-                <input formControlName="institucion_ubicacion" type="text" name="institucion_ubicacion" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.institucion_ubicacion.errors }"/>
-                <div *ngIf="submitted && f.institucion_ubicacion.errors" class="invalid-feedback">
-                  <div *ngIf="f.institucion_ubicacion.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-
-              <ion-col>
-                <ion-label position="stacked" class="fs-1">¿Cuál es su nivel de escolaridad? <span class="required"> (*) </span></ion-label>
-                <ion-select class="select-full-width" formControlName="escolaridad_nivel" name="escolaridad_nivel" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.escolaridad_nivel.errors }">
-                  <ion-select-option value="Primaria">Primaria</ion-select-option>
-                  <ion-select-option value="Bachillerato">Bachillerato</ion-select-option>
-                  <ion-select-option value="Técnico">Técnico</ion-select-option>
-                  <ion-select-option value="Tecnológico">Tecnológico </ion-select-option>
-                  <ion-select-option value="Universitario">Universitario</ion-select-option>
-                  <ion-select-option value="Especialización">Especialización</ion-select-option>
-                  <ion-select-option value="Maestría">Maestría</ion-select-option>
-                  <ion-select-option value="Doctorado">Doctorado</ion-select-option>
-                  <ion-select-option value="No he accedido a la educación formal">No he accedido a la educación formal</ion-select-option>
-                  <ion-select-option value="Me he educado en procesos de educación no formal (cursos, talleres, diplomados, etc.)">Me he educado en procesos de educación no formal (cursos, talleres, diplomados, etc.)</ion-select-option>
-                  <ion-select-option value="Me he educado sin escuela">Me he educado sin escuela  </ion-select-option>
-                </ion-select>
-                <div *ngIf="submitted && f.escolaridad_nivel.errors" class="invalid-feedback">
-                  <div *ngIf="f.escolaridad_nivel.errors.required">Campo requerido</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1">
-                  Contraseña <span class="required"> (*) </span>
-                </ion-label>
-                <input type="password" formControlName="password" class="fs-1 mt-3 form-control"
-                       [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                  <div *ngIf="f.password.errors.required">Campo requerido</div>
-                  <div *ngIf="f.password.errors.minlength">Longitud mínima 6 caracteres</div>
-                </div>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" class="fs-1">
-                  Confirmar Contraseña <span class="required"> (*) </span>
-                </ion-label>
-                <input type="password" formControlName="confirmPassword" class="fs-1 mt-3 form-control"
-                       [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-                <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback" style="position: relative;">
-                  <div *ngIf="f.confirmPassword.errors.required">Campo requerido</div>
-                  <div *ngIf="f.confirmPassword.errors.mustMatch">Contraseñas no coinciden</div>
-                </div>
-              </ion-col>
-            </ion-row>
-
-          </ion-grid>
-
-          <!--<button ion-button type="submit" block>Add Todo</button>-->
-          <ion-col size="4">
-            <ion-button expand="full" type="submit">Registrar usuario</ion-button>
-          </ion-col>
-        </form>
+  <ion-list class="padding-container patter" role="list">
+    <ion-item lines="none" class="mt-3"></ion-item>
+    <ion-item lines="none" class="mt-3">
+      <img src="https://res.cloudinary.com/deueufyac/image/upload/v1667438255/FERIAS/encabezado_csfxyb.png"
+           class="image-form m-auto mt-3">
+    </ion-item>
+    <ion-item lines="none" class="mt-3 mb-4 mt-3">
+      <div class="color-text fs--1 m-auto">
+        Formulario de inscripción a los talleres del VIII Congreso Nacional de
+        Bibliotecas Públicas
       </div>
-      <div *ngIf="showMenu == 'singupConfirm'">
-        <div (click)="showMenu = 'singup'; submitted = false">
-          <div ion-button class="back-button cursor-pointer">
-            <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-            <div> Registrar usuario </div>
-          </div>
+    </ion-item>
+    <ion-item lines="none" class="mt-4 fs-text">
+      <div> Le damos la bienvenida al proceso de inscripción a los talleres del VIII Congreso
+        Nacional de Bibliotecas Públicas: <span class="color-text">"Oralidades y culturas orales
+          en las bibliotecas del sur"</span>. Recuerde que el congreso se realizará entre el 21 y el 26 de noviembre de
+        2022 en modalidad virtual, por lo que es necesario contar con una buena conexión a Internet. <br><br> Dentro de
+        la programación del congreso se incluyó una
+        jornada de talleres (sábado 26 de noviembre), cuyo propósito es ofrecer herramientas prácticas para potenciar la
+        formación del personal bibliotecario en las distintas dimensiones de la oralidad. Se realizarán 13 talleres
+        simultáneos de 9 a.m. a 11 a.m., y 12 talleres de 3 p.m. a 5 p.m. A través de este formulario, podrá elegir el
+        taller de su preferencia. </div>
+    </ion-item>
+    <ion-item lines="none" class="mt-4 fs-text">
+      <span class="color-text h-100">1.</span>
+      <div class="ml-4">
+        Autorizo al Ministerio de Cultura para dar tratamiento a mis datos personales aquí
+        registrados, conforme a la Ley 1581 del 2012 y la política de tratamiento de datos personales, con la
+        finalidad de efectuar las funciones propias y procedentes de la entidad. Consulte nuestra política de
+        tratamiento de
+        datos en la página: <a target="_blank"
+                               href="https://cutt.ly/hN1x2c1"
+                               class="color-text">
+        https://cutt.ly/hN1x2c1
+      </a>
+      </div>
+    </ion-item>
+    <ion-list-header [hidden]="!errors">
+      <div class="alert alert-danger fade show alert-dismissible">
+        <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+        <strong></strong> {{errors}}
+      </div>
+    </ion-list-header>
+    <div class="ion-margin-bottom" *ngIf="showMenu != 'singupConfirm'">
+      <form [formGroup]="register" (ngSubmit)="onRegisterSubmit()">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1"><span class="color-text ">2.</span>
+                Nombres <span class="required"> (*) </span>
+              </ion-label>
+              <input type="text" formControlName="name" class="fs-1 mt-3 form-control"
+                     [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+              <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                <div >Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1"><span class="color-text ">3.</span>Apellidos<span class="required"> (*) </span></ion-label>
+              <input type="text" formControlName="last_name" name="last_name" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.last_name.errors }"/>
+              <div *ngIf="submitted && f.last_name.errors" class="invalid-feedback">
+                <div *ngIf="f.last_name.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1"><span class="color-text ">4.</span> Tipo de documento <span class="required"> (*) </span> </ion-label>
+              <ion-select okText="Aceptar" cancelText="Cancelar" name="select_tipo" formControlName="documento_tipo" class="fs-1 mt-3 form-control"  [ngClass]="{ 'is-invalid': submitted && f.documento_tipo.errors }">
+                <ion-select-option value="Cédula de ciudadanía colombiana ">Cédula de ciudadanía colombiana</ion-select-option>
+                <ion-select-option value="Cédula de extranjería  ">Cédula de extranjería </ion-select-option>
+                <ion-select-option value="Pasaporte ">Pasaporte</ion-select-option>
+              </ion-select>
+              <div *ngIf="submitted && f.documento_tipo.errors" class="invalid-feedback">
+                <div *ngIf="f.documento_tipo.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">5.</span> Número de documento (por favor, escribir sin puntos) <span class="required"> (*) </span></ion-label>
+              <input type="text" formControlName="documento_numero" name="documento_numero" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.documento_numero.errors }"/>
+              <div *ngIf="submitted && f.documento_numero.errors" class="invalid-feedback">
+                <div *ngIf="f.documento_numero.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1"><span class="color-text ">6.</span> Correo electrónico <span class="required"> (*) </span></ion-label>
+              <input formControlName="email" name="email"  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }"/>
+              <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                <div *ngIf="f.email.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1"><span class="color-text ">7.</span> Correo electrónico adicional  <span class="required"> (*) </span></ion-label>
+              <input formControlName="correo_electronico_adicional" name="correo_electronico_adicional" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.correo_electronico_adicional.errors }"/>
+              <div *ngIf="submitted && f.correo_electronico_adicional.errors" class="invalid-feedback">
+                <div *ngIf="f.correo_electronico_adicional.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1"> <span class="color-text ">8.</span> Número celular<span class="required"> (*) </span> </ion-label>
+              <input type="text" formControlName="numero_celular" name="numero_celular" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.numero_celular.errors }"/>
+              <div *ngIf="submitted && f.numero_celular.errors" class="invalid-feedback">
+                <div *ngIf="f.numero_celular.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">9.</span> País desde el que realiza la inscripción <span class="required"> (*) </span></ion-label>
+              <input formControlName="pais_inscripcion" name="pais_inscripcion" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.numero_celular.errors }"/>
+              <div *ngIf="submitted && f.pais_inscripcion.errors" class="invalid-feedback">
+                <div *ngIf="f.pais_inscripcion.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="4" class="mt-col">
+              <ion-label position="stacked" class="fs-1"><span class="color-text ">10.</span> ¿Usted se encuentra en?   <span class="required"> (*) </span></ion-label>
+              <ion-select okText="Aceptar" cancelText="Cancelar" name="zona_se_encuentra_en" formControlName="zona_se_encuentra_en" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.zona_se_encuentra_en.errors }">
+                <ion-select-option value="Zona urbana">Zona urbana </ion-select-option>
+                <ion-select-option value="Zona rural">Zona rural  </ion-select-option>
+                <ion-select-option value="Otra">¿Otra? </ion-select-option>
+              </ion-select>
+              <div *ngIf="submitted && f.zona_se_encuentra_en.errors" class="invalid-feedback">
+                <div *ngIf="f.zona_se_encuentra_en.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col  size="12"  class="mt-col" *ngIf="f.zona_se_encuentra_en.value === 'Otra'">
+              <ion-label position="stacked" class="fs-1">¿Cual zona? <span class="required"> (*) </span></ion-label>
+              <input type="text" formControlName="zona_se_encuentra_en_otra" name="zona_se_encuentra_en_otra" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.zona_se_encuentra_en_otra.errors }"/>
+              <div *ngIf="submitted && f.zona_se_encuentra_en_otra.errors" class="invalid-feedback">
+                <div *ngIf="f.zona_se_encuentra_en_otra.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12"  class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">11.</span> ¿Usted se reconoce como?  <span class="required"> (*) </span> </ion-label>
+              <ion-select okText="Aceptar" cancelText="Cancelar" name="sexo_se_reconoce_como" formControlName="sexo_se_reconoce_como" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.sexo_se_reconoce_como.errors }">
+                <ion-select-option value="Mujer">Mujer </ion-select-option>
+                <ion-select-option value="Hombre">Hombre  </ion-select-option>
+                <ion-select-option value="Mujer transgénero/Mujer trans/Hombre a mujer">Mujer transgénero/Mujer trans/Hombre a mujer </ion-select-option>
+                <ion-select-option value="Hombre transgénero/Hombre trans/Mujer a hombre">Hombre transgénero/Hombre trans/Mujer a hombre </ion-select-option>
+                <ion-select-option value="Hombre transgénero/Hombre trans/Mujer a hombre">Hombre transgénero/Hombre trans/Mujer a hombre </ion-select-option>
+                <ion-select-option value="No binario">No binario  </ion-select-option>
+                <ion-select-option value="Sin género">Sin género   </ion-select-option>
+                <ion-select-option value="Otro">Otro   </ion-select-option>
+                <ion-select-option value="Prefiero no responder">Prefiero no responder   </ion-select-option>
+              </ion-select>
+              <div *ngIf="submitted && f.sexo_se_reconoce_como.errors" class="invalid-feedback">
+                <div *ngIf="f.sexo_se_reconoce_como.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12"  class="mt-col" *ngIf="f.sexo_se_reconoce_como.value === 'Otro'">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%">Se reconoce como otro, ¿cual? <span class="required"> (*) </span> </ion-label>
+              <input type="text" formControlName="sexo_se_reconoce_como_otro" name="sexo_se_reconoce_como_otro" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.sexo_se_reconoce_como_otro.errors }"/>
+              <div *ngIf="submitted && f.sexo_se_reconoce_como_otro.errors" class="invalid-feedback">
+                <div *ngIf="f.sexo_se_reconoce_como_otro.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">12.</span> ¿Qué sexo le asignaron al nacer en su registro civil de nacimiento original? (Marque uno) <span class="required"> (*) </span></ion-label>
+              <ion-select okText="Aceptar" cancelText="Cancelar" name="sexo_registro_civil" formControlName="sexo_registro_civil" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.sexo_registro_civil.errors }">
+                <ion-select-option value="Hombre">Hombre </ion-select-option>
+                <ion-select-option value="Mujer">Mujer  </ion-select-option>
+                <ion-select-option value="Otro">Otro  </ion-select-option>
+                <ion-select-option value="Prefiero no responder">Prefiero no responder  </ion-select-option>
+              </ion-select>
+              <div *ngIf="submitted && f.sexo_registro_civil.errors" class="invalid-feedback">
+                <div *ngIf="f.sexo_registro_civil.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="6" class="mt-col" *ngIf="f.sexo_registro_civil.value === 'Otro'">
+              <ion-label position="stacked" class="fs-1">¿Cual sexo le asignaron? <span class="required"> (*) </span></ion-label>
+              <input type="text" formControlName="sexo_registro_civil_otro" name="sexo_registro_civil_otro" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.sexo_registro_civil_otro.errors }"/>
+              <div *ngIf="submitted && f.sexo_registro_civil_otro.errors" class="invalid-feedback">
+                <div *ngIf="f.sexo_registro_civil_otro.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">13. </span>De acuerdo con su cultura, pueblo o rasgos físicos, ¿usted se reconoce como? <span class="required"> (*) </span></ion-label>
+              <ion-select okText="Aceptar" cancelText="Cancelar" name="cultura_se_reconoce_como" formControlName="cultura_se_reconoce_como" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.cultura_se_reconoce_como.errors }">
+                <ion-select-option value="Indígena">Indígena </ion-select-option>
+                <ion-select-option value="Negro(a), mulato(a), afrodescendiente o afrocolombiano(a)">Negro(a), mulato(a), afrodescendiente o afrocolombiano(a)   </ion-select-option>
+                <ion-select-option value="Gitano(a) o ROM">Gitano(a) o ROM   </ion-select-option>
+                <ion-select-option value="Raizal del Archipiélago de San Andrés, Providencia y Santa Catalina">Raizal del Archipiélago de San Andrés, Providencia y Santa Catalina   </ion-select-option>
+                <ion-select-option value="Palenquero de San Basilio">Palenquero de San Basilio    </ion-select-option>
+                <ion-select-option value="Ningún grupo étnico">Ningún grupo étnico     </ion-select-option>
+                <ion-select-option value="Otro">Otro</ion-select-option>
+              </ion-select>
+              <div *ngIf="submitted && f.cultura_se_reconoce_como.errors" class="invalid-feedback">
+                <div *ngIf="f.cultura_se_reconoce_como.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-lg="6" class="mt-col" *ngIf="f.cultura_se_reconoce_como.value === 'Otro'"  >
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%">Otra cultura, pueblo o rasgos físicos, ¿cual? <span class="required"> (*) </span> </ion-label>
+              <input formControlName="cultura_se_reconoce_como_otro" type="text" name="cultura_se_reconoce_como_otro"  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.cultura_se_reconoce_como_otro.errors }"/>
+              <div *ngIf="submitted && f.cultura_se_reconoce_como_otro.errors" class="invalid-feedback">
+                <div *ngIf="f.cultura_se_reconoce_como_otro.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">14. </span>¿Es usted una persona con discapacidad/diversidad funcional? Si es así, seleccione el tipo de discapacidad/diversidad funcional. <span class="required"> (*) </span></ion-label>
+              <ion-select okText="Aceptar" cancelText="Cancelar" class="select-full-width" name="discapacidad_cual" formControlName="discapacidad_cual" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.discapacidad_cual.errors }">
+                <ion-select-option value="Discapacidad/diversidad funcional motora">Discapacidad/diversidad funcional motora </ion-select-option>
+                <ion-select-option value="Discapacidad/diversidad funcional visual">Discapacidad/diversidad funcional visual </ion-select-option>
+                <ion-select-option value="Discapacidad/diversidad funcional auditiva">Discapacidad/diversidad funcional auditiva </ion-select-option>
+                <ion-select-option value="Discapacidad/diversidad funcional cognitiva">Discapacidad/diversidad funcional cognitiva </ion-select-option>
+                <ion-select-option value="Discapacidad/diversidad funciona psicosocial">Discapacidad/diversidad funciona psicosocial </ion-select-option>
+                <ion-select-option value="Discapacidad/diversidad funcional múltiple">Discapacidad/diversidad funcional múltiple</ion-select-option>
+                <ion-select-option value="Ninguna discapacidad/diversidad funcional">Ninguna discapacidad/diversidad funcional </ion-select-option>
+              </ion-select>
+              <div *ngIf="submitted && f.discapacidad_cual.errors" class="invalid-feedback">
+                <div *ngIf="f.discapacidad_cual.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">15.</span> ¿Usted se relaciona con el sector de las bibliotecas y/o de la lectura, la escritura y la oralidad desde el rol de? <span class="required"> (*) </span></ion-label>
+              <ion-select okText="Aceptar" cancelText="Cancelar" name="relacion_sector_rol" formControlName="relacion_sector_rol" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.relacion_sector_rol.errors }">
+                <ion-select-option value="Bibliotecario(a) publico(a)">Bibliotecario(a) publico(a)  </ion-select-option>
+                <ion-select-option value="Promotor(a) o mediador(a) de lectura, escritura y oralidad">Promotor(a) o mediador(a) de lectura, escritura y oralidad</ion-select-option>
+                <ion-select-option value="Mediador(a) rural (Bibliotecas Rurales Itinerantes)">Mediador(a) rural (Bibliotecas Rurales Itinerantes)</ion-select-option>
+                <ion-select-option value="Lector voluntario/Integrante del Grupo de Amigos de la Biblioteca">Lector voluntario/Integrante del Grupo de Amigos de la Biblioteca</ion-select-option>
+                <ion-select-option value="Bibliotecario(a) comunitario(a) o popular">Bibliotecario(a) comunitario(a) o popular </ion-select-option>
+                <ion-select-option value="Bibliotecario(a) escolar">Bibliotecario(a) escolar</ion-select-option>
+                <ion-select-option value="Bibliotecario(a) universitario(a)">Bibliotecario(a) universitario(a)</ion-select-option>
+                <ion-select-option value="Auxiliar de biblioteca">Auxiliar de biblioteca</ion-select-option>
+                <ion-select-option value="Gestor(a) cultural, social o educativo(a)">Gestor(a) cultural, social o educativo(a)</ion-select-option>
+                <ion-select-option value="Profesor(a) de educación preescolar">Profesor(a) de educación preescolar</ion-select-option>
+                <ion-select-option value="Profesor(a) de educación básica">Profesor(a) de educación básica</ion-select-option>
+                <ion-select-option value="Profesor(a) de educación media">Profesor(a) de educación media</ion-select-option>
+                <ion-select-option value="Profesor(a) de educación superior">Profesor(a) de educación superior</ion-select-option>
+                <ion-select-option value="Estudiante universitario(a)">Estudiante universitario(a)</ion-select-option>
+                <ion-select-option value="Investigador(a)">Investigador(a)</ion-select-option>
+                <ion-select-option value="Coordinador(a) de sistemas o redes de bibliotecas">Coordinador(a) de sistemas o redes de bibliotecas</ion-select-option>
+                <ion-select-option value="Personal administrativo de bibliotecas, sistemas o redes bibliotecarias">Personal administrativo de bibliotecas, sistemas o redes bibliotecarias</ion-select-option>
+                <ion-select-option value="Profesional vinculado a la formulación de políticas públicas de lectura, escritura, oralidad y bibliotecas">Profesional vinculado a la formulación de políticas públicas de lectura, escritura, oralidad y bibliotecas</ion-select-option>
+                <ion-select-option value="Ciudadano(a) interesado(a) en el tema">Ciudadano(a) interesado(a) en el tema</ion-select-option>
+                <ion-select-option value="Otro">Otro</ion-select-option>
+              </ion-select>
+              <div *ngIf="submitted && f.relacion_sector_rol.errors" class="invalid-feedback">
+                <div *ngIf="f.relacion_sector_rol.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-lg="6" class="mt-col" *ngIf="f.relacion_sector_rol.value === 'Otro'">
+              <ion-label position="stacked" class="fs-1">¿Con cual rol se identifica? <span class="required"> (*) </span></ion-label>
+              <input formControlName="relacion_sector_rol_otro" type="text" name="relacion_sector_rol_otro" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.relacion_sector_rol_otro.errors }"/>
+              <div *ngIf="submitted && f.relacion_sector_rol_otro.errors" class="invalid-feedback">
+                <div *ngIf="f.relacion_sector_rol_otro.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">16.</span>Escriba el nombre de la institución a la que se encuentra vinculado. En caso de trabajar en una biblioteca, escriba el nombre completo de la misma: <span class="required"> (*) </span></ion-label>
+              <input formControlName="institucion_vinculo" type="text" name="institucion_vinculo" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.institucion_vinculo.errors }"/>
+              <div *ngIf="submitted && f.institucion_vinculo.errors" class="invalid-feedback">
+                <div *ngIf="f.institucion_vinculo.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">17.</span> Escriba los nombres del municipio o departamento donde está ubicada la institución a la que está vinculado(a).<span class="required"> (*) </span></ion-label>
+              <input formControlName="institucion_ubicacion" type="text" name="institucion_ubicacion" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.institucion_ubicacion.errors }"/>
+              <div *ngIf="submitted && f.institucion_ubicacion.errors" class="invalid-feedback">
+                <div *ngIf="f.institucion_ubicacion.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1"><span class="color-text ">18.</span> ¿Cuál es su nivel de escolaridad? <span class="required"> (*) </span></ion-label>
+              <ion-select okText="Aceptar" cancelText="Cancelar" class="select-full-width" formControlName="escolaridad_nivel" name="escolaridad_nivel" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.escolaridad_nivel.errors }">
+                <ion-select-option value="Primaria">Primaria</ion-select-option>
+                <ion-select-option value="Bachillerato">Bachillerato</ion-select-option>
+                <ion-select-option value="Técnico">Técnico</ion-select-option>
+                <ion-select-option value="Tecnológico">Tecnológico </ion-select-option>
+                <ion-select-option value="Universitario">Universitario</ion-select-option>
+                <ion-select-option value="Especialización">Especialización</ion-select-option>
+                <ion-select-option value="Maestría">Maestría</ion-select-option>
+                <ion-select-option value="Doctorado">Doctorado</ion-select-option>
+                <ion-select-option value="No he accedido a la educación formal">No he accedido a la educación formal</ion-select-option>
+                <ion-select-option value="Me he educado en procesos de educación no formal (cursos, talleres, diplomados, etc.)">Me he educado en procesos de educación no formal (cursos, talleres, diplomados, etc.)</ion-select-option>
+                <ion-select-option value="Me he educado sin escuela">Me he educado sin escuela  </ion-select-option>
+              </ion-select>
+              <div *ngIf="submitted && f.escolaridad_nivel.errors" class="invalid-feedback">
+                <div *ngIf="f.escolaridad_nivel.errors.required">Campo requerido</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1">
+                <span class="color-text ">19.</span> Contraseña <span class="required"> (*) </span>
+              </ion-label>
+              <input type="password" formControlName="password" class="fs-1 mt-3 form-control"
+                     [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+              <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                <div *ngIf="f.password.errors.required">Campo requerido</div>
+                <div *ngIf="f.password.errors.minlength">Longitud mínima 6 caracteres</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="6" class="mt-col">
+              <ion-label position="stacked" class="fs-1"><span class="color-text ">20. </span>
+                Confirmar Contraseña <span class="required"> (*) </span>
+              </ion-label>
+              <input type="password" formControlName="confirmPassword" class="fs-1 mt-3 form-control"
+                     [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+              <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback" style="position: relative;">
+                <div *ngIf="f.confirmPassword.errors.required">Campo requerido</div>
+                <div *ngIf="f.confirmPassword.errors.mustMatch">Contraseñas no coinciden</div>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+
+          </ion-row>
+
+        </ion-grid>
+
+        <!--<button ion-button type="submit" block>Add Todo</button>-->
+        <ion-col size="4">
+          <ion-button expand="full" type="submit">Registrar usuario</ion-button>
+        </ion-col>
+      </form>
+    </div>
+    <div *ngIf="showMenu == 'singupConfirm'">
+      <div (click)="showMenu = 'singup'; submitted = false">
+        <div ion-button class="back-button cursor-pointer">
+          <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+          <div> Registrar usuario </div>
         </div>
-        <h2 class="name ion-text-center title-modal" style="margin-top: 2.5em;">Confirmar cuenta</h2>
-        <div class="padding-container scroll-90 min-height">
-          <form [formGroup]="singupConfirmForm" (ngSubmit)="onSingupValidate()" class="mt-3'">
-            <ion-item class="not-found">
-              <div class="alert alert-success" *ngIf="singupConfirmMsg">
-                <strong></strong> {{singupConfirmMsg}}
+      </div>
+      <h2 class="name ion-text-center title-modal" style="margin-top: 2.5em;">Confirmar cuenta</h2>
+      <div class="padding-container scroll-90 min-height">
+        <form [formGroup]="singupConfirmForm" (ngSubmit)="onSingupValidate()" class="mt-3'">
+          <ion-item class="not-found">
+            <div class="alert alert-success" *ngIf="singupConfirmMsg">
+              <strong></strong> {{singupConfirmMsg}}
+            </div>
+          </ion-item>
+          <ion-list-header [ngStyle]="{ 'margin-top': ( !errors && !success ) ? '0em' : '-0.8em' }">
+            Ingresa el código de verificación
+          </ion-list-header>
+          <ion-list>
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <input maxlength="1" (paste)="paste($event)" #digitSix (keyup)="onDigitInput($event)" type="text"
+                         formControlName="item1" class="fs-1 mt-3 form-control"
+                         [ngClass]="{ 'is-invalid': submitted && sc.item1.errors }" />
+                  <div *ngIf="submitted && sc.item1.errors" class="invalid-feedback">
+                    <div *ngIf="sc.item1.errors.required">Campo requerido</div>
+                  </div>
+                </ion-col>
+                <ion-col>
+                  <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item2"
+                         class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item2.errors }" />
+                  <div *ngIf="submitted && sc.item2.errors" class="invalid-feedback">
+                    <div *ngIf="sc.item2.errors.required">Campo requerido</div>
+                  </div>
+                </ion-col>
+                <ion-col>
+                  <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item3"
+                         class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item3.errors }" />
+                  <div *ngIf="submitted && sc.item3.errors" class="invalid-feedback">
+                    <div *ngIf="sc.item3.errors.required">Campo requerido</div>
+                  </div>
+                </ion-col>
+                <ion-col>
+                  <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item4"
+                         class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item4.errors }" />
+                  <div *ngIf="submitted && sc.item4.errors" class="invalid-feedback">
+                    <div *ngIf="sc.item4.errors.required">Campo requerido</div>
+                  </div>
+                </ion-col>
+                <ion-col>
+                  <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item5"
+                         class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item5.errors }" />
+                  <div *ngIf="submitted && sc.item5.errors" class="invalid-feedback">
+                    <div *ngIf="sc.item5.errors.required">Campo requerido</div>
+                  </div>
+                </ion-col>
+                <ion-col>
+                  <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item6"
+                         class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item6.errors }" />
+                  <div *ngIf="submitted && sc.item6.errors" class="invalid-feedback">
+                    <div *ngIf="sc.item6.errors.required">Campo requerido</div>
+                  </div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="8" class="m-auto">
+                  <ion-button [disabled]="singupConfirmForm.invalid" expand="full" type="submit">Confirmar código
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+
+
+            </ion-grid>
+            <ion-item [hidden]="!errors" class="not-found">
+              <div class="alert alert-danger alert-dismissible">
+                <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+                <strong></strong> {{errors}}
               </div>
             </ion-item>
-            <ion-list-header [ngStyle]="{ 'margin-top': ( !errors && !success ) ? '0em' : '-0.8em' }">
-              Ingresa el código de verificación
-            </ion-list-header>
-            <ion-list>
-              <ion-grid>
-                <ion-row>
-                  <ion-col>
-                    <input maxlength="1" (paste)="paste($event)" #digitSix (keyup)="onDigitInput($event)" type="text"
-                           formControlName="item1" class="fs-1 mt-3 form-control"
-                           [ngClass]="{ 'is-invalid': submitted && sc.item1.errors }" />
-                    <div *ngIf="submitted && sc.item1.errors" class="invalid-feedback">
-                      <div *ngIf="sc.item1.errors.required">Campo requerido</div>
-                    </div>
-                  </ion-col>
-                  <ion-col>
-                    <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item2"
-                           class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item2.errors }" />
-                    <div *ngIf="submitted && sc.item2.errors" class="invalid-feedback">
-                      <div *ngIf="sc.item2.errors.required">Campo requerido</div>
-                    </div>
-                  </ion-col>
-                  <ion-col>
-                    <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item3"
-                           class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item3.errors }" />
-                    <div *ngIf="submitted && sc.item3.errors" class="invalid-feedback">
-                      <div *ngIf="sc.item3.errors.required">Campo requerido</div>
-                    </div>
-                  </ion-col>
-                  <ion-col>
-                    <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item4"
-                           class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item4.errors }" />
-                    <div *ngIf="submitted && sc.item4.errors" class="invalid-feedback">
-                      <div *ngIf="sc.item4.errors.required">Campo requerido</div>
-                    </div>
-                  </ion-col>
-                  <ion-col>
-                    <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item5"
-                           class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item5.errors }" />
-                    <div *ngIf="submitted && sc.item5.errors" class="invalid-feedback">
-                      <div *ngIf="sc.item5.errors.required">Campo requerido</div>
-                    </div>
-                  </ion-col>
-                  <ion-col>
-                    <input maxlength="1" #digitSix (keyup)="onDigitInput($event)" type="text" formControlName="item6"
-                           class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && sc.item6.errors }" />
-                    <div *ngIf="submitted && sc.item6.errors" class="invalid-feedback">
-                      <div *ngIf="sc.item6.errors.required">Campo requerido</div>
-                    </div>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col size="8" class="m-auto">
-                    <ion-button [disabled]="singupConfirmForm.invalid" expand="full" type="submit">Confirmar código
-                    </ion-button>
-                  </ion-col>
-                </ion-row>
-
-
-              </ion-grid>
-              <ion-item [hidden]="!errors" class="not-found">
-                <div class="alert alert-danger alert-dismissible">
-                  <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-                  <strong></strong> {{errors}}
-                </div>
-              </ion-item>
-            </ion-list>
-          </form>
-        </div>
+          </ion-list>
+        </form>
       </div>
     </div>
-  </div>
+
+  </ion-list>
 
 
 </ion-content>
