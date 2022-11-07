@@ -127,7 +127,7 @@ export class RegisterPage implements OnInit {
       cultura_se_reconoce_como:['',Validators.required],
       //cultura_se_reconoce_como_otro:['',Validators.required],
       discapacidad:[''],
-      discapacidad_cual:[''],
+      discapacidad_cual:['',Validators.required],
       relacion_sector_rol:['',Validators.required],
       //relacion_sector_rol_otro:['',Validators.required],
       institucion_vinculo:['',Validators.required],

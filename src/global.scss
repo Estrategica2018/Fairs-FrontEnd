@@ -480,3 +480,12 @@ ion-icon {
   max-width: 50% !important;
   width: 50% !important;
 }
+
+@media screen and (max-width:1200px) {
+
+  .alert-radio-label.sc-ion-alert-md {
+    white-space: break-spaces !important;
+    font-size: 11px;
+  }
+}
+
