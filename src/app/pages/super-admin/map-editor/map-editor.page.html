@@ -46,7 +46,8 @@
 
 <ion-content id="ionContent"
    style="background-size: cover; background-repeat: no-repeat; --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
-   [scrollEvents]="true" scroll-x="0" scroll-y="0" scrollX="true" cdkDropList class="content-boundary" [ngStyle]="{ 
+   [scrollEvents]="true" scroll-x="0" scroll-y="0" scrollX="true" cdkDropList class="content-boundary" 
+   [ngStyle]="{ 
       '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
       'background-position': 'center top',
       'background-repeat': 'no-repeat',
@@ -335,7 +336,7 @@
                *ngIf="banner.__agendaCatalogList && banner.__agendaCatalogList.groups && banner.__agendaCatalogList.groups.length > 0"
                class="not-found">
                <ion-row>
-                  <ion-col *ngFor="let group of banner.__agendaCatalogList.groups" >
+                  <ion-col *ngFor="let group of banner.__agendaCatalogList.groups"  [ngStyle]="{'margin-top': '5em'}" >
                      <app-agenda-catalog [banner]="banner" [group]="group"></app-agenda-catalog>
                   </ion-col>
                </ion-row>
@@ -1121,7 +1122,6 @@
 
       <ion-card-content *ngIf="tabSelect == 'speakerCatalog'" class="content-scroll">
          <ion-list>
-
             <ion-toolbar class="">
                <ion-buttons slot="primary" class="w-100">
                   <ion-button class="d-none d-md-flex end-menu-button m-auto" color="secondary"
@@ -1129,7 +1129,6 @@
                      <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
                      Categoría {{bannerSelect.speakerCatalog.speakerType}}
                   </ion-button>
-
                </ion-buttons>
             </ion-toolbar>
 
@@ -3021,7 +3020,7 @@
                *ngIf="banner.__agendaCatalogList && banner.__agendaCatalogList.groups && banner.__agendaCatalogList.groups.length > 0"
                class="not-found">
                <ion-row>
-                  <ion-col *ngFor="let group of banner.__agendaCatalogList.groups">
+                  <ion-col *ngFor="let group of banner.__agendaCatalogList.groups"  [ngStyle]="{'margin-top': '5em'}">
                      <app-agenda-catalog [banner]="banner" [group]="group"></app-agenda-catalog>
                   </ion-col>
                </ion-row>

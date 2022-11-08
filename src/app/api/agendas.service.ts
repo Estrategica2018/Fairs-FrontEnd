@@ -140,5 +140,41 @@ export class AgendasService {
   refreshCurrentAgenda(): any {
     this.agendas = null;
   }
+
+  availableList(): Promise<any> {
+         
+         return new Promise((resolve, reject) => {
+             
+             this.fairsService.getCurrentFair().
+               then( fair => {
+                 let url = `${SERVER_URL}/api/agenda/available/list/${fair.id}`;
+                 this.http.get(url)
+                 .pipe(
+                   timeout(60000),
+                   catchError((e: any) => {
+                     console.log(e);
+                     if(e.status && e.statusText) {
+                       throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);    
+                     }
+                     else {
+                       throw new Error(`Consultando el servicio de agenda`);    
+                     }
+                   })
+                 )
+                 .subscribe((data : any )=> {
+                     this.refresTime = moment();
+                     this.agendas = processData(data.data);
+                     for(let agenda of this.agendas) {
+                       agenda.start_at  *= 1000;
+                     }
+                     resolve(this.agendas);
+                 },error => {
+                     reject(error)
+                 });
+               },error => {
+                     reject(error)
+               });
+         })
+   }
   
 }

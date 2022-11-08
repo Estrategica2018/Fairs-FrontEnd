@@ -524,14 +524,22 @@ export class MapSiteEditorPage implements OnInit {
       case 'SpeakerCatalog':
         banner.size = { "x": 428, "y": 237 };
         banner.speakerCatalog = {
-          "nameFontSize": 24, "nameFontColor": "#ff0000", "nameTop": 10, "nameLeft": 216, "nameFontFamily": "YoutubeSansMedium",
+          "nameFontSize": 24, 
+          "nameFontColor": this.fair.social_media.iconMenuColorTitle, 
+          "nameTop": 10, "nameLeft": 216, "nameFontFamily": "YoutubeSansMedium",
           "nameFontWeight": "100",
           "descHeigth": 69,
-          "descTop": 139, "descLeft": 198, "descWidth": 208, "descFontSize": 14, "descTextAlign": "justify", "lineHeightMili": 0, "lineHeightUnit": 1, "lineHeight": 1, "descFontFamily": "YoutubeSansLight", "descFontWeight": 100, "titleFontColor": "#000", "titleFontFamily": "YoutubeSansMedium", "titleFontSize": 19, "titleFontWeight": "bold", "titleLeft": 0, "titleTop": 113, "imagesTop": 0, "imagesLeft": 0, "imagesWidth": 187, "imagesHeight": 224, "imagesPriceWidth": 16, "imagestitleWidth": null, "priceTop": 38, "priceLeft": 27, "priceFontColor": "#ff1a1a", "nameWidth": 177, "nameHeight": 0, "logoLeft": 142, "logoTop": 26, "logoWidth": 74, "logoHeight": 69, "professionFontColor": "#ffffff", "professionTop": 97, "professionLeft": 199, "descFontColor": "", "professionFontSize": 15
+          "descTop": 139, "descLeft": 198, "descWidth": 208, "descFontSize": 14, "descTextAlign": "justify", 
+          "lineHeightMili": 0, "lineHeightUnit": 1, "lineHeight": 1, "descFontFamily": "YoutubeSansLight", "descFontWeight": 100, "titleFontColor": "#000", "titleFontFamily": "YoutubeSansMedium", "titleFontSize": 19, "titleFontWeight": "bold", "titleLeft": 0, "titleTop": 113, "imagesTop": 0, "imagesLeft": 0, "imagesWidth": 187, "imagesHeight": 224, "imagesPriceWidth": 16, "imagestitleWidth": null, "priceTop": 38, "priceLeft": 27, "priceFontColor": "#ff1a1a", "nameWidth": 177, "nameHeight": 0, "logoLeft": 142, "logoTop": 26, "logoWidth": 74, "logoHeight": 69, "professionFontColor": "#ffffff", "professionTop": 97, "professionLeft": 199, "descFontColor": "", "professionFontSize": 15
         }
-        banner.backgroundColor = "#109be0";
-        banner.class = "rounded-withradius grayscale cursor-pointer overflow-hidden";
-        banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
+        banner.backgroundColor = this.fair.social_media.iconMenuColor;
+        banner.styles.class = "rounded-withradius grayscale cursor-pointer overflow-hidden";
+        banner.styles.borderStyle = "solid";
+        banner.styles.borderColor = this.fair.social_media.iconMenuColorText;
+        banner.styles.borderLength = "1";
+        banner.styles.borderRadius = "19";
+        banner.styles.borderRadiusUnit = "px";
+
         break;
       case 'ProductCatalog':
         banner = {
@@ -1207,7 +1215,7 @@ export class MapSiteEditorPage implements OnInit {
     const id = 'card-style-id-' + banner.id;
     style.type = 'text/css';
     style.id = id;
-    style.innerHTML = '.' + id + ':hover { color: ' + banner.fontColor + '; background-image: linear-gradient(' + banner.backgroundColor + ', ' + banner.backgroundColor + '), linear-gradient(to top right, #BEBEBE, #FEFEFE); }';
+    style.innerHTML = '.' + id + ':hover { color: ' + banner.fontColor + '; background-image: linear-gradient(' + banner.styles.backgroundColor + ', ' + banner.styles.backgroundColor + '), linear-gradient(to top right, #BEBEBE, #FEFEFE); }';
 
     style.innerHTML += '.' + id + ' .name { color: ' + banner.speakerCatalog.nameFontColor + '; } ';
     style.innerHTML += '.' + id + ' .desc { color: ' + banner.speakerCatalog.descFontColor + '; } ';

@@ -1,6 +1,13 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { AgendasService } from 'src/app/api/agendas.service';
 import { DatePipe } from '@angular/common'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FairsService } from 'src/app/api/fairs.service';
+import { MinculturaService } from 'src/app/api/mincultura.service';
+import { UsersService } from 'src/app/api/users.service';
+import { LoadingService } from 'src/app/providers/loading.service';
+import { ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-form-mincultura-catalog',
@@ -13,67 +20,153 @@ export class FormMinculturaCatalogPage implements OnInit {
   clientHeight: any;
   largeScreen: any;
   agendaSelect: any;
-  mediumScreen : any;
-  smallScreen : any;
+  mediumScreen: any;
+  smallScreen: any;
+  submitted: any;
+  registerForm: FormGroup;
+  fair: any;
+  userDataSession: any;
+  errors: any;
+  success: any;
+  urlBack = '';
+  CategorySelector = 'Taller';
+  disableSelection = false;
+  agendaHover = null;
+  minculturaUser = null;
 
-  constructor(private agendasService: AgendasService,
-    private datepipe: DatePipe) { }
+  constructor(
+    private agendasService: AgendasService,
+    private datepipe: DatePipe,
+    private formBuilder: FormBuilder,
+    private fairsService: FairsService,
+    private minculturaService: MinculturaService,
+    private usersService: UsersService,
+    private loading: LoadingService,
+    private toastCtrl: ToastController,
+    private router: Router,) {
 
-  ngOnInit() {
-
-    setTimeout(() => {
-      this.onResize(null);  
-    }, 100);
-  
-    
     this.initializeFormsCatalogs();
-
-    this.agendasService.list(null)
-      .then((agendas) => {
-      });
-
   }
 
+  ngOnInit() {
+    setTimeout(() => { this.onResize(null); }, 100);
+  }
+
+  get f() { return this.registerForm.controls; }
 
   initializeFormsCatalogs() {
 
-    this.scheduleList = [];
-    let category = 'Talleres';
-    category = 'all';
+    this.registerForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      last_name: ['', Validators.required],
+      docType: ['', [Validators.required]],
+      docNumber: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      emailAdditional: ['', [Validators.email]]
+    });
 
-    this.agendasService.list(null)
-      .then((agendas) => {
-        if (agendas.length > 0) {
-          agendas.forEach((agenda) => {
-            if (category == 'all' || agenda.category.name == category) {
-              this.scheduleList.push(agenda);
-              let name;
-              agenda._nameSpeakers = '';
-              for (let speaker of agenda.invited_speakers) {
-                name = speaker.speaker.user.name + ' ' + speaker.speaker.user.last_name;
-                if (agenda._nameSpeakers != null && agenda._nameSpeakers.length > 0) {
-                  agenda._nameSpeakers += ',';
+    this.loading.present({ message: 'Cargando...' });
+
+    this.usersService.getUser().then((userDataSession: any) => {
+      this.userDataSession = userDataSession;
+      
+      if (!this.userDataSession) {
+        this.redirectTo('/user-register');
+        this.loading.dismiss();
+        return;
+      }
+
+
+      this.fairsService.getCurrentFair().
+        then(fair => {
+
+          this.fair = fair;
+
+
+          this.minculturaService.getMinculturaUser(userDataSession, fair)
+            .subscribe(
+              response => {
+                console.log(response);
+                this.loading.dismiss();
+                if (response.data) {
+                  this.minculturaUser = response.data;
+                  this.registerForm = this.formBuilder.group({
+                    name: [this.userDataSession.name, Validators.required],
+                    last_name: [this.userDataSession.last_name, Validators.required],
+                    docType: [this.minculturaUser.documento_tipo, [Validators.required]],
+                    docNumber: [this.minculturaUser.documento_numero, [Validators.required]],
+                    email: [this.userDataSession.email, [Validators.required, Validators.email]],
+                    emailAdditional: [this.minculturaUser.correo_electronico_adicional, [Validators.email]]
+                  });
                 }
-                agenda._nameSpeakers += name;
-              }
+                else {
+                  this.registerForm = this.formBuilder.group({
+                    name: [this.userDataSession.name, Validators.required],
+                    last_name: [this.userDataSession.last_name, Validators.required],
+                    docType: ['', [Validators.required]],
+                    docNumber: ['', [Validators.required]],
+                    email: [this.userDataSession.email, [Validators.required, Validators.email]],
+                    emailAdditional: ['', [Validators.email]]
+                  });
+                }
 
-              agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
-              agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
+                if (response.audience) {
+                  let audience = response.audience;
+                  for (let agenda of audience) {
+                    if (agenda.agenda.category.name == this.CategorySelector) {
+                      this.agendaSelect = agenda;
+                      setTimeout(() => {
+                        let check: any = document.querySelector<HTMLElement>('#check-agenda-' + agenda.id);
+                        check.checked = true;
+                      }, 100);
+                      this.disableSelection = true;
+                    }
+                  }
+                }
+                if (response.meetings) {
+                  this.initializeAgendaFormsCatalogs(response.meetings);
+                }
+
+              },
+              error => {
+                this.loading.dismiss();
+                this.errors = error;
+              });
+        });
+    });
+  }
+
+  initializeAgendaFormsCatalogs(agendas) {
+
+    this.scheduleList = [];
+
+    console.log(agendas);
+    if (agendas.length > 0) {
+      agendas.forEach((agenda) => {
+        if (this.CategorySelector == 'all' || agenda.category.name == this.CategorySelector) {
+          this.scheduleList.push(agenda);
+          let name;
+          agenda._nameSpeakers = '';
+          for (let speaker of agenda.invited_speakers) {
+            name = speaker.speaker.user.name + ' ' + speaker.speaker.user.last_name;
+            if (agenda._nameSpeakers != null && agenda._nameSpeakers.length > 0) {
+              agenda._nameSpeakers += ',';
             }
+            agenda._nameSpeakers += name;
+          }
 
-            setTimeout(() => {
-              this.onResize(null);  
-            }, 100);
-
-            
-          });
-          //this.transformSchedule(banner);
+          agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+          agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
         }
 
-      })
-      .catch(error => {
-        console.log(error);
+        setTimeout(() => {
+          this.onResize(null);
+        }, 100);
+
       });
+
+    }
+
   }
 
   @HostListener('window:resize', ['$event'])
@@ -83,21 +176,93 @@ export class FormMinculturaCatalogPage implements OnInit {
     this.smallScreen = window.innerWidth <= 859;
   }
 
-  changeSelect(agenda){
+  changeSelect(agenda) {
 
-    let check: any = document.querySelector<HTMLElement>('#check-agenda-'+agenda.id);
-    if(check.checked) {
-      this.agendaSelect = agenda;
+    let check: any = document.querySelector<HTMLElement>('#check-agenda-' + agenda.id);
+    if (check.checked) {
 
-      let lista = document.querySelectorAll('.ckech-agenda');
-      lista.forEach((checkAgenda: any)=>{
+      let lista = document.querySelectorAll('.check-agenda');
+      lista.forEach((checkAgenda: any) => {
         checkAgenda.checked = false;
       });
-      check.checked = true;
+
+      if (this.disableSelection) {
+        let check: any = document.querySelector<HTMLElement>('#check-agenda-' + this.agendaSelect.id);
+        check.checked = true;
+      } else {
+        this.agendaSelect = agenda;
+        check.checked = true;
+      }
     }
     else {
-      this.agendaSelect = false;
+      if (this.disableSelection) {
+        let lista = document.querySelectorAll('.check-agenda');
+        lista.forEach((checkAgenda: any) => {
+          checkAgenda.checked = false;
+        });
+
+        if (agenda.id == this.agendaSelect.id) {
+          check.checked = true;
+        }
+      }
+      else {
+        this.agendaSelect = null;
+      }
     }
-    
+  }
+
+  onRegister() {
+    this.submitted = true;
+    let agendaId = null;
+
+    if (this.registerForm.invalid) {
+      this.presentToast('Por favor complete los campos para finalizar la inscripción');
+      return;
+    }
+
+    if (this.agendaSelect == null || !this.agendaSelect.id) {
+      this.presentToast('Debe seleccionar un taller para la inscripción');
+      return;
+    }
+
+    this.minculturaUser = {
+      'name': this.registerForm.value.name,
+      'last_name': this.registerForm.value.last_name,
+      'docType': this.registerForm.value.docType,
+      'docNumber': this.registerForm.value.docNumber,
+      'emailAdditional': this.registerForm.value.emailAdditional
+    }
+
+    if (this.agendaSelect) {
+      agendaId = this.agendaSelect.id;
+    }
+
+    this.loading.present({ message: 'Cargando...' });
+    this.minculturaService.registerMinculturaUser(this.userDataSession, this.fair, this.minculturaUser, agendaId)
+      .subscribe(
+        response => {
+          console.log(response);
+          this.loading.dismiss();
+        },
+        error => {
+          this.loading.dismiss();
+          this.presentToast(error);
+          this.errors = error;
+        });
+  }
+
+  async presentToast(msg) {
+    const toast = await this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'bottom'
+    });
+    toast.present();
+  }
+
+  redirectTo(uri: string) {
+    this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
+      this.router.navigate([uri])
+    });
   }
 }

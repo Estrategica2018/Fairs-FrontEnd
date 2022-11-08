@@ -24,11 +24,11 @@
                 class="d-none d-md-flex end-menu-button" color="secondary"
                (click)="presenterLogin()" *ngIf="!loggedIn"  shape="round" fill="solid">
                <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
-               Accede con tu usuario
+               Crear una cuenta
             </ion-button>
             <ion-button [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" [hidden]="showBannerSideMenu" 
                class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn" color="secondary"
-               (click)="presentAccount()">
+               (click)="presentAccount()" fill="solid"> 
                <ion-icon  slot="start" ios="ios-person" md="person"></ion-icon>
                Cuenta
             </ion-button>
@@ -214,7 +214,8 @@
             </ion-list>
             <ion-list *ngIf="!loggedIn" class="border-botton ion-text-center access background-transparent">
                <ion-menu-toggle autoHide="false" class="ion-text-center">
-                  <ion-note [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" class="login-note ion-text-start font-light">Accede con tu usuario para participar en los
+                  <ion-note [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" class="login-note ion-text-start font-light">
+                     Accede con tu usuario para participar en los
                      eventos, realizar solicitudes y gestionar tu usuario.</ion-note>
                   <ion-button color="secondary" shape="round" (click)="presenterLogin()">
                      <ion-icon  slot="start" ios="ios-person" md="person"></ion-icon>

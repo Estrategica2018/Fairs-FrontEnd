@@ -1,16 +1,17 @@
-<ion-content class="">
-  
+<ion-content>
   <ion-list class="padding-container patter" role="list">
     <ion-item lines="none" class="mt-3"></ion-item>
-    <ion-item lines="none" class="mt-3 mb-4 mt-3">
+    <ion-item lines="none" class="mt-3">
       <img src="https://res.cloudinary.com/deueufyac/image/upload/v1667438255/FERIAS/encabezado_csfxyb.png"
         class="image-form m-auto mt-3">
     </ion-item>
-    <ion-item lines="none" class="color-title ">
-      <div class="color-text fs--1 m-auto"> Formulario de inscripción a los talleres del VIII Congreso Nacional de
-        Bibliotecas Públicas </div>
+    <ion-item lines="none" class="mt-3 mb-4 mt-3">
+      <div class="color-text fs--1 m-auto">
+        Formulario de inscripción a los talleres del VIII Congreso Nacional de
+        Bibliotecas Públicas
+      </div>
     </ion-item>
-    <ion-item lines="none" class="mt-4 fs-text">
+    <ion-item lines="none" class="mt-4">
       <div> Le damos la bienvenida al proceso de inscripción a los talleres del VIII Congreso
         Nacional de Bibliotecas Públicas: <span class="color-text">"Oralidades y culturas orales
           en las bibliotecas del sur"</span>. Recuerde que el congreso se realizará entre el 21 y el 26 de noviembre de
@@ -21,108 +22,144 @@
         simultáneos de 9 a.m. a 11 a.m., y 12 talleres de 3 p.m. a 5 p.m. A través de este formulario, podrá elegir el
         taller de su preferencia. </div>
     </ion-item>
-    <ion-item lines="none" class="mt-4 fs-text">
+    <ion-item lines="none" class="mt-4">
       <span class="color-text h-100">1.</span>
       <div class="ml-4">
         Autorizo al Ministerio de Cultura para dar tratamiento a mis datos personales aquí
         registrados, conforme a la Ley 1581 del 2012 y la política de tratamiento de datos personales, con la
         finalidad de efectuar las funciones propias y procedentes de la entidad. Consulte nuestra política de
         tratamiento de
-        datos en la página: <a target="_blank"
-          href="https://cutt.ly/hN1x2c1"
-          class="color-text">
+        datos en la página: <a target="_blank" href="https://cutt.ly/hN1x2c1" class="color-text">
           https://cutt.ly/hN1x2c1
         </a>
       </div>
     </ion-item>
-    <ion-item lines="none" class="fs-text p-0 m-0">
+    <ion-list-header [hidden]="!errors">
+      <div class="alert alert-danger fade show alert-dismissible">
+        <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+        <strong></strong> {{errors}}
+      </div>
+    </ion-list-header>
+    <form [formGroup]="registerForm">
       <ion-grid>
         <ion-row>
-          <ion-col [size]="largeScreen ? 5 : mediumScreen ? 6 : 12" class="mt-col">
-            <span class="color-text h-100">2.</span>
-            <div class="ml-4 ml--1">
-              <div>
-                (*) Nombre Completo
-              </div>
-              <input class="w-100" [(ngModel)]="mediumScreen"/>
+          <ion-col size="12" size-lg="4" class="mt-col">
+            <ion-label position="stacked" class="fs-1"><span class="color-text ">2.</span>
+              Nombres <span class="required"> (*) </span>
+            </ion-label>
+            <input type="text" formControlName="name" class="fs-1 mt-3 form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+            <div *ngIf="submitted && f.name.errors" class="fs-text invalid-feedback">
+              <div>Campo requerido</div>
             </div>
           </ion-col>
-          <ion-col [size]="largeScreen ? 2 : mediumScreen ? 5 : 12" class="mt-col">
-            <span class="color-text h-100">3.</span>
-            <div class="ml-4 ml--1">
-              <div>
-                (*) Tipo de documento
-              </div>
-              <input [class]="{'w-100':smallScreen}" />
+          <ion-col size="12" size-lg="4" class="mt-col">
+            <ion-label position="stacked" class="fs-1"><span class="color-text ">3.</span>
+              Apellidos <span class="required"> (*) </span></ion-label>
+            <input type="text" formControlName="last_name" name="last_name" class="fs-1 mt-3 form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.last_name.errors }" />
+            <div *ngIf="submitted && f.last_name.errors" class="fs-text invalid-feedback">
+              <div *ngIf="f.last_name.errors.required">Campo requerido</div>
             </div>
           </ion-col>
-          <ion-col [size]="largeScreen ? 4 : mediumScreen ? 6 : 12" class="mt-col">
-            <span class="color-text h-100">4.</span>
-            <div class="ml-4 ml--1">
-              <div>
-                (*) Número de documento, por favor escribir sin puntos
-              </div>
-              <input [class]="{'w-100':smallScreen}" />
+          <ion-col size="12" size-lg="4" class="mt-col">
+            <ion-label position="stacked" class="fs-1"><span class="color-text ">4.</span> Tipo de documento <span
+                class="required"> (*) </span> </ion-label>
+            <ion-select okText="Aceptar" cancelText="Cancelar" name="select_tipo" formControlName="docType"
+              class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.docType.errors }">
+              <ion-select-option value="Cédula de ciudadanía colombiana ">Cédula de ciudadanía colombiana
+              </ion-select-option>
+              <ion-select-option value="Cédula de extranjería  ">Cédula de extranjería </ion-select-option>
+              <ion-select-option value="Pasaporte ">Pasaporte</ion-select-option>
+            </ion-select>
+            <div *ngIf="submitted && f.docType.errors" class="fs-text invalid-feedback">
+              <div *ngIf="f.docType.errors.required">Campo requerido</div>
             </div>
           </ion-col>
-          <ion-col [size]="largeScreen ? 4 : mediumScreen ? 5 : 12" class="mt-col">
-            <span class="color-text h-100">5.</span>
-            <div class="ml-4 ml--1">
-              <div>
-                (*) Correo electrónico
-              </div>
-              <input [class]="{'w-100':smallScreen}" size="30"/>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12" size-lg="4" class="mt-col">
+            <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">5.</span>
+              Número de documento <span [ngStyle]="{'font-size': '80%'}"> (por favor, escribir sin puntos) </span>
+              <span class="required"> (*) </span>
+            </ion-label>
+            <input type="text" formControlName="docNumber" name="docNumber" class="fs-1 mt-3 form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.docNumber.errors }" />
+            <div *ngIf="submitted && f.docNumber.errors" class="fs-text invalid-feedback">
+              <div *ngIf="f.docNumber.errors.required">Campo requerido</div>
             </div>
           </ion-col>
-          <ion-col size="12" size-lg="5"  class="mt-col">
-            <span class="color-text h-100">6.</span>
-            <div class="ml-4 ml--1">
-              <div>
-                (*) Correo electrónico adicional
+          <ion-col size="12" size-lg="4" class="mt-col">
+            <ion-label position="stacked" class="fs-1"><span class="color-text ">6.</span> Correo electrónico <span
+                class="required"> (*) </span></ion-label>
+            <input formControlName="email" name="email" class="fs-1 mt-3 form-control" readonly [disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+            <div *ngIf="submitted && f.email.errors" class="fs-text invalid-feedback">
+              <div *ngIf="f.email.errors.required">Campo requerido</div>
+              <div *ngIf="f.email.errors.email">Email inválido</div>
+            </div>
+          </ion-col>
+          <ion-col size="12" size-lg="4" class="mt-col">
+            <ion-label position="stacked" class="fs-1"><span class="color-text ">7.</span> Correo electrónico
+              adicional <span class="required"> </span></ion-label>
+            <input formControlName="emailAdditional" name="emailAdditional" class="fs-1 mt-3 form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.emailAdditional.errors }" />
+            <div *ngIf="submitted && f.emailAdditional.errors" class="fs-text invalid-feedback">
+              <div *ngIf="f.emailAdditional.errors.required">Campo requerido</div>
+              <div *ngIf="f.emailAdditional.errors.email">Email inválido</div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+
+    <ion-item lines="none" class="mt-4">
+      <span class="color-text h-100">8. </span>
+      <div class=" ml--2"> &nbsp;
+        Seleccione el taller al que quiere inscribirse. Le recomendamos leer las instrucciones de todos los talleres
+        antes de elegir el de su preferencia.
+      </div>
+    </ion-item>
+    <ion-item lines="none" class="mt-2">
+      <ion-grid class="mt--1">
+        <ion-row>
+          <ion-col [size]="largeScreen ? 4 : mediumScreen ? 6 : 12"
+            *ngFor="let agenda of scheduleList; let indx = index">
+            <span class="color-text2 h-100" 
+            (mouseover)="agendaHover = agenda.id" 
+            (mouseout)="agendaHover = null">
+            {{indx + 1}}.
+              <input type="checkbox" id="check-agenda-{{agenda.id}}" class="check-agenda"
+                [ngClass]="{
+                  'disableSelection' : disableSelection || agenda.full == 1
+                }" (click)="changeSelect(agenda)" />
+            </span>
+            <div class=" ml--1 card-agenda"
+              [ngClass]="{
+                'grayscale-agenda': ( agendaSelect && agendaSelect.id !=  agenda.id)  || ( disableSelection &&  agendaSelect.id !=  agenda.id) || agenda.full == 1,
+                'register-finish': disableSelection && agendaHover == agenda.id && agendaSelect.id !=  agenda.id }">
+              <div class="div-agenda">
+                {{agenda.title}}
               </div>
-              <input [class]="{'w-100':smallScreen}" size="30" />
+              <div class="hour">
+                {{agenda.startTime}} &ndash; {{agenda.endTime}}
+              </div>
+              <div class="speaker-detail">
+                Tallerista: {{ agenda._nameSpeakers }}
+              </div>
+              <div class="agenda-detail">
+                {{ agenda.description_large }}
+              </div>
             </div>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
-    <ion-item lines="none" class="mt-4 fs-text">
-      <span class="color-text h-100">7.</span>
-      <div class="ml-4 ml--2">
-        Seleccione el taller al que quiere inscribirse. Le recomendamos leer las instrucciones de todos los talleres
-        antes de elegir el de su preferencia.
-      </div>
-    </ion-item>
-    <ion-grid class="mt--1 fs-text">
-      <ion-row>
-        <ion-col size="12" size-md="6" size-lg="4" *ngFor="let agenda of scheduleList; let indx = index">
-          <span class="color-text2 h-100 ">{{indx + 1}}.
-           <input type="checkbox" id="check-agenda-{{agenda.id}}" class="check-agenda" (click)="changeSelect(agenda)" />
-          </span>
-          <div class="ml-4 ml--1 card-agenda">
-            <div class="div-agenda">
-              {{agenda.title}}
-            </div>
-            <div class="hour">
-              {{agenda.startTime}} &ndash; {{agenda.endTime}}
-            </div>
-            <div class="speaker-detail">
-              Tallerista: {{ agenda._nameSpeakers }}
-            </div>
-            <div class="agenda-detail">
-               {{ agenda.description_large }}
-            </div>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <ion-item lines="none" class="mt-4 fs-text">
-      <ion-button class="submit">
-        Terminar Inscripción
-      </ion-button>
-    </ion-item>
-
-
+    <ion-item lines="none" class="mt-3"></ion-item>
+    <ion-col size="4">
+      <ion-button expand="full" (click)="onRegister()">Terminar Inscripción</ion-button>
+    </ion-col>
+    <ion-item lines="none" class="mt-3"></ion-item>
   </ion-list>
+
 </ion-content>

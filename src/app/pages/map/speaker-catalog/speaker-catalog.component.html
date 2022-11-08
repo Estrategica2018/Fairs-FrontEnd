@@ -1,10 +1,11 @@
 <ion-grid id="grid-{{banner.id}}">
    <ion-row>
      <ion-col *ngFor="let speaker of banner.__speakerCatalogList; let i = index;">
-       <div class="card m-auto card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.class}}"
+       <div class="card m-auto card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.styles.class}}"
        (mouseover)="bannerSpeakerSelectHover = banner.id + '-' + i;"
        (mouseout)="bannerSpeakerSelectHover = null;"
-       [ngClass]="{ 'element-selected': bannerSpeakerSelectHover == banner.id + '-' + i }" [ngStyle]="{
+       [ngClass]="{ 'element-selected': bannerSpeakerSelectHover == banner.id + '-' + i }" 
+       [ngStyle]="{
           'top': speaker.top + 'px',
           'left': speaker.left + 'px',
           'width': banner.size.x + 'px', 
@@ -12,11 +13,9 @@
           'background-image': banner.image_url && banner.image_url.length > 0 ? 'url('+banner.image_url+')' : '',
           'background-size': banner.size.x + 'px ' + banner.size.y + 'px',
           'background-repeat': 'no-repeat',
-          'background-color': banner.backgroundColor,
-          'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
-           'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-          'border-radius': banner.border.radius + 'px',
-          'border-width': banner.border.width  + 'px',
+          'background-color': banner.styles?.backgroundColor,
+          'border': banner.styles?.borderLength +  banner.styles?.borderLengthUnit + ' ' + banner.styles?.borderStyle + ' ' + banner.styles?.borderColor,
+          'border-radius': banner.styles?.borderRadius +  banner.styles?.borderRadiusUnit,
           'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '')
          }">
 
@@ -43,7 +42,8 @@
              'width': banner.speakerCatalog.nameWidth + 'px',
              'height': banner.speakerCatalog.nameHeight + 'px',
              'top': banner.speakerCatalog.nameTop + 'px',
-             'left': banner.speakerCatalog.nameLeft + 'px'
+             'left': banner.speakerCatalog.nameLeft + 'px',
+             'line-height': banner.speakerCatalog.lineNameHeightUnit +  '.' +banner.speakerCatalog.lineNameHeightMili
             }">{{speaker.user?.name}} {{speaker.user?.last_name}}
        </div>
        <div class="position-absolute desc"
@@ -58,7 +58,8 @@
              'width': banner.speakerCatalog.descWidth + 'px',
              'font-weight':  banner.speakerCatalog.descFontWeight,
              'line-height': banner.speakerCatalog.lineHeight,
-             'text-align': banner.speakerCatalog.descTextAlign
+             'text-align': banner.speakerCatalog.descTextAlign,
+             'color': banner.speakerCatalog.descFontColor
             }">{{speaker.description_one}}
        </div>
        <div class="position-absolute"
@@ -68,10 +69,12 @@
              'font-family': ( banner.speakerCatalog.professionFontFamily ? banner.speakerCatalog.professionFontFamily : 'YoutubeSansMedium' ),
              'top': banner.speakerCatalog.professionTop + 'px',
              'left': banner.speakerCatalog.professionLeft + 'px',
-             'font-weight':  banner.speakerCatalog.professionFontWeight
+             'font-weight':  banner.speakerCatalog.professionFontWeight,
+             'color': banner.speakerCatalog.professionFontColor
             }">{{speaker.profession}}
        </div>
        <ion-img [src]="speaker.company_logo" class="position-absolute" color="primary" size="small"
+       [hidden]="banner.speakerCatalog.hiddenLogo"
          (click)=" showSpeakerCatalogActions = 'Logo'; tabSelect = 'speakerCatalog';"
          [ngStyle]="{
              'width': banner.speakerCatalog.logoWidth + 'px', 

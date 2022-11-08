@@ -1,7 +1,15 @@
 <ion-header>
 </ion-header>
 
-<ion-content>
+<ion-content 
+class="asdf"
+style="background-size: cover; background-repeat: no-repeat;  --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
+[ngStyle]="{ 
+  '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
+  'background-position': 'center top',
+  'background-repeat': 'no-repeat',
+  'background-size': 'cover'
+}">
 
   <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-back-button"
     (click)="onToBackEditor(scene)">

@@ -137,25 +137,28 @@ export class BannerSettingPanelComponent implements OnInit {
   onChangeEffect(effect){
   }
   
-    onChangeItemTextLineHeight(obj){
+    onChangeItemTextLineHeight(obj, unit, mili){
       
-      if(!obj.lineHeight) { 
-         obj.lineHeight = 1;
-         obj.lineHeightUnit = 1;
+      console.log('onChangeItemTextLineHeight');
+      if(!obj[mili]) { 
+         obj[mili] = 1;
+         obj[unit] = 1;
       }
-      const mili = Number.parseInt(obj.lineHeight);
-      const unit = Number.parseFloat(obj.lineHeight) | 0;
       
-      if( obj.lineHeightMili > 9 ) {
-           obj.lineHeightMili = 0;
-           obj.lineHeightUnit ++;
+      if(!obj[unit]) { 
+        obj[unit] = 0;
+     }
+
+      if( obj[mili] > 9 ) {
+        obj[mili]  = 0;
+        obj[unit]  ++;
       }
       else if( obj.lineHeightMili < 0 ) {
            obj.lineHeightMili = 9;
-           obj.lineHeightUnit --;
+           obj[unit]  --;
       }
       
-      obj.lineHeight = obj.lineHeightUnit + '.' + obj.lineHeightMili;
+      
   }
   
   onClickOpenHtml(banner,str) {
@@ -188,4 +191,5 @@ export class BannerSettingPanelComponent implements OnInit {
     await alert.present();
   }
 
+  
 }

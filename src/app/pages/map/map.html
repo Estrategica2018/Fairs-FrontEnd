@@ -287,29 +287,13 @@
           *ngIf="banner.__agendaCatalogList && banner.__agendaCatalogList.groups && banner.__agendaCatalogList.groups.length > 0"
           class="not-found">
           <ion-row>
-            <ion-col *ngFor="let group of banner.__agendaCatalogList.groups">
+            <ion-col *ngFor="let group of banner.__agendaCatalogList.groups" [ngStyle]="{'margin-top': '5em'}">
               <app-agenda-catalog [banner]="banner" [group]="group"></app-agenda-catalog>
             </ion-col>
           </ion-row>
         </ion-grid>
       </div>
       <!--End if banner is agenda-catalog -->
-
-      <!--if banner is speaker-catalog -s>
-      <div class="grid" *ngIf="banner.speakerCatalog" id="grid-{{banner.id}}">
-        <ion-grid class="not-found">
-          <ion-row>
-            <ion-col *ngIf="let speaker of banner.__speakerCatalogList; let i = index;" 
-              (click)="presenterSpeakerModal(speaker)"
-              (mouseover)="bannerSpeakerSelectHover = banner.id + '-' + i;" 
-              (mouseout)="bannerSpeakerSelectHover = null;">
-              <app-speaker-catalog [banner]="banner" [bannerSpeakerSelectHover]="bannerSpeakerSelectHover" ></app-speaker-catalog>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-      <!--End if banner is speaker-catalog -->
-
 
       <!--if banner is speaker-catalog-->
       <div class="grid" *ngIf="banner.speakerCatalog" id="grid-{{banner.id}}"
@@ -650,7 +634,7 @@
           *ngIf="banner.__agendaCatalogList && banner.__agendaCatalogList.groups && banner.__agendaCatalogList.groups.length > 0"
           class="not-found">
           <ion-row>
-            <ion-col *ngFor="let group of banner.__agendaCatalogList.groups">
+            <ion-col *ngFor="let group of banner.__agendaCatalogList.groups"  [ngStyle]="{'margin-top': '5em'}">
               <app-agenda-catalog [banner]="banner" [group]="group"></app-agenda-catalog>
             </ion-col>
           </ion-row>
