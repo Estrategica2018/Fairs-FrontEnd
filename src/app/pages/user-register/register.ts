@@ -114,7 +114,7 @@ export class RegisterPage implements OnInit {
       last_name:['',Validators.required],
       documento_tipo:['',Validators.required],
       documento_numero:['',Validators.required],
-      email:['',Validators.required],
+      email:['',[Validators.email,Validators.required]],
       correo_electronico_adicional:[''],
       numero_celular:['',Validators.required],
       pais_inscripcion:['',Validators.required],
@@ -158,9 +158,10 @@ export class RegisterPage implements OnInit {
     this.usersService.findEmail(this.register.value['email'])
       .then( response => {
 
-          if(response.status === 201) {console.log('si ingresa envio correo no encuentra usuaior')
+          if(response.status === 201) {
 
             this.emailActivateError = true;
+            console.log('el correo exite',this.emailActivateError)
             this.loading.dismiss();
           }
           else {
