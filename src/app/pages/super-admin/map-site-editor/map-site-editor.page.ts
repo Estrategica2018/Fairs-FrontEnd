@@ -591,6 +591,8 @@ export class MapSiteEditorPage implements OnInit {
           banner.groupMode = true;
           banner.size = { "x": 367, "y": 408 };
           banner.agendaCatalog = { "category": "" };
+          banner.styles.width = 51;
+          banner.styles.widthUnit = 'em';
           break;
       case 'Contact':
         banner = { "groupMode": true, "size": { "x": 367, "y": 408 }, "contact": { "name": "" }, "backgroundColor": "#ffffff", "fontColor": "#000000", "fontSize": "13", "shadowActivate": true, "shadowRight": -8, "shadowDown": 4, "shadowDisperse": 21, "shadowExpand": -16 };

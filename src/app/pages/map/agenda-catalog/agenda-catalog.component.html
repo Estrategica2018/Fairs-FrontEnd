@@ -5,8 +5,8 @@
          'flex': '0 0 ' + ( banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : 'calc(calc(6 / var(--ion-grid-columns, 12)) * 100%)'),
          'width': banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : 'calc(calc(6 / var(--ion-grid-columns, 12)) * 100%)',
          'max-width': banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : 'calc(calc(6 / var(--ion-grid-columns, 12)) * 100%)',
-         'margin-top': '5em',
-         'width': banner.styles.width ? banner.styles.width + '' + banner.styles?.widthUnit : 'auto'
+         'margin-top': '5em'
+         
       }" *ngFor="let group of banner.__agendaCatalogList.groups">
          <div class="h-100 card-schedule"
             [ngStyle]="{'width': banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : ''}">
