@@ -25,6 +25,7 @@ import { SceneSiteComponent } from './pages/map-site/scene-site/scene-site.compo
 
 import { TermsPage } from './pages/terms/terms.page';
 import { SpeakerListComponent } from './pages/super-admin/map-editor/speaker-list/speaker-list.component';
+import { AgendaListComponent } from './pages/super-admin/map-editor/agenda-list/agenda-list.component';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { SpeakerListComponent } from './pages/super-admin/map-editor/speaker-lis
     SpeakerCatalogComponent,
     SpeakerAdminDetailComponent,
     SceneSiteComponent,
-    SpeakerListComponent
+    SpeakerListComponent,
+    AgendaListComponent
   ],
   exports: [
     TabMenuScenesComponent,
@@ -79,7 +81,8 @@ import { SpeakerListComponent } from './pages/super-admin/map-editor/speaker-lis
     SpeakerCatalogComponent,
     SpeakerAdminDetailComponent,
     SceneSiteComponent,
-    SpeakerListComponent
+    SpeakerListComponent,
+    AgendaListComponent
   ]
 
 })

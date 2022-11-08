@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Config, ModalController, NavParams } from '@ionic/angular';
+import { CategoryService } from 'src/app/api/category.service';
 import { AgendasService } from './../../../../api/agendas.service';
 import { LoadingService } from './../../../../providers/loading.service';
 
@@ -25,7 +26,8 @@ export class AgendaListComponent implements OnInit {
   constructor(private modalCtrl: ModalController,
     private navParams: NavParams,
     private loading: LoadingService,
-    private agendasService: AgendasService) { }
+    private agendasService: AgendasService,
+    private categoryService: CategoryService) { }
 
   ngOnInit() {
 
@@ -36,24 +38,29 @@ export class AgendaListComponent implements OnInit {
     this.stand = this.navParams.get('stand');
     this.agendaList = [];
 
-    this.agendasService.getByCategory(null)
-      .then((agendas) => {
-        this.loading.dismiss();
-        for (let agenda of agendas) {
-          this.addCategory(agenda);
-          this.agendaList.push(agenda);
-        }
+    this.categoryService.list('AgendaType', this.fair).then((response) => {
+      if (response.success == 201) {
+        this.catalogList = response.data;
+        this.agendasService.getByCategory(null)
+          .then((agendas) => {
+            this.loading.dismiss();
+            for (let agenda of agendas) {
+              this.addCategory(agenda);
+              this.agendaList.push(agenda);
+            }
 
-        for (let i = 1; i <= this.catalogList.length; i++) {
-          if (this.categorySelected !== null && this.categorySelected.length > 0) {
-            this.categorySelected += ',';
-          }
-          this.categorySelected += this.catalogList[i - 1].name;
-        }
-      })
-      .catch(error => {
-        this.loading.dismiss();
-      });
+            for (let i = 1; i <= this.catalogList.length; i++) {
+              if (this.categorySelected !== null && this.categorySelected.length > 0) {
+                this.categorySelected += ',';
+              }
+              this.categorySelected += this.catalogList[i - 1].name;
+            }
+          })
+          .catch(error => {
+            this.loading.dismiss();
+          });
+      }
+    });
   }
 
   addCategory(agenda) {
@@ -68,7 +75,7 @@ export class AgendaListComponent implements OnInit {
     this.catalogList.push(agenda.category);
     agenda.category.agendas = agenda.category.agendas || [];
     agenda.category.agendas.push(agenda);
-    
+
     return agenda.category;
   }
 

@@ -1,52 +1,76 @@
-<div class="card-schedule">
-   <div class="head" [ngStyle]="{
-      'color': banner.agendaCatalog.colorHour,
-      'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
-      'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-      'border-width': banner.border.width  + 'px'
-   }">
-      {{ group.month }}
-   </div>
-   <div class="container-card" [ngStyle]="{
-      'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
-      'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
-      'border-width': banner.border.width  + 'px',
-      'margin-top': banner.border.width ? '-4px' : '',
-      'box-shadow': ( banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
-    }">
-      <ion-buttons class="h-100">
-         <div slot="start" class="" style="margin-left: 2em;">
-            <img class="border-card" src="assets/icon/border-card.png">
-            <div class="circle" style="top: calc(50% - 2.5em)"
-               [ngStyle]="{'background': banner.agendaCatalog.bgButton}">
-               <div class="text">
-                  {{ group.strDay }}
-               </div> 
+<ion-grid id="grid-{{banner.id}}"
+   *ngIf="banner.__agendaCatalogList && banner.__agendaCatalogList.groups && banner.__agendaCatalogList.groups.length > 0">
+   <ion-row>
+      <ion-col [ngStyle]="{
+         'flex': '0 0 ' + ( banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : 'calc(calc(6 / var(--ion-grid-columns, 12)) * 100%)'),
+         'width': banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : 'calc(calc(6 / var(--ion-grid-columns, 12)) * 100%)',
+         'max-width': banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : 'calc(calc(6 / var(--ion-grid-columns, 12)) * 100%)',
+         'margin-top': '5em',
+         'width': banner.styles.width ? banner.styles.width + '' + banner.styles?.widthUnit : 'auto'
+      }" *ngFor="let group of banner.__agendaCatalogList.groups">
+         <div class="h-100 card-schedule"
+            [ngStyle]="{'width': banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : ''}">
+            <div class="head" [ngStyle]="{
+               'margin-left':  banner.styles.widthUnit ? 'calc('+ banner.styles.width + '' + banner.styles.widthUnit +' * 0.012)' : '',
+               'color': banner.agendaCatalog.colorHour,
+               'border': banner.styles?.borderLength +  banner.styles?.borderLengthUnit + ' ' + banner.styles?.borderStyle + ' ' + banner.styles?.borderColor
+            }">
+               {{ group.month }}
             </div>
+
+            <ion-grid class="container-card h-100" 
+            [ngStyle]="{            
+                  'border': banner.styles?.borderLength +  banner.styles?.borderLengthUnit + ' ' + banner.styles?.borderStyle + ' ' + banner.styles?.borderColor,
+                  'margin-top': banner.border && banner.borderLength ? '-'+ banner.styles?.borderLength +  banner.styles?.borderLengthUnit : '',
+                  'box-shadow': ( banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
+               }">
+               <ion-row class="h-100 w-100">
+                  <ion-col class="h-100" [ngStyle]="{'min-height': '18em',
+                        'flex': '0 0 30%',
+                        'width': '30%',
+                        'max-width': '30%'
+                     }">
+                     <img class="border-card" src="assets/icon/border-card.png">
+                     <div class="circle" [ngStyle]="{'background': banner.agendaCatalog.bgButton}">
+                        <div class="text">
+                           {{ group.strDay }}
+                        </div>
+                     </div>
+                  </ion-col>
+                  <ion-col [ngStyle]="{'min-height': '18em',
+                     'flex': '0 0 70%',
+                     'width': '70%',
+                     'max-width': '70%'
+                  }">
+                     <div class="container-schedule">
+                        <ion-item (click)="openAgenda(session)" button="true" class="d-flex"
+                        [ngStyle]="{'width': '108%'}"
+                           *ngFor="let session of group.sessions">
+                           <div class="hour" [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
+                              {{session.hour}}
+                           </div>
+                           <div class="hour-unit">
+                              <div [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
+                                 {{session.minutes}}
+                              </div>
+                              <div class="signature" [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
+                                 {{session.signature}}
+                              </div>
+                           </div>
+                           <div style="margin-top: -9px;">
+                              <div class="agenda-name" [ngStyle]="{'color': banner.agendaCatalog.colorName}">
+                                 {{session.name}}
+                              </div>
+                              <div class="speakers-name" [ngStyle]="{'color': banner.agendaCatalog.colorDescription}">
+                                 {{session.description}}
+                              </div>
+                           </div>
+                        </ion-item>
+                     </div>
+                  </ion-col>
+               </ion-row>
+            </ion-grid>
          </div>
-         <div slot="end" class="container-schedule">
-            <ion-item (click)="openAgenda(session)" button="true" class="d-flex" *ngFor="let session of group.sessions">
-               <div class="hour" [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
-                  {{session.hour}}
-               </div>
-               <div class="hour-unit">
-                  <div [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
-                     {{session.minutes}}
-                  </div>
-                  <div class="signature" [ngStyle]="{'color': banner.agendaCatalog.colorHour}">
-                     {{session.signature}}
-                  </div>
-               </div>
-               <div style="margin-top: -9px;">
-                  <div class="agenda-name" [ngStyle]="{'color': banner.agendaCatalog.colorName}">
-                     {{session.name}}
-                  </div>
-                  <div class="speakers-name" [ngStyle]="{'color': banner.agendaCatalog.colorDescription}">
-                     {{session.description}}
-                  </div>
-               </div>
-            </ion-item>
-         </div>
-      </ion-buttons>
-   </div>
-</div>
+      </ion-col>
+   </ion-row>
+</ion-grid>

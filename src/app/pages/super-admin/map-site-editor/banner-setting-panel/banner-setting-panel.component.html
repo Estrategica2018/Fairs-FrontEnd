@@ -48,23 +48,31 @@
                      <ion-label class="tool-special"> Triángulo</ion-label>
                   </ion-tab-button>
 
-
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'productCatalog' }"
                      (click)="tabSelect = 'productCatalog'" *ngIf="banner.productCatalog">
                      <ion-label class="tool-special"> Catálogo</ion-label>
                   </ion-tab-button>
+
+                  <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'agendaCatalog' }"
+                     (click)="tabSelect = 'agendaCatalog'" *ngIf="banner.agendaCatalog">
+                     <ion-label class="tool-special"> Catálogo</ion-label>
+                  </ion-tab-button>
+
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'speakerCatalog' }"
                      (click)="tabSelect = 'speakerCatalog'" *ngIf="banner.speakerCatalog">
                      <ion-label class="tool-special"> Conferencistas</ion-label>
                   </ion-tab-button>
+
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'video' }" (click)="tabSelect = 'video'"
                      *ngIf="banner.video">
                      <ion-label class="tool-special"> Video</ion-label>
                   </ion-tab-button>
+
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'carousel' }"
                      (click)="tabSelect = 'carousel'" *ngIf="banner.carousel">
                      <ion-label class="tool-special"> Carrete</ion-label>
                   </ion-tab-button>
+                  
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'contact' }" (click)="tabSelect = 'contact'"
                      *ngIf="banner.contact">
                      <ion-label class="tool-special"> Contácto</ion-label>
@@ -164,8 +172,8 @@
                <ion-buttons slot="end">
                   <ion-card-subtitle>
                      <input class="mt-2 ml-2 input-form" type="number" style="width: 9em;margin-right: 0.5em;"
-                        (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" [(ngModel)]="banner.styles.minWidth"
-                        placeholder="auto" />
+                        (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()"
+                        [(ngModel)]="banner.styles.minWidth" placeholder="auto" />
                      <select [(ngModel)]="banner.styles.minWidthUnit" (change)="goToOnChangeItem()" class="unit">
                         <option value="em">em</option>
                         <option value="px">px</option>
@@ -181,8 +189,8 @@
                <ion-buttons slot="end">
                   <ion-card-subtitle>
                      <input class="mt-2 ml-2 input-form" type="number" style="width: 9em;margin-right: 0.5em;"
-                        (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()" [(ngModel)]="banner.styles.minHeight"
-                        placeholder="auto" />
+                        (change)="goToOnChangeItem()" (keypress)="goToOnChangeItem()"
+                        [(ngModel)]="banner.styles.minHeight" placeholder="auto" />
                      <select [(ngModel)]="banner.styles.minHeightUnit" (change)="goToOnChangeItem()" class="unit">
                         <option value="em">em</option>
                         <option value="px">px</option>
@@ -613,22 +621,22 @@
          <ion-card-content *ngIf="tabSelect == 'speakerCatalog'" class="content-scroll">
             <ion-list>
                <ion-toolbar class="separator-text"
-               (click)="showSpeakerCatalogActions == 'Name' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'Name'">
-               <ion-buttons slot="start">
-                  <ion-card-subtitle> Título
-                  </ion-card-subtitle>
-               </ion-buttons>
-               <ion-buttons slot="end">
-                  <ion-icon name="chevron-down-outline" size="small"
-                     [hidden]="showSpeakerCatalogActions == 'Description'"></ion-icon>
-                  <ion-icon name="chevron-up-outline" size="small"
-                     *ngIf="showSpeakerCatalogActions == 'Description'"></ion-icon>
-               </ion-buttons>
-            </ion-toolbar>
-            
-            <ion-toolbar class="line-separator"></ion-toolbar>
+                  (click)="showSpeakerCatalogActions == 'Name' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'Name'">
+                  <ion-buttons slot="start">
+                     <ion-card-subtitle> Título
+                     </ion-card-subtitle>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                     <ion-icon name="chevron-down-outline" size="small"
+                        [hidden]="showSpeakerCatalogActions == 'Description'"></ion-icon>
+                     <ion-icon name="chevron-up-outline" size="small"
+                        *ngIf="showSpeakerCatalogActions == 'Description'"></ion-icon>
+                  </ion-buttons>
+               </ion-toolbar>
 
-              <div *ngIf="showSpeakerCatalogActions == 'Name'">
+               <ion-toolbar class="line-separator"></ion-toolbar>
+
+               <div *ngIf="showSpeakerCatalogActions == 'Name'">
                   <ion-toolbar>
                      <ion-buttons slot="start">
                         <ion-card-subtitle> Margen Superior </ion-card-subtitle>
@@ -734,7 +742,7 @@
                      </ion-buttons>
                   </ion-toolbar>
                </div>
-               
+
                <ion-toolbar class="separator-text"
                   (click)="showSpeakerCatalogActions == 'Description' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'Description'">
                   <ion-buttons slot="start">
@@ -748,7 +756,7 @@
                         *ngIf="showSpeakerCatalogActions == 'Description'"></ion-icon>
                   </ion-buttons>
                </ion-toolbar>
-               
+
                <ion-toolbar class="line-separator"></ion-toolbar>
 
                <div *ngIf="showSpeakerCatalogActions == 'Description'">
@@ -1093,10 +1101,67 @@
                      </ion-buttons>
                   </ion-toolbar>
                </div>
-               
+
 
             </ion-list>
          </ion-card-content>
+
+
+
+         <ion-card-content *ngIf="tabSelect == 'agendaCatalog'" class="content-scroll">
+            <ion-toolbar>
+               <ion-card-subtitle> Color botón</ion-card-subtitle>
+               <ion-buttons slot="end">
+                  <ion-card-subtitle>
+                     <ion-label (click)="banner.agendaCatalog.bgButton = '';">Clear </ion-label>
+                     <ion-icon name="close-outline" (click)="banner.agendaCatalog.bgButton = '';">
+                     </ion-icon>
+                     <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
+                        [(ngModel)]="banner.agendaCatalog.bgButton" />
+                  </ion-card-subtitle>
+               </ion-buttons>
+            </ion-toolbar>
+            <ion-toolbar>
+               <ion-card-subtitle> Color Hora</ion-card-subtitle>
+               <ion-buttons slot="end">
+                  <ion-card-subtitle>
+                     <ion-label (click)="banner.agendaCatalog.colorHour = '';">Clear </ion-label>
+                     <ion-icon name="close-outline" (click)="banner.agendaCatalog.colorHour = '';">
+                     </ion-icon>
+                     <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
+                        [(ngModel)]="banner.agendaCatalog.colorHour" />
+                  </ion-card-subtitle>
+               </ion-buttons>
+            </ion-toolbar>
+            <ion-toolbar>
+               <ion-card-subtitle> Color Titulo</ion-card-subtitle>
+               <ion-buttons slot="end">
+                  <ion-card-subtitle>
+                     <ion-label (click)="banner.agendaCatalog.colorName = '';">Clear </ion-label>
+                     <ion-icon name="close-outline" (click)="banner.agendaCatalog.colorName = '';">
+                     </ion-icon>
+                     <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
+                        [(ngModel)]="banner.agendaCatalog.colorName" />
+                  </ion-card-subtitle>
+               </ion-buttons>
+            </ion-toolbar>
+            <ion-toolbar>
+               <ion-card-subtitle> Color Descripción</ion-card-subtitle>
+               <ion-buttons slot="end">
+                  <ion-card-subtitle>
+                     <ion-label (click)="banner.agendaCatalog.colorDescription = '';">Clear </ion-label>
+                     <ion-icon name="close-outline" (click)="banner.agendaCatalog.colorDescription = '';">
+                     </ion-icon>
+                     <input class="mt-2 ml-2" type="color" (change)="onChangeItemColor()"
+                        [(ngModel)]="banner.agendaCatalog.colorDescription" />
+                  </ion-card-subtitle>
+               </ion-buttons>
+            </ion-toolbar>
+         </ion-card-content>
+
+
+
+
 
          <ion-card-content *ngIf="tabSelect == 'productCatalog'" class="content-scroll">
             <ion-list>
@@ -1304,7 +1369,7 @@
                      <ion-buttons slot="end">
                         {{ banner.productCatalog.lineHeightUnit }} .
                         <input class="mt-2 ml-2 line-height-mili" type="number" size="4"
-                         (change)="onChangeItemTextLineHeight(banner.productCatalog, 'lineHeightUnit', 'lineHeightMili')"
+                           (change)="onChangeItemTextLineHeight(banner.productCatalog, 'lineHeightUnit', 'lineHeightMili')"
                            [(ngModel)]="banner.productCatalog.lineHeightMili" />
                      </ion-buttons>
                   </ion-toolbar>
@@ -1730,7 +1795,7 @@
                <ion-buttons slot="end">
                   {{ banner.lineHeightUnit }} .
                   <input class="mt-2 ml-2 line-height-mili" type="number" style="width: 3em;"
-                  (change)="onChangeItemTextLineHeight(banner.styles.text, 'lineHeightUnit', 'lineHeightMili' )"
+                     (change)="onChangeItemTextLineHeight(banner.styles.text, 'lineHeightUnit', 'lineHeightMili' )"
                      [(ngModel)]="banner.styles.text.lineHeightMili" />
                </ion-buttons>
             </ion-toolbar>
@@ -1942,7 +2007,8 @@
                </ion-buttons>
                <ion-buttons slot="end">
                   <ion-card-subtitle>
-                     <input class="mt-2 ml-2" type="text" (change)="goToOnChangeItem()" [(ngModel)]="banner.styles.class" />
+                     <input class="mt-2 ml-2" type="text" (change)="goToOnChangeItem()"
+                        [(ngModel)]="banner.styles.class" />
                   </ion-card-subtitle>
                </ion-buttons>
             </ion-toolbar>
@@ -2177,7 +2243,7 @@
                </ion-buttons>
             </ion-toolbar>
          </ion-card-content>
-      
+
       </div>
 
       <ion-toolbar>

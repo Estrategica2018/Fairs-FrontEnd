@@ -314,7 +314,7 @@
                'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
                 'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
                'border-radius': banner.border.radius + 'px',
-               'border-width': banner.border.width  + 'px',
+               'border-width': banner.border ? banner.border.width  + 'px' : '',
                'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
               }">
 
@@ -438,7 +438,7 @@
         'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
         'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
         'border-radius': banner.border.radius + 'px',
-        'border-width': banner.border.width  + 'px',
+        'border-width': banner.border ? banner.border.width  + 'px' : '',
         'text-align': banner.textAlign,
         'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
         }">
@@ -466,7 +466,7 @@
             'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
             'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
             'border-radius': banner.border.radius + 'px',
-            'border-width': banner.border.width  + 'px',
+            'border-width': banner.border ? banner.border.width  + 'px' : '',
             'text-align': banner.textAlign,
             'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
           }">
@@ -662,7 +662,7 @@
                 'border-color': banner.border && banner.border.style != 'none' ? banner.border.color : '',
                  'border-style': banner.border && banner.border.style != 'none' ? banner.border.style : '',
                 'border-radius': banner.border.radius + 'px',
-                'border-width': banner.border.width  + 'px',
+                'border-width': banner.border ? banner.border.width  + 'px' : '',
                 'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '') 
                }">
 

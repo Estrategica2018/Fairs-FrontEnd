@@ -587,6 +587,11 @@ export class MapSiteEditorPage implements OnInit {
         };
         banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
         break;
+      case 'AgendaCatalog':
+          banner.groupMode = true;
+          banner.size = { "x": 367, "y": 408 };
+          banner.agendaCatalog = { "category": "" };
+          break;
       case 'Contact':
         banner = { "groupMode": true, "size": { "x": 367, "y": 408 }, "contact": { "name": "" }, "backgroundColor": "#ffffff", "fontColor": "#000000", "fontSize": "13", "shadowActivate": true, "shadowRight": -8, "shadowDown": 4, "shadowDisperse": 21, "shadowExpand": -16 };
         break;
@@ -651,7 +656,7 @@ export class MapSiteEditorPage implements OnInit {
 
 
     //if (this.bannerSelect.productCatalog) this.presentNewProductListCatalog(this.bannerSelect);
-    //if (this.bannerSelect.agendaCatalog) this.presentNewAgendaListCatalog(this.bannerSelect);
+    if (this.bannerSelect.agendaCatalog) this.presentNewAgendaListCatalog(this.bannerSelect);
     //if (this.bannerSelect.formCatalog) this.presentNewFormListCatalog(this.bannerSelect);
     if (this.bannerSelect.speakerCatalog) this.presentNewSpeakerListCatalog(this.bannerSelect, 'new');
     if (this.bannerSelect.speakerCatalog) this.initializeSpeakers(this.bannerSelect);

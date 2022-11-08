@@ -85,9 +85,11 @@
             </ion-col>
             <ion-col size="12" size-lg="4" >
               <ion-label position="stacked" class="fs-1"><span class="color-text ">6.</span> Correo electrónico <span class="required"> (*) </span></ion-label>
-              <input formControlName="email" name="email"  class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }"/>
+              <input formControlName="email" name="email"  class="fs-1 mt-3 form-control"
+               [ngClass]="{ 'is-invalid': ( submitted && f.email.errors ) || emailActivateError }"/>
               <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
                 <div *ngIf="f.email.errors.required">Campo requerido</div>
+                <div *ngIf="f.email.errors.email">Email inválido</div>
               </div>
               <div *ngIf="emailActivateError" class="invalid-feedback">
                 <div>Esta cuenta ya está en uso</div>
