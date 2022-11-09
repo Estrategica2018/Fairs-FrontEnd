@@ -21,6 +21,7 @@ export class PasswordPage  implements OnInit {
   token = null;
   showPassword = 'password';
   showConfirmPassword = 'password';
+  fair: any;
 
   constructor(
     private router: Router,
@@ -73,6 +74,7 @@ export class PasswordPage  implements OnInit {
       const username = this.login.username;
       this.fairsService.getCurrentFair().
         then( fair => {
+          this.fair = fair;
           this.usersService.recoverPassword({"email": username,"origin":window.location.origin})
           .then( data => {
               this.loading.dismiss();
