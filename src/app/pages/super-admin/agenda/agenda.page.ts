@@ -407,7 +407,7 @@ export class AgendaPage implements OnInit {
                 agenda.invited_speakers.forEach((speaker) => {
                   this.invited_speakers.push(Object.assign({}, speaker));
                 });
-                this.success = `Conferencistas asociados exitosamente`;
+                this.success = `Invitados asociados exitosamente`;
                 this.presentToast(this.success);
                 this.loading.dismiss();
               })

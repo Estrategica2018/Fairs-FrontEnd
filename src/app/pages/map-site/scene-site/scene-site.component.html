@@ -100,12 +100,12 @@
 
 
             <!--if banner is Speakers-->
-            <ion-button color="light" class="edit-carousel-button" (click)="goToOnHoverBanner(banner,col,row,scene)"
+            <ion-button color="light" class="edit-carousel-button"
               *ngIf="banner.speakerCatalog && editMode">
               <ion-icon name="create-outline"></ion-icon>
             </ion-button>
             <app-speaker-catalog *ngIf="banner.speakerCatalog" [bannerSpeakerSelectHover]="bannerSpeakerSelectHover"
-              [showSpeakerCatalogActions]="showSpeakerCatalogActions" [tabSelect]="tabSelect" [banner]="banner">
+              [showSpeakerCatalogActions]="showSpeakerCatalogActions" [editMode]="editMode" [tabSelect]="tabSelect" [banner]="banner">
             </app-speaker-catalog>
             <!--End if banner is Speakers-->
 

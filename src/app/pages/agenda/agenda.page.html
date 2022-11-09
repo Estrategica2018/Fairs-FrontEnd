@@ -71,8 +71,8 @@
                                </ion-text>
                             </ion-item>
                             <br /><br />
-                            <h4 *ngIf="invited_speakers?.length > 1">Conferencistas</h4>
-                            <h4 *ngIf="invited_speakers?.length === 1">Conferencista</h4>
+                            <h4 *ngIf="invited_speakers?.length > 1">Invitados</h4>
+                            <h4 *ngIf="invited_speakers?.length === 1">Invitado</h4>
                             
                             <ion-item *ngFor="let invited_speaker of invited_speakers" class="p-2"
                             (click)="onSpeaker(invited_speaker.speaker)" button>

@@ -16,6 +16,7 @@ export class SpeakerCatalogComponent implements OnInit {
   @Input() banner;
   @Input() showSpeakerCatalogActions;
   @Input() tabSelect;
+  @Input() editMode;
 
   modal: any;
   speakerDetailComponent = SpeakerDetailComponent;
@@ -42,5 +43,4 @@ export class SpeakerCatalogComponent implements OnInit {
     const { data } = await this.modal.onWillDismiss();
   }
 
-  goToOnHoverBanner(banner, col, row, scene){}
 }

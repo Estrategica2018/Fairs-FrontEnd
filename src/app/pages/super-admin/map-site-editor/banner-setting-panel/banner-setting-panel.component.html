@@ -60,7 +60,7 @@
 
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'speakerCatalog' }"
                      (click)="tabSelect = 'speakerCatalog'" *ngIf="banner.speakerCatalog">
-                     <ion-label class="tool-special"> Conferencistas</ion-label>
+                     <ion-label class="tool-special"> Invitados</ion-label>
                   </ion-tab-button>
 
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'video' }" (click)="tabSelect = 'video'"
@@ -72,7 +72,7 @@
                      (click)="tabSelect = 'carousel'" *ngIf="banner.carousel">
                      <ion-label class="tool-special"> Carrete</ion-label>
                   </ion-tab-button>
-                  
+
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'contact' }" (click)="tabSelect = 'contact'"
                      *ngIf="banner.contact">
                      <ion-label class="tool-special"> Contácto</ion-label>
@@ -1044,7 +1044,7 @@
                <ion-toolbar class="separator-text"
                   (click)="showSpeakerCatalogActions == 'ImageProfile' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'ImageProfile'">
                   <ion-buttons slot="start">
-                     <ion-card-subtitle> Imagen Conferencista
+                     <ion-card-subtitle> Imagen Invitado
                      </ion-card-subtitle>
                   </ion-buttons>
                   <ion-buttons slot="end">

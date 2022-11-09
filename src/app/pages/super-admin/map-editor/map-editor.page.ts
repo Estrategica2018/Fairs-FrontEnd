@@ -1767,7 +1767,7 @@ export class MapEditorPage implements OnInit {
   initializeSpeakers(banner) {
 
     banner.__speakerCatalogList = [];
-    banner.speakerCatalog.speakerType = banner.speakerCatalog.speakerType || 'Conferencista';
+    banner.speakerCatalog.speakerType = banner.speakerCatalog.speakerType || 'Invitado';
     if (this.speakerList.length == 0) {
       this.speakersService.list()
         .then((speakers) => {

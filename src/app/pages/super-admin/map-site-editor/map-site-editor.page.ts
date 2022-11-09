@@ -195,7 +195,7 @@ export class MapSiteEditorPage implements OnInit {
     });
 
   }
-  
+
   initializeBanners(scene: any) {
     let rows = scene.rows;
     rows.forEach((row) => {
@@ -524,12 +524,12 @@ export class MapSiteEditorPage implements OnInit {
       case 'SpeakerCatalog':
         banner.size = { "x": 428, "y": 237 };
         banner.speakerCatalog = {
-          "nameFontSize": 24, 
-          "nameFontColor": this.fair.social_media.iconMenuColorTitle, 
+          "nameFontSize": 24,
+          "nameFontColor": this.fair.social_media.iconMenuColorTitle,
           "nameTop": 10, "nameLeft": 216, "nameFontFamily": "YoutubeSansMedium",
           "nameFontWeight": "100",
           "descHeigth": 69,
-          "descTop": 139, "descLeft": 198, "descWidth": 208, "descFontSize": 14, "descTextAlign": "justify", 
+          "descTop": 139, "descLeft": 198, "descWidth": 208, "descFontSize": 14, "descTextAlign": "justify",
           "lineHeightMili": 0, "lineHeightUnit": 1, "lineHeight": 1, "descFontFamily": "YoutubeSansLight", "descFontWeight": 100, "titleFontColor": "#000", "titleFontFamily": "YoutubeSansMedium", "titleFontSize": 19, "titleFontWeight": "bold", "titleLeft": 0, "titleTop": 113, "imagesTop": 0, "imagesLeft": 0, "imagesWidth": 187, "imagesHeight": 224, "imagesPriceWidth": 16, "imagestitleWidth": null, "priceTop": 38, "priceLeft": 27, "priceFontColor": "#ff1a1a", "nameWidth": 177, "nameHeight": 0, "logoLeft": 142, "logoTop": 26, "logoWidth": 74, "logoHeight": 69, "professionFontColor": "#ffffff", "professionTop": 97, "professionLeft": 199, "descFontColor": "", "professionFontSize": 15
         }
         banner.backgroundColor = this.fair.social_media.iconMenuColor;
@@ -541,6 +541,14 @@ export class MapSiteEditorPage implements OnInit {
         banner.styles.borderRadiusUnit = "px";
 
         break;
+      case 'FormCatalog':
+        banner.groupMode = true;
+        banner.size = { "x": 170, "y": 50 };
+        banner.formCatalog = { "category": "" };
+        banner.styles.image = { "src": "https://files.pucp.education/departamento/teologia/2021/09/25213139/Boton-inscripcion-300x90.png" };
+        banner.styles.class = "cursor-pointer";
+        break;
+
       case 'ProductCatalog':
         banner = {
           "size": { "x": 428, "y": 237 },
@@ -588,12 +596,12 @@ export class MapSiteEditorPage implements OnInit {
         banner.border = { "radius": 19, "style": "solid", "color": "rgba(0,0,0,.125)" };
         break;
       case 'AgendaCatalog':
-          banner.groupMode = true;
-          banner.size = { "x": 367, "y": 408 };
-          banner.agendaCatalog = { "category": "" };
-          banner.styles.width = 51;
-          banner.styles.widthUnit = 'em';
-          break;
+        banner.groupMode = true;
+        banner.size = { "x": 367, "y": 408 };
+        banner.agendaCatalog = { "category": "" };
+        banner.styles.width = 51;
+        banner.styles.widthUnit = 'em';
+        break;
       case 'Contact':
         banner = { "groupMode": true, "size": { "x": 367, "y": 408 }, "contact": { "name": "" }, "backgroundColor": "#ffffff", "fontColor": "#000000", "fontSize": "13", "shadowActivate": true, "shadowRight": -8, "shadowDown": 4, "shadowDisperse": 21, "shadowExpand": -16 };
         break;
@@ -1259,7 +1267,7 @@ export class MapSiteEditorPage implements OnInit {
   initializeSpeakers(banner) {
 
     banner.__speakerCatalogList = [];
-    banner.speakerCatalog.speakerType = banner.speakerCatalog.speakerType || 'Conferencista';
+    banner.speakerCatalog.speakerType = banner.speakerCatalog.speakerType || 'Invitado';
     if (this.speakerList.length == 0) {
       banner.__factor = banner.__factor || 3;
     }

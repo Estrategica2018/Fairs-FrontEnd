@@ -813,7 +813,7 @@
                   </ion-tab-button>
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'speakerCatalog' }"
                      (click)="tabSelect = 'speakerCatalog'" *ngIf="bannerSelect.speakerCatalog">
-                     <ion-label class="tool-special"> Conferencistas</ion-label>
+                     <ion-label class="tool-special"> Invitados</ion-label>
                   </ion-tab-button>
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'video' }" (click)="tabSelect = 'video'"
                      *ngIf="bannerSelect.video">
@@ -1528,7 +1528,7 @@
             <ion-toolbar class="separator-text"
                (click)="showSpeakerCatalogActions == 'ImageProfile' ? showSpeakerCatalogActions = null : showSpeakerCatalogActions = 'ImageProfile'">
                <ion-buttons slot="start">
-                  <ion-card-subtitle> imagen Conferencista
+                  <ion-card-subtitle> imagen Invitado
                   </ion-card-subtitle>
                </ion-buttons>
                <ion-buttons slot="end">

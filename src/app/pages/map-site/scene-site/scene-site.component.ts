@@ -43,6 +43,12 @@ export class SceneSiteComponent implements OnInit {
       this.layoutBannerSelectTime = Date.now();
       this.onHoverBanner.emit({ 'banner': banner, 'col': col, 'row': row, 'scene': scene });
     }
+    else if (banner.formCatalog) {
+      this.redirectTo('/form-mincultura-catalog');
+    }
+    else if (banner.speakerCatalog) {
+      alert('conferncista');
+    }
     else if (banner && banner.externalUrl) {
       const windowReference = window.open();
       windowReference.location.href = banner.externalUrl;
@@ -97,5 +103,11 @@ export class SceneSiteComponent implements OnInit {
         ]);
       await squareA.play();
     }
+  }
+
+  redirectTo(uri: string) {
+    this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
+      this.router.navigate([uri])
+    });
   }
 }

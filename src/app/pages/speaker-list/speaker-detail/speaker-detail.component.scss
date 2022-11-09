@@ -1,10 +1,11 @@
 
 :root {
- --blues: #001835;
+ --blues: #FFA439;
 }
 
-$blue: #001835;
-$green: #00B8FF;
+//$blue: #FFA439;
+$blue: #FFA439;
+$green: #4C2505;
 $width: 600px;
 $height: 257px;
 $col_1: 0.65;
@@ -67,18 +68,18 @@ $col_2: 0.35;
   border-top-left-radius: 5px;
   min-height: 206px;
   .title {
-    color: #006BCC;
+    color: #{$green};
     text-align: center;
   }
   .item {
-    border-bottom: 2px solid #001835;
+    border-bottom: 2px solid #FFA439;
     text-align: center;
     margin: 13px 0px;
   }
 }
 
 .panel-border {
-  border-top: 20px solid #001835;
+  border-top: 20px solid #FFA439;
   border-style: dotted;
   position: absolute;
   top: -16px;

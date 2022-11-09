@@ -109,7 +109,7 @@ export class SpeakerPage implements OnInit {
         this.speakersService.list().then((speakers) => {
           this.speakers = speakers;
           this.loading.dismiss();
-          this.success = `Conferencista creado exitosamente`;
+          this.success = `Invitado creado exitosamente`;
           this.errors = null;
           this.speaker = speaker;
         });
@@ -144,7 +144,7 @@ export class SpeakerPage implements OnInit {
         this.speakersService.list().then((speakers) => {
           this.speakers = speakers;
           this.loading.dismiss();
-          this.success = `Conferencista actualizado exitosamente`;
+          this.success = `Invitado actualizado exitosamente`;
           this.errors = null;
           this.speaker = speaker;
           this.speakersService.get(speaker.id).then((speakerGet) => {
@@ -175,9 +175,9 @@ export class SpeakerPage implements OnInit {
           this.speakers = speakers;
           this.loading.dismiss();
           if (this.speakers.active) {
-            this.success = `Conferencista activado exitosamente`;
+            this.success = `Invitado activado exitosamente`;
           } else {
-            this.success = `Conferencista inactivado exitosamente`;
+            this.success = `Invitado inactivado exitosamente`;
           }
           this.errors = null;
           this.speaker = speaker;
@@ -248,7 +248,7 @@ export class SpeakerPage implements OnInit {
         this.speakersService.list().then((speakers) => {
           this.speakers = speakers;
           this.loading.dismiss();
-          this.success = `Conferencistas actualizados exitosamente`;
+          this.success = `Invitados actualizados exitosamente`;
         }).catch(error => {
           this.loading.dismiss();
           this.errors = error;

@@ -140,7 +140,7 @@ export class UsersService {
 
     return this.http.post(`${SERVER_URL}/api/user/update`,userData, httpOptions)
    .pipe(
-      timeout(3000),
+      timeout(60000),
       catchError((e: any) => {
         if(e.status == 401) {
            throw new Error(`Usuario ya existe`);

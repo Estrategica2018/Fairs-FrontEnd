@@ -1,11 +1,11 @@
 <ion-grid id="grid-{{banner.id}}">
-   <ion-row>
-     <ion-col *ngFor="let speaker of banner.__speakerCatalogList; let i = index;">
-       <div class="card m-auto card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.styles.class}}"
-       (mouseover)="bannerSpeakerSelectHover = banner.id + '-' + i;"
-       (mouseout)="bannerSpeakerSelectHover = null;"
-       [ngClass]="{ 'element-selected': bannerSpeakerSelectHover == banner.id + '-' + i }" 
-       [ngStyle]="{
+  <ion-row>
+    <ion-col *ngFor="let speaker of banner.__speakerCatalogList; let i = index;">
+      <div 
+      (click)="!editMode ? presenterSpeakerModal(speaker) : null"
+      class="card m-auto card-style-id-{{banner.id}}  item-{{(i+1)}} {{banner.styles.class}}"
+        (mouseover)="bannerSpeakerSelectHover = banner.id + '-' + i;" (mouseout)="bannerSpeakerSelectHover = null;"
+        [ngClass]="{ 'element-selected': bannerSpeakerSelectHover == banner.id + '-' + i }" [ngStyle]="{
           'top': speaker.top + 'px',
           'left': speaker.left + 'px',
           'width': banner.size.x + 'px', 
@@ -19,23 +19,21 @@
           'box-shadow': (banner.shadowActivate ? banner?.shadowRight+'px ' + banner?.shadowDown+'px '+ banner?.shadowDisperse+'px '  +  banner?.shadowExpand+'px ' +  ( banner?.shadowColor || 'black') : '')
          }">
 
-       <div class="position-absolute cursor-pointer name"
-         (click)=" showSpeakerCatalogActions = 'ImageProfile'; tabSelect = 'speakerCatalog';"
-         [ngStyle]="{
+        <div class="position-absolute cursor-pointer name"
+          (click)=" showSpeakerCatalogActions = 'ImageProfile'; tabSelect = 'speakerCatalog';" [ngStyle]="{
                  'top': banner.speakerCatalog.imagesTop + 'px',
                  'left': banner.speakerCatalog.imagesLeft + 'px',
                  'width': banner.speakerCatalog.imagesWidth + 'px',
                  'height': banner.speakerCatalog.imagesHeight + 'px'
                 }">
-         <img [src]="speaker.profile_picture" [ngStyle]="{
+          <img [src]="speaker.profile_picture" [ngStyle]="{
                  'width': banner.speakerCatalog.imagesWidth + 'px',
                  'height': banner.speakerCatalog.imagesHeight + 'px'
                 }" />
-       </div>
+        </div>
 
-       <div class="ion-text-center position-absolute "
-         (click)=" showSpeakerCatalogActions = 'Name'; tabSelect = 'speakerCatalog';"
-         [ngStyle]="{
+        <div class="ion-text-center position-absolute "
+          (click)=" showSpeakerCatalogActions = 'Name'; tabSelect = 'speakerCatalog';" [ngStyle]="{
              'font-size': banner.speakerCatalog.nameFontSize + 'px',
              'font-family': ( banner.speakerCatalog.nameFontFamily ? banner.speakerCatalog.nameFontFamily : 'YoutubeSansMedium' ),
              'font-weight':  banner.speakerCatalog.nameFontWeight,
@@ -45,10 +43,9 @@
              'left': banner.speakerCatalog.nameLeft + 'px',
              'line-height': banner.speakerCatalog.lineNameHeightUnit +  '.' +banner.speakerCatalog.lineNameHeightMili
             }">{{speaker.user?.name}} {{speaker.user?.last_name}}
-       </div>
-       <div class="position-absolute desc"
-         (click)=" showSpeakerCatalogActions = 'Description';  tabSelect = 'speakerCatalog';"
-         [ngStyle]="{
+        </div>
+        <div class="position-absolute desc"
+          (click)=" showSpeakerCatalogActions = 'Description';  tabSelect = 'speakerCatalog';" [ngStyle]="{
              'font-size': banner.speakerCatalog.descFontSize + 'px',
              'font-family': ( banner.speakerCatalog.descFontFamily ? banner.speakerCatalog.descFontFamily : 'YoutubeSansMedium' ),
              'height': banner.speakerCatalog.descHeigth + 'px',
@@ -61,10 +58,9 @@
              'text-align': banner.speakerCatalog.descTextAlign,
              'color': banner.speakerCatalog.descFontColor
             }">{{speaker.description_one}}
-       </div>
-       <div class="position-absolute"
-         (click)=" showSpeakerCatalogActions = 'Profession'; tabSelect = 'speakerCatalog';"
-         [ngStyle]="{
+        </div>
+        <div class="position-absolute"
+          (click)=" showSpeakerCatalogActions = 'Profession'; tabSelect = 'speakerCatalog';" [ngStyle]="{
              'font-size': banner.speakerCatalog.professionFontSize + 'px',
              'font-family': ( banner.speakerCatalog.professionFontFamily ? banner.speakerCatalog.professionFontFamily : 'YoutubeSansMedium' ),
              'top': banner.speakerCatalog.professionTop + 'px',
@@ -72,18 +68,17 @@
              'font-weight':  banner.speakerCatalog.professionFontWeight,
              'color': banner.speakerCatalog.professionFontColor
             }">{{speaker.profession}}
-       </div>
-       <ion-img [src]="speaker.company_logo" class="position-absolute" color="primary" size="small"
-       [hidden]="banner.speakerCatalog.hiddenLogo"
-         (click)=" showSpeakerCatalogActions = 'Logo'; tabSelect = 'speakerCatalog';"
-         [ngStyle]="{
+        </div>
+        <ion-img [src]="speaker.company_logo" class="position-absolute" color="primary" size="small"
+          [hidden]="banner.speakerCatalog.hiddenLogo"
+          (click)=" showSpeakerCatalogActions = 'Logo'; tabSelect = 'speakerCatalog';" [ngStyle]="{
              'width': banner.speakerCatalog.logoWidth + 'px', 
              'height': banner.speakerCatalog.logoHeight + 'px',
              'left': banner.speakerCatalog.logoLeft + 'px',
              'top': banner.speakerCatalog.logoTop + 'px'
           }">
-       </ion-img>
-     </div>
-     </ion-col>
-   </ion-row>
- </ion-grid>
+        </ion-img>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>

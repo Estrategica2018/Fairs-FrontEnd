@@ -27,7 +27,7 @@ export class MinculturaService {
 
     return this.http.get(`${SERVER_URL}/api/user/mincultura/${fair.id}`, httpOptions)
       .pipe(
-        timeout(3000),
+        timeout(60000),
         catchError((e: any) => {
           if (e.status == 401) {
             throw new Error(`Usuario ya existe`);
@@ -55,7 +55,7 @@ export class MinculturaService {
     let data = Object.assign(minculturaUser, {'agendaId': agendaId});
     return this.http.post(`${SERVER_URL}/api/user/mincultura/register/${fair.id}`, data, httpOptions)
       .pipe(
-        timeout(3000),
+        timeout(600003),
         catchError((e: any) => {
           if (e.status == 401) {
             throw new Error(`Usuario ya existe`);

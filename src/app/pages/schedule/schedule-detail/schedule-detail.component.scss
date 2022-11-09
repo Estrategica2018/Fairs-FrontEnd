@@ -1,5 +1,5 @@
 .close-modal {
-  cursor: pointer; 
+  cursor: pointer;
   position: absolute;
   right: 0.7em;
   top: 0;
@@ -29,7 +29,7 @@
 }
 
 .close-modal {
-  cursor: pointer; 
+  cursor: pointer;
   position: absolute;
   right: 0.7em;
   top: 0;
@@ -41,7 +41,7 @@
 .pay-button {
   bottom: -0.3em;
   position: absolute;
-}    
+}
 
 .back-button {
   position: absolute;
@@ -50,10 +50,11 @@
   font-size: 1.7em;
   margin-top: -1em;
   height: 2.5em;
+
   ion-icon {
     font-size: 1.5em;
   }
-  
+
   div {
     position: absolute;
     top: 0em;
@@ -77,4 +78,13 @@ input {
 
 .agenda-detail-container {
   overflow: auto;
+}
+
+@media screen and (max-height: 348px) {
+
+  .agenda-detail-container {
+    overflow: auto;
+    height: 30em;
+  }
+
 }

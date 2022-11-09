@@ -546,7 +546,9 @@ export class AppComponent implements OnInit {
 
   async presentAccount() {
 
-    this.modal = await this.modalCtrl.create({
+    this.redirectTo('/profile');
+
+    /*this.modal = await this.modalCtrl.create({
       component: AccountComponent,
       cssClass: 'boder-radius-modal',
       componentProps: {
@@ -557,84 +559,8 @@ export class AppComponent implements OnInit {
     const { data } = await this.modal.onWillDismiss();
 
     if (data) {
-    }
+    }*/
   }
-
-  /*goToSceneUp(sceneLayout, menuPosition, obj) {
-    if (menuPosition == 0 || !obj || !obj.resources || !obj.resources.scenes) return;
-
-    let list = [];
-    this.fair.location = [];
-    let mp0: Number = menuPosition;
-    let mp1: Number;
-    let sceneIni = sceneLayout.scene ? sceneLayout.scene : sceneLayout.pavilion;
-
-    for (let i = 0, sceneTmp = null, sceneNext = null; i < this.sceneLayoutList.length; i++) {
-      sceneTmp = this.sceneLayoutList[i].scene ? this.sceneLayoutList[i].scene : this.sceneLayoutList[i].pavilion;
-      if ((menuPosition - 1) == i + 1) {
-        sceneNext = this.sceneLayoutList[i + 1].scene ? this.sceneLayoutList[i + 1].scene : this.sceneLayoutList[i + 1].pavilion;
-        mp1 = sceneNext.menuPosition;
-        sceneNext.menuPosition = mp0;
-        sceneIni.menuPosition = mp1;
-        this.addEditedScene(list, this.sceneLayoutList[i + 1], i);
-        this.addEditedScene(list, this.sceneLayoutList[i], i + 1);
-      } else if (menuPosition == i + 1) {
-
-      }
-      else {
-        this.addEditedScene(list, this.sceneLayoutList[i], i);
-      }
-    }
-    this.sceneLayoutList = list;
-
-    let mbcontrol = false;
-    for(let menuChange of this.menuChangeList) {
-      if(menuChange.type == 'Fair') {
-        mbcontrol = true;
-      }
-    }
-
-    if(!mbcontrol) this.menuChangeList.push({'type':'Fair'});
-    
-  }
-
-  goToSceneDown(sceneLayout, menuPosition, obj) {
-    if (menuPosition + 1 > this.lTotal || !obj || !obj.resources || !obj.resources.scenes) return;
-    let list = [];
-    this.fair.location = [];
-    let mp0: Number = menuPosition;
-    let mp1: Number;
-    let sceneIni = sceneLayout.scene ? sceneLayout.scene : sceneLayout.pavilion;
-
-    for (let i = 0, sceneTmp = null, sceneNext = null; i < this.sceneLayoutList.length; i++) {
-      sceneTmp = this.sceneLayoutList[i].scene ? this.sceneLayoutList[i].scene : this.sceneLayoutList[i].pavilion;
-      if (menuPosition == i + 1) {
-        sceneNext = this.sceneLayoutList[i + 1].scene ? this.sceneLayoutList[i + 1].scene : this.sceneLayoutList[i + 1].pavilion;
-        mp1 = sceneNext.menuPosition;
-        sceneNext.menuPosition = mp0;
-        sceneIni.menuPosition = mp1;
-        this.addEditedScene(list, this.sceneLayoutList[i + 1], i);
-        this.addEditedScene(list, this.sceneLayoutList[i], i + 1);
-
-
-      } else if (menuPosition == sceneTmp.menuPosition) {
-
-      }
-      else {
-        this.addEditedScene(list, this.sceneLayoutList[i], i);
-      }
-    }
-    this.sceneLayoutList = list;
-
-    let mbcontrol = false;
-    for(let menuChange of this.menuChangeList) {
-      if(menuChange.type == 'Fair') {
-        mbcontrol = true;
-      }
-    }
-
-    if(!mbcontrol) this.menuChangeList.push({'type':'Fair'});
-  }*/
 
   goToFairSceneUp(event, positionBefore, positionAfter) {
     event.stopPropagation();

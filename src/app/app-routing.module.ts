@@ -105,7 +105,11 @@ const routes: Routes = [
   {
     path: 'user-register',
     loadChildren: () => import('./pages/user-register/register.module').then( m => m.RegisterPageModule)
+  },  {
+    path: 'profile',
+    loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
   },
+
 
 
 

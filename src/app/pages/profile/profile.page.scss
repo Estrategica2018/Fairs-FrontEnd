@@ -1,0 +1,102 @@
+.padding-container-profile {
+    padding: 0px 10% 0 10%;
+}
+
+.h-1 {
+    height: 4em;
+}
+
+.text-color {
+    color: #F7A23C;
+    font-size: 4em;
+}
+
+.text-color2 {
+    color: #4C2505;
+    font-size: 3em;
+}
+
+.patter {}
+
+.patter::before {
+    content: " ";
+    z-index: 1;
+    position: absolute;
+    height: 100%;
+    width: 6em;
+    background-image: url(https://res.cloudinary.com/deueufyac/image/upload/v1667571545/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/ESCARAPELA/pattern_hqvvoa.png);
+    background-size: 6em;
+}
+
+@media screen and (max-width:680px) {
+    .patter::before {
+        content: " ";
+        /*height: 0%;*/
+    }
+}
+
+.padding {
+    padding: 0% 10%;
+}
+
+@media screen and (max-width: 680px) {
+    .padding {
+        padding: 0% 16%;
+    }
+}
+
+.image-form {
+    margin: auto;
+    width: 18em;
+    margin-top: 5em;
+}
+
+.image-form-tooltip {
+    position: absolute;
+    left: 0;
+    width: 20em;
+    top: 0;
+    height: auto;
+}
+
+
+
+.banner-form {}
+
+
+
+
+
+/************************************************************************************/
+.input_file {
+    margin-left: 10px;
+}
+
+
+.input_file {
+    display: none;
+}
+
+.label-uploadInput {
+    border-radius: 5px;
+    border: 2px solid var(--ion-color-primary);
+    color: var(--ion-color-primary);
+    padding: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.card-alert {}
+
+
+.avatar {
+    width: 15em;
+    height: 17.6em;
+    left: 1.5em;
+    position: absolute;
+}
+
+.padding-container {
+    padding: 2em 10% 0 10%;
+}

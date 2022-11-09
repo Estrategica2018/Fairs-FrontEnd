@@ -1,0 +1,61 @@
+<ion-header>
+</ion-header>
+
+<ion-content>
+
+
+  <div *ngIf="showEditPhoto" class="ion-text-center">
+    <div>
+      <img id="image" src="">
+    </div>
+
+    <ion-button (click)="onCropperImage()">
+      recortar
+    </ion-button>
+  </div>
+
+  <div [hidden]="showEditPhoto">
+    <ion-grid class="padding-container-profile">
+      <ion-row>
+        <ion-col size="3" class="patter">
+
+        </ion-col>
+        <ion-col size="8">
+          <ion-row class="h-1"></ion-row>
+          <ion-row>
+            <img
+              src="https://res.cloudinary.com/deueufyac/image/upload/v1667493460/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/FORMULARIOS/encabezado_o0xwdh.png" />
+          </ion-row>
+          <ion-row>
+            <img class="image-form" id="image-form"
+              src="https://res.cloudinary.com/deueufyac/image/upload/v1667571327/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/ESCARAPELA/borde_escarapela_j9j3pc.png" />
+              
+              
+
+              <ion-label class="image-form-tooltip"
+               [ngStyle]="{
+                'top': imageForm.logout ? imageForm.logout.top +'px' : '',
+                'left': imageForm.logout ? imageForm.logout.left +'px' : ''
+               }">
+                <img [src]="url_image" class="avatar mt-4" *ngIf="url_image">
+                <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar mt-4" *ngIf="!url_image">
+             </ion-label>
+
+
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <span class="text-color">{{userData.name}} {{userData.last_name}}</span>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <span class="text-color2">{{rolName}}</span>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
