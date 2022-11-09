@@ -5,7 +5,7 @@
 
     <div class="card w-100 p-3">
       <div class="info">
-        <ion-icon color="primary" name="calendar-outline"></ion-icon>    
+        <ion-icon color="primary" name="calendar-outline"></ion-icon>
       </div>
       <div class="padding-container min-height">
             <ion-list-header [hidden]="!errors">
@@ -21,11 +21,11 @@
                           <div>
                             <img [src]="agenda.category?.resources?.url_image"/>
                             <br/>
-                            <ion-item [ngStyle]="{'border-left': '2px solid ' + agenda.category?.resources.color,'color': agenda.category?.color}"> 
+                            <ion-item [ngStyle]="{'border-left': '2px solid ' + agenda.category?.resources.color,'color': agenda.category?.color}">
                             <ion-label class="ml-4 text-uppercase"> {{agenda?.category?.name}}</ion-label>
                             <br /><br />
                             </ion-item>
-                            
+
                           </div>
                           <ion-list>
 
@@ -33,25 +33,26 @@
                             (click)="onAgendaPrice()" button>
                               <ion-label color="primary">Entrar al Evento por $ {{agenda?.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
                             </ion-item>
-                            
+
                             <ion-item *ngIf="loaded && profileRole && ( profileRole.speaker || profileRole.admin )"
                             (click)="onViewerMeeting()" button>
                               <ion-label color="primary"> Iniciar conferencia </ion-label>
                             </ion-item>
-                            
+
                             <ion-item *ngIf="loaded && agenda.audience_config == 1 " [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
-                            (click)="onViewerMeeting()" button>
-                              <ion-label color="primary">Entrar al Evento ( gratuito )</ion-label>
-                            </ion-item>
-                            
-                            <ion-item *ngIf="loaded && eventPayment && agenda.audience_config == 4" [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
                             (click)="onViewerMeeting()" button>
                               <ion-label color="primary">Entrar al Evento</ion-label>
                             </ion-item>
 
+                            <ion-item *ngIf="loaded && eventPayment && agenda.audience_config == 4" [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
+                            (click)="onViewerMeeting()" button>
+                              <ion-label color="primary">Entrar al Evento</ion-label>
+                            </ion-item>
+<!--
                             <ion-item (click)="onSupportClick()" button>
                               <ion-label color="primary">Dejar un comentario</ion-label>
                             </ion-item>
+                            -->
                           </ion-list>
                         </ion-col>
                         <ion-col class="content-left scroll-light" >
@@ -73,10 +74,10 @@
                             <br /><br />
                             <h4 *ngIf="invited_speakers?.length > 1">Invitados</h4>
                             <h4 *ngIf="invited_speakers?.length === 1">Invitado</h4>
-                            
+
                             <ion-item *ngFor="let invited_speaker of invited_speakers" class="p-2"
                             (click)="onSpeaker(invited_speaker.speaker)" button>
-                            
+
                                   <div class="d-flex">
                                     <ion-avatar slot="start" class="p-2">
                                        <img [src]="invited_speaker.speaker?.profile_picture" [alt]="invited_speaker.speaker?.user?.name + ' profile picture'">
@@ -107,7 +108,7 @@
                               <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
                                 <h6 style="margin-right:2em; width: 87%;" slot="start">Para ingresar a este evento debes registrarte y acceder con tu usuario</h6>
                                 <div (click)="showRegister=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
-                              </ion-toolbar>        
+                              </ion-toolbar>
                               <ion-toolbar class="pay-button ml-6 footer-pay">
                                 <ion-button class="button ml-6" color="primary" size="small" (click)="onRegister()">
                                    Ingresar o crear cuenta
