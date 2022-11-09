@@ -18,6 +18,7 @@ export class SpeakerDetailComponent implements OnInit {
   months = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
   screenSm = false;
   @Input() scheduleMode = false;
+  stretchMore = false;
   
   
   constructor(

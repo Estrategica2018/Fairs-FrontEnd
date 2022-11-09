@@ -6,7 +6,7 @@
       <h2 class="name text">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
       <h5 class="text">{{speaker.profession}}</h5>
       <div class="ion-text-center">
-        <img class="icon-circle" [ngStyle]="{ 'margin-top': ( screenSm ? '0' : '2em'), 'margin-bottom': ( screenSm ? '2em' : '0') }" [src]="speaker.company_logo"/>
+        <!--img class="icon-circle" [ngStyle]="{ 'margin-top': ( screenSm ? '0' : '2em'), 'margin-bottom': ( screenSm ? '2em' : '0') }" [src]="speaker.company_logo"/-->
       </div> 
     </div>  
          
@@ -23,7 +23,12 @@
       </ion-list>
     </div>
   </div>
-  <div class="stretch-1" [ngClass]="{'horizontal': screenSm, 'vertical': !screenSm}">
+  <div class="stretch-1"  
+  [ngClass]="{'horizontal': screenSm, 'vertical': !screenSm, 'stretch-more': stretchMore} ">
     {{speaker.description_one}}
+  </div>
+  <div [hidden]="stretchMore" class="show-stretch-more cursor-pointer"
+  (click)="stretchMore = true;">
+        Ver más 
   </div>
 </div>

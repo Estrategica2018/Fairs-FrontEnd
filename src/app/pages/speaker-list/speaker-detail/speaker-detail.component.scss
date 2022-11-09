@@ -90,11 +90,30 @@ $col_2: 0.35;
 .stretch-1.vertical {
   top: calc( #{$height} - 7px );
   position: absolute;
-  width: 45%;
+  width: 50%;
   padding: 1em;
   text-align: justify;
   font-size: 1.2em;
 } 
+.stretch-more {
+  overflow: auto;
+  height: 20em;
+}
+
+.show-stretch-more {
+  width: 14em;
+  height: 4em;
+  background-color: gray;
+  opacity: 0.8;
+  text-align: center;
+  padding-top: 1.2em;
+  color: black;
+  font-weight: bold;
+  position: absolute;
+  bottom: 1em;
+  left: 7em;
+}
+
 
 .stretch-1.horizontal {
   top: 38em;
