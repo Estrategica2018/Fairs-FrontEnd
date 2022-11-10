@@ -51,20 +51,23 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  @HostListener('window:resize')
-  initializeToopTipMenu() {
-
+  changeToolTipPhoto(){
     let topMenu = 0;
-
-    setTimeout(() => {
-      let img: any = document.getElementById('image-form');
-      if (img)
+    let img: any = document.getElementById('image-form');
+    if (img)
         this.imageForm.logout = { top: img.offsetTop + topMenu, left: img.offsetLeft };
         console.log(this.imageForm.logout);
         console.log(img.clientWidth, img.naturalWidth);
-        
-    }, 100);
+  }
 
+  @HostListener('window:resize')
+  initializeToopTipMenu() {
+    setTimeout(() => {
+      this.changeToolTipPhoto();   
+    }, 100);
+    setTimeout(() => {
+      this.changeToolTipPhoto();   
+    }, 1000);
   }
 
   onCropperImage(){}

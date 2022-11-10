@@ -29,7 +29,7 @@ export class FormMinculturaCatalogPage implements OnInit {
   errors: any;
   success: any;
   urlBack = '';
-  CategorySelector = 'Taller';
+  CategorySelector = 'all';
   disableSelection = false;
   agendaHover = null;
   minculturaUser = null;
@@ -86,7 +86,7 @@ export class FormMinculturaCatalogPage implements OnInit {
           this.minculturaService.getMinculturaUser(userDataSession, fair)
             .subscribe(
               response => {
-                console.log(response);
+                
                 this.loading.dismiss();
                 if (response.data) {
                   this.minculturaUser = response.data;
@@ -113,7 +113,7 @@ export class FormMinculturaCatalogPage implements OnInit {
                 if (response.audience) {
                   let audience = response.audience;
                   for (let agenda of audience) {
-                    if (agenda.agenda.category.name == this.CategorySelector) {
+                    if (this.CategorySelector == 'all' || agenda.agenda.category.name == this.CategorySelector) {
                       this.agendaSelect = agenda;
                       setTimeout(() => {
                         let check: any = document.querySelector<HTMLElement>('#check-agenda-' + agenda.id);
@@ -214,6 +214,8 @@ export class FormMinculturaCatalogPage implements OnInit {
   onRegister() {
     this.submitted = true;
     let agendaId = null;
+    this.success = null;
+    this.errors = null;
 
     if (this.registerForm.invalid) {
       this.presentToast('Por favor complete los campos para finalizar la inscripción');
@@ -243,6 +245,8 @@ export class FormMinculturaCatalogPage implements OnInit {
         response => {
           console.log(response);
           this.loading.dismiss();
+          this.success = "Evento vitual registrado exitósamente";
+          this.disableSelection = true;
         },
         error => {
           this.loading.dismiss();

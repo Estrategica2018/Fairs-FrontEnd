@@ -109,28 +109,27 @@ $col_2: 0.35;
   padding-top: 1.2em;
   color: black;
   font-weight: bold;
-  position: absolute;
+  margin: auto;
   bottom: 1em;
   left: 7em;
 }
 
 
 .stretch-1.horizontal {
-  top: 38em;
-  position: absolute;
-  width: 100%;
-  padding: 1em;
+  padding: 2em;
+  font-size: 2em;
+  height: 10em;
+  overflow: auto;
   text-align: justify;
-  font-size: 1.2em;
-  margin-top: 0.5em;
 }
 
 
 .agenda.horizontal {
-  width: 85%;
-  top: 31em;
-  display: none;
-  margin-right: 5em;
+  position: relative;
+    width: 90%;
+    right: 1.6em;
+    text-align: center;
+    margin: auto;
 }
 
 .agenda.vertical {
@@ -153,4 +152,9 @@ $col_2: 0.35;
   font-size: 2.5em;
   color: darkgray;
   z-index: 100;
+}
+
+.screenSm {
+  height: 48em;
+  overflow: auto;
 }

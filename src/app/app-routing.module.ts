@@ -103,9 +103,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/form-mincultura-catalog/form-mincultura-catalog.module').then( m => m.FormMinculturaCatalogPageModule)
   },
   {
+    path: 'form-mincultura-catalog/:message',
+    loadChildren: () => import('./pages/form-mincultura-catalog/form-mincultura-catalog.module').then( m => m.FormMinculturaCatalogPageModule)
+  },
+  {
     path: 'user-register',
     loadChildren: () => import('./pages/user-register/register.module').then( m => m.RegisterPageModule)
-  },  {
+  },
+  {
     path: 'profile',
     loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
   },

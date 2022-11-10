@@ -47,7 +47,7 @@ export class MapSitePage implements OnInit {
   }
 
   url: string;
-  scene: any = null;
+  scene: any = {};
   routerView: Router;
   sceneId: any;
   fair: any = null;
@@ -178,6 +178,13 @@ export class MapSitePage implements OnInit {
   }
 
   initializeBanners(scene: any) {
+    console.log(scene.videoPreview);
+    if (scene.videoPreview)
+      scene.videoPreviewSanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(scene.videoPreview);
+
+    
+    console.log(scene.videoPreviewSanitizer);
+
     let rows = scene.rows;
     rows.forEach((row) => {
       row.cols.forEach((col) => {

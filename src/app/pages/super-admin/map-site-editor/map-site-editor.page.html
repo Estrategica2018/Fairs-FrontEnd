@@ -2,14 +2,15 @@
 </ion-header>
 
 <ion-content
-style="background-size: cover; background-repeat: no-repeat; 
-      --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
-[ngStyle]="{ 
-  '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
-  'background-position': 'center top',
-  'background-repeat': 'no-repeat',
-  'background-size': 'cover'
+   style="background-size: cover; background-repeat: no-repeat; 
+         --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
+   [ngStyle]="{ 
+   '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
+   'background-position': 'center top',
+   'background-repeat': 'no-repeat',
+   'background-size': 'cover'
 }">
+
 
    <app-scene-site [hidden]="layoutModel" [editMode]="editMode" [windowScreenSm]="windowScreenSm"
       [windowScreenLg]="windowScreenLg" [scene]="sceneEdited" [bannerSelectHover]="bannerSelectHover"
@@ -58,6 +59,16 @@ style="background-size: cover; background-repeat: no-repeat;
                <ion-buttons slot="end">
                   <ion-card-subtitle>
                      <input class="mt-2 ml-2" type="text" (change)="onChangeItem()" [(ngModel)]="scene.title" />
+                  </ion-card-subtitle>
+               </ion-buttons>
+            </ion-toolbar>
+            <ion-toolbar>
+               <ion-buttons slot="start">
+                  <ion-card-subtitle> Video Preview </ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <ion-card-subtitle>
+                     <input class="mt-2 ml-2" type="text" (change)="onChangeItem()" [(ngModel)]="scene.videoPreview" />
                   </ion-card-subtitle>
                </ion-buttons>
             </ion-toolbar>

@@ -157,6 +157,18 @@
       </ion-grid>
     </ion-item>
     <ion-item lines="none" class="mt-3"></ion-item>
+    <ion-item *ngIf="success" class="not-found">
+      <div class="alert alert-success alert-dismissible">
+        <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+        <strong></strong> {{success}}
+      </div>
+    </ion-item>
+    <ion-list-header [hidden]="!errors">
+      <div class="alert alert-danger fade show alert-dismissible">
+        <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+        <strong></strong> {{errors}}
+      </div>
+    </ion-list-header>
     <ion-col size="4">
       <ion-button expand="full" (click)="onRegister()">Terminar Inscripción</ion-button>
     </ion-col>

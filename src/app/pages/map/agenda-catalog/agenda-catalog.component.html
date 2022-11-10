@@ -11,7 +11,7 @@
          <div class="h-100 card-schedule"
             [ngStyle]="{'width': banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : ''}">
             <div class="head" [ngStyle]="{
-               'margin-left':  banner.styles.widthUnit ? 'calc('+ banner.styles.width + '' + banner.styles.widthUnit +' * 0.012)' : '',
+               'margin-left':  banner.styles.width ? 'calc('+ banner.styles.width + '' + banner.styles.widthUnit +' * 0.012)' : '',
                'color': banner.agendaCatalog.colorHour,
                'border': banner.styles?.borderLength +  banner.styles?.borderLengthUnit + ' ' + banner.styles?.borderStyle + ' ' + banner.styles?.borderColor
             }">

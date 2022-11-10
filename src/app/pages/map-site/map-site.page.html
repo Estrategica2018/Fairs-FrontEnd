@@ -11,6 +11,14 @@ style="background-size: cover; background-repeat: no-repeat;  --background: {{ s
   'background-size': 'cover'
 }">
 
+
+<iframe [src]="scene && scene.videoPreviewSanitizer ? scene.videoPreviewSanitizer : ''" frameborder="0" title=""
+*ngIf="scene && scene.videoPreviewSanitizer"
+[ngStyle]= "{'width': '100vw', 'height': '100vh', 'opacity': scene && scene.videoPreviewSanitizer ? 1 : 0 }"
+   webkitallowfullscreen mozallowfullscreen allowfullscreen id="video-id-{{scene.id}}"
+   class="videoPreview">
+</iframe>
+
   <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-back-button"
     (click)="onToBackEditor(scene)">
     <ion-icon name="arrow-back-outline"></ion-icon>
