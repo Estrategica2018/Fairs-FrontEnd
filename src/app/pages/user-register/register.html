@@ -268,11 +268,20 @@
           <ion-row>
             <ion-col size="12" size-lg="6" class="mt-col">
               <ion-label position="stacked" class="fs-1" style="max-width: 100%"><span class="color-text ">17.</span> Escriba los nombres del municipio o departamento donde está ubicada la institución a la que está vinculado(a).<span class="required"> (*) </span></ion-label>
+              <!--
               <input formControlName="institucion_ubicacion" type="text" name="institucion_ubicacion" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.institucion_ubicacion.errors }"/>
+              -->
+              <ion-select (ionChange)="handleChange($event)" placeholder="Seleccione Departamento" okText="Aceptar" cancelText="Cancelar" name="departamento_opcion" formControlName="departamento_opcion" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.institucion_ubicacion.errors }">
+                <ion-select-option *ngFor="let departamento of departamentos" value="{{departamento.value}}">{{ departamento.value }}</ion-select-option>
+              </ion-select>
               <div *ngIf="submitted && f.institucion_ubicacion.errors" class="invalid-feedback">
                 <div *ngIf="f.institucion_ubicacion.errors.required">Campo requerido</div>
               </div>
+              <ion-select  [multiple]="true" placeholder="Seleccione Municipio" okText="Aceptar" cancelText="Cancelar" name="institucion_ubicacion" formControlName="institucion_ubicacion" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.institucion_ubicacion.errors }">
+                <ion-select-option *ngFor="let municipio of filtro_municipios" value="{{municipio.value}}">{{ municipio.value }}</ion-select-option>
+              </ion-select>
             </ion-col>
+
             <ion-col size="12" size-lg="6" class="mt-col">
               <ion-label position="stacked" class="fs-1"><span class="color-text ">18.</span> ¿Cuál es su nivel de escolaridad? <span class="required"> (*) </span></ion-label>
               <ion-select okText="Aceptar" cancelText="Cancelar" class="select-full-width" formControlName="escolaridad_nivel" name="escolaridad_nivel" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.escolaridad_nivel.errors }">
