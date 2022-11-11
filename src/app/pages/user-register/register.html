@@ -282,8 +282,9 @@
               </ion-select>
             </ion-col>
 
-            <ion-col size="12" size-lg="6" class="mt-col">
-              <ion-label position="stacked" class="fs-1"><span class="color-text ">18.</span> ¿Cuál es su nivel de escolaridad? <span class="required"> (*) </span></ion-label>
+            <ion-col size="12" size-lg="6" class="mt-col" style="    margin-top: 7px;">
+              <br>
+              <ion-label position="stacked" class="ion-margin-top fs-1"><span class="color-text ">18.</span> ¿Cuál es su nivel de escolaridad? <span class="required"> (*) </span></ion-label>
               <ion-select okText="Aceptar" cancelText="Cancelar" class="select-full-width" formControlName="escolaridad_nivel" name="escolaridad_nivel" class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.escolaridad_nivel.errors }">
                 <ion-select-option value="Primaria">Primaria</ion-select-option>
                 <ion-select-option value="Bachillerato">Bachillerato</ion-select-option>
