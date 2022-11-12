@@ -2,7 +2,8 @@
 export const environment = {
   production: true,
   message: 'hello prod',
-  fairName: 'biblioteca-nacional'
+  fairName: 'biblioteca-nacional',
+  redirectTo: 'map-site/fair/7'
 };
 
 export const SERVER_URL = 'https://www.e-logic.com.co';

@@ -19,7 +19,7 @@ export class BannerSettingPanelComponent implements OnInit {
   fixedBannerPanel = false;
   panelPos: any = { x: '27px', y: '0px' };
   tabSelect = 'position';
-  positionTypes = [{"value":"relative","label":"Relativo","selected":true},{"value":"absolute","label":"Absolute"}];
+  positionTypes = [{"value":"relative","label":"Relativo","selected":true},{"value":"absolute","label":"Absolute"}, {"value":"float","label":"Flotante"}];
   triangleBorderStyles = [{"value":"solid","label":"Sólido","selected":true},
   {"value":"dashed","label":"dashed"},
   {"value":"dotted","label":"dotted"},
@@ -89,6 +89,12 @@ export class BannerSettingPanelComponent implements OnInit {
   }
   
   goToOnChangeItem() {
+    if(this.changeItem) { 
+      this.changeItem.emit(true);
+    }
+  }
+
+  goToOnChangeItemFloat() {
     if(this.changeItem) { 
       this.changeItem.emit(true);
     }

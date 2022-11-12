@@ -32,6 +32,11 @@
                      <ion-label>Imágen</ion-label>
                   </ion-tab-button>
 
+                  <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'iFrame' }" (click)="tabSelect = 'iFrame'"
+                     *ngIf="banner.iFrame">
+                     <ion-label>IFrame</ion-label>
+                  </ion-tab-button>
+
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'background' }"
                      (click)="tabSelect = 'background'"
                      [hidden]="banner.line || banner.triangle || (banner.styles &&banner.styles.image) ">
@@ -130,6 +135,28 @@
 
             <ion-toolbar class="line-separator"></ion-toolbar>
 
+            <ion-toolbar *ngIf="banner.styles?.position.type=='float'">
+               <ion-buttons slot="start">
+                  <ion-card-subtitle> Flotante</ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <ion-card-subtitle>
+                     <select [(ngModel)]="banner.floatButton" (change)="goToOnChangeItem()" class="unit">
+                        <option value="top-left">Arriba-Izquierda</option>
+                        <option value="top-center">Arriba-Centrod</option>
+                        <option value="top-right">Arriba-Derecha</option>
+                        <option value="bottom-left">Abajo-Izquierda</option>
+                        <option value="bottom-center">Abajo-Centro</option>
+                        <option value="bottom-right">Abajo-Derecha</option>
+                        <option value="left-center">Izquierda-Centro</option>
+                        <option value="right-center">Derecha-Centro</option>
+                     </select> 
+                  </ion-card-subtitle>
+               </ion-buttons>
+            </ion-toolbar>
+
+            <ion-toolbar class="line-separator"></ion-toolbar>
+
             <ion-toolbar [hidden]="banner.triangle">
                <ion-buttons slot="start">
                   <ion-card-subtitle> Ancho </ion-card-subtitle>
@@ -200,6 +227,7 @@
                </ion-buttons>
             </ion-toolbar>
 
+                   
             <ion-toolbar class="line-separator"></ion-toolbar>
 
             <ion-toolbar>
@@ -361,6 +389,20 @@
 
             <ion-toolbar class="line-separator"></ion-toolbar>
 
+         </ion-card-content>
+
+         <ion-card-content *ngIf="tabSelect == 'iFrame'">
+
+            <ion-toolbar>
+               <ion-buttons slot="start">
+                  <ion-card-subtitle>Url Iframe</ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <input class="mt-2 ml-2 mr-2 input-form" style="width: 14em;" (change)="goToOnChangeItem()"
+                     (keypress)="goToOnChangeItem()" type="text" [(ngModel)]="banner.iFrame.src" />
+               </ion-buttons>
+            </ion-toolbar>
+            <ion-toolbar class="line-separator"></ion-toolbar>
          </ion-card-content>
 
          <ion-card-content *ngIf="tabSelect == 'line' && banner.line">
@@ -1109,6 +1151,36 @@
 
 
          <ion-card-content *ngIf="tabSelect == 'agendaCatalog'" class="content-scroll">
+
+            <ion-toolbar>
+               <ion-buttons slot="start">
+                  <ion-card-subtitle> Ancho capa botón </ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <ion-card-subtitle>
+                     <input type="number" min="0" max="50" [(ngModel)]="banner.agendaCatalog.widthButton"
+                        (change)="goToOnChangeItem()" /> %
+                  </ion-card-subtitle>
+               </ion-buttons>
+            </ion-toolbar>
+            
+            <ion-toolbar>
+               <ion-buttons slot="start">
+                  <ion-card-subtitle> Margen capa botón </ion-card-subtitle>
+               </ion-buttons>
+               <ion-buttons slot="end">
+                  <ion-card-subtitle>
+                     <input class="mt-2 ml-2 mr-2" style="width: 8.2em;" type="number" (change)="goToOnChangeItem()"
+                        [(ngModel)]="banner.agendaCatalog.marginButton" />
+                     <select [(ngModel)]="banner.agendaCatalog.marginButtonUnit" (change)="goToOnChangeItem()" class="unit">
+                        <option value="em">em</option>
+                        <option value="px">px</option>
+                        <option value="%">%</option>
+                     </select>
+                  </ion-card-subtitle>
+               </ion-buttons>
+            </ion-toolbar>
+
             <ion-toolbar>
                <ion-card-subtitle> Color botón</ion-card-subtitle>
                <ion-buttons slot="end">
@@ -1121,6 +1193,7 @@
                   </ion-card-subtitle>
                </ion-buttons>
             </ion-toolbar>
+            
             <ion-toolbar>
                <ion-card-subtitle> Color Hora</ion-card-subtitle>
                <ion-buttons slot="end">
@@ -2259,6 +2332,9 @@
                   <ion-icon name="text-outline" *ngIf="banner.type === 'Sub-Título'"></ion-icon>
                   <ion-icon name="grid-outline" *ngIf="banner.type === 'Tabla'"></ion-icon>
                   <ion-icon name="reorder-four-outline" *ngIf="banner.type === 'Párrafo'"></ion-icon>
+                  <ion-icon name="calendar-outline" *ngIf="banner.type === 'AgendaCatalog'"></ion-icon>
+                  <ion-icon name="people-outline" *ngIf="banner.type === 'SpeakerCatalog'"></ion-icon>
+                  <ion-icon name="browsers-outline" *ngIf="banner.type === 'IFrame'"></ion-icon>
                   <div class="line-icon" *ngIf="banner.type === 'Línea'"></div>
                   <div class="triangle-icon" *ngIf="banner.type === 'Triángulo'"></div>
                   <ion-label class="mt-2"> {{ banner.type }} </ion-label>

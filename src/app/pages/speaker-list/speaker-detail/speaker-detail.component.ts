@@ -6,6 +6,7 @@ import { AgendasService } from '../../../api/agendas.service';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { ScheduleDetailComponent } from '../../schedule/schedule-detail/schedule-detail.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-speaker-detail',
@@ -16,9 +17,10 @@ export class SpeakerDetailComponent implements OnInit {
 
   speaker: any;
   months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  days = ['Día 7 - Domingo','Día 1 - Lunes', 'Día 2 - Martes', 'Día 3 - Miercoles', 'Día 4 - Jueves', 'Día 5 - Viernes', 'Día 6 - Sábado'];
   screenSm = false;
   @Input() scheduleMode = false;
-  stretchMore = false;
+  stretchMore = true;
 
 
   constructor(
@@ -26,7 +28,8 @@ export class SpeakerDetailComponent implements OnInit {
     private speakersService: SpeakersService,
     private router: Router,
     private modalCtrl: ModalController,
-    private agendasService: AgendasService) { }
+    private agendasService: AgendasService,
+    private datepipe: DatePipe,) { }
 
   ngOnInit() {
     this.onResize();
@@ -41,7 +44,15 @@ export class SpeakerDetailComponent implements OnInit {
           this.speaker.agenda = speaker.agenda || [];
           this.speaker.agenda.forEach((agenda) => {
             const time: any = agenda.start_at * 1000;
-            agenda.str_start_time = this.months[<any>moment(time).format('MM') - 1] + ' ' + moment(time).format('DD') + ' ' + moment(time).format('YYYY');
+            
+            const timeZone = moment(time);
+            const dayOfWek = this.days[timeZone.day()];
+            const month = Number(timeZone.format('MM'));
+            const strDay = timeZone.format('DD');
+            agenda.str_start_time = dayOfWek + ' '  + strDay + ' de ' + this.months[month - 1];
+
+            agenda.startHour = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+            agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
           });
         }
       }, error => {
@@ -83,13 +94,10 @@ export class SpeakerDetailComponent implements OnInit {
 
     if (data) {
     }
-
-
-
   }
 
-
   redirectTo(uri: string) {
+    this.closeModal();
     this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
       this.router.navigate([uri])
     });

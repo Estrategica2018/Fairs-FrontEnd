@@ -24,13 +24,12 @@
           <ion-row class="h-1"></ion-row>
           <ion-row>
             <img
-              src="https://res.cloudinary.com/deueufyac/image/upload/v1667493460/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/FORMULARIOS/encabezado_o0xwdh.png" />
+              src="
+              https://res.cloudinary.com/deueufyac/image/upload/v1668187745/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/FORMULARIOS/banner_ijt47d.png" />
           </ion-row>
           <ion-row>
-            <img class="image-form" id="image-form"
+            <img class="image-form" #imageBack
               src="https://res.cloudinary.com/deueufyac/image/upload/v1667571327/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/ESCARAPELA/borde_escarapela_j9j3pc.png" />
-              
-              
 
               <ion-label class="image-form-tooltip"
                [ngStyle]="{
@@ -41,16 +40,23 @@
                 <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar mt-4" *ngIf="!url_image">
              </ion-label>
 
-
           </ion-row>
           <ion-row>
             <ion-col class="ion-text-center">
               <span class="text-color">{{userData.name}} {{userData.last_name}}</span>
             </ion-col>
+            <ion-col class="ion-text-center" *ngIf="showEdit">
+              
+            </ion-col>
           </ion-row>
           <ion-row>
             <ion-col class="ion-text-center">
               <span class="text-color2">{{rolName}}</span>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <label class="mt-2 label-uploadInput" [hidden]="showEdit" (click)="showEdit=true">Editar datos</label>
             </ion-col>
           </ion-row>
         </ion-col>

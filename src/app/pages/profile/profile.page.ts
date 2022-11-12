@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ToastController, ModalController } from '@ionic/angular';
 import { UsersService } from 'src/app/api/users.service';
@@ -18,13 +18,17 @@ export class ProfilePage implements OnInit {
   rolName: string;
   imageForm: any = {};
   showEditPhoto = false;
+  showEdit = false;
+  @ViewChild("imageBack", { read: ElementRef }) private imageBack: ElementRef;
 
   constructor(private alertCtrl: AlertController,
     private router: Router,
     private toastCtrl: ToastController,
     private loading: LoadingService,
     private usersService: UsersService,
-    private modalCtrl: ModalController) { }
+    private modalCtrl: ModalController) { 
+      
+    }
 
   ngDoCheck() {
     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
@@ -33,6 +37,7 @@ export class ProfilePage implements OnInit {
   ngOnInit() {
 
     this.getUser();
+    this.listenForFullScreenEvents();
   }
 
   getUser() {
@@ -51,24 +56,39 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  changeToolTipPhoto(){
+  changeToolTipPhoto() {
     let topMenu = 0;
     let img: any = document.getElementById('image-form');
-    if (img)
-        this.imageForm.logout = { top: img.offsetTop + topMenu, left: img.offsetLeft };
-        console.log(this.imageForm.logout);
-        console.log(img.clientWidth, img.naturalWidth);
+    img = this.imageBack.nativeElement;
+    this.imageForm.logout = { top: img.offsetTop + topMenu, left: img.offsetLeft };
   }
 
   @HostListener('window:resize')
   initializeToopTipMenu() {
     setTimeout(() => {
-      this.changeToolTipPhoto();   
+      this.changeToolTipPhoto();
     }, 100);
     setTimeout(() => {
-      this.changeToolTipPhoto();   
+      this.changeToolTipPhoto();
     }, 1000);
+    setTimeout(() => {
+      this.changeToolTipPhoto();
+    }, 3000);
   }
 
-  onCropperImage(){}
+  onCropperImage() { }
+
+  ionViewWillEnter() { this.initializeToopTipMenu(); }
+  ionViewDidEnter() { this.initializeToopTipMenu(); }
+  ionViewWillLeave() { this.initializeToopTipMenu(); }
+  ionViewDidLeave() { this.initializeToopTipMenu(); }
+
+  
+  listenForFullScreenEvents() {
+    
+
+    window.addEventListener('window:resize-menu', (event: any) => {
+      this.initializeToopTipMenu();
+    });
+  }
 }

@@ -1,15 +1,16 @@
 <ion-header>
 </ion-header>
 
-<ion-content
-   style="background-size: cover; background-repeat: no-repeat; 
-         --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
-   [ngStyle]="{ 
-   '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
-   'background-position': 'center top',
-   'background-repeat': 'no-repeat',
-   'background-size': 'cover'
-}">
+
+
+
+<ion-content style="background-size: cover; background-repeat: no-repeat; 
+         --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}" [ngStyle]="{ 
+      '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
+      'background-position': 'center top',
+      'background-repeat': 'no-repeat',
+      'background-size': 'cover'
+   }">
 
 
    <app-scene-site [hidden]="layoutModel" [editMode]="editMode" [windowScreenSm]="windowScreenSm"
@@ -28,6 +29,11 @@
       (deleteBanner)="onDeleteBanner($event)" (onClose)="bannerSelectHover = null" *ngIf="editMode && bannerSelectHover"
       [banner]="bannerSelectHover" [internalUrlList]="internalUrlList">
    </app-banner-setting-panel>
+
+
+   
+         
+
 
    <!-- Panel Setting scene-->
    <div *ngIf="showPanelTool === 'settings' && !tabMenuOver" class="general-setting-panel">
@@ -221,8 +227,12 @@
                   <ion-icon style="font-size: 24px" name="image-outline"></ion-icon>
                </div>
                <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('Video');">
-                 Video
+                  Video
                   <ion-icon style="font-size: 24px" name="videocam-outline"></ion-icon>
+               </div>
+               <div class="icon-panel-scene ml-2 p-2" (click)="addBanner('IFrame');">
+                  IFrame
+                  <ion-icon style="font-size: 24px" name="browsers-outline"></ion-icon>
                </div>
             </div>
             <div class="d-flex mt-4">
@@ -281,7 +291,7 @@
                   <ion-icon style="font-size: 24px" name="people-outline"></ion-icon>
                </div>
                <div class="icon-panel-scene ml-2 pl-2 pr-2 pb-2 pt-1" style="width: 67px; font-size: 13px;"
-                (click)="addBanner('AgendaCatalog');">
+                  (click)="addBanner('AgendaCatalog');">
                   <small>Agenda</small>
                   <ion-icon style="font-size: 24px" name="calendar-outline"></ion-icon>
                </div>
@@ -343,3 +353,4 @@
 </div>
 <!-- Panel Item list-->
 </ion-content>
+

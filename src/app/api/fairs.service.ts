@@ -55,7 +55,7 @@ export class FairsService {
 
   getCurrentFair(): any {
 
-    if(this.fair === null || moment().isAfter(moment(this.refresTime).add(/*120 */1, 'seconds'))) {
+    if(this.fair === null || moment().isAfter(moment(this.refresTime).add(120 , 'seconds'))) {
         return new Promise((resolve, reject) => {
             try {
                 if(environment.production ) {

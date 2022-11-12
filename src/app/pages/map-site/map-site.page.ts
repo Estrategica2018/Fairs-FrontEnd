@@ -83,7 +83,9 @@ export class MapSitePage implements OnInit {
   profileRole: any;
   userDataSession: any;
   mobileApp: boolean = false;
-
+  bannersFloat: any = [];
+  toolBarSize = 0;
+  
   ngOnInit() {
     this.routerView = this.router;
     if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
@@ -162,13 +164,14 @@ export class MapSitePage implements OnInit {
       }
 
       this.sceneEdited = this.scene;
-      this.initializeBanners(this.scene);
+      if (this.scene) {
+        this.initializeBanners(this.scene);
 
-      setTimeout(() => {
-        this.onResize();
-        this.loading.dismiss();
-      }, 100);
-
+        setTimeout(() => {
+          this.onResize();
+          this.loading.dismiss();
+        }, 100);
+      }
 
     }, error => {
       this.loading.dismiss();
@@ -178,12 +181,21 @@ export class MapSitePage implements OnInit {
   }
 
   initializeBanners(scene: any) {
-    console.log(scene.videoPreview);
-    if (scene.videoPreview)
+
+    scene.row = scene.row || [];
+    for (let row of scene.rows) {
+      for (let col of row.cols) {
+        for (let banner of col.banners) {
+          if (banner.floatButton || (banner.styles && banner.styles.position.type == 'float')) {
+            this.bannersFloat.push(banner);
+          }
+        }
+      }
+    }
+
+    if (scene && scene.videoPreview)
       scene.videoPreviewSanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(scene.videoPreview);
 
-    
-    console.log(scene.videoPreviewSanitizer);
 
     let rows = scene.rows;
     rows.forEach((row) => {
@@ -230,6 +242,7 @@ export class MapSitePage implements OnInit {
 
   onResize() {
 
+    this.toolBarSize = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
     this.windowScreenSm = window.innerWidth <= 858;
 
     this.scene.rows.forEach((row) => {
@@ -353,4 +366,22 @@ export class MapSitePage implements OnInit {
     }
   }
 
+  goToOnHoverBanner(banner) {
+
+    
+    if (banner.formCatalog) {
+      this.redirectTo('/form-mincultura-catalog');
+    }
+    else if (banner.speakerCatalog) {
+      
+    }
+    else if (banner && banner.externalUrl) {
+      const windowReference = window.open();
+      windowReference.location.href = banner.externalUrl;
+    } else if (banner.internalUrl) {
+      this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
+        this.router.navigate([banner.internalUrl])
+      });
+    }
+  }
 }

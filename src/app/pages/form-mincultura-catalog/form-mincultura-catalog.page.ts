@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { AgendasService } from 'src/app/api/agendas.service';
 import { DatePipe } from '@angular/common'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -33,6 +33,7 @@ export class FormMinculturaCatalogPage implements OnInit {
   disableSelection = false;
   agendaHover = null;
   minculturaUser = null;
+  
 
   constructor(
     private agendasService: AgendasService,
@@ -118,12 +119,15 @@ export class FormMinculturaCatalogPage implements OnInit {
                       setTimeout(() => {
                         let check: any = document.querySelector<HTMLElement>('#check-agenda-' + agenda.id);
                         check.checked = true;
-                      }, 100);
+                      }, 1000);
                       this.disableSelection = true;
                     }
                   }
                 }
                 if (response.meetings) {
+                  for(let agenda of response.meetings) {
+                    agenda.start_at  *= 1000;
+                  }
                   this.initializeAgendaFormsCatalogs(response.meetings);
                 }
 
@@ -179,11 +183,12 @@ export class FormMinculturaCatalogPage implements OnInit {
   changeSelect(agenda) {
 
     let check: any = document.querySelector<HTMLElement>('#check-agenda-' + agenda.id);
-    if (check.checked) {
+    if (check && check.checked) {
 
       let lista = document.querySelectorAll('.check-agenda');
       lista.forEach((checkAgenda: any) => {
         checkAgenda.checked = false;
+        console.log(checkAgenda);
       });
 
       if (this.disableSelection) {
@@ -202,6 +207,8 @@ export class FormMinculturaCatalogPage implements OnInit {
         });
 
         if (agenda.id == this.agendaSelect.id) {
+          let check: any = document.querySelector<HTMLElement>('#check-agenda-' + this.agendaSelect.id);
+          if(check)
           check.checked = true;
         }
       }

@@ -56,6 +56,7 @@ export class AppComponent implements OnInit {
   menuHover: string = null;
   miniMenu: any = {};
   menuChangeList = [];
+  mobileApp = false;
 
   constructor(
     private alertCtrl: AlertController,
@@ -79,6 +80,10 @@ export class AppComponent implements OnInit {
   ) {
 
     this.initializeFair();
+
+    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
+      this.mobileApp = true;
+    }
 
     this.url = document.baseURI;
     this.location = locationComn;
@@ -230,7 +235,7 @@ export class AppComponent implements OnInit {
 
     ////this.initializeToopTipMenu();
     this.menuChangeList = [];
-    this.menuChangeList.push({'type':'Fair'});
+    this.menuChangeList.push({ 'type': 'Fair' });
   }
 
   ngOnDestroy(): void {
@@ -485,6 +490,9 @@ export class AppComponent implements OnInit {
 
   onShowMenu() {
     this.menuHidden = false;
+    let icon = document.getElementById('mini-menu-forward');
+    if (icon)
+      this.miniMenu.menuForward = { top: icon.offsetTop , left: icon.offsetLeft };
     window.dispatchEvent(new CustomEvent('window:resize-menu'));
   }
 
@@ -595,17 +603,17 @@ export class AppComponent implements OnInit {
 
     for (let i = 0, scene = null; i < scenesListRevert.length; i++) {
       scene = scenesListRevert[i];
-      this.fair.location.push({"type":scene.type,"iScene":scene.iScene,"menuPosition": i + 1});
+      this.fair.location.push({ "type": scene.type, "iScene": scene.iScene, "menuPosition": i + 1 });
     }
 
     let mbcontrol = false;
-    for(let menuChange of this.menuChangeList) {
-      if(menuChange.type == 'Fair') {
+    for (let menuChange of this.menuChangeList) {
+      if (menuChange.type == 'Fair') {
         mbcontrol = true;
       }
     }
 
-    if(!mbcontrol) this.menuChangeList.push({'type':'Fair'});
+    if (!mbcontrol) this.menuChangeList.push({ 'type': 'Fair' });
     this.initializeToopTipMenu();
   }
 
@@ -637,17 +645,17 @@ export class AppComponent implements OnInit {
 
     for (let i = 0, scene = null; i < scenesList.length; i++) {
       scene = scenesList[i];
-      this.fair.location.push({"type":scene.type,"iScene":scene.iScene,"menuPosition": i + 1});
+      this.fair.location.push({ "type": scene.type, "iScene": scene.iScene, "menuPosition": i + 1 });
     }
 
     let mbcontrol = false;
-    for(let menuChange of this.menuChangeList) {
-      if(menuChange.type == 'Fair') {
+    for (let menuChange of this.menuChangeList) {
+      if (menuChange.type == 'Fair') {
         mbcontrol = true;
       }
     }
-    
-    if(!mbcontrol) this.menuChangeList.push({'type':'Fair'});
+
+    if (!mbcontrol) this.menuChangeList.push({ 'type': 'Fair' });
     this.initializeToopTipMenu();
 
   }
@@ -675,13 +683,13 @@ export class AppComponent implements OnInit {
     pavilion.resources.scenes = scenesList;
 
     let mbcontrol = false;
-    for(let menuChange of this.menuChangeList) {
-      if(menuChange.type == 'Pavilion' && menuChange.pavilion.id == pavilion.id) {
+    for (let menuChange of this.menuChangeList) {
+      if (menuChange.type == 'Pavilion' && menuChange.pavilion.id == pavilion.id) {
         mbcontrol = true;
       }
     }
-    
-    if(!mbcontrol) this.menuChangeList.push({'type':'Pavilion', 'pavilion': pavilion});
+
+    if (!mbcontrol) this.menuChangeList.push({ 'type': 'Pavilion', 'pavilion': pavilion });
 
   }
 
@@ -716,14 +724,14 @@ export class AppComponent implements OnInit {
     pavilion.resources.scenes = scenesListRevert;
 
     let mbcontrol = false;
-    for(let menuChange of this.menuChangeList) {
-      if(menuChange.type == 'Pavilion' && menuChange.pavilion.id == pavilion.id) {
+    for (let menuChange of this.menuChangeList) {
+      if (menuChange.type == 'Pavilion' && menuChange.pavilion.id == pavilion.id) {
         mbcontrol = true;
       }
     }
 
-    if(!mbcontrol) this.menuChangeList.push({'type':'Pavilion', 'pavilion': pavilion});
-    
+    if (!mbcontrol) this.menuChangeList.push({ 'type': 'Pavilion', 'pavilion': pavilion });
+
   }
 
   addEditedScene(list, sceneLayout, indx) {
@@ -752,7 +760,7 @@ export class AppComponent implements OnInit {
   }
 
   updateSceneMenu() {
-    
+
     this.loading.present({ message: 'Cargando...' });
     let finish = false;
 
@@ -770,8 +778,8 @@ export class AppComponent implements OnInit {
               }
             });
         }
-        if (menuChange.type == 'Pavilion' ) {
-          const pavilion = Object.assign({}, { 'id': menuChange.pavilion.id, 'fair_id': this.fair.id,'resources': menuChange.pavilion.resources});
+        if (menuChange.type == 'Pavilion') {
+          const pavilion = Object.assign({}, { 'id': menuChange.pavilion.id, 'fair_id': this.fair.id, 'resources': menuChange.pavilion.resources });
           this.adminPavilionsService.update(pavilion)
             .then((response) => {
               if (!finish) {
@@ -784,7 +792,7 @@ export class AppComponent implements OnInit {
         }
       }
     }
-    
+
     /*this.loading.present({ message: 'Cargando...' });
     console.log(this.fair.location);
 
@@ -896,6 +904,15 @@ export class AppComponent implements OnInit {
       icon = document.getElementById('mini-menu-first');
       if (icon)
         topMenu += icon.offsetHeight;
+
+      icon = document.getElementById('mini-menu-back');
+      if (icon)
+        this.miniMenu.menuBack = { top: icon.offsetTop + topMenu, left: icon.offsetLeft + 200 };
+
+      icon = document.getElementById('mini-menu-forward');
+      if (icon)
+        this.miniMenu.menuForward = { top: icon.offsetTop + topMenu, left: icon.offsetLeft };
+
 
       let i = 0;
       for (let sceneLayout of this.sceneLayoutList) {

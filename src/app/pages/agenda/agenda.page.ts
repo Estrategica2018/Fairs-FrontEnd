@@ -3,7 +3,7 @@ import { Component, ViewChild, OnInit } from '@angular/core';
 import { ConferenceData } from '../../providers/conference-data';
 import { UserData } from '../../providers/user-data';
 import { AgendasService } from '../../api/agendas.service';
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoadingService } from '../../providers/loading.service';
 import { SpeakerDetailComponent } from './../speaker-list/speaker-detail/speaker-detail.component';
@@ -253,9 +253,7 @@ export class AgendaPage implements OnInit {
   
 
   onSpeaker(speaker) {
-    if(!this.speakerModal) {
-      this.presenterSpeakerModal(speaker);
-    }
+     this.presenterSpeakerModal(speaker);
   }
 
   async presenterSpeakerModal(speaker) {

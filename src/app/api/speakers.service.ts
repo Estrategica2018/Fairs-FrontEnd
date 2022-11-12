@@ -23,8 +23,7 @@ export class SpeakersService {
   ) { }
 
   list(): any {
-    //if(this.speakers === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
-    if (true) {
+    if(this.speakers === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
         return new Promise((resolve, reject) => {
             this.fairsService.getCurrentFair().
               then( fair => {

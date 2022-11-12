@@ -84,9 +84,14 @@
           [ngModelOptions]="{standalone: true}" (ionChange)="ionChange()" (ionInput)="ionChange()"></ion-input>
           <input type="color" style="width: 1.9em;" class="ml-3 text-right" required [(ngModel)]="fair.social_media.iconMenuColorTitle"
           [ngModelOptions]="{standalone: true}" (change)="ionChangeColor()"/> 
-      </ion-item>
+      </ion-item> 
 
-
+      <ion-item button="true">
+        <ion-label> Título de la feria </ion-label>
+        <ion-input type="text" class="ml-auto text-right" required [(ngModel)]="fair.mainScene"
+          [ngModelOptions]="{standalone: true}" (ionChange)="ionChange()" (ionInput)="ionChange()"></ion-input>
+      </ion-item> 
+      
       <ion-item>
         <ion-label>Fecha Inicio</ion-label>
         <ion-datetime presentation="date" monthShortNames="Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic"

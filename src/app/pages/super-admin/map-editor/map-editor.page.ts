@@ -1926,6 +1926,8 @@ export class MapEditorPage implements OnInit {
   transformSchedule(banner) {
 
     const months = ['Ene', 'Feb', 'Marzo', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const days = ['Domingo','Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
+    
     let groups = null;
     let agendas = null;
     if (banner.__formCatalog) {
@@ -1943,6 +1945,7 @@ export class MapEditorPage implements OnInit {
       agenda.hide = false;
 
       const timeZone = moment(agenda.start_at);
+      const dayOfWek = days[timeZone.day()];
       const strHour = this.datepipe.transform(new Date(agenda.start_at), 'hh');
       const strMinutes = timeZone.format('mm');
 
@@ -1964,7 +1967,8 @@ export class MapEditorPage implements OnInit {
         groupTemp = {
           time: time,
           strDay: strDay,
-          month: strMonth + ' ' + strYear,
+          //month: strMonth + ' ' + strYear,
+          month: dayOfWek, 
           sessions: []
         };
         groups.push(groupTemp);
@@ -1983,7 +1987,8 @@ export class MapEditorPage implements OnInit {
           hour: strHour,
           minutes: strMinutes,
           signature: strSignature,
-          month: strMonth + ' ' + strYear,
+          //month: strMonth + ' ' + strYear,
+          month: dayOfWek,
           location: location,
         }, agenda));
     }

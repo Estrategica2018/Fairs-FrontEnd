@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { HostListener } from "@angular/core";
 import { Router } from '@angular/router';
 import { Animation, AnimationController } from '@ionic/angular';
@@ -24,20 +24,25 @@ export class SceneSiteComponent implements OnInit {
   @Input() layoutColHover: any;
   @Output() onHoverBanner = new EventEmitter<any>();
   @Output() selectLayout = new EventEmitter<any>();
+
   layoutBannerSelectTime = 0;
   showSpeakerCatalogActions = '';
   showProductCatalogActions = '';
   tabSelect = '';
   bannerSpeakerSelectHover: any;
   isHover: any;
+  @ViewChild('iFrame', { static: true }) iFrameElement: ElementRef;
 
   ngOnInit() {
-
+    
   }
 
   goToOnHoverBanner(banner, col, row, scene) {
 
     this.showSpeakerCatalogActions = null;
+
+    console.log(this.iFrameElement);
+
 
     if (banner && this.editMode) {
       this.layoutBannerSelectTime = Date.now();

@@ -1,79 +1,52 @@
-<div [hidden]="screenSm">
+<ion-grid class="card w-100 m-o p-0 scroll-light">
   <div (click)="closeModal()" class="close-modal">
     <ion-icon name="close-outline" slot="icon-only"></ion-icon>
   </div>
-  <div class="card-spaker d-flex">
-    <div class="div-avatar"
-      [ngStyle]="{'height': ( screenSm ? '20em' : '25em'), 'background-image': 'url('+speaker.profile_picture+')'}">
-    </div>
-    <div class="content">
-      <h2 class="name text">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
-      <h5 class="text">{{speaker.profession}}</h5>
-      <div class="ion-text-center">
-        <!--img class="icon-circle" [ngStyle]="{ 'margin-top': ( screenSm ? '0' : '2em'), 'margin-bottom': ( screenSm ? '2em' : '0') }" [src]="speaker.company_logo"/-->
-      </div>
-    </div>
+  <ion-row class="m-0 p-0 card-spaker head">
+    <ion-col class="m-0 p-0" size="4">
+        <img [src]="speaker.profile_picture" class="image-profile">
 
-    <div class="agenda"
-      [ngStyle]="{'width': ( screenSm ? '90%' : '25em'), 'top': ( screenSm ? '21.2em' : '25em'), 'right': ( screenSm ? '1.6em' : '0em') }">
-      <ion-list class="panel-agenda">
-        <div class="panel-border"></div>
-        <h4 class="title">Agenda</h4>
-        <div class="container scroll-light">
-          <ion-item button class="item d-flex" *ngFor="let agenda of speaker.agenda" (click)="onAgenda(agenda)">
-            <h5 class="title m-0"> {{agenda.title}}</h5>
-            <h6 class="date"> {{agenda.str_start_time}}</h6>
-          </ion-item>
+    </ion-col>
+    <ion-col class="m-0 p-0" size="8">
+      <div class="content">
+        <h2 class="name text">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
+        <h5 class="text">{{speaker.profession}}</h5>
+        <div class="ion-text-center">
+          <!--img class="icon-circle" [ngStyle]="{ 'margin-top': ( screenSm ? '0' : '2em'), 'margin-bottom': ( screenSm ? '2em' : '0') }" [src]="speaker.company_logo"/-->
         </div>
-      </ion-list>
-    </div>
-  </div>
-  <div class="stretch-1" [ngClass]="{'horizontal': screenSm, 'vertical': !screenSm, 'stretch-more': stretchMore} ">
-    {{speaker.description_one}}
-  </div>
-  <div [hidden]="stretchMore" class="show-stretch-more cursor-pointer position-absolute" (click)="stretchMore = true;">
-    Ver más
-  </div>
-</div>
-
-
-<div *ngIf="screenSm" class="screenSm">
-  <div (click)="closeModal()" class="close-modal">
-    <ion-icon name="close-outline" slot="icon-only"></ion-icon>
-  </div>
-  <div class="card-spaker d-flex">
-    <div class="div-avatar"
-      [ngStyle]="{'height': '20em', 'background-image': 'url('+speaker.profile_picture+')'}">
-    </div>
-    <div class="content">
-      <h2 class="name text">{{speaker.user.name}} {{speaker.user.last_name}}</h2>
-      <h5 class="text">{{speaker.profession}}</h5>
-      <div class="ion-text-center">
-        <!--img class="icon-circle" [ngStyle]="{ 'margin-top': ( screenSm ? '0' : '2em'), 'margin-bottom': ( screenSm ? '2em' : '0') }" [src]="speaker.company_logo"/-->
       </div>
-    </div>
-  </div>
-
-  <div class="stretch-1 horizontal" [ngClass]="{'position':'relative','stretch-more': stretchMore} ">
-    {{speaker.description_one}}
-  </div>
-  <div [hidden]="stretchMore" class="show-stretch-more cursor-pointer" (click)="stretchMore = true;">
-    Ver más
-  </div>
-  
-  <div class="agenda horizontal"
-  [ngStyle]="{'position':'relative','width': '90%', 'right': '1.6em'}">
-  <ion-list class="panel-agenda">
-    <div class="panel-border"></div>
-    <h4 class="title">Agenda</h4>
-    <div class="container scroll-light">
-      <ion-item button class="item d-flex" *ngFor="let agenda of speaker.agenda" (click)="onAgenda(agenda)">
-        <h5 class="title m-0"> {{agenda.title}}</h5>
-        <h6 class="date"> {{agenda.str_start_time}}</h6>
+    </ion-col>
+  </ion-row>
+  <ion-row class="m-0 p-0">
+    <ion-col class="m-0 p-0" size="6">
+      <ion-item class="stretch-1" [hidden]="stretchMore" [ngStyle]="{'height': screenSm ? '18em' : '13em'}">
+        {{speaker.description_one}} 
       </ion-item>
+      <ion-item class="stretch-1 scroll-light stretch-more" *ngIf="stretchMore"  [ngStyle]="{'height': screenSm ? '18em' : '13em'}">
+        {{speaker.description_one}} 
+      </ion-item>
+    </ion-col>
+    <div [hidden]="stretchMore" class="show-stretch-more cursor-pointer position-absolute"
+      (click)="stretchMore = true;">
+      Ver más
     </div>
-  </ion-list>
-</div>
+    <ion-col>
+      <div class="agenda">
+        <ion-list class="panel-agenda">
+          <div class="panel-border"></div>
+          <h4 class="title">Agenda</h4>
+          <div class="container scroll-light">
+            <ion-item button class="item" *ngFor="let agenda of speaker.agenda" (click)="redirectTo('/agenda/'+agenda.id)">
+            <div class="w-100">
+              <h5 class="title m-0 ion-text-left"> {{agenda.title}}</h5>
+              <h6 class="date ion-text-left"> {{agenda.str_start_time}}</h6>
+              <h6 class="date ion-text-left"> {{agenda.startHour }} {{agenda.endTime}}</h6>
+            </div>
+            </ion-item>
+          </div>  
+        </ion-list>
+      </div>
+    </ion-col>
 
- 
-</div>
+  </ion-row>
+</ion-grid>

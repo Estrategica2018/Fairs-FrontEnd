@@ -802,7 +802,11 @@
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'position' }" (click)="tabSelect = 'line'"
                      *ngIf="bannerSelect.line">
                      <ion-label class="tool-special">Línea</ion-label>
-                  </ion-tab-button>
+                  </ion-tab-button>´
+                  <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'iFrame' }" (click)="tabSelect = 'iFrame'"
+                  *ngIf="bannerSelect">
+                  <ion-label class="tool-special">Iframe</ion-label>
+               </ion-tab-button>
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'productCatalog' }"
                      (click)="tabSelect = 'productCatalog'" *ngIf="bannerSelect.productCatalog">
                      <ion-label class="tool-special"> Catálogo</ion-label>
@@ -993,6 +997,19 @@
                <ion-card-subtitle>
                   <input class="mt-2 ml-2 input-form" type="color" (change)="onChangeItemColor()"
                      [(ngModel)]="bannerSelect.line.color" />
+               </ion-card-subtitle>
+            </ion-buttons>
+         </ion-toolbar>
+      </ion-card-content>
+      <ion-card-content *ngIf="tabSelect == 'iFrame'">
+         <ion-toolbar>
+            <ion-buttons slot="start">
+               <ion-card-subtitle> Url Iframe
+               </ion-card-subtitle>
+            </ion-buttons>
+            <ion-buttons slot="end">
+               <ion-card-subtitle>
+                  <input class="mt-2 ml-2 input-form" type="text" [(ngModel)]="bannerSelect.iFrame.src" />               
                </ion-card-subtitle>
             </ion-buttons>
          </ion-toolbar>

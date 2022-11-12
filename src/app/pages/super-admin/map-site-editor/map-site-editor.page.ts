@@ -99,6 +99,9 @@ export class MapSiteEditorPage implements OnInit {
   layoutColHover = null;
   speakerTypeList = [];
   speakerList = [];
+  bannersFloat: any = [];
+  toolBarSize = 0;
+  @ViewChild('iFrame', { static: true }) iFrameElement: ElementRef;
 
 
   sceneTemplatesTypes: any = [
@@ -197,6 +200,9 @@ export class MapSiteEditorPage implements OnInit {
   }
 
   initializeBanners(scene: any) {
+
+    this.onChangeItemFloat();
+
     let rows = scene.rows;
     rows.forEach((row) => {
       row.cols.forEach((col) => {
@@ -204,6 +210,17 @@ export class MapSiteEditorPage implements OnInit {
 
           if (banner.video) {
             banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+          }
+
+          if(banner.iFrame) {
+            setTimeout(() => {
+              const iframe = document.getElementById(banner.id);
+              iframe.outerHTML =  banner.iFrame.src;  
+              const src = banner.iFrame.src.replace('<iframe ','<iframe  id="'+banner.id+'" ');
+              iframe.classList.add("h-100");
+
+              iframe.outerHTML = src;
+            }, 100);
           }
 
           if (banner.scenes) {
@@ -262,6 +279,10 @@ export class MapSiteEditorPage implements OnInit {
 
   onResize() {
 
+
+    this.toolBarSize = document.querySelector<HTMLElement>('.app-toolbar-header').offsetHeight;
+
+
     this.windowScreenSm = window.innerWidth <= 858;
 
     this.scene.rows.forEach((row) => {
@@ -298,7 +319,33 @@ export class MapSiteEditorPage implements OnInit {
 
   onChangeItem() {
     this.editSave = true;
+    if(this.bannerSelectHover.iFrame) {
+      const iframe = document.getElementById(this.bannerSelectHover.id);
+      const src = this.bannerSelectHover.iFrame.src.replace('<iframe ','<iframe class="h-100" id="'+this.bannerSelectHover.id+'" ');
+      iframe.classList.add("h-100");
+      iframe.outerHTML = src;
+    }
+    this.onChangeItemFloat();
     window.dispatchEvent(new CustomEvent('side-menu-button:edit-save-on'));
+  }
+
+  onChangeItemFloat() {
+
+    this.bannersFloat = [];
+    this.scene.row = this.scene.row || [];
+    for (let row of this.scene.rows) {
+      for (let col of row.cols) {
+        for (let banner of col.banners) {
+          if (banner.floatButton || (banner.styles && banner.styles.position.type == 'float')) {
+            this.bannersFloat.push({'banner':banner,'col':col,'row':row,'scene':this.scene});
+
+            console.log('this.bannersFloat');
+            console.log(this.bannersFloat);
+          }
+        }
+      }
+    }
+
   }
 
   onChangeItemOff() {
@@ -488,6 +535,10 @@ export class MapSiteEditorPage implements OnInit {
       }
     };
     switch (type) {
+      case 'IFrame':
+        banner.iFrame = {};
+        banner.iFrame.src = '<iframe src="https://www.facebook.com/plugins/video.php?height=308&href=https%3A%2F%2Fwww.facebook.com%2FRNBPColombia%2Fvideos%2F861156988569510%2F&show_text=false&width=560&t=0" width="560" height="308" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>';
+        break;
       case 'Texto':
         banner.styles.text = { "value": "Texto aquí" };
         banner.styles.textAlign = "left";
@@ -599,8 +650,13 @@ export class MapSiteEditorPage implements OnInit {
         banner.groupMode = true;
         banner.size = { "x": 367, "y": 408 };
         banner.agendaCatalog = { "category": "" };
-        banner.styles.width = 51;
-        banner.styles.widthUnit = 'em';
+        banner.agendaCatalog.bgButton = '#EA5D34';
+        banner.agendaCatalog.colorHour =  '#EA5D34';
+        banner.agendaCatalog.colorName = '#DD5932';
+        banner.agendaCatalog.colorDescription = '#F5A049'; 
+        banner.agendaCatalog.widthButton = 30;
+        banner.agendaCatalog.marginButton = 2;
+        banner.agendaCatalog.marginButtonUnit ='em';
         break;
       case 'Contact':
         banner = { "groupMode": true, "size": { "x": 367, "y": 408 }, "contact": { "name": "" }, "backgroundColor": "#ffffff", "fontColor": "#000000", "fontSize": "13", "shadowActivate": true, "shadowRight": -8, "shadowDown": 4, "shadowDisperse": 21, "shadowExpand": -16 };
@@ -753,6 +809,7 @@ export class MapSiteEditorPage implements OnInit {
   }
 
   getLayout(banner, scene) {
+    scene.row = scene.row || [];
     for (let row of scene.rows) {
       for (let col of row.cols) {
         for (let bannerCol of col.banners) {
@@ -1243,26 +1300,7 @@ export class MapSiteEditorPage implements OnInit {
   }
 
 
-  resizeSpeakers(banner) {
-    for (let i = 10; i > 0; i--) {
-      if ((banner.position.x + i * banner.size.x <= this.scene.container.w) ||
-        (banner.position.x + (i - 1.3) * banner.size.x <= this.scene.container.w)) {
-        banner.__factor = i - 1;
-        break;
-      }
-    }
-
-    if (banner.__speakerCatalogList)
-      banner.__speakerCatalogList.forEach((speaker, i: any) => {
-        speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
-        speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
-      });
-
-    const main = document.querySelector<HTMLElement>('ion-router-outlet');
-    const left = main.offsetWidth - (((banner.__factor) * 1.03) * banner.size.x);
-    const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
-    if (bannerDom) bannerDom.style.left = (left / 2) + 'px';
-  }
+ 
 
   initializeSpeakers(banner) {
 
@@ -1280,6 +1318,8 @@ export class MapSiteEditorPage implements OnInit {
   transformSchedule(banner) {
 
     const months = ['Ene', 'Feb', 'Marzo', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
+
     let groups = null;
     let agendas = null;
     if (banner.__formCatalog) {
@@ -1297,6 +1337,7 @@ export class MapSiteEditorPage implements OnInit {
       agenda.hide = false;
 
       const timeZone = moment(agenda.start_at);
+      const dayOfWek = days[timeZone.day()];
       const strHour = this.datepipe.transform(new Date(agenda.start_at), 'hh');
       const strMinutes = timeZone.format('mm');
 
@@ -1318,7 +1359,8 @@ export class MapSiteEditorPage implements OnInit {
         groupTemp = {
           time: time,
           strDay: strDay,
-          month: strMonth + ' ' + strYear,
+          //month: strMonth + ' ' + strYear,
+          month: dayOfWek,
           sessions: []
         };
         groups.push(groupTemp);
@@ -1337,7 +1379,8 @@ export class MapSiteEditorPage implements OnInit {
           hour: strHour,
           minutes: strMinutes,
           signature: strSignature,
-          month: strMonth + ' ' + strYear,
+          //month: strMonth + ' ' + strYear,
+          month: dayOfWek,
           location: location,
         }, agenda));
     }
@@ -1363,30 +1406,36 @@ export class MapSiteEditorPage implements OnInit {
 
           this.transformSchedule(banner);
         }
-        this.resizeAgendaCatalogs(banner);
+        //this.resizeAgendaCatalogs(banner);
       })
       .catch(error => {
         console.log(error);
       });
   }
 
-  resizeAgendaCatalogs(banner) {
-    for (var i = 10; i > 0; i--) {
-      if ((banner.position.x + i * banner.size.x <= this.scene.container.w) ||
-        (banner.position.x + (i - 1.3) * banner.size.x <= this.scene.container.w)) {
-        banner.__factor = i - 1;
-        break;
-      }
-    }
-    banner.__agendaCatalogList.groups.forEach((group, i: any) => {
-      group.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
-      group.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
-    });
+ 
+  goToOnHoverBanner(banner, col, row, scene) {
 
-    const main = document.querySelector<HTMLElement>('ion-router-outlet');
-    let left = main.offsetWidth - (((banner.__factor) * 1.03) * banner.size.x);
-    if (left <= 0) left = 10;
-    const bannerDom = document.querySelector<HTMLElement>('#banner-drag-' + banner.id);
-    if (bannerDom) bannerDom.style.left = (left / 2) + 'px';
+    //this.showSpeakerCatalogActions = null;
+
+    if (banner && this.editMode) {
+      //this.layoutBannerSelectTime = Date.now();
+      this.onHoverBanner({ 'banner': banner, 'col': col, 'row': row, 'scene': scene });
+    }
+    else if (banner.formCatalog) {
+      this.redirectTo('/form-mincultura-catalog');
+    }
+    else if (banner.speakerCatalog) {
+      alert('conferncista');
+    }
+    else if (banner && banner.externalUrl) {
+      const windowReference = window.open();
+      windowReference.location.href = banner.externalUrl;
+    } else if (banner.internalUrl) {
+      this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
+        this.router.navigate([banner.internalUrl])
+      });
+    }
   }
+
 }

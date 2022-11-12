@@ -1,6 +1,42 @@
+.card {
+  height: 51em;
+  overflow: auto;
+}
+
+.image-profile {
+ min-height: 24em;
+}
+
+.stretch-1 {
+  padding-top: 1em;
+  height: 13em;
+  overflow: hidden;
+  width: 99%;
+}
+
+@media screen and (max-width: 460px){
+  .stretch-1 {
+    height: 65%;
+  }
+}
+
+.stretch-1.stretch-more {
+  overflow: auto !important;
+  height: 15em;
+}
+
+.head {
+margin-left: -4px !important;
+margin-top: -1px !important;
+}
+
+.title {
+  color: #4C2505;
+}
 
 :root {
  --blues: #FFA439;
+ 
 }
 
 //$blue: #FFA439;
@@ -16,7 +52,7 @@ $col_2: 0.35;
 }
 
 .content {
-  width: calc( #{$width} * #{$col_1} );
+  /*width: calc( #{$width} * #{$col_1} );*/
 }
 
 .div-avatar {
@@ -47,7 +83,8 @@ $col_2: 0.35;
 .agenda {
  position: absolute;
  right: 0;
- min-width: 50%;
+ width: 100%;
+ margin-top: -0.5em;
  box-shadow: #b0b0b0 -2px 4px 3px 1px;
  .container {
    overflow: auto;
@@ -87,18 +124,9 @@ $col_2: 0.35;
   transform: rotate(180deg);
 }
 
-.stretch-1.vertical {
-  top: calc( #{$height} - 7px );
-  position: absolute;
-  width: 50%;
-  padding: 1em;
-  text-align: justify;
-  font-size: 1.2em;
-} 
-.stretch-more {
-  overflow: auto;
-  height: 20em;
-}
+ 
+
+
 
 .show-stretch-more {
   width: 14em;
@@ -115,14 +143,7 @@ $col_2: 0.35;
 }
 
 
-.stretch-1.horizontal {
-  padding: 2em;
-  font-size: 2em;
-  height: 10em;
-  overflow: auto;
-  text-align: justify;
-}
-
+ 
 
 .agenda.horizontal {
   position: relative;

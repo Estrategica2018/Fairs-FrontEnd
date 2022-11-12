@@ -1,36 +1,90 @@
 <ion-header>
 </ion-header>
 
-<ion-content 
-class="asdf"
-style="background-size: cover; background-repeat: no-repeat;  --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
-[ngStyle]="{ 
+<ion-content class="asdf"
+  style="background-size: cover; background-repeat: no-repeat;  --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
+  [ngStyle]="{ 
   '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
   'background-position': 'center top',
   'background-repeat': 'no-repeat',
   'background-size': 'cover'
 }">
 
+  <div *ngIf="scene">
+    <iframe [src]="scene && scene.videoPreviewSanitizer ? scene.videoPreviewSanitizer : ''" frameborder="0" title=""
+      *ngIf="scene && scene.videoPreviewSanitizer"
+      allow="autoplay; fullscreen; picture-in-picture" 
+      [ngStyle]="{'width': '100vw', 'height': '100vh', 'opacity': scene && scene.videoPreviewSanitizer ? 1 : 0 }"
+      webkitallowfullscreen mozallowfullscreen allowfullscreen id="video-id-{{scene.id}}" class="videoPreview">
+    </iframe>
 
-<iframe [src]="scene && scene.videoPreviewSanitizer ? scene.videoPreviewSanitizer : ''" frameborder="0" title=""
-*ngIf="scene && scene.videoPreviewSanitizer"
-[ngStyle]= "{'width': '100vw', 'height': '100vh', 'opacity': scene && scene.videoPreviewSanitizer ? 1 : 0 }"
-   webkitallowfullscreen mozallowfullscreen allowfullscreen id="video-id-{{scene.id}}"
-   class="videoPreview">
-</iframe>
 
-  <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-back-button"
-    (click)="onToBackEditor(scene)">
-    <ion-icon name="arrow-back-outline"></ion-icon>
-  </ion-button>
+    <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-back-button"
+      (click)="onToBackEditor(scene)">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
 
-  <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-edit-button"
-    (click)="onToMapEditor(scene)">
-    <ion-icon name="create-outline"></ion-icon>
-  </ion-button>
+    <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-edit-button"
+      (click)="onToMapEditor(scene)">
+      <ion-icon name="create-outline"></ion-icon>
+    </ion-button>
 
-  <app-scene-site [hidden]="layoutModel" [editMode]="false" [windowScreenSm]="windowScreenSm"
-    [windowScreenLg]="windowScreenLg" [scene]="sceneEdited" [level]="1" [router]="routerView">
-  </app-scene-site>
+    <app-scene-site [hidden]="layoutModel" [editMode]="false" [windowScreenSm]="windowScreenSm"
+      [windowScreenLg]="windowScreenLg" [scene]="sceneEdited" [level]="1" [router]="routerView">
+    </app-scene-site>
+  </div>
 
+
+
+  <div [hidden]="scene">
+    No se encontró la escena
+  </div>
 </ion-content>
+
+
+<!-- Banner-list - >
+<div *ngFor="let banner of bannersFloat">
+  <div class="float-buttons" *ngIf="banner.floatButton" [ngStyle]="{'top': 
+        banner.floatButton.indexOf('top-') >= 0 ? toolBarSize + 'px' : 
+        banner.floatButton.indexOf('bottom-') >= 0 ? 'calc( 100% - ' + ( banner.styles.height ? banner.styles.height + '' + banner.styles.heightUnit : '32px' ) + ' )' :
+        banner.floatButton.indexOf('-center') >= 0 ? 'calc( 50% - ' + (banner.styles.height ? banner.styles.height + '' + banner.styles.heightUnit : '32px' ) + ' )' :
+        '' ,'left': 
+        banner.floatButton.indexOf('left') >= 0 ? '1em' : 
+        banner.floatButton.indexOf('right') >= 0 ? 'calc( 100% - '+ ( banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : '32px' ) + ' )' :
+        banner.floatButton.indexOf('center') >= 0 ? 'calc( 50% - '+ ( banner.styles.width ? banner.styles.width + '' + banner.styles.widthUnit : '32px' ) + ' )' :
+        ''
+     }">
+
+     <div class="{{banner.styles.class}}" [ngStyle]="{
+        'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
+        'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
+        'minWidth': banner.styles.minWidth ? banner.styles?.minWidth + '' + banner.styles?.minWidthUnit : 'auto',
+        'minHeight': banner.styles.minHeight ? banner.styles?.minHeight + '' + banner.styles?.minHeightUnit : 'auto',
+        'background-color': banner.styles?.backgroundColor,
+        'margin-top': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginTop + banner.styles?.marginTopUnit,
+        'margin-bottom': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginBottom + banner.styles?.marginBottomUnit,
+        'margin-right': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginRight + banner.styles?.marginRightUnit,
+        'margin-left': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginLeft + banner.styles?.marginLeftUnit,
+        'border': banner.styles?.borderLength +  banner.styles?.borderLengthUnit + ' ' + banner.styles?.borderStyle + ' ' + banner.styles?.borderColor,
+        'border-radius': banner.styles?.borderRadius +  banner.styles?.borderRadiusUnit,
+        'text-align': banner.styles?.textAlign,
+        'position': banner.styles?.position?.type,
+        'top': banner.styles?.position?.top + 'em',
+        'left': banner.styles?.position?.left + 'em'
+      }">
+
+        <!-- Image Template ->
+        <img *ngIf="banner.styles && banner.styles.image" [src]="banner.styles.image.src"
+           [ngClass]="{'cursor-pointer': editMode, 'banner-selected': editMode && bannerSelectHover && bannerSelectHover.id === banner.id }"
+           [ngStyle]="{
+        'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
+        'padding-bottom': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingBottom + banner.styles?.paddingBottomUnit,            
+        'padding-right': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingRight + banner.styles?.paddingRightUnit,
+        'padding-left': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingLeft + banner.styles?.paddingLeftUnit,
+        
+        'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : (10 - banner.styles?.opacity) / 10
+       }" (click)="goToOnHoverBanner(banner)" />
+     </div>
+  </div>
+</div>
+<!-- Banner-list -->
