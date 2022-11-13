@@ -91,7 +91,7 @@ ion-menu.md ion-item.selected ion-icon {
   color: var(--ion-color-primary);
 }
 
- 
+
 ion-menu.md ion-item ion-label {
   font-weight: 500;
 }
@@ -249,8 +249,8 @@ ion-header {
 }
 
 .icon-logo {
-    width: auto;
-    height: 5.5em;
+  width: auto;
+  height: 5.5em;
 }
 
 @media (min-width: 992px) {
@@ -267,7 +267,7 @@ ion-header {
 
 @media (max-width: 1150px) {
   .icon-logo {
-   height: 4.5em;
+    height: 4.5em;
   }
 }
 
@@ -499,4 +499,14 @@ select {
 .alert-wrapper .ion-overlay-wrapper .sc-ion-alert-md {
   max-width: 50% !important;
   width: 50% !important;
+}
+
+
+.float-button-register {
+  top: calc(88% - 8em);
+  left: calc(93% - 8em);
+  width: 14em;
+  height: 4em;
+  font-size: 1.2em;
+  position: absolute;
 }

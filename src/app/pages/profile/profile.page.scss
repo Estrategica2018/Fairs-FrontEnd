@@ -26,6 +26,7 @@
     width: 6em;
     background-image: url(https://res.cloudinary.com/deueufyac/image/upload/v1667571545/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/ESCARAPELA/pattern_hqvvoa.png);
     background-size: 6em;
+    min-height: 100vh;
 }
 
 @media screen and (max-width:680px) {
@@ -99,4 +100,13 @@
 
 .padding-container {
     padding: 2em 10% 0 10%;
+}
+.label-uploadInput {
+    border-radius: 5px;
+    border: 2px solid var(--ion-color-primary);
+    color: var(--ion-color-primary);
+    padding: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
 }

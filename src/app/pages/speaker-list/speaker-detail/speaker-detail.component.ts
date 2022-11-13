@@ -43,6 +43,23 @@ export class SpeakerDetailComponent implements OnInit {
         if (speaker.agenda) {
           this.speaker.agenda = speaker.agenda || [];
           this.speaker.agenda.forEach((agenda) => {
+
+            agenda.start_at = agenda.start_at * 1000;
+            agenda.duration_time *= 60 * 1000;
+
+
+            const timeZone = moment(agenda.start_at);
+            const strHour = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
+            const endHour = moment(agenda.start_at).add(agenda.duration_time, 'milliseconds').format('hh:mm a');
+            agenda.startHour = strHour ;
+            agenda.endTime = endHour;
+
+
+
+
+
+
+/*
             const time: any = agenda.start_at * 1000;
             
             const timeZone = moment(time);
@@ -52,7 +69,7 @@ export class SpeakerDetailComponent implements OnInit {
             agenda.str_start_time = dayOfWek + ' '  + strDay + ' de ' + this.months[month - 1];
 
             agenda.startHour = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
-            agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
+            agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');*/
           });
         }
       }, error => {
