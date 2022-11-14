@@ -13,6 +13,7 @@ import { environment, SERVER_URL } from '../../environments/environment';
 })
 export class AgendasService {
 
+
   url = '';
   refresTime = null;
   agendas = null;
@@ -23,117 +24,120 @@ export class AgendasService {
   ) { }
 
   list(fairAdminMode): Promise<any> {
-   // if(fairAdminMode || this.agendas === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
-        
-        return new Promise((resolve, reject) => {
-            
-            this.fairsService.getCurrentFair().
-              then( fair => {
-                let url = `${SERVER_URL}/api/agenda/list?fair_id=${fair.id}`;
-                url += fairAdminMode ? `&zoom_auth=1` : '';
-                this.http.get(url)
-                .pipe(
-                  timeout(60000),
-                  catchError((e: any) => {
-                    console.log(e);
-                    if(e.status && e.statusText) {
-                      throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);    
-                    }
-                    else {
-                      throw new Error(`Consultando el servicio de agenda`);    
-                    }
-                  })
-                )
-                .subscribe((data : any )=> {
-                    this.refresTime = moment();
-                    this.agendas = processData(data.data);
-                    for(let agenda of this.agendas) {
-                      agenda.start_at  *= 1000;
-                    }
-                    resolve(this.agendas);
-                },error => {
-                    reject(error)
-                });
-              },error => {
-                    reject(error)
+
+
+    return new Promise((resolve, reject) => {
+      if (fairAdminMode || this.agendas === null || moment().isAfter(moment(this.refresTime).add(120, 'seconds'))) {
+        this.fairsService.getCurrentFair().
+          then(fair => {
+            let url = `${SERVER_URL}/api/agenda/list?fair_id=${fair.id}`;
+            url += fairAdminMode ? `&zoom_auth=1` : '';
+            this.http.get(url)
+              .pipe(
+                timeout(60000),
+                catchError((e: any) => {
+                  console.log(e);
+                  if (e.status && e.statusText) {
+                    throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);
+                  }
+                  else {
+                    throw new Error(`Consultando el servicio de agenda`);
+                  }
+                })
+              )
+              .subscribe((data: any) => {
+                this.refresTime = moment();
+                this.agendas = processData(data.data);
+                for (let agenda of this.agendas) {
+                  agenda.start_at *= 1000;
+                }
+                resolve(this.agendas);
+              }, error => {
+                reject(error)
               });
-        })
-   
+          }, error => {
+            reject(error)
+          });
+      }
+      else {
+        resolve(this.agendas);
+      }
+    });
   }
-  
+
   get(agendaId: string, fairAdminMode: boolean): any {
     return new Promise((resolve, reject) => {
-        this.list(fairAdminMode)
-         .then((data) => {
-            for(let agenda of data ) {
-                if(Number(agenda.id)  === Number(agendaId)) {
-                  resolve(agenda);
-                  return;
-                }
+      this.list(fairAdminMode)
+        .then((data) => {
+          for (let agenda of data) {
+            if (Number(agenda.id) === Number(agendaId)) {
+              resolve(agenda);
+              return;
             }
-            reject(`No se encontraron datos para la agenda: ${agendaId}`);
-          })
+          }
+          reject(`No se encontraron datos para la agenda: ${agendaId}`);
+        })
         .catch(error => {
-            reject(error)
-         });    
+          reject(error)
+        });
     });
   }
 
   getByCategory(categoryId): any {
     return new Promise((resolve, reject) => {
-        this.list(false)
-         .then((data) => {
-            let agendaList = [];
-            for(let agenda of data ) {
-                if(categoryId == null || categoryId == 'all' || Number(agenda.category.id)  === Number(categoryId)) {
-                  agendaList.push(agenda);
-                }
+      this.list(false)
+        .then((data) => {
+          let agendaList = [];
+          for (let agenda of data) {
+            if (categoryId == null || categoryId == 'all' || Number(agenda.category.id) === Number(categoryId)) {
+              agendaList.push(agenda);
             }
-            if(agendaList.length == 0) {
-              reject(`No se encontraron datos para la categoría: ${categoryId}`);
-            }
-            else {
-              resolve(agendaList);
-            }
-          })
+          }
+          if (agendaList.length == 0) {
+            reject(`No se encontraron datos para la categoría: ${categoryId}`);
+          }
+          else {
+            resolve(agendaList);
+          }
+        })
         .catch(error => {
-            reject(error)
-         });    
+          reject(error)
+        });
     });
   }
-  
-  generateMeetingToken(fair_id : string, meeting_id: string, userDataSession: any): any {
+
+  generateMeetingToken(fair_id: string, meeting_id: string, userDataSession: any): any {
     return new Promise((resolve, reject) => {
-        
+
       const httpOptions = {
         headers: new HttpHeaders({
-         'Authorization':  'Bearer ' + userDataSession.token
-          })
-       };
-  
-       this.http.get(`${SERVER_URL}/api/meeting/generate-meeting-token/${fair_id}/${meeting_id}`,httpOptions)
+          'Authorization': 'Bearer ' + userDataSession.token
+        })
+      };
+
+      this.http.get(`${SERVER_URL}/api/meeting/generate-meeting-token/${fair_id}/${meeting_id}`, httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
             console.log(e);
-            if(e.status && e.statusText) {
-              throw new Error(`Consultando el servicio para generar acceso a conferencia : ${e.status} - ${e.statusText}`);    
+            if (e.status && e.statusText) {
+              throw new Error(`Consultando el servicio para generar acceso a conferencia : ${e.status} - ${e.statusText}`);
             }
             else {
               throw new Error(`Consultando el servicio para generar acceso a conferencia`);
             }
           })
         )
-        .subscribe((data : any )=> {
-            if(data.success == 201) {
-               resolve(data);
-            }
-            else {
-                reject(JSON.stringify(data));
-            }
-        },error => {
-            reject(error)
-        });   
+        .subscribe((data: any) => {
+          if (data.success == 201) {
+            resolve(data);
+          }
+          else {
+            reject(JSON.stringify(data));
+          }
+        }, error => {
+          reject(error)
+        });
     });
   }
 
@@ -141,40 +145,83 @@ export class AgendasService {
     this.agendas = null;
   }
 
-  availableList(): Promise<any> {
-         
-         return new Promise((resolve, reject) => {
-             
-             this.fairsService.getCurrentFair().
-               then( fair => {
-                 let url = `${SERVER_URL}/api/agenda/available/list/${fair.id}`;
-                 this.http.get(url)
-                 .pipe(
-                   timeout(60000),
-                   catchError((e: any) => {
-                     console.log(e);
-                     if(e.status && e.statusText) {
-                       throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);    
-                     }
-                     else {
-                       throw new Error(`Consultando el servicio de agenda`);    
-                     }
-                   })
-                 )
-                 .subscribe((data : any )=> {
-                     this.refresTime = moment();
-                     this.agendas = processData(data.data);
-                     for(let agenda of this.agendas) {
-                       agenda.start_at  *= 1000;
-                     }
-                     resolve(this.agendas);
-                 },error => {
-                     reject(error)
-                 });
-               },error => {
-                     reject(error)
-               });
-         })
-   }
-  
+  availableList(agenda, userDataSession): Promise<any> {
+
+    return new Promise((resolve, reject) => {
+
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Authorization': 'Bearer ' + userDataSession.token
+        })
+      };
+
+      this.fairsService.getCurrentFair().
+        then(fair => {
+          let url = `${SERVER_URL}/api/agenda/available/list/${fair.id}`;
+          if (agenda) {
+            url = `${SERVER_URL}/api/agenda/available/list/${fair.id}/${agenda.id}`;
+          }
+          this.http.get(url,httpOptions)
+            .pipe(
+              timeout(60000),
+              catchError((e: any) => {
+                console.log(e);
+                if (e.status && e.statusText) {
+                  throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);
+                }
+                else {
+                  throw new Error(`Consultando el servicio de agenda`);
+                }
+              })
+            )
+            .subscribe((data: any) => {
+              let agendas = processData(data.data);
+              for (let agenda of agendas) {
+                agenda.start_at *= 1000;
+              }
+              resolve(agendas);
+            }, error => {
+              reject(error)
+            });
+        }, error => {
+          reject(error)
+        });
+    });
+  }
+
+  register(fair: any, agenda: any, userDataSession: any) {
+    return new Promise((resolve, reject) => {
+
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Authorization': 'Bearer ' + userDataSession.token
+        })
+      };
+
+      let url = `${SERVER_URL}/api/agenda/register/${fair.id}/${agenda.id}`;
+      this.http.get(url,httpOptions)
+        .pipe(
+          timeout(60000),
+          catchError((e: any) => {
+            console.log(e);
+            if (e.status && e.statusText) {
+              throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);
+            }
+            else {
+              throw new Error(`Consultando el servicio de agenda`);
+            }
+          })
+        )
+        .subscribe((data: any) => {
+          this.refresTime = moment();
+
+          for (let agenda of this.agendas) {
+            agenda.start_at *= 1000;
+          }
+          resolve(this.agendas);
+        }, error => {
+          reject(error)
+        });
+    });
+  }
 }

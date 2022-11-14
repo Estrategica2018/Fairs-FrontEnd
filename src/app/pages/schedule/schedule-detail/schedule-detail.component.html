@@ -4,169 +4,204 @@
   </div>
   <div class="info-background">
   </div>
-  <div (click)="closeModal()" class="close-modal"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
-    <div class="padding-container min-height">
-        <ion-list-header [hidden]="!errors">
-          <div class="alert alert-danger fade show alert-dismissible">
-           <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-           <strong></strong> {{errors}}
-          </div>
-        </ion-list-header>
-        <ion-list [hidden]="showSupportDetail">
-            <ion-grid *ngIf="session" class="mt-4 agenda-detail-container" [ngStyle]="{ 'height': !largeScreen ? clientHeight + 'px' : '' }">
-                  <ion-row>
-                    <ion-col [size]="largeScreen ? '' : '12'">
-                      <div>
-                        <img [src]="session.category?.resources?.url_image"/>
-                        <br/>
-                        <ion-item [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color,'color': session.category?.color}">
-                        <ion-label class="ml-4 text-uppercase"> {{session?.category?.name}}</ion-label>
-                        <br /><br />
-                        </ion-item>
+  <div (click)="closeModal()" class="close-modal">
+    <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+  </div>
+  <div class="padding-container min-height">
+    <ion-list-header [hidden]="!errors">
+      <div class="alert alert-danger fade show alert-dismissible">
+        <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+        <strong></strong> {{errors}}
+      </div>
+    </ion-list-header>
 
-                      </div>
-                      <ion-list>
+    <ion-item *ngIf="success" class="not-found">
+      <div class="alert alert-success alert-dismissible">
+        <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
+        <strong></strong> {{success}}
+      </div>
+    </ion-item>
 
-                        <ion-item *ngIf="loaded && ( agenda.audience_config == 4 && !eventPayment ) " [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
-                        (click)="onAgendaPrice()" button>
-                          <ion-label color="primary">Entrar al Evento por $ {{agenda.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
-                        </ion-item>
+    <ion-list [hidden]="showSupportDetail">
+      <ion-grid *ngIf="session" class="mt-4 agenda-detail-container"
+        [ngStyle]="{ 'height': !largeScreen ? clientHeight + 'px' : '' }">
+        <ion-row>
+          <ion-col [size]="largeScreen ? '' : '12'">
+            <div>
+              <img [src]="session.category?.resources?.url_image" />
+              <br />
+              <ion-item
+                [ngStyle]="{'border-left': '2px solid ' + session.category?.resources.color,'color': session.category?.color}">
+                <ion-label class="ml-4 text-uppercase"> {{session?.category?.name}}</ion-label>
+                <br /><br />
+              </ion-item>
 
-                        <ion-item *ngIf="loaded && profileRole && ( profileRole.speaker || profileRole.admin )"
-                        (click)="onViewerMeeting()" button>
-                          <ion-label color="primary"> Iniciar conferencia</ion-label>
-                        </ion-item>
+            </div>
+            <ion-list>
 
-                        <!--ion-item *ngIf="loaded && agenda.audience_config == 1 " [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
-                        (click)="onViewerMeeting()" button>
-                          <ion-label color="primary">Entrar al Evento</ion-label>
-                        </ion-item-->
+              <ion-item *ngIf="loaded && ( agenda.audience_config == 4 && !eventPayment ) "
+                [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )" (click)="onAgendaPrice()" button>
+                <ion-label color="primary">Entrar al Evento por $ {{agenda.price | currency: ' ':' ':'1.0-0'}}
+                </ion-label>
+              </ion-item>
 
-                        <ion-item *ngIf="loaded && eventPayment && agenda.audience_config == 4" [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )"
-                        (click)="onViewerMeeting()" button>
-                          <ion-label color="primary">Entrar al Evento</ion-label>
-                        </ion-item>
-<!--
+              <ion-item *ngIf="loaded && profileRole && ( profileRole.speaker || profileRole.admin )"
+                (click)="onViewerMeeting()" button>
+                <ion-label color="primary"> Iniciar conferencia</ion-label>
+              </ion-item>
+
+              <ion-item *ngIf="loaded && agenda.audience_config == 5 && agenda.disableSelection"
+                [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )" (click)="onViewerMeeting()"
+                button>
+                <ion-label color="primary">Entrar al Evento</ion-label>
+              </ion-item>
+
+              <ion-item *ngIf="loaded && agenda.audience_config == 5"
+                [hidden]="!profileRole || (profileRole && ( profileRole.speaker || profileRole.admin || agenda.full || agenda.disableSelection))"
+                (click)="onRegister()" button>
+                <ion-label color="primary">Inscribirse al Evento</ion-label>
+              </ion-item>
+
+              <ion-item [hidden]="profileRole" (click)="showRegister = true" button>
+                <ion-label color="primary">Inscribirse al Evento</ion-label>
+              </ion-item>
+
+              <ion-item *ngIf="loaded && agenda.audience_config == 5 && agenda.full"
+                [hidden]="profileRole && ( profileRole.speaker || profileRole.admin)" button>
+                <ion-label color="primary">Evento Agotado</ion-label>
+              </ion-item>
+
+              <ion-item *ngIf="loaded && eventPayment && agenda.audience_config == 4"
+                [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )" (click)="onViewerMeeting()"
+                button>
+                <ion-label color="primary">Entrar al Evento</ion-label>
+              </ion-item>
+              <!--
                         <ion-item (click)="onSupportClick()" button>
                           <ion-label color="primary">Dejar un comentario</ion-label>
                         </ion-item>
                         -->
-                      </ion-list>
-                    </ion-col>
-                    <ion-col class="content-left scroll-light" >
-                      <ion-label style="margin-left: 16px;">
-                        <h1>{{session.title}}</h1>
-                        <br />
-                        <ion-item line="none"><ion-text>{{session.description}}</ion-text></ion-item>
-                        <br /><br />
-                        <ion-item>
-                          <ion-text color="medium" style="text-transform: capitalize;">
-                          {{session.strDay}}
-                          <br />
-                          {{session.startTime}} &ndash; {{session.endTime}}
-                          <span>América/Bogotá</span>
-                          <br /> {{session.location}}
-                           </ion-text>
-                        </ion-item>
-                        <br /><br />
-                        <h4 *ngIf="session?.invited_speakers?.length > 1">Invitados</h4>
-                        <h4 *ngIf="session?.invited_speakers?.length === 1">Invitado</h4>
+            </ion-list>
+          </ion-col>
+          <ion-col class="content-left scroll-light">
+            <ion-label style="margin-left: 16px;">
+              <h1>{{session.title}}</h1>
+              <br />
+              <ion-item line="none">
+                <ion-text>{{session.description}}</ion-text>
+              </ion-item>
+              <br /><br />
+              <ion-item>
+                <ion-text color="medium" style="text-transform: capitalize;">
+                  {{session.strDay}}
+                  <br />
+                  {{session.startTime}} &ndash; {{session.endTime}}
+                  <span>América/Bogotá</span>
+                  <br /> {{session.location}}
+                </ion-text>
+              </ion-item>
+              <br /><br />
+              <h4 *ngIf="session?.invited_speakers?.length > 1">Invitados</h4>
+              <h4 *ngIf="session?.invited_speakers?.length === 1">Invitado</h4>
 
-                        <ion-item *ngFor="let invited_speaker of session.invited_speakers" class="p-2"
-                        (click)="onSpeaker(invited_speaker.speaker)" button>
+              <ion-item *ngFor="let invited_speaker of session.invited_speakers" class="p-2"
+                (click)="onSpeaker(invited_speaker.speaker)" button>
 
-                              <div class="d-flex">
-                                <ion-avatar slot="start" class="p-2">
-                                   <img [src]="invited_speaker.speaker?.profile_picture" [alt]="invited_speaker.speaker?.user?.name + ' profile picture'">
-                                </ion-avatar>
-                                <ion-label class="speaker-name">
-                                    <h5>{{ invited_speaker.speaker?.user?.name + '  ' + invited_speaker.speaker?.user?.last_name }} </h5>
-                                    <small>{{invited_speaker.speaker?.profession}}</small>
-                                </ion-label>
-                              </div>
-                         </ion-item>
-                      </ion-label>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col class="ion-text-center">
-                        <div *ngIf="showConfirmByProduct" class="mt-1">
-                          <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
-                            <h6 style="margin-right:2em; width: 87%;" slot="start">Confirma para agregar el evento al carrito de compras por $ {{ agenda.price  | currency: ' ':' ':'1.0-0' }}</h6>
-                            <div (click)="showConfirmByProduct=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
-                          </ion-toolbar>
-                          <ion-toolbar class="pay-button ml-6 footer-pay">
-                            <ion-button class="button ml-6" color="primary" size="small" (click)="onBuyAgenda();">
-                               Añadir y pagar carrito
-                            </ion-button>
-                          </ion-toolbar>
-                        </div>
-                        <div  *ngIf="showRegister" class="mt-1">
-                          <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
-                            <h6 style="margin-right:2em; width: 87%;" slot="start">Para ingresar a este evento debes registrarte y acceder con tu usuario</h6>
-                            <div (click)="showRegister=false" class="close-play cursor-pointer"><ion-icon name="close-outline" slot="icon-only"></ion-icon></div>
-                          </ion-toolbar>
-                          <ion-toolbar class="pay-button ml-6 footer-pay">
-                            <ion-button class="button ml-6" color="primary" size="small" (click)="onRegister()">
-                               Ingresar o crear cuenta
-                            </ion-button>
-                          </ion-toolbar>
-                        </div>
-                    </ion-col>
-                   </ion-row>
-            </ion-grid>
-        </ion-list>
-        <ion-list *ngIf="showSupportDetail">
-            <ion-grid *ngIf="session" class="mt-4">
+                <div class="d-flex">
+                  <ion-avatar slot="start" class="p-2">
+                    <img [src]="invited_speaker.speaker?.profile_picture"
+                      [alt]="invited_speaker.speaker?.user?.name + ' profile picture'">
+                  </ion-avatar>
+                  <ion-label class="speaker-name">
+                    <h5>{{ invited_speaker.speaker?.user?.name + ' ' + invited_speaker.speaker?.user?.last_name }} </h5>
+                    <small>{{invited_speaker.speaker?.profession}}</small>
+                  </ion-label>
+                </div>
+              </ion-item>
+            </ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <div *ngIf="showConfirmByProduct" class="mt-1">
+              <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
+                <h6 style="margin-right:2em; width: 87%;" slot="start">Confirma para agregar el evento al carrito de
+                  compras por $ {{ agenda.price | currency: ' ':' ':'1.0-0' }}</h6>
+                <div (click)="showConfirmByProduct=false" class="close-play cursor-pointer">
+                  <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+                </div>
+              </ion-toolbar>
+              <ion-toolbar class="pay-button ml-6 footer-pay">
+                <ion-button class="button ml-6" color="primary" size="small" (click)="onBuyAgenda();">
+                  Añadir y pagar carrito
+                </ion-button>
+              </ion-toolbar>
+            </div>
+            <div *ngIf="showRegister" class="mt-1">
+              <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
+                <h6 style="margin-right:2em; width: 87%;" slot="start">Para ingresar a este evento debes registrarte y
+                  acceder con tu usuario</h6>
+                <div (click)="showRegister=false" class="close-play cursor-pointer">
+                  <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+                </div>
+              </ion-toolbar>
+              <ion-toolbar class="pay-button ml-6 footer-pay">
+                <ion-button class="button ml-6" color="primary" size="small" (click)="onPresenterLogin()">
+                  Ingresar o crear cuenta
+                </ion-button>
+              </ion-toolbar>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-list>
+    <ion-list *ngIf="showSupportDetail">
+      <ion-grid *ngIf="session" class="mt-4">
 
-                    <ion-item button class="back-button" (click)="showSupportDetail = null">
-                      <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-                      <ion-label> Regresar a agenda</ion-label>
-                    </ion-item>
-              <ion-row>
-                <ion-col>
-                  <h6 class="name ion-text-center mt-3">Deja tu comentario</h6>
+        <ion-item button class="back-button" (click)="showSupportDetail = null">
+          <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+          <ion-label> Regresar a agenda</ion-label>
+        </ion-item>
+        <ion-row>
+          <ion-col>
+            <h6 class="name ion-text-center mt-3">Deja tu comentario</h6>
 
-                  <form [formGroup]="contactForm" (ngSubmit)="contactSendForm(contactForm)"
-                  style="font-size: 1.3em;"
-                  class="ion-text-center">
-                    <p class="d-flex ml-8">
-                      <span style="color: rgb(224, 62, 45);">*</span>
-                      <span style="font-weight: 500;"> Nombre </span>
-                    </p>
-                    <input formControlName="name" type="text" class="ion-text-start ml-4  w-80">
-                    <div class="contact-line"></div>
-                    <p class="d-flex ml-8 mt-3">
-                      <span style="color: rgb(224, 62, 45);">*</span>
-                      <span style="font-weight: 500;"> Correo electrónico </span>
-                    </p>
-                    <input formControlName="email" type="text" class="ion-text-start ml-4  w-80" >
-                    <div class="contact-line"></div>
+            <form [formGroup]="contactForm" (ngSubmit)="contactSendForm(contactForm)" style="font-size: 1.3em;"
+              class="ion-text-center">
+              <p class="d-flex ml-8">
+                <span style="color: rgb(224, 62, 45);">*</span>
+                <span style="font-weight: 500;"> Nombre </span>
+              </p>
+              <input formControlName="name" type="text" class="ion-text-start ml-4  w-80">
+              <div class="contact-line"></div>
+              <p class="d-flex ml-8 mt-3">
+                <span style="color: rgb(224, 62, 45);">*</span>
+                <span style="font-weight: 500;"> Correo electrónico </span>
+              </p>
+              <input formControlName="email" type="text" class="ion-text-start ml-4  w-80">
+              <div class="contact-line"></div>
 
-                    <p class="d-flex ml-8 mt-3">
-                      <span style="color: rgb(224, 62, 45);">*</span>
-                      <span style="font-weight: 500;"> Asunto </span>
-                    </p>
-                    <input formControlName="subject" type="text" class=" ion-text-start ml-4 w-80">
-                    <div class="contact-line"></div>
+              <p class="d-flex ml-8 mt-3">
+                <span style="color: rgb(224, 62, 45);">*</span>
+                <span style="font-weight: 500;"> Asunto </span>
+              </p>
+              <input formControlName="subject" type="text" class=" ion-text-start ml-4 w-80">
+              <div class="contact-line"></div>
 
-                    <textarea placeholder="Mensaje" type="text"
-                    rows="6" cols="20" maxlength="500" formControlName="message"
-                    class=" contact-text-area ion-text-justify ml-4 w-80 mt-4">
+              <textarea placeholder="Mensaje" type="text" rows="6" cols="20" maxlength="500" formControlName="message"
+                class=" contact-text-area ion-text-justify ml-4 w-80 mt-4">
                     </textarea>
-                    <div
-                    [ngStyle]="{'color': 'gray'}"
-                    class="ml-8" style="text-align: left;"
-                    > caracteres {{contactForm?.value?.message?.length}} / 500</div>
+              <div [ngStyle]="{'color': 'gray'}" class="ml-8" style="text-align: left;"> caracteres
+                {{contactForm?.value?.message?.length}} / 500</div>
 
-                    <ion-button color="primary" type="submit" [disabled]="!contactForm?.valid" style="margin-top: -10px;">
-                      <ion-label> Enviar Mensaje</ion-label>
-                      <ion-icon  slot="end" name="paper-plane-outline"></ion-icon>
-                    </ion-button>
-                 </form>
-                </ion-col>
-               </ion-row>
-            </ion-grid>
-        </ion-list>
-    </div>
+              <ion-button color="primary" type="submit" [disabled]="!contactForm?.valid" style="margin-top: -10px;">
+                <ion-label> Enviar Mensaje</ion-label>
+                <ion-icon slot="end" name="paper-plane-outline"></ion-icon>
+              </ion-button>
+            </form>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-list>
+  </div>
 </div>

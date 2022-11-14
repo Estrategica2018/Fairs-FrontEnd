@@ -51,8 +51,22 @@ export class AgendaCatalogComponent implements OnInit {
   
   async presenterLogin() {
 
-  
+    //if(this.modal) { this.modal.dismiss(); }
+
+    this.modal = await this.modalCtrl.create({
+      component: LoginComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if (data) {
+    }
   }
+
 
 
   initializeAgendaCatalogs(banner) {

@@ -3,38 +3,39 @@
     <ion-buttons slot="start">
       <ion-title>Administrar Agenda</ion-title>
     </ion-buttons>
-     
+
   </ion-toolbar>
 
 </ion-header>
 
 <ion-content fullscreen="true">
 
-   <ion-item [hidden]="!errors" class="not-found mt-3">
-     <div class="alert alert-danger alert-dismissible">
-       <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
-       <strong>Error!</strong> {{errors}}
-      </div>
-   </ion-item>
+  <ion-item [hidden]="!errors" class="not-found mt-3">
+    <div class="alert alert-danger alert-dismissible">
+      <a href="javascript:void(0)" class="close" aria-label="close" (click)="errors=null" title="close">×</a>
+      <strong>Error!</strong> {{errors}}
+    </div>
+  </ion-item>
 
-   <ion-item [hidden]="!success" class="mt-3">
-     <div class="alert alert-success alert-dismissible">
+  <ion-item [hidden]="!success" class="mt-3">
+    <div class="alert alert-success alert-dismissible">
       <a href="javascript:void(0)" class="close" aria-label="close" (click)="success=null" title="close">×</a>
       <strong></strong> {{success}}
-     </div>
-   </ion-item>
+    </div>
+  </ion-item>
 
-  <form #submitForm="ngForm" novalidate class="padding-container">
-    <ion-list lines="" *ngIf="fair" class="padding-container">
 
-       <ion-item lines="">
-        <ion-label slot="start">Crear Categorías de Agenda</ion-label>
-        <ion-buttons class="" slot="end">
-          <ion-button routerLink="/super-admin/categories-subcategories" routerLinkActive="active" routerDirection="root" detail="false">
-            <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-item>
+  <ion-list lines="" *ngIf="fair" class="padding-container">
+
+    <ion-item lines="">
+      <ion-label slot="start">Crear Categorías de Agenda</ion-label>
+      <ion-buttons class="" slot="end">
+        <ion-button routerLink="/super-admin/categories-subcategories" routerLinkActive="active" routerDirection="root"
+          detail="false">
+          <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
 
     <ion-item lines="">
       <ion-label slot="start">Crear Invitados</ion-label>
@@ -44,51 +45,59 @@
         </ion-button>
       </ion-buttons>
     </ion-item>
-    
-      <ion-item button="true" (click)="presentActionPrice()">
-        <ion-label> Precio General </ion-label>
-        <ion-buttons slot="end">
-            <ion-label *ngIf="showPrice">$ {{fair.price  | currency: ' ':' ':'1.0-0'}}</ion-label>
-            <ion-label [hidden]="showPrice"> Sin costo </ion-label>
-            <ion-chip slot="end"
-                (click)="showPrice = !showPrice; editSave=true;"
-                [color]="showPrice ? 'primary' : ''">
-                   <ion-icon name="checkmark-circle"></ion-icon>
-             </ion-chip>
-         </ion-buttons>
-      </ion-item>
-    
-      <ion-item lines="" class="mt-4">
-        <ion-label slot="start">Lista de Agendas</ion-label>
-        <ion-buttons class="" slot="end">
-            <ion-button routerLink="/super-admin/agenda" routerLinkActive="active" routerDirection="root" detail="false">
-              Agregar Agenda <ion-icon slot="end" name="add-circle-outline"></ion-icon>
-            </ion-button>
-        </ion-buttons>
-      </ion-item>
 
-      <ion-item *ngFor="let agenda of agendas"
-          class="d-flex" button="true"
-          routerLink="/super-admin/agenda/{{agenda.id}}" routerLinkActive="active" routerDirection="root" detail="false">
-        <ion-label class="mr-3">
-          <h2>{{agenda.title}}</h2>
-          <h3>{{agenda.description}}</h3>
-          <p *ngIf="agenda.room">
-            {{agenda.location }}
-          </p>
-          <p> {{agenda.strDay}} </p>
-          <p> {{agenda.startTime}} &mdash; {{agenda.endTime}}
-              <span>{{agenda.timezone}}</span>
-          </p>
-        </ion-label>
-        <ion-thumbnail slot="start">
-         <ion-img class="ml-auto" [src]="agenda.category?.resources?.url_image"></ion-img>
-        </ion-thumbnail>
-     </ion-item>
-   
- 
-    </ion-list>
+    <ion-item button="true" (click)="presentActionPrice()">
+      <ion-label> Precio General </ion-label>
+      <ion-buttons slot="end">
+        <ion-label *ngIf="showPrice">$ {{fair.price | currency: ' ':' ':'1.0-0'}}</ion-label>
+        <ion-label [hidden]="showPrice"> Sin costo </ion-label>
+        <ion-chip slot="end" (click)="showPrice = !showPrice; editSave=true;" [color]="showPrice ? 'primary' : ''">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </ion-chip>
+      </ion-buttons>
+    </ion-item>
 
-  </form>
+    <ion-item lines="" class="mt-4">
+      <ion-label slot="start">Lista de Agendas</ion-label>
+      <ion-buttons class="" slot="end">
+        <ion-button routerLink="/super-admin/agenda" routerLinkActive="active" routerDirection="root" detail="false">
+          Agregar Agenda <ion-icon slot="end" name="add-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+
+    <ion-item>
+
+      Filtro por Categorías:
+
+      <select [(ngModel)]="categorySelect" class="ml-auto" (change)="onChangeCategory()">
+        <option selected value="all">Todas las categorías</option>
+        <option *ngFor="let category of groupsCategoryList" value="{{category.id}}"> {{category.name}}</option>
+
+      </select>
+
+    </ion-item>
+
+    <ion-item *ngFor="let agenda of agendaSelect" class="d-flex" button="true"
+      routerLink="/super-admin/agenda/{{agenda.id}}" routerLinkActive="active" routerDirection="root" detail="false">
+      <ion-label class="mr-3">
+        <h2>{{agenda.title}}</h2>
+        <h3>{{agenda.description}}</h3>
+        <p *ngIf="agenda.room">
+          {{agenda.location }}
+        </p>
+        <p> {{agenda.strDay}} </p>
+        <p> {{agenda.startTime}} &mdash; {{agenda.endTime}}
+          <span>{{agenda.timezone}}</span>
+        </p>
+      </ion-label>
+      <ion-thumbnail slot="start">
+        <ion-img class="ml-auto" [src]="agenda.category?.resources?.url_image"></ion-img>
+      </ion-thumbnail>
+    </ion-item>
+
+
+  </ion-list>
+
+
 </ion-content>
-

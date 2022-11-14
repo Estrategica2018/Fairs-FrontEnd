@@ -19,7 +19,8 @@ import { LoginComponent } from '../../login/login.component';
 export class AgendaListPage implements OnInit {
 
   fair: any;
-  agendas: any;
+  agendaList: any;
+  agendaSelect: any;
   errors: string;
   success: string;
   showPrice = false;
@@ -28,6 +29,7 @@ export class AgendaListPage implements OnInit {
   modal: any;
   userDataSession: any;
   editSave = false;
+  categorySelect = 'all';
 
   constructor(
     private fairsService: FairsService,
@@ -72,22 +74,27 @@ export class AgendaListPage implements OnInit {
 
               this.agendasService.list(this.profileRole.admin)
                 .then((agendas) => {
-                  this.agendas = agendas;
+                  this.agendaList = agendas;
+                  this.agendaSelect = agendas;
+
                   if (agendas)
-                    this.agendas.forEach((agenda) => {
+                    this.agendaList.forEach((agenda) => {
+                      console.log(agenda);
                       agenda.strDay = this.datepipe.transform(new Date(agenda.start_at), 'EEEE, MMMM d, y');
                       agenda.startTime = this.datepipe.transform(new Date(agenda.start_at), 'hh:mm a');
                       agenda.endTime = this.datepipe.transform(new Date(agenda.start_at + agenda.duration_time * 60000), 'hh:mm a');
                       agenda.location = agenda.room ? agenda.room.name : '';
                     });
 
-                  this.categoryService.list('all', this.fair)
+                  this.categoryService.list('AgendaType', this.fair)
                     .then((response) => {
-                      this.groupsCategoryList = [{ "label": "Categorías para agenda", "name": "AgendaType", "values": [] }, { "label": "Categorías para productos", "name": "ProductCategory", "values": [] }];
+                      //this.groupsCategoryList = [{ "label": "Categorías para agenda", "name": "AgendaType", "values": [] }, { "label": "Categorías para productos", "name": "ProductCategory", "values": [] }];
+                      this.groupsCategoryList = [];
                       if (response.success == 201) {
                         response.data.forEach((category) => {
-                          if (category.type == 'AgendaType') { this.groupsCategoryList[0].values.push(category); }
-                          else if (category.type == 'ProductCategory') { this.groupsCategoryList[1].values.push(category); }
+                          
+                          if (category.type == 'AgendaType') { this.groupsCategoryList.push(category); }
+                          //else if (category.type == 'ProductCategory') { this.groupsCategoryList[1].values.push(category); }
                         });
                       }
                       this.loading.dismiss();
@@ -171,5 +178,11 @@ export class AgendaListPage implements OnInit {
       });
   }
 
+  onChangeCategory(){
+    
+    this.agendaSelect = this.agendaList.filter((agenda)=>{
+      return agenda.category.id == this.categorySelect || this.categorySelect == 'all';
+    })
+  }
 
 } 
