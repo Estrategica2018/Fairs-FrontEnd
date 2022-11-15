@@ -189,9 +189,7 @@ export class AgendasService {
     });
   }
 
-  register(fair: any, agenda: any, userDataSession: any) {
-    return new Promise((resolve, reject) => {
-
+  register(fair: any, agenda: any, userDataSession: any): Observable<any> {
       const httpOptions = {
         headers: new HttpHeaders({
           'Authorization': 'Bearer ' + userDataSession.token
@@ -199,7 +197,7 @@ export class AgendasService {
       };
 
       let url = `${SERVER_URL}/api/agenda/register/${fair.id}/${agenda.id}`;
-      this.http.get(url,httpOptions)
+     return  this.http.get(url,httpOptions)
         .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -211,17 +209,6 @@ export class AgendasService {
               throw new Error(`Consultando el servicio de agenda`);
             }
           })
-        )
-        .subscribe((data: any) => {
-          this.refresTime = moment();
-
-          for (let agenda of this.agendas) {
-            agenda.start_at *= 1000;
-          }
-          resolve(this.agendas);
-        }, error => {
-          reject(error)
-        });
-    });
+        );    
   }
 }

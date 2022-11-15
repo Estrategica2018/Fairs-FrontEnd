@@ -19,10 +19,10 @@ export class FairsService {
 
   constructor(private http: HttpClient) { }
 
-  list(): any {
+  list(fairName): any {
 
     return new Promise((resolve, reject) => {
-        this.http.get(`${SERVER_URL}/api/fair/to_list`)
+        this.http.get(`${SERVER_URL}/api/fair/to_list/${fairName}`)
        .pipe(
           timeout(60000),
           catchError((e: any) => {
@@ -71,7 +71,7 @@ export class FairsService {
                 reject(`No se encontró nombre de la feria`);
             }
 
-            this.list()
+            this.list(this.fairName)
              .then((data) => {
                  
                 if(data && data.success == 201 && data.data ) {

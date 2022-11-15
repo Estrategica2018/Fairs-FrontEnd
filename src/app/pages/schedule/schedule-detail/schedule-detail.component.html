@@ -40,29 +40,54 @@
             <ion-list>
 
               <ion-item *ngIf="loaded && ( agenda.audience_config == 4 && !eventPayment ) "
-                [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )" (click)="onAgendaPrice()" button>
-                <ion-label color="primary">Entrar al Evento por $ {{agenda.price | currency: ' ':' ':'1.0-0'}}
+                [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )" (click)="onAgendaPrice()"
+                button>
+                <ion-label color="primary">Entrar al Evento por $ {{agenda?.price | currency: ' ':' ':'1.0-0'}}
                 </ion-label>
               </ion-item>
 
               <ion-item *ngIf="loaded && profileRole && ( profileRole.speaker || profileRole.admin )"
                 (click)="onViewerMeeting()" button>
-                <ion-label color="primary"> Iniciar conferencia</ion-label>
+                <ion-label color="primary"> Iniciar conferencia </ion-label>
               </ion-item>
 
-              <ion-item *ngIf="loaded && agenda.audience_config == 5 && agenda.disableSelection"
+
+
+              <ion-item *ngIf="loaded && eventPayment && agenda.audience_config == 4"
                 [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )" (click)="onViewerMeeting()"
                 button>
                 <ion-label color="primary">Entrar al Evento</ion-label>
               </ion-item>
 
-              <ion-item *ngIf="loaded && agenda.audience_config == 5"
-                [hidden]="!profileRole || (profileRole && ( profileRole.speaker || profileRole.admin || agenda.full || agenda.disableSelection))"
-                (click)="onRegister()" button>
-                <ion-label color="primary">Inscribirse al Evento</ion-label>
+              <ion-item *ngIf="loaded && agenda.audience_config == 1" [hidden]="!profileRole" button>
+                <ion-label color="primary">Pronto iniciará este evento</ion-label>
               </ion-item>
 
-              <ion-item [hidden]="profileRole" (click)="showRegister = true" button>
+              
+              <!--Config 5-->
+
+              <!--ion-item *ngIf="loaded && agenda.audience_config == 5 && agenda.disableSelection"
+                [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )" (click)="onViewerMeeting()"
+                button>
+                <ion-label color="primary">Entrar al Evento</ion-label>
+              </ion-item-->
+
+              <ion-item *ngIf="loaded && agenda.audience_config == 5 && agenda.disableSelection"
+                 button [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )">
+                <ion-label color="primary">Pronto iniciará este evento</ion-label>
+              </ion-item>
+
+              <ion-item
+                *ngIf="loaded && agenda.audience_config == 5 && ( agenda.category.name != 'Taller_M' && agenda.category.name != 'Taller_T' ) "
+                [hidden]="!profileRole || (profileRole && ( profileRole.speaker || profileRole.admin || agenda.full || agenda.disableSelection))"
+                (click)="onRegister()" button>
+                <ion-label color="primary">Insscribirse al Evento</ion-label>
+              </ion-item>
+
+              <ion-item
+                *ngIf="loaded && agenda.audience_config == 5 && ( agenda.category.name == 'Taller_M' || agenda.category.name == 'Taller_T' ) "
+                [hidden]="!profileRole || (profileRole && ( profileRole.speaker || profileRole.admin || agenda.full || agenda.disableSelection))"
+                (click)="goToFormCatalog()" button>
                 <ion-label color="primary">Inscribirse al Evento</ion-label>
               </ion-item>
 
@@ -71,16 +96,16 @@
                 <ion-label color="primary">Evento Agotado</ion-label>
               </ion-item>
 
+             
+              <ion-item [hidden]="profileRole" (click)="showRegister = true" button>
+                <ion-label color="primary">Registrarse al Congreso</ion-label>
+              </ion-item>
+
               <ion-item *ngIf="loaded && eventPayment && agenda.audience_config == 4"
                 [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )" (click)="onViewerMeeting()"
                 button>
                 <ion-label color="primary">Entrar al Evento</ion-label>
               </ion-item>
-              <!--
-                        <ion-item (click)="onSupportClick()" button>
-                          <ion-label color="primary">Dejar un comentario</ion-label>
-                        </ion-item>
-                        -->
             </ion-list>
           </ion-col>
           <ion-col class="content-left scroll-light">

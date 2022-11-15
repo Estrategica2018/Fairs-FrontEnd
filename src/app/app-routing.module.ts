@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'map/fair/0',
+    redirectTo: 'map-site/fair/7',
     pathMatch: 'full'
   },
   {

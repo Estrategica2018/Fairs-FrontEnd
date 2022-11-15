@@ -128,6 +128,8 @@ export class ScheduleDetailComponent {
       this.userDataSession = userDataSession;
       if (userDataSession) {
 
+        console.log(agenda);
+
         this.profileRole = {};
         if (userDataSession.user_roles_fair) {
           userDataSession.user_roles_fair.forEach((role) => {
@@ -169,8 +171,8 @@ export class ScheduleDetailComponent {
               this.loading.dismiss();
             });
         }
-
-        if (agenda.audience_config == 5) {
+        else if (agenda.audience_config == 5) {
+          
           this.agendasService.availableList(agenda, this.userDataSession).
             then((response: any) => {
 
@@ -261,17 +263,25 @@ export class ScheduleDetailComponent {
 
   onRegister() {
     this.loading.present({ message: 'Cargando...' });
-    this.agendasService.register(this.fair, this.agenda, this.userDataSession).then(user => {
-      this.success = 'Evento registrado exitósamente';
-      this.loading.dismiss();
-      this.agenda.disableSelection = true;
-      this.presentToast(this.success);
-    })
-      .catch(error => {
+    this.agendasService.register(this.fair, this.agenda, this.userDataSession)
+    .subscribe(
+      response => {
+        this.loading.dismiss();
+        this.success = 'Evento registrado exitósamente';      
+        this.agenda.disableSelection = true;
+        this.presentToast(this.success);
+
+      },
+      error => {
         this.loading.dismiss();
         this.presentToast('Ocurrió un error al registrar el evento: [' + error + ']');
-      });
+      }
+    );
+}
 
+goToFormCatalog() {
+    this.modalCtrl.dismiss();
+    this.redirectTo('/form-mincultura-catalog');
   }
 
   checkLoginStatus() {

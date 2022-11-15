@@ -507,3 +507,12 @@ ion-icon {
   -ms-filter: none;
   filter: none;
 }
+
+
+.secondary {
+  --background: var(--ion-color-secondary)
+}
+
+.primary {
+  --background: var(--ion-color-primary)
+}

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {  ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import * as moment from 'moment-timezone';
 import { DatePipe } from '@angular/common'
 import { SpeakerDetailComponent } from '../../speaker-list/speaker-detail/speaker-detail.component';
@@ -14,14 +14,14 @@ import { AgendasService } from 'src/app/api/agendas.service';
 })
 export class AgendaCatalogComponent implements OnInit {
 
-  
+
   @Input() banner;
   modal: any;
   speakerDetailComponent = SpeakerDetailComponent;
 
   constructor(private datepipe: DatePipe,
     private modalCtrl: ModalController,
-    private agendasService: AgendasService) { 
+    private agendasService: AgendasService) {
   }
 
   ngOnInit() {
@@ -29,7 +29,7 @@ export class AgendaCatalogComponent implements OnInit {
     this.initializeAgendaCatalogs(this.banner);
   }
 
-  
+
   async openAgenda(session) {
 
     this.modal = await this.modalCtrl.create({
@@ -48,7 +48,7 @@ export class AgendaCatalogComponent implements OnInit {
     if (data) {
     }
   }
-  
+
   async presenterLogin() {
 
     //if(this.modal) { this.modal.dismiss(); }
@@ -72,6 +72,7 @@ export class AgendaCatalogComponent implements OnInit {
   initializeAgendaCatalogs(banner) {
 
     banner.__factor = 3;
+    banner.__agendaCatalogList.agendas = [];
     this.agendasService.list(null)
       .then((agendas) => {
         if (agendas.length > 0) {
@@ -79,7 +80,7 @@ export class AgendaCatalogComponent implements OnInit {
 
             for (let cat of banner.agendaCatalog.category.split(',')) {
               if (cat == 'all' || agenda.category.name == cat) {
-                banner.__agendaCatalogList.agendas.push(agenda);
+                banner.__agendaCatalogList.agendas.push(Object.assign({}, agenda));
               }
             }
           });
@@ -97,22 +98,14 @@ export class AgendaCatalogComponent implements OnInit {
   transformSchedule(banner) {
 
     const months = ['Ene', 'Feb', 'Marzo', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    const days = ['Día 7 - Domingo','Día 1 - Lunes', 'Día 2 - Martes', 'Día 3 - Miercoles', 'Día 4 - Jueves', 'Día 5 - Viernes', 'Día 6 - Sábado'];
+    const days = ['Día 7 - Domingo', 'Día 1 - Lunes', 'Día 2 - Martes', 'Día 3 - Miércoles', 'Día 4 - Jueves', 'Día 5 - Viernes', 'Día 6 - Sábado'];
     let groups = null;
     let agendas = null;
-    if (banner.__formCatalog) {
-      groups = banner.__formCatalog.groups;
-      agendas = banner.__formCatalog.agendas;
-    }
 
-    if (banner.__agendaCatalogList) {
-      groups = banner.__agendaCatalogList.groups;
-      agendas = banner.__agendaCatalogList.agendas;
-    }
+    groups = banner.__agendaCatalogList.groups;
+    agendas = banner.__agendaCatalogList.agendas;
 
     for (let agenda of agendas) {
-
-      agenda.hide = false;
 
       const timeZone = moment(agenda.start_at);
       const dayOfWek = days[timeZone.day()];

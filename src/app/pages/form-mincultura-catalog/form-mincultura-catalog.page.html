@@ -68,10 +68,10 @@
                 class="required"> (*) </span> </ion-label>
             <ion-select okText="Aceptar" cancelText="Cancelar" name="select_tipo" formControlName="docType"
               class="fs-1 mt-3 form-control" [ngClass]="{ 'is-invalid': submitted && f.docType.errors }">
-              <ion-select-option value="Cédula de ciudadanía colombiana ">Cédula de ciudadanía colombiana
+              <ion-select-option value="Cédula de ciudadanía colombiana">Cédula de ciudadanía colombiana
               </ion-select-option>
-              <ion-select-option value="Cédula de extranjería  ">Cédula de extranjería </ion-select-option>
-              <ion-select-option value="Pasaporte ">Pasaporte</ion-select-option>
+              <ion-select-option value="Cédula de extranjería">Cédula de extranjería </ion-select-option>
+              <ion-select-option value="Pasaporte">Pasaporte</ion-select-option>
             </ion-select>
             <div *ngIf="submitted && f.docType.errors" class="fs-text invalid-feedback">
               <div *ngIf="f.docType.errors.required">Campo requerido</div>

@@ -68,3 +68,26 @@
 .p-3 {
   padding: 5% !important;
 }
+
+.item-inscription::part(native) {
+  height: 4em;
+}
+
+.inscription {  
+  display: block;
+  margin-top: -1em;
+  font-size: 0.8em;
+  border: 1px solid #4C2505;
+  text-align: center;
+  .tooltip-text{
+    color: #4C2505;
+    background-color: #F6A13C;
+    width: 23em;
+    display: block;
+    border: 1px solid;
+  }
+}
+
+.arrow--1::before{
+  border-bottom-color: #4C2505;
+}

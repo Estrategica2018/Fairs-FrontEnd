@@ -17,7 +17,7 @@ export class SpeakerDetailComponent implements OnInit {
 
   speaker: any;
   months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-  days = ['Día 7 - Domingo','Día 1 - Lunes', 'Día 2 - Martes', 'Día 3 - Miercoles', 'Día 4 - Jueves', 'Día 5 - Viernes', 'Día 6 - Sábado'];
+  days = ['Día 7 - Domingo','Día 1 - Lunes', 'Día 2 - Martes', 'Día 3 - Miércoles', 'Día 4 - Jueves', 'Día 5 - Viernes', 'Día 6 - Sábado'];
   screenSm = false;
   @Input() scheduleMode = false;
   stretchMore = true;

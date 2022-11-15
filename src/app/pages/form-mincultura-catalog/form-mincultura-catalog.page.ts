@@ -33,7 +33,7 @@ export class FormMinculturaCatalogPage implements OnInit {
   disableSelection = false;
   agendaHover = null;
   minculturaUser = null;
-  
+
 
   constructor(
     private agendasService: AgendasService,
@@ -70,24 +70,22 @@ export class FormMinculturaCatalogPage implements OnInit {
 
     this.usersService.getUser().then((userDataSession: any) => {
       this.userDataSession = userDataSession;
-      
+
       if (!this.userDataSession) {
         this.redirectTo('/user-register');
         this.loading.dismiss();
         return;
       }
 
-
       this.fairsService.getCurrentFair().
         then(fair => {
 
           this.fair = fair;
 
-
           this.minculturaService.getMinculturaUser(userDataSession, fair)
             .subscribe(
               response => {
-                
+
                 this.loading.dismiss();
                 if (response.data) {
                   this.minculturaUser = response.data;
@@ -112,21 +110,23 @@ export class FormMinculturaCatalogPage implements OnInit {
                 }
 
                 if (response.audience) {
-                  let audience = response.audience;
-                  for (let agenda of audience) {
-                    if (this.CategorySelector == 'all' || agenda.agenda.category.name == this.CategorySelector) {
-                      this.agendaSelect = agenda;
+                  let audiences = response.audience;
+                  for (let audience of audiences) {
+                    if (this.CategorySelector == 'all' || audience.agenda.category.name == this.CategorySelector) {
+                      this.agendaSelect = audience.agenda;
                       setTimeout(() => {
-                        let check: any = document.querySelector<HTMLElement>('#check-agenda-' + agenda.id);
-                        check.checked = true;
+                        let check: any = document.querySelector<HTMLElement>('#check-agenda-' + this.agendaSelect.id);
+                        console.log('evento...'+this.agendaSelect.id);
+                        console.log('check');
+                        if (check) check.checked = true;
                       }, 1000);
                       this.disableSelection = true;
                     }
                   }
                 }
                 if (response.meetings) {
-                  for(let agenda of response.meetings) {
-                    agenda.start_at  *= 1000;
+                  for (let agenda of response.meetings) {
+                    agenda.start_at *= 1000;
                   }
                   this.initializeAgendaFormsCatalogs(response.meetings);
                 }
@@ -144,7 +144,6 @@ export class FormMinculturaCatalogPage implements OnInit {
 
     this.scheduleList = [];
 
-    console.log(agendas);
     if (agendas.length > 0) {
       agendas.forEach((agenda) => {
         if (this.CategorySelector == 'all' || agenda.category.name == this.CategorySelector) {
@@ -181,35 +180,34 @@ export class FormMinculturaCatalogPage implements OnInit {
   }
 
   changeSelect(agenda) {
+    console.log('changeSelect',agenda);
 
     let check: any = document.querySelector<HTMLElement>('#check-agenda-' + agenda.id);
     if (check && check.checked) {
 
       let lista = document.querySelectorAll('.check-agenda');
       lista.forEach((checkAgenda: any) => {
-        checkAgenda.checked = false;
-        console.log(checkAgenda);
+        if (checkAgenda) checkAgenda.checked = false;
       });
 
       if (this.disableSelection) {
         let check: any = document.querySelector<HTMLElement>('#check-agenda-' + this.agendaSelect.id);
-        check.checked = true;
+        if (check) check.checked = true;
       } else {
         this.agendaSelect = agenda;
-        check.checked = true;
+        if (check) check.checked = true;
       }
     }
     else {
       if (this.disableSelection) {
         let lista = document.querySelectorAll('.check-agenda');
         lista.forEach((checkAgenda: any) => {
-          checkAgenda.checked = false;
+          if(checkAgenda) checkAgenda.checked = false;
         });
 
         if (agenda.id == this.agendaSelect.id) {
           let check: any = document.querySelector<HTMLElement>('#check-agenda-' + this.agendaSelect.id);
-          if(check)
-          check.checked = true;
+          if (check)  check.checked = true;
         }
       }
       else {
@@ -250,7 +248,6 @@ export class FormMinculturaCatalogPage implements OnInit {
     this.minculturaService.registerMinculturaUser(this.userDataSession, this.fair, this.minculturaUser, agendaId)
       .subscribe(
         response => {
-          console.log(response);
           this.loading.dismiss();
           this.success = "Evento vitual registrado exitósamente";
           this.disableSelection = true;
