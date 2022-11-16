@@ -43,7 +43,6 @@ export class SceneSiteComponent implements OnInit {
 
     console.log(this.iFrameElement);
 
-
     if (banner && this.editMode) {
       this.layoutBannerSelectTime = Date.now();
       this.onHoverBanner.emit({ 'banner': banner, 'col': col, 'row': row, 'scene': scene });
@@ -62,6 +61,7 @@ export class SceneSiteComponent implements OnInit {
         this.router.navigate([banner.internalUrl])
       });
     }
+    
   }
 
   goToSelectLayout(col, row, scene) {

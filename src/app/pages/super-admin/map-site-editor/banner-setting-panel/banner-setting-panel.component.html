@@ -34,7 +34,7 @@
 
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'iFrame' }" (click)="tabSelect = 'iFrame'"
                      *ngIf="banner.iFrame">
-                     <ion-label>IFrame</ion-label>
+                     <ion-label class="tool-special">IFrame</ion-label>
                   </ion-tab-button>
 
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'background' }"
@@ -395,7 +395,7 @@
 
             <ion-toolbar>
                <ion-buttons slot="start">
-                  <ion-card-subtitle>Url Iframe</ion-card-subtitle>
+                  <ion-card-subtitle>Url IFrame</ion-card-subtitle>
                </ion-buttons>
                <ion-buttons slot="end">
                   <input class="mt-2 ml-2 mr-2 input-form" style="width: 14em;" (change)="goToOnChangeItem()"

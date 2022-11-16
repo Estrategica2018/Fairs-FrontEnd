@@ -118,13 +118,15 @@ export class MapSiteEditorPage implements OnInit {
 
   errors: String = null;
 
-
-
   ngOnInit() {
     this.routerView = this.router;
     this.sceneTemplatesTypes = processData(this.sceneTemplatesTypes);
     //show menu in app.component
     window.dispatchEvent(new CustomEvent('banner-side-menu:show'));
+  }
+
+  ngDoCheck() {
+    document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
   }
 
   ngOnDestroy(): void {
@@ -215,12 +217,14 @@ export class MapSiteEditorPage implements OnInit {
           if(banner.iFrame) {
             setTimeout(() => {
               const iframe = document.getElementById(banner.id);
-              iframe.outerHTML =  banner.iFrame.src;  
-              const src = banner.iFrame.src.replace('<iframe ','<iframe  id="'+banner.id+'" ');
-              iframe.classList.add("h-100");
-
+              const src = banner.iFrame.src.replace('<iframe ','<iframe id="'+banner.id+'" ');
+              //iframe.outerHTML =  banner.iFrame.src;
               iframe.outerHTML = src;
-            }, 100);
+              setTimeout(() => {
+              //iframe.classList.add("h-100");
+            }, 200);
+              
+            }, 200);
           }
 
           if (banner.scenes) {
@@ -538,6 +542,9 @@ export class MapSiteEditorPage implements OnInit {
       case 'IFrame':
         banner.iFrame = {};
         banner.iFrame.src = '<iframe src="https://www.facebook.com/plugins/video.php?height=308&href=https%3A%2F%2Fwww.facebook.com%2FRNBPColombia%2Fvideos%2F861156988569510%2F&show_text=false&width=560&t=0" width="560" height="308" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>';
+        setTimeout(()=>{
+          this.initializeBanners(this.scene);
+        },100)
         break;
       case 'Texto':
         banner.styles.text = { "value": "Texto aquí" };

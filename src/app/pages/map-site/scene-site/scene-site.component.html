@@ -1,6 +1,7 @@
 <ion-grid [ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }">
 
   <ion-row *ngFor="let row of scene?.rows; let indexRow = index">
+    {{windowScreenLg}}
     <ion-col id="col-{{col.id}}"
       [size]="( level == 1 ? windowScreenSm ? '12' : row.cols.length == 2 && windowScreenLg ? '6' : '' : '' )"
       *ngFor="let col of row.cols; let indexCol = index;"
@@ -44,20 +45,18 @@
             'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : (10 - banner.styles?.opacity) / 10
            }" (click)="goToOnHoverBanner(banner,col,row,scene)" />
 
-             <!-- IFrame Template -->
-             <div *ngIf="banner.iFrame">
+            <!-- IFrame Template -->
+            <div *ngIf="banner.iFrame">
               <ion-button color="light" class="edit-carousel-button" (click)="goToOnHoverBanner(banner,col,row,scene)"
                 *ngIf="editMode">
                 <ion-icon name="create-outline"></ion-icon>
               </ion-button>
-              <div
-              [ngStyle]="{
+              <div [ngStyle]="{
                 'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
-                'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto' }"
-                >
-             <iframe [id]="banner.id"></iframe>
+                'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto' }">
+                <iframe [id]="banner.id"></iframe>
+              </div>
             </div>
-             </div>
 
             <!-- Triangle Template -->
             <div class="w-0 h-0 p-0 m-0" *ngIf="banner.triangle && banner.styles"
@@ -108,18 +107,6 @@
                 }">
               </iframe>
             </div>
-
-
-            <!--if banner is Speakers-->
-            <ion-button color="light" class="edit-carousel-button" *ngIf="banner.speakerCatalog && editMode">
-              <ion-icon name="create-outline"></ion-icon>
-            </ion-button>
-            <app-speaker-catalog *ngIf="banner.speakerCatalog" [bannerSpeakerSelectHover]="bannerSpeakerSelectHover"
-              [showSpeakerCatalogActions]="showSpeakerCatalogActions" [editMode]="editMode" [tabSelect]="tabSelect"
-              [banner]="banner">
-            </app-speaker-catalog>
-            <!--End if banner is Speakers-->
-
 
             <!-- Text Template -->
             <h1 *ngIf="banner.styles" [ngClass]="{'cursor-pointer':editMode}" [ngStyle]="{
@@ -177,7 +164,7 @@
           </div>
         </div>
       </div>
-      
+
     </ion-col>
   </ion-row>
 </ion-grid>

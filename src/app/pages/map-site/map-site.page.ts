@@ -13,6 +13,7 @@ import { Animation, AnimationController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PopoverController, ActionSheetController } from '@ionic/angular';
 import { UsersService } from 'src/app/api/users.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -119,6 +120,7 @@ export class MapSitePage implements OnInit {
     //this.productId = this.route.snapshot.paramMap.get('productId');
     const sceneTemplateId = this.route.snapshot.paramMap.get('template');
 
+
     this.fairsService.getCurrentFair().then((fair) => {
 
       this.fair = fair;
@@ -173,6 +175,9 @@ export class MapSitePage implements OnInit {
           this.loading.dismiss();
         }, 100);
       }
+      else {
+        this.redirectTo(environment.redirectTo);
+      }
 
     }, error => {
       this.loading.dismiss();
@@ -205,6 +210,17 @@ export class MapSitePage implements OnInit {
 
           if (banner.video) {
             banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+          }
+
+          if(banner.iFrame) {
+            setTimeout(() => {
+              const iframe = document.getElementById(banner.id);
+              const src = banner.iFrame.src.replace('<iframe ','<iframe class="h-100" id="'+banner.id+'" ');
+              //
+              iframe.outerHTML = banner.iFrame.src;
+              iframe.classList.add("h-100");
+              
+            }, 200);
           }
 
           if (banner.scenes) {

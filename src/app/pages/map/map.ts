@@ -187,13 +187,16 @@ export class MapPage implements OnInit {
       }
 
       if (!this.scene) {
-        this.loading.dismiss();
-        this.errors = `Algo malo ha ocurrido`;
-        return;
+        this.redirectTo(environment.redirectTo);
       }
+
       this.scene.banners = this.scene.banners || [];
       this.onChangeBackgroundStyle();
 
+      if (this.scene.videoUrl) {
+        this.scene.videoSanitizerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.scene.videoUrl);
+      }
+      console.log(this.scene);
       if (this.scene.videoUrl) {
         this.scene.videoSanitizerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.scene.videoUrl);
       }
@@ -739,11 +742,15 @@ export class MapPage implements OnInit {
         break;
       }
     }
-    if(banner.__speakerCatalogList)
-    banner.__speakerCatalogList.forEach((speaker, i: any) => {
-      speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
-      speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
-    });
+    if (banner.__speakerCatalogList && banner.__speakerCatalogList.length > 0) {
+      banner.__speakerCatalogList.forEach((speaker, i: any) => {
+        speaker.top = ((Math.floor(i / banner.__factor) * banner.size.y) + (banner.size.y * Math.floor(i / banner.__factor) * 0.03));
+        speaker.left = ((Math.floor(i % banner.__factor) * 1.03) * banner.size.x);
+      });
+    }
+    else {
+      banner.__speakerCatalogList = [];
+    }
 
     const main = document.querySelector<HTMLElement>('ion-router-outlet');
     const left = main.offsetWidth - (((banner.__factor) * 1.03) * banner.size.x);
@@ -925,7 +932,7 @@ export class MapPage implements OnInit {
   transformSchedule(banner) {
 
     const months = ['Ene', 'Feb', 'Marzo', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    const days = ['Domingo','Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     let groups = null;
     let agendas = null;
     if (banner.__formCatalog) {
@@ -967,7 +974,7 @@ export class MapPage implements OnInit {
           time: time,
           strDay: strDay,
           //month: strMonth + ' ' + strYear,
-          month: dayOfWek,          
+          month: dayOfWek,
           sessions: []
         };
         groups.push(groupTemp);
