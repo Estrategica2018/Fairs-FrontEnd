@@ -510,3 +510,13 @@ select {
   font-size: 1.2em;
   position: absolute;
 }
+
+.float-button-live {
+  top: calc(65% - 32px);
+  left: calc(93% - 8em);
+  cursor: pointer;
+  width: 14em;
+  height: 4em;
+  font-size: 1.2em;
+  position: absolute;
+}

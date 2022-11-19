@@ -35,7 +35,7 @@ export class SpeakerCatalogComponent implements OnInit {
       component: this.speakerDetailComponent,
       cssClass: 'speaker-modal',
       swipeToClose: true,
-      backdropDismiss: false,
+      backdropDismiss: true,
       componentProps: { speaker: speaker, scheduleMode: true }
     });
     await this.modal.present();

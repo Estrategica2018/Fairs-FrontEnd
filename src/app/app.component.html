@@ -17,11 +17,13 @@
                [ngStyle]="{'color':fair?.social_media.iconMenuColorTitle}">
                {{fair?.description}}
             </ion-label>
-            <!--ion-button (click)="openShoppingCart()" *ngIf="userDataSession" [hidden]="showBannerSideMenu">
-               <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}"  slot="icon-only" name="cart-outline"></ion-icon>
+            <ion-button (click)="openShoppingCart()" *ngIf="userDataSession && fair && shoppingCartCount > 0"
+               [hidden]="showBannerSideMenu">
+               <ion-icon [ngStyle]="{'color':fair?.social_media.iconMenuColor}" slot="icon-only" name="cart-outline">
+               </ion-icon>
             </ion-button>
             <ion-badge [hidden]="showBannerSideMenu" class="icon-badge" color="danger"
-               *ngIf="userDataSession && shoppingCartCount > 0">{{shoppingCartCount}}</ion-badge-->
+               *ngIf="userDataSession && shoppingCartCount > 0">{{shoppingCartCount}}</ion-badge>
 
             <ion-button [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" [hidden]="showBannerSideMenu"
                class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn" color="secondary" (click)="presentAccount()"
@@ -237,7 +239,7 @@
                      class="login-note ion-text-start font-light">
                      Accede con tu usuario para participar en los
                      eventos, realizar solicitudes y gestionar tu usuario.</ion-note>
-                  <ion-button color="secondary" shape="round" (click)="presenterLogin()">
+                  <ion-button color="secondary" shape="round" (click)="presenterLogin({})">
                      <ion-icon slot="start" ios="ios-person" md="person"></ion-icon>
                      Ingresar
                   </ion-button>
@@ -437,11 +439,20 @@
 
    </div>
 
-   <ion-button size="small" class="float-button-register"
-      *ngIf="!loggedIn" color="secondary"
-      (click)="presenterLogin()" hape="round" fill="solid">
+   <ion-button size="small" class="float-button-register" *ngIf="!loggedIn" color="secondary" (click)="presenterLogin({})"
+      hape="round" fill="solid">
       <ion-icon slot="start" name="person"></ion-icon>
       Crear una cuenta
    </ion-button>
+
+   <div ion-button size="small" class="float-button-live cursor-pointer"
+      (mouseover)="imageUrlLiveBoton = fair.resources.liveBotton"
+      (mouseout)="imageUrlLiveBoton = fair.resources.liveBottonHover"
+      id="obj-1" (click)="goToLive(agendaLive)"
+      *ngIf="agendaLive"
+      color="secondary" hape="round"
+      fill="solid">
+      <img [src]="imageUrlLiveBoton">
+   </div>
 
 </ion-app>

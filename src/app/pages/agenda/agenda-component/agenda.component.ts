@@ -1,30 +1,29 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
-
-import { ConferenceData } from '../../providers/conference-data';
-import { UserData } from '../../providers/user-data';
-import { AgendasService } from '../../api/agendas.service';
 import { DatePipe } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
-import { LoadingService } from '../../providers/loading.service';
-import { SpeakerDetailComponent } from './../speaker-list/speaker-detail/speaker-detail.component';
-import { ScheduleDetailComponent } from './../schedule/schedule-detail/schedule-detail.component';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { UsersService } from './../../api/users.service';
-import { SpeakersService } from './../../api/speakers.service';
-import { ShoppingCartsService } from './../../api/shopping-carts.service';
-import { FairsService } from './../../api/fairs.service';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { environment, SERVER_URL } from './../../../environments/environment';
-import * as moment from 'moment-timezone';
-import { LoginComponent } from '../login/login.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ModalController, ToastController, AlertController } from '@ionic/angular';
+import * as moment from 'moment';
+import { AgendasService } from 'src/app/api/agendas.service';
+import { FairsService } from 'src/app/api/fairs.service';
+import { ShoppingCartsService } from 'src/app/api/shopping-carts.service';
+import { SpeakersService } from 'src/app/api/speakers.service';
+import { UsersService } from 'src/app/api/users.service';
+import { ConferenceData } from 'src/app/providers/conference-data';
+import { LoadingService } from 'src/app/providers/loading.service';
+import { UserData } from 'src/app/providers/user-data';
+import { SERVER_URL } from 'src/environments/environment';
+import { LoginComponent } from '../../login/login.component';
+import { ScheduleDetailComponent } from '../../schedule/schedule-detail/schedule-detail.component';
+import { SpeakerDetailComponent } from '../../speaker-list/speaker-detail/speaker-detail.component';
 
 @Component({
-  selector: 'app-agenda',
-  templateUrl: './agenda.page.html',
-  styleUrls: ['./agenda.page.scss'],
+  selector: 'app-agenda-component',
+  templateUrl: './agenda.component.html',
+  styleUrls: ['./agenda.component.scss'],
 })
-export class AgendaPage implements OnInit {
+export class AgendaComponent implements OnInit {
 
   @Input() agenda;
   errors: string = null;
@@ -90,6 +89,8 @@ export class AgendaPage implements OnInit {
     if(!agendaId) {
         agendaId = this.agenda.id;
     }
+
+    alert(agendaId);
 
     //this.loading.present({ message: 'Cargando...' });
     this.fairsService.getCurrentFair().then((fair) => {
@@ -460,4 +461,5 @@ export class AgendaPage implements OnInit {
     this.closeModal();
     this.redirectTo('/form-mincultura-catalog');
   }
+
 }

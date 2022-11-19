@@ -1,7 +1,7 @@
 <ion-grid [ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }">
 
   <ion-row *ngFor="let row of scene?.rows; let indexRow = index">
-    {{windowScreenLg}}
+    
     <ion-col id="col-{{col.id}}"
       [size]="( level == 1 ? windowScreenSm ? '12' : row.cols.length == 2 && windowScreenLg ? '6' : '' : '' )"
       *ngFor="let col of row.cols; let indexCol = index;"

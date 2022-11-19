@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { UsersService } from './api/users.service';
-import { MenuController, Platform, ToastController, ModalController } from '@ionic/angular';
+import { MenuController, Platform, ToastController, ModalController, AnimationController } from '@ionic/angular';
 import { LoadingService } from './providers/loading.service';
 import { FairsService } from './api/fairs.service';
 import { ShoppingCartsService } from './api/shopping-carts.service';
@@ -49,6 +49,7 @@ export class AppComponent implements OnInit {
   showAgenda = false;
   editMenu = false;
   sceneLayoutList = [];
+  agendaLive: any;
 
   location: Location;
   fairList = [];
@@ -57,6 +58,8 @@ export class AppComponent implements OnInit {
   miniMenu: any = {};
   menuChangeList = [];
   mobileApp = false;
+  imageUrlLiveBoton: string;
+  liveUrlBotton: string;
 
   constructor(
     private alertCtrl: AlertController,
@@ -76,10 +79,13 @@ export class AppComponent implements OnInit {
     private agendasService: AgendasService,
     private adminFairsService: AdminFairsService,
     private adminPavilionsService: AdminPavilionsService,
-    private locationComn: Location
+    private locationComn: Location,
+    private animationCtrl: AnimationController,
   ) {
 
     this.initializeFair();
+    this.listenForLoginEvents();
+    this.listenForFullScreenEvents();
 
     if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
       this.mobileApp = true;
@@ -93,6 +99,14 @@ export class AppComponent implements OnInit {
   initializeFair() {
     this.fairsService.getCurrentFair().
       then(fair => {
+
+        this.fair = fair;
+        this.fair.resources = this.fair.resources || {};
+        this.fair.resources.liveBottonHover = 'https://res.cloudinary.com/deueufyac/image/upload/v1668741080/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/trans_b_qnwhwl.png';
+        this.fair.resources.liveBotton = 'https://res.cloudinary.com/deueufyac/image/upload/v1668741080/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/trans_live_haphdg.png';
+
+        this.fair.resources.hasShoppingCart = false;
+
         if (fair.name == 'admin') {
           this.fairAdminMode = true;
           this.usersService.getUser().then((userDataSession: any) => {
@@ -107,7 +121,7 @@ export class AppComponent implements OnInit {
               });
             }
             if (!this.fairAdminMode || !this.profileRole.admin) {
-              this.presenterLogin();
+              this.presenterLogin({});
             }
             else {
               this.redirectTo('/admin');
@@ -116,8 +130,10 @@ export class AppComponent implements OnInit {
           });
         }
         else {
-          this.fair = fair;
-          this.getShoppingCart();
+
+          if (this.fair && this.fair.resources.hasShoppingCart) {
+            this.getShoppingCart();
+          }
           this.titleService.setTitle(this.fair.description);
 
           this.initializeSceneMenu();
@@ -129,7 +145,42 @@ export class AppComponent implements OnInit {
               this.showAgenda = false;
             });
         }
+
+        this.initializeLiveActionBotton(false);
+        setTimeout(() => {
+          this.startAnimationLive('#obj-1');  
+        }, 1500);
+
+        setInterval(() => {
+          this.initializeLiveActionBotton(false);
+        }, 60000);
+
       }, (e: any) => console.log(e));
+  }
+
+  initializeLiveActionBotton(live) {
+
+    this.agendasService.live().then((response) => {
+      
+      if(response && response.data && this.fair.resources.liveBotton) {
+        this.imageUrlLiveBoton = this.fair.resources.liveBotton;
+        this.agendaLive = response.data;
+        if(live && live.id == this.agendaLive.id) {
+          this.goToLive(this.agendaLive);
+        }        
+      }
+      else {
+        this.agendaLive = null;
+      }
+    }, errors => {
+      this.errors = errors;
+      //this.loading.dismiss();
+    })
+      .catch(error => {
+        this.errors = error;
+        console.log(error);
+        //this.loading.dismiss();
+      });
   }
 
   initializeSceneMenu() {
@@ -244,8 +295,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.checkLoginStatus();
-    this.listenForLoginEvents();
-    this.listenForFullScreenEvents();
+    
     this._toolbarHeight = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
 
     this.usersService.getUser().then((userDataSession: any) => {
@@ -270,9 +320,24 @@ export class AppComponent implements OnInit {
   }
 
   listenForLoginEvents() {
-    window.addEventListener('user:login', (user) => {
-      window.location.reload();
+    window.addEventListener('user:login', (data:any) => {
+      //window.location.reload();
+      this.userDataSession = data.detail.userDataSession;
+      
+      if(data.detail.liveStream) {
+        this.goToLive(data.detail.liveStream);
+      }
+      if(data.detail.modalCtrl) {
+        data.detail.modalCtrl.dismiss();
+      }
+      this.ngOnInit();
     });
+
+    
+    window.addEventListener('user:liveStream', (data) => {
+      this.goToLive(this.agendaLive);
+    });
+
 
     window.addEventListener('addScene:menu', (event: any) => {
       //this.addSceneMenu(event.detail.type, event.detail.iScene);
@@ -492,7 +557,7 @@ export class AppComponent implements OnInit {
     this.menuHidden = false;
     let icon = document.getElementById('mini-menu-forward');
     if (icon)
-      this.miniMenu.menuForward = { top: icon.offsetTop , left: icon.offsetLeft };
+      this.miniMenu.menuForward = { top: icon.offsetTop, left: icon.offsetLeft };
     window.dispatchEvent(new CustomEvent('window:resize-menu'));
   }
 
@@ -507,7 +572,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  async presenterLogin() {
+  async presenterLogin(options) {
 
     //if(this.modal) { this.modal.dismiss(); }
 
@@ -515,7 +580,8 @@ export class AppComponent implements OnInit {
       component: LoginComponent,
       cssClass: 'boder-radius-modal',
       componentProps: {
-        '_parent': this
+        '_parent': this,
+        'liveStream': options.liveStream
       }
     });
     await this.modal.present();
@@ -957,5 +1023,53 @@ export class AppComponent implements OnInit {
     this.menuHover = id;
     if (this.miniMenu[this.menuHover])
       this.miniMenu[this.menuHover].top = $event.pageY - $event.offsetY;
+  }
+
+
+  goToLive(agendaLive) {
+
+    if(!this.userDataSession) {
+      this.presenterLogin({'liveStream':agendaLive});
+      return;
+    }
+
+      this.loading.present({ message: 'Cargando...' });
+
+      const email = this.userDataSession.email;
+      this.agendasService.generateMeetingToken(this.fair.id, agendaLive.id, this.userDataSession)
+        .then(response => {
+          const token = response.data;
+        
+          const url = `${SERVER_URL}/viewerZoom/meetings/${token}`;
+          
+          setTimeout(()=>{
+            const windowReference = window.open();
+            if(windowReference) windowReference.location.href = url;
+          },1000)
+          this.loading.dismiss();
+
+        }, error => {
+          this.loading.dismiss();
+          this.errors = error;
+        });
+  }
+
+  async startAnimationLive(selectorObj) {
+
+    setInterval(() => {
+      this.liveUrlBotton = this.liveUrlBotton == this.fair.resources.liveBotton ? this.fair.resources.liveBottonHover : this.fair.resources.liveBotton;
+    }, 500);
+
+    const squareA = this.animationCtrl.create()
+      .addElement(document.querySelector(selectorObj))
+      .duration(2000)
+      .iterations(Infinity)
+      .keyframes([
+        { offset: 0, transform: 'scale(1)'},
+        { offset: 0.5, transform: 'scale(1.2)'},
+        { offset: 1, transform: 'scale(1)' }
+      ])
+ 
+      await squareA.play();
   }
 }

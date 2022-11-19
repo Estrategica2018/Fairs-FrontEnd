@@ -37,6 +37,7 @@ export class AgendaPage implements OnInit {
   initSubmitted = false;
   showHourDatetime = false;
   hour = '';
+  syncZoom = 1;
 
   constructor(
     private agendasService: AgendasService,
@@ -226,8 +227,6 @@ export class AgendaPage implements OnInit {
     this.loading.present({ message: 'Cargando...' });
     const startTimeStr = this.agendaForm.value['date'].substr(0, 10) + 'T' + this.agendaForm.value['hour'] + ':00';
     const startTime = moment(startTimeStr, 'YYYY-MM-DDTHH:mm').format('YYYY-MM-DDTHH:mm');
-
-    
     let data = {
       'id': this.agenda.id,
       'topic': this.agendaForm.value['title'],
@@ -242,7 +241,8 @@ export class AgendaPage implements OnInit {
       'zoom_code': this.agendaForm.value['zoom_code'],
       'price': this.agenda.price,
       'zoom_password': this.agendaForm.value['zoom_password'],
-      'description_large': this.agendaForm.value['description_large']
+      'description_large': this.agendaForm.value['description_large'],
+      'syncZoom': this.syncZoom ? 1 : 0
     };
 
     if(this.agenda.audience_config == 5) {
@@ -333,7 +333,11 @@ export class AgendaPage implements OnInit {
   }
 
   onChangeStartTime() {
-    this.agenda.start_time = this.agendaForm.value.date.split('T')[0] + 'T' + (this.agendaForm.value.hour.split('T')[1]).substr(0, 4) + ':00';
+    let hour = this.agendaForm.value.hour;
+    if(hour.indexOf("T")> 0)  {
+      hour = (this.agendaForm.value.hour.split('T')[1]).substr(0, 4) + ':00';
+    }
+    this.agenda.start_time = this.agendaForm.value.date.split('T')[0] + 'T' + hour;
   }
 
   async onChangeImage() {

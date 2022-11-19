@@ -221,8 +221,8 @@ export class MapSiteEditorPage implements OnInit {
               //iframe.outerHTML =  banner.iFrame.src;
               iframe.outerHTML = src;
               setTimeout(() => {
-              //iframe.classList.add("h-100");
-            }, 200);
+                  //iframe.classList.add("h-100");
+                }, 200);
               
             }, 200);
           }

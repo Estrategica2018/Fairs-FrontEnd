@@ -13,8 +13,8 @@ import { Animation, AnimationController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PopoverController, ActionSheetController } from '@ionic/angular';
 import { UsersService } from 'src/app/api/users.service';
-import { environment } from 'src/environments/environment';
-
+import { environment,SERVER_URL } from 'src/environments/environment';
+import { AgendasService } from 'src/app/api/agendas.service';
 
 @Component({
   selector: 'app-map-site',
@@ -40,7 +40,8 @@ export class MapSitePage implements OnInit {
     private popoverCtrl: PopoverController,
     private actionSheetController: ActionSheetController,
     private speakersService: SpeakersService,
-    private usersService: UsersService,) {
+    private usersService: UsersService,
+    private agendasService: AgendasService,) {
 
     this.initializeScene();
     this.initializeListeners();
@@ -119,7 +120,7 @@ export class MapSitePage implements OnInit {
     this.sceneId = this.route.snapshot.paramMap.get('sceneId');
     //this.productId = this.route.snapshot.paramMap.get('productId');
     const sceneTemplateId = this.route.snapshot.paramMap.get('template');
-
+    
 
     this.fairsService.getCurrentFair().then((fair) => {
 
@@ -136,6 +137,7 @@ export class MapSitePage implements OnInit {
             }
           });
         }
+
       });
 
       if (this.template === 'fair') {
@@ -169,6 +171,7 @@ export class MapSitePage implements OnInit {
       this.sceneEdited = this.scene;
       if (this.scene) {
         this.initializeBanners(this.scene);
+        
 
         setTimeout(() => {
           this.onResize();
@@ -401,4 +404,5 @@ export class MapSitePage implements OnInit {
       });
     }
   }
+
 }

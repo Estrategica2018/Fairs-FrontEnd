@@ -4,7 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'map-site/fair/7',
+    redirectTo: 'map-site/fair/3',
+    pathMatch: 'full'
+  },
+  {
+    path: 'liveStream',
+    redirectTo: 'map-site/fair/3/liveStream',
     pathMatch: 'full'
   },
   {
@@ -79,11 +84,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/app-dialog/app-dialog.module').then( m => m.AppDialogPageModule)
   },
   {
-    path: 'user-register',
-    loadChildren: () => import('./pages/user-register/register.module').then( m => m.RegisterPageModule)
+    path: 'map-site/fair/:sceneId',
+    loadChildren: () => import('./pages/map-site/map-site.module').then( m => m.MapSitePageModule)
   },
   {
-    path: 'map-site/fair/:sceneId',
+    path: 'map-site/fair/:sceneId/:action',
     loadChildren: () => import('./pages/map-site/map-site.module').then( m => m.MapSitePageModule)
   },
   {
@@ -110,10 +115,20 @@ const routes: Routes = [
     path: 'user-register',
     loadChildren: () => import('./pages/user-register/register.module').then( m => m.RegisterPageModule)
   },
+  
+  {
+    path: 'user-register/liveStream/:idLiveStream',
+    loadChildren: () => import('./pages/user-register/register.module').then( m => m.RegisterPageModule)
+  },
   {
     path: 'profile',
     loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
   },
+  {
+    path: 'index',
+    loadChildren: () => import('./pages/index/index.module').then( m => m.IndexPageModule)
+  },
+
 
 
 

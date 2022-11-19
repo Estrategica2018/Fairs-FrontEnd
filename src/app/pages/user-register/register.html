@@ -60,9 +60,9 @@
             <ion-col size="12" size-lg="4" class="mt-col">
               <ion-label position="stacked" class="fs-1"><span class="color-text ">4.</span> Tipo de documento <span class="required"> (*) </span> </ion-label>
               <ion-select okText="Aceptar" cancelText="Cancelar" name="documento_tipo" formControlName="documento_tipo" class="fs-1 mt-3 form-control"  [ngClass]="{ 'is-invalid': submitted && f.documento_tipo.errors }">
-                <ion-select-option value="Cédula de ciudadanía colombiana ">Cédula de ciudadanía colombiana</ion-select-option>
-                <ion-select-option value="Cédula de extranjería  ">Cédula de extranjería </ion-select-option>
-                <ion-select-option value="Pasaporte ">Pasaporte</ion-select-option>
+                <ion-select-option value="Cédula de ciudadanía colombiana">Cédula de ciudadanía colombiana</ion-select-option>
+                <ion-select-option value="Cédula de extranjería">Cédula de extranjería </ion-select-option>
+                <ion-select-option value="Pasaporte">Pasaporte</ion-select-option>
               </ion-select>
               <div *ngIf="submitted && f.documento_tipo.errors" class="invalid-feedback">
                 <div *ngIf="f.documento_tipo.errors.required">Campo requerido</div>
