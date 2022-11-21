@@ -90,6 +90,9 @@ export class AppComponent implements OnInit {
     if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
       this.mobileApp = true;
     }
+    else if(navigator.userAgent.indexOf('Mobile') > 0) {
+      this.mobileApp = true;
+    }
 
     this.url = document.baseURI;
     this.location = locationComn;
@@ -147,10 +150,6 @@ export class AppComponent implements OnInit {
         }
 
         this.initializeLiveActionBotton(false);
-        setTimeout(() => {
-          this.startAnimationLive('#obj-1');  
-        }, 1500);
-
         setInterval(() => {
           this.initializeLiveActionBotton(false);
         }, 60000);
@@ -165,6 +164,9 @@ export class AppComponent implements OnInit {
       if(response && response.data && this.fair.resources.liveBotton) {
         this.imageUrlLiveBoton = this.fair.resources.liveBotton;
         this.agendaLive = response.data;
+        
+        this.animationLiveInterval();
+
         if(live && live.id == this.agendaLive.id) {
           this.goToLive(this.agendaLive);
         }        
@@ -1021,8 +1023,16 @@ export class AppComponent implements OnInit {
 
   onMenuHover($event, id) {
     this.menuHover = id;
-    if (this.miniMenu[this.menuHover])
+    if (this.miniMenu[this.menuHover]) {
       this.miniMenu[this.menuHover].top = $event.pageY - $event.offsetY;
+    }
+
+    if(this.mobileApp) {
+      setTimeout(() => {
+        this.menuHover = '';
+      }, 3000);
+    }
+
   }
 
 
@@ -1041,11 +1051,10 @@ export class AppComponent implements OnInit {
           const token = response.data;
         
           const url = `${SERVER_URL}/viewerZoom/meetings/${token}`;
+          //const windowReference = window.open();
+          //if(windowReference) windowReference.location.href = url;
+          window.location.href = url;
           
-          setTimeout(()=>{
-            const windowReference = window.open();
-            if(windowReference) windowReference.location.href = url;
-          },1000)
           this.loading.dismiss();
 
         }, error => {
@@ -1054,6 +1063,22 @@ export class AppComponent implements OnInit {
         });
   }
 
+
+  animationLiveInterval() {
+
+    this.startAnimationLive('#obj-1');
+
+    var interval = setInterval(() => {
+      var div = document.querySelector('#obj-1');
+      console.log('valida animacion');
+      if(div) {
+        this.startAnimationLive('#obj-1');
+        console.log('startamination');
+        clearInterval(interval);
+      }          
+    }, 1500);
+  }
+  
   async startAnimationLive(selectorObj) {
 
     setInterval(() => {

@@ -74,7 +74,7 @@ export class ProfilePage implements OnInit {
   }
 
   initializeCloundinary() {
-    const ratio = 0.80;
+    const ratio = 0.8;
     this.myWidgetFalse = cloudinary.createUploadWidget(
       {
         cloudName: "deueufyac",
@@ -139,7 +139,7 @@ export class ProfilePage implements OnInit {
     let topMenu = 0;
     let img: any = document.getElementById('image-form');
     img = this.imageBack.nativeElement;
-    this.imageForm.logout = { top: img.offsetTop + topMenu, left: img.offsetLeft };
+    this.imageForm.logout = { top: img.offsetTop + topMenu, left: img.offsetLeft, with: img.width, height: img.height };
   }
 
   @HostListener('window:resize')

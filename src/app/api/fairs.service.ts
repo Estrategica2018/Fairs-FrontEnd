@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { map, timeout, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -80,6 +80,8 @@ export class FairsService {
                   }
                   else
                   for(let fair of data.data ) {
+                    
+                    fair.redirectTo = fair.redirectTo || 'map-site/fair/7';
 
                     if(fair.name.toUpperCase()=== this.fairName.toUpperCase()) {
                       this.refresTime = moment();
@@ -257,5 +259,34 @@ export class FairsService {
         });
     }
 
+    showRegister(fair,userDataSession): any {
+
+      return new Promise((resolve, reject) => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+              'Authorization':  'Bearer ' + userDataSession.token
+          })
+        };
+          this.http.get(`${SERVER_URL}/api/user/mincultura/show-register/${fair.id}`,httpOptions)
+         .pipe(
+            timeout(60000),
+            catchError((e: any) => {
+              console.log(e);
+              if(e.status && e.statusText && e.statusText.indexOf('Gateway Timeout') >= 0) {
+                  throw new Error(`No está conectado a internet`);
+              }
+              else if(e.status && e.statusText) {
+                throw new Error(`Consultando el servicio de feria: ${e.status} - ${e.statusText}`);
+              }
+              else {
+                throw new Error(`Consultando el servicio de feria`);
+              }
+            })
+          )
+          .subscribe((data : any )=> {
+              resolve(data);
+          },error => reject(error));
+      });
+    }
 
 }

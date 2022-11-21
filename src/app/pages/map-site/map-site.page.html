@@ -1,7 +1,7 @@
 <ion-header>
 </ion-header>
 
-<ion-content class="asdf"
+<ion-content 
   style="background-size: cover; background-repeat: no-repeat;  --background: {{ scene && scene.backgroundColor ? scene.backgroundColor  : 'none'}}"
   [ngStyle]="{ 
   '--background': scene && scene.backgroundColor ? scene.backgroundColor : (scene && scene.url_image ? 'url(' + scene.url_image + ')' : ''),
@@ -17,7 +17,6 @@
       [ngStyle]="{'width': '100vw', 'height': '100vh', 'opacity': scene && scene.videoPreviewSanitizer ? 1 : 0 }"
       webkitallowfullscreen mozallowfullscreen allowfullscreen id="video-id-{{scene.id}}" class="videoPreview">
     </iframe>
-
 
     <ion-button *ngIf="(profileRole && profileRole.admin)" color="light" class="goto-back-button"
       (click)="onToBackEditor(scene)">

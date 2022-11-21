@@ -363,7 +363,7 @@ export class RegisterPage implements OnInit {
             window.dispatchEvent(new CustomEvent('user:login', { 'detail': { 
               'userDataSession': userDataSession, 'liveStream': this.agendaLive }}));
 
-            this.redirectTo(environment.redirectTo);
+            this.redirectTo(this.fair.redirectTo);
             
             /*if(this.action && this.action.length > 0) {
               window.location.href='/'+this.action;

@@ -396,8 +396,9 @@ export class AgendaPage implements OnInit {
           const token = response.data;
           const url = `${this.url}/viewerZoom/meetings/${token}`;
           
-          const windowReference = window.open();
-          windowReference.location.href = url;
+          //const windowReference = window.open();
+          //windowReference.location.href = url;
+          window.location.href = url;
           this.loading.dismiss();
 
         }, error => {

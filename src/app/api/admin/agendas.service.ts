@@ -92,7 +92,7 @@ export class AdminAgendasService {
         });
   }
   
-  delete(agenda: any): any {
+  delete(agenda: any,syncZoom): any {
     return new Promise((resolve, reject) => {
         this.usersService.getUser().then((userDataSession: any)=>{
             const httpOptions = {
@@ -100,7 +100,8 @@ export class AdminAgendasService {
                   'Authorization':  'Bearer ' + userDataSession.token
               })
             };
-            this.http.delete(`${SERVER_URL}/api/meetings/${agenda.zoom_code}`,httpOptions)
+            let data = {'syncZoom':syncZoom}
+            this.http.post(`${SERVER_URL}/api/meetings/delete/${agenda.zoom_code}`,data,httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {

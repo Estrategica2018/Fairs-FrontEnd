@@ -31,17 +31,19 @@
             <img class="image-form" #imageBack
               src="https://res.cloudinary.com/deueufyac/image/upload/v1667571327/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/ESCARAPELA/borde_escarapela_j9j3pc.png" />
 
-              <ion-label class="image-form-tooltip"
-               [ngStyle]="{
+            <ion-label class="image-form-tooltip" [ngStyle]="{
                 'top': imageForm.logout ? imageForm.logout.top +'px' : '',
                 'left': imageForm.logout ? imageForm.logout.left +'px' : ''
                }">
-                <img [src]="url_image" class="avatar mt-4" *ngIf="url_image">
-                <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar mt-4" *ngIf="!url_image">                
-             </ion-label>
+              <img [src]="url_image" class="avatar mt-4" *ngIf="url_image"
+               [ngStyle]="{'height': imageForm.logout ? 'calc(' + imageForm.logout.height + 'px - 25px)' : '',
+                           'width': imageForm.logout ? 'calc(' + imageForm.logout.width + 'px- 25px)' : '' }">
+              <img src="https://www.gravatar.com/avatar?d=mm&s=140" class="avatar mt-4" *ngIf="!url_image">
+            </ion-label>
           </ion-row>
           <ion-row class="mt-4">
-            <label class="mt-4 label-uploadInput m-auto" *ngIf="showEdit" (click)="onSelectFile($event)">Cambiar Imagen</label>
+            <label class="mt-4 label-uploadInput m-auto" *ngIf="showEdit" (click)="onSelectFile($event)">Cambiar
+              Imagen</label>
           </ion-row>
           <ion-row [hidden]="showEdit">
             <ion-col class="ion-text-center">

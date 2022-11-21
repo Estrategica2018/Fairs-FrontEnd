@@ -179,7 +179,7 @@ export class MapSitePage implements OnInit {
         }, 100);
       }
       else {
-        this.redirectTo(environment.redirectTo);
+        this.redirectTo(this.fair.redirectTo);
       }
 
     }, error => {

@@ -150,7 +150,12 @@ export class AgendaPage implements OnInit {
     { id: 150, name: '2 horas y 30 min' },
     { id: 180, name: '3 horas' },
     { id: 210, name: '3 horas y 30 min' },
-    { id: 240, name: '4 horas' }
+    { id: 240, name: '4 horas' },
+    { id: 270, name: '4 horas y 30 min' },
+    { id: 300, name: '5 horas' },
+    { id: 300, name: '5 horas y 30 min' },
+    { id: 360, name: '6 horas' },
+    { id: 390, name: '6 horas y 30 min' },
   ];
 
   timezones: any[] = [
@@ -193,8 +198,8 @@ export class AgendaPage implements OnInit {
       'description_large': this.agendaForm.value['description_large']
     };
 
-    if(this.agenda.audience_config == 5) {
-      data.resources =  {"guests": this.agendaForm.value.guests};
+    if (this.agenda.audience_config == 5) {
+      data.resources = { "guests": this.agendaForm.value.guests };
     }
 
     this.adminAgendasService.create(data)
@@ -245,8 +250,8 @@ export class AgendaPage implements OnInit {
       'syncZoom': this.syncZoom ? 1 : 0
     };
 
-    if(this.agenda.audience_config == 5) {
-      data.resources =  {"guests": this.agendaForm.value.guests};
+    if (this.agenda.audience_config == 5) {
+      data.resources = { "guests": this.agendaForm.value.guests };
     }
 
     this.errors = null;
@@ -292,6 +297,9 @@ export class AgendaPage implements OnInit {
 
   async onDeleteAgenda() {
 
+    this.errors = null;
+    this.success = null;
+
     const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: 'Borra agenda?',
@@ -307,8 +315,9 @@ export class AgendaPage implements OnInit {
         }, {
           text: 'Confirmar',
           cssClass: 'danger',
-          handler: (data) => {
-            this.adminAgendasService.delete(this.agenda)
+          handler: (confirm) => {
+
+            this.adminAgendasService.delete(this.agenda, this.syncZoom)
               .then((response) => {
                 this.success = `Agenda borrada exitosamente`;
                 this.fairsService.refreshCurrentFair();
@@ -334,7 +343,7 @@ export class AgendaPage implements OnInit {
 
   onChangeStartTime() {
     let hour = this.agendaForm.value.hour;
-    if(hour.indexOf("T")> 0)  {
+    if (hour.indexOf("T") > 0) {
       hour = (this.agendaForm.value.hour.split('T')[1]).substr(0, 4) + ':00';
     }
     this.agenda.start_time = this.agendaForm.value.date.split('T')[0] + 'T' + hour;
@@ -383,7 +392,7 @@ export class AgendaPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: SpeakersSelectPage,
       swipeToClose: true,
-      backdropDismiss:false,
+      backdropDismiss: false,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
         'invited_speakers': this.invited_speakers,
@@ -564,7 +573,7 @@ export class AgendaPage implements OnInit {
       const start_time = moment(this.agenda.start_at);
       this.hour = start_time.format('hh:mm a');
 
-      if(this.agenda.audience_config == 5) {
+      if (this.agenda.audience_config == 5) {
         this.agendaForm = this.formBuilder.group({
           title: [this.agenda.title, [Validators.required]],
           description: [this.agenda.description, [Validators.required]],
@@ -595,7 +604,7 @@ export class AgendaPage implements OnInit {
           description_large: [this.agenda.description_large, []]
         });
       }
-      
+
 
       console.log(this.agenda);
     }

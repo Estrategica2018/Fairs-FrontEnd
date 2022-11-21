@@ -36,6 +36,7 @@
     "cloudinary-core": "^2.13.0",
     "cropperjs": "^1.5.12",
     "croppie": "^2.6.5",
+    "file-saver": "^2.0.5",
     "install": "^0.13.0",
     "ionicons": "^6.0.3",
     "moment": "^2.29.4",

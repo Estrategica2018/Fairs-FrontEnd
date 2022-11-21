@@ -4,13 +4,16 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'map-site/fair/3',
+    redirectTo: 'map-site/fair/7',
     pathMatch: 'full'
+  },  
+  {
+    path: 'index',
+    loadChildren: () => import('./pages/index/index.module').then( m => m.IndexPageModule)
   },
   {
     path: 'liveStream',
-    redirectTo: 'map-site/fair/3/liveStream',
-    pathMatch: 'full'
+    loadChildren: () => import('./pages/schedule/schedule.module').then(m => m.ScheduleModule)
   },
   {
     path: 'schedule',
@@ -123,10 +126,6 @@ const routes: Routes = [
   {
     path: 'profile',
     loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
-  },
-  {
-    path: 'index',
-    loadChildren: () => import('./pages/index/index.module').then( m => m.IndexPageModule)
   },
 
 

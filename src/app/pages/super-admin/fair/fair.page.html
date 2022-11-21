@@ -165,7 +165,7 @@
         </ion-buttons>
       </ion-item>
 
-      <ion-item [lines]=" showColors ? '' : 'none'">
+      <ion-item [lines]=" showColors ? 'none' : ''">
         <ion-label slot="start">Colores</ion-label>
         <ion-buttons class="" slot="end">
           <ion-button (click)="showColors = !showColors">
@@ -213,6 +213,15 @@
           [ngModelOptions]="{standalone: true}" (change)="ionChangeColor()" style="width: 1.9em;" /> 
         </ion-buttons>
       </ion-item>
+
+      <ion-item>
+        <ion-label slot="start">Reportes</ion-label>
+        <ion-buttons class="" slot="end">
+          <ion-button (click)="showRegister()">
+            <ion-icon slot="icon-only" name="document-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>    
 
 
       <ion-button class="mt-4" expand="full" [disabled]="!editSave" (click)="updateFair()">

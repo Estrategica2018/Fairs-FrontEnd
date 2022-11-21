@@ -187,7 +187,7 @@ export class MapPage implements OnInit {
       }
 
       if (!this.scene) {
-        this.redirectTo(environment.redirectTo);
+        this.redirectTo(this.fair.redirectTo);
       }
 
       this.scene.banners = this.scene.banners || [];

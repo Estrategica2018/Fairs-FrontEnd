@@ -25,6 +25,11 @@
             <ion-badge [hidden]="showBannerSideMenu" class="icon-badge" color="danger"
                *ngIf="userDataSession && shoppingCartCount > 0">{{shoppingCartCount}}</ion-badge>
 
+            <ion-button size="small" *ngIf="!loggedIn" color="secondary" (click)="presenterLogin({})"
+               hape="round" fill="solid">
+               <ion-icon slot="start" name="person"></ion-icon>
+               Crear una cuenta
+            </ion-button>
             <ion-button [ngStyle]="{'color':fair?.social_media.iconMenuColorText}" [hidden]="showBannerSideMenu"
                class="d-none d-md-flex cursor-pointer" *ngIf="loggedIn" color="secondary" (click)="presentAccount()"
                fill="solid">
