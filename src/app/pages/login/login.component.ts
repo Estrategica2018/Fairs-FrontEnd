@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   @Input() _parent: any;
   @Input() showMenu: string;
   @Input() admin: string;
+  @Input() reload: boolean;
   @Input() liveStream: any;
   @Input() email_recovery: string;
   email: string;
@@ -186,6 +187,7 @@ export class LoginComponent implements OnInit {
               userDataSession = Object.assign({ auth: auth }, userDataSession);
               this.usersService.setUser(userDataSession).then(() => {
                 window.dispatchEvent(new CustomEvent('user:login', { 'detail': { 
+                  'reload': this.reload,
                   'modalCtrl':this.modalCtrl,'userDataSession': userDataSession, 'liveStream': this.liveStream } }));
               });
             },

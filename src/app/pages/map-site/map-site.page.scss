@@ -200,3 +200,17 @@
 }
 
  
+.video-hover {
+  padding: 16em;
+  position: absolute;
+  width: 66em;
+  height: 37em;
+  background-color: lightblue;
+  opacity: 0.9;
+  left: 17em;
+  cursor: pointer;
+}
+
+.video-hover:hover {
+  background-color: lightblue;
+}

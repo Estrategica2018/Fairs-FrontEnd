@@ -18,6 +18,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { environment, SERVER_URL } from './../../../environments/environment';
 import * as moment from 'moment-timezone';
 import { LoginComponent } from '../login/login.component';
+import ZoomVideo from '@zoom/videosdk'
 
 @Component({
   selector: 'app-agenda',
@@ -72,6 +73,7 @@ export class AgendaPage implements OnInit {
     private alertCtrl: AlertController,
   ) {
   }
+  
 
   ngDoCheck() {
     document.querySelector<HTMLElement>('ion-router-outlet').style.top = '0px';
@@ -83,6 +85,22 @@ export class AgendaPage implements OnInit {
   }
 
   ngOnInit() {
+
+    /*const client = ZoomVideo.createClient();
+     client.init('en-US', 'CDN')
+
+    let stream;
+    let topic  ='85889241899';
+    let token  ='';
+    let userName = 'CoAnfitrión2';
+    let password = 'c1B4VEcyVGZreUIrUXI4eDZjd0k5Zz09';
+    //token = generateSignature('v1fbGdS9HTHNDDV1vdYTFP39WS9magdbl4g0', 'WmHyQZlLluuSITPOE6rTZSqN2pyWPqcDYIjU', 'Cool Cars', 1, 'session123', 'user123');
+
+    client.join(topic, token, userName, password).then(() => {
+      stream = client.getMediaStream()
+    }).catch((error) => {
+      console.log(error)
+    })*/
     
     this.modalCtrl.dismiss();
 
@@ -314,7 +332,8 @@ export class AgendaPage implements OnInit {
       component: LoginComponent,
       cssClass: 'boder-radius-modal',
       componentProps: {
-        '_parent': this
+        '_parent': this,
+        'reload': true
       }
     });
     await this.modal.present();
@@ -389,16 +408,18 @@ export class AgendaPage implements OnInit {
     if (this.userDataSession != null) {
 
       this.loading.present({ message: 'Cargando...' });
+      console.log(this.agenda);
 
       const email = this.userDataSession.email;
       this.agendasService.generateMeetingToken(fair_id, meeting_id, this.userDataSession)
         .then(response => {
           const token = response.data;
-          const url = `${this.url}/viewerZoom/meetings/${token}`;
+          //const url = `${this.url}/viewerZoom/meetings/${token}`;
+          const url = `https://us02web.zoom.us/j/${this.agenda.zoom_code}`;
           
-          //const windowReference = window.open();
-          //windowReference.location.href = url;
-          window.location.href = url;
+          const windowReference = window.open();
+          windowReference.location.href = url;
+          //window.location.href = url;
           this.loading.dismiss();
 
         }, error => {

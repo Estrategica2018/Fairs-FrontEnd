@@ -60,6 +60,7 @@ export class AppComponent implements OnInit {
   mobileApp = false;
   imageUrlLiveBoton: string;
   liveUrlBotton: string;
+  intervalVideo = {};
 
   constructor(
     private alertCtrl: AlertController,
@@ -90,7 +91,7 @@ export class AppComponent implements OnInit {
     if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
       this.mobileApp = true;
     }
-    else if(navigator.userAgent.indexOf('Mobile') > 0) {
+    else if (navigator.userAgent.indexOf('Mobile') > 0) {
       this.mobileApp = true;
     }
 
@@ -160,16 +161,16 @@ export class AppComponent implements OnInit {
   initializeLiveActionBotton(live) {
 
     this.agendasService.live().then((response) => {
-      
-      if(response && response.data && this.fair.resources.liveBotton) {
+
+      if (response && response.data && this.fair.resources.liveBotton) {
         this.imageUrlLiveBoton = this.fair.resources.liveBotton;
         this.agendaLive = response.data;
-        
+
         this.animationLiveInterval();
 
-        if(live && live.id == this.agendaLive.id) {
+        if (live && live.id == this.agendaLive.id) {
           this.goToLive(this.agendaLive);
-        }        
+        }
       }
       else {
         this.agendaLive = null;
@@ -297,7 +298,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.checkLoginStatus();
-    
+
     this._toolbarHeight = document.querySelector<HTMLElement>('ion-toolbar').offsetHeight;
 
     this.usersService.getUser().then((userDataSession: any) => {
@@ -322,22 +323,50 @@ export class AppComponent implements OnInit {
   }
 
   listenForLoginEvents() {
-    window.addEventListener('user:login', (data:any) => {
+    window.addEventListener('user:login', (data: any) => {
       //window.location.reload();
       this.userDataSession = data.detail.userDataSession;
-      
-      if(data.detail.liveStream) {
+
+      if (data.detail.liveStream) {
         this.goToLive(data.detail.liveStream);
       }
-      if(data.detail.modalCtrl) {
+      if (data.detail.modalCtrl) {
         data.detail.modalCtrl.dismiss();
       }
       this.ngOnInit();
+      if (data.detail.showRegister) {
+        setTimeout(() => {
+          this.redirectTo('/form-mincultura-catalog');
+        }, 500);
+      }
+      if (data.detail.reload) {
+        window.location.reload();
+      }
     });
 
-    
+
     window.addEventListener('user:liveStream', (data) => {
       this.goToLive(this.agendaLive);
+    });
+
+    window.addEventListener('set:intervalVideo', (data: any) => {
+      console.log('set:intervalVideo');
+      this.intervalVideo = data.detail.intervalVideo;
+    });
+
+    window.addEventListener('clear:intervalVideo', () => {
+      console.log('clear:intervalVideo');
+      for (const indx in this.intervalVideo) {
+        const interval = this.intervalVideo[indx].interval;
+        if (interval) {
+          console.log('clear interval' + interval);
+          clearInterval(interval);
+        }
+        /*const playVideo = this.intervalVideo[indx].playVideo;
+        playVideo.pause().then(function (paused) {
+          console.log('video pausado automaticamente ');
+        });*/
+      }
     });
 
 
@@ -1027,7 +1056,7 @@ export class AppComponent implements OnInit {
       this.miniMenu[this.menuHover].top = $event.pageY - $event.offsetY;
     }
 
-    if(this.mobileApp) {
+    if (this.mobileApp) {
       setTimeout(() => {
         this.menuHover = '';
       }, 3000);
@@ -1038,29 +1067,33 @@ export class AppComponent implements OnInit {
 
   goToLive(agendaLive) {
 
-    if(!this.userDataSession) {
-      this.presenterLogin({'liveStream':agendaLive});
+    if (!this.userDataSession) {
+      this.presenterLogin({ 'liveStream': agendaLive });
       return;
     }
 
-      this.loading.present({ message: 'Cargando...' });
+    this.loading.present({ message: 'Cargando...' });
 
-      const email = this.userDataSession.email;
-      this.agendasService.generateMeetingToken(this.fair.id, agendaLive.id, this.userDataSession)
-        .then(response => {
-          const token = response.data;
-        
-          const url = `${SERVER_URL}/viewerZoom/meetings/${token}`;
-          //const windowReference = window.open();
-          //if(windowReference) windowReference.location.href = url;
-          window.location.href = url;
-          
-          this.loading.dismiss();
+    const email = this.userDataSession.email;
+    this.agendasService.generateMeetingToken(this.fair.id, agendaLive.id, this.userDataSession)
+      .then(response => {
+        const token = response.data;
 
-        }, error => {
-          this.loading.dismiss();
-          this.errors = error;
-        });
+        //const url = `https://us02web.zoom.us/j/${agendaLive.zoom_code}`;
+        const url = `https://us02web.zoom.us/j/${agendaLive.zoom_code}`;
+        //const url = 'https://us06web.zoom.us/wc/89928030737/start';
+
+        //const url = `${SERVER_URL}/viewerZoom/meetings/${token}`;
+        const windowReference = window.open();
+        if (windowReference) windowReference.location.href = url;
+        //window.location.href = url;
+
+        this.loading.dismiss();
+
+      }, error => {
+        this.loading.dismiss();
+        this.errors = error;
+      });
   }
 
 
@@ -1071,14 +1104,14 @@ export class AppComponent implements OnInit {
     var interval = setInterval(() => {
       var div = document.querySelector('#obj-1');
       console.log('valida animacion');
-      if(div) {
+      if (div) {
         this.startAnimationLive('#obj-1');
         console.log('startamination');
         clearInterval(interval);
-      }          
+      }
     }, 1500);
   }
-  
+
   async startAnimationLive(selectorObj) {
 
     setInterval(() => {
@@ -1090,11 +1123,11 @@ export class AppComponent implements OnInit {
       .duration(2000)
       .iterations(Infinity)
       .keyframes([
-        { offset: 0, transform: 'scale(1)'},
-        { offset: 0.5, transform: 'scale(1.2)'},
+        { offset: 0, transform: 'scale(1)' },
+        { offset: 0.5, transform: 'scale(1.2)' },
         { offset: 1, transform: 'scale(1)' }
       ])
- 
-      await squareA.play();
+
+    await squareA.play();
   }
 }

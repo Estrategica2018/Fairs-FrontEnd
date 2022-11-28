@@ -1,7 +1,7 @@
 <ion-grid [ngStyle]="{ '--background': scene?.backgroundColor, 'background-color': scene?.backgroundColor }">
 
   <ion-row *ngFor="let row of scene?.rows; let indexRow = index">
-    
+
     <ion-col id="col-{{col.id}}"
       [size]="( level == 1 ? windowScreenSm ? '12' : row.cols.length == 2 && windowScreenLg ? '6' : '' : '' )"
       *ngFor="let col of row.cols; let indexCol = index;"
@@ -21,10 +21,11 @@
             'minWidth': banner.styles.minWidth ? banner.styles?.minWidth + '' + banner.styles?.minWidthUnit : 'auto',
             'minHeight': banner.styles.minHeight ? banner.styles?.minHeight + '' + banner.styles?.minHeightUnit : 'auto',
             'background-color': banner.styles?.backgroundColor,
-            'margin-top': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginTop + banner.styles?.marginTopUnit,
-            'margin-bottom': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginBottom + banner.styles?.marginBottomUnit,
-            'margin-right': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginRight + banner.styles?.marginRightUnit,
-            'margin-left': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginLeft + banner.styles?.marginLeftUnit,
+            'margin-top': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginType === 'auto' ? 'auto' : banner.styles?.marginTop + banner.styles?.marginTopUnit,
+            'margin-bottom': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginType === 'auto' ? 'auto' : banner.styles?.marginBottom + banner.styles?.marginBottomUnit,
+            'margin-right': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginType === 'auto' ? 'auto' : banner.styles?.marginRight + banner.styles?.marginRightUnit,
+            'margin-left': banner.styles?.marginType === 'none' ? '' : banner.styles?.marginType === 'auto' ? 'auto' : banner.styles?.marginLeft + banner.styles?.marginLeftUnit,
+            
             'border': banner.styles?.borderLength +  banner.styles?.borderLengthUnit + ' ' + banner.styles?.borderStyle + ' ' + banner.styles?.borderColor,
             'border-radius': banner.styles?.borderRadius +  banner.styles?.borderRadiusUnit,
             'text-align': banner.styles?.textAlign,
@@ -97,19 +98,39 @@
                 *ngIf="editMode">
                 <ion-icon name="create-outline"></ion-icon>
               </ion-button>
-              <iframe [src]="banner.video.sanitizer" frameborder="0" title="asdfasdfasdf" webkitallowfullscreen
-                mozallowfullscreen allowfullscreen id="video-id-{{banner.id}}" class="{{banner.class}}"
-                (click)="goToOnHoverBanner(banner,col,row,scene)" [ngStyle]="{
-                  'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
-                  'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
-                  'minWidth': banner.styles.minWidth ? banner.styles?.minWidth + '' + banner.styles?.minWidthUnit : 'auto',
-                  'minHeight': banner.styles.minHeight ? banner.styles?.minHeight + '' + banner.styles?.minHeightUnit : 'auto'
-                }">
-              </iframe>
+
+              <ion-grid class="video-hover">
+                <ion-col *ngIf="banner.video.showRegister">
+                  <ion-toolbar class="pay-button ml-6 footer-pay" style="bottom: 5em;">
+                    <h6 style="margin-right:2em; width: 87%;" slot="start">Para reproducir este evento debes registrarte
+                      y
+                      acceder con tu usuario</h6>
+                  </ion-toolbar>
+                  <ion-toolbar class="pay-button ml-6 footer-pay">
+                    <ion-button class="button ml-6" color="primary" size="small" (click)="onPresenterLogin()">
+                      Ingresar o crear cuenta
+                    </ion-button>
+                  </ion-toolbar>
+
+                </ion-col>
+                <ion-col>
+
+                  <iframe [src]="banner.video.sanitizer" frameborder="0" webkitallowfullscreen mozallowfullscreen
+                    allowfullscreen id="video-id-{{banner.id}}" class="{{banner.class}}"
+                    [hidden]="banner.video.showRegister" [ngStyle]="{
+                    'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
+                    'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
+                    'minWidth': banner.styles.minWidth ? banner.styles?.minWidth + '' + banner.styles?.minWidthUnit : 'auto',
+                    'minHeight': banner.styles.minHeight ? banner.styles?.minHeight + '' + banner.styles?.minHeightUnit : 'auto'
+                  }">
+                  </iframe>
+                </ion-col>
+              </ion-grid>
             </div>
 
             <!-- Text Template -->
-            <h1 *ngIf="banner.styles" [ngClass]="{'cursor-pointer':editMode}" [ngStyle]="{
+            <h1 *ngIf="banner.styles  && banner.styles.text && banner.styles.text.value.length > 0"
+              [ngClass]="{'cursor-pointer':editMode}" [ngStyle]="{
              'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
               'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
              'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
@@ -122,7 +143,7 @@
              'fontFamily': banner.styles?.fontFamily,
              'opacity': editMode && bannerSelectHover ? ( bannerSelectHover.id !== banner.id ? 0.6  : 1  ) : (10 - banner.styles?.opacity) / 10
            }" (click)="goToOnHoverBanner(banner,col,row,scene)">
-              {{ banner.styles?.text?.value }}
+              {{ banner.styles?.text?.value}}
             </h1>
 
             <!-- Recursive scene Template -->

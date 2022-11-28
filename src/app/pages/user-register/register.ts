@@ -361,6 +361,7 @@ export class RegisterPage implements OnInit {
             
             this.loading.dismiss();            
             window.dispatchEvent(new CustomEvent('user:login', { 'detail': { 
+              'showRegister': true,
               'userDataSession': userDataSession, 'liveStream': this.agendaLive }}));
 
             this.redirectTo(this.fair.redirectTo);

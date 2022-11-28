@@ -12,6 +12,7 @@ import { LoginComponent } from '../../login/login.component';
 import { NewSceneComponent } from './new-scene/new-scene.component';
 import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-fair',
@@ -395,32 +396,73 @@ export class FairPage implements OnInit {
     setTimeout(() => { window.location.reload(); }, 100);
   }
 
+  
+
   showRegister() {
     this.loading.present({ message: 'Cargando...' });
     this.fairsService.showRegister(this.fair, this.userDataSession)
       .then((response) => {
- 
-        let text = '';
 
+        let textData = '';
+        let mbcontrol : boolean;
+        let agendaList = [];
+        let agenda:any;
+
+      
         response.arrayUser.forEach((user) => {
-          
+
           let rol = user.roles_fair[0].role_id;
           let mincultura = user.mincultura ? 'si' : 'no';
+          //console.log(mincultura);
+          
+          if (rol == 4 && user.audience && user.audience.length > 0) {
+            user.audience.forEach((audience) => {
+              mbcontrol = false;
+              agendaList.forEach((agenda_tmp)=>{
+                  if(agenda_tmp.id == audience.agenda.id) {
+                    mbcontrol = true;
+                    agenda = agenda_tmp;
+                  }
+              })
 
-          let audience = '';
-          if (user.audience && user.audience.length > 0) {
-            user.audience.forEach((audi) => {
-              if (audi.attendance > 0) {
-                audience += audi.agenda.category.name + '[' + audi.agenda_id + ']|' + audi.attendance + '|';
-              }   
+              if(!mbcontrol) {
+                agenda = audience.agenda;
+                agendaList.push(agenda);
+              }
+              agenda.audience = agenda.audience || [];
+              let attendance  =  audience.attendance || 0;
+              let attendance_offline  =  audience.attendance_offline || 0;
+              
+
+              const timeZone = moment(audience.created_at);
+              const strDay = timeZone.format('YYYY-MM-DD');
+              const strHour = timeZone.format('hh:mm A');
+
+              //const strDay = this.datepipe.transform(new Date(audience.created_at), 'YYYY/MM/DD');
+              //const strHour = this.datepipe.transform(new Date(audience.created_at), 'hh:mi am');
+              let created_at = strDay + ' ' + strHour;
+              
+              agenda.audience.push({'user':user,'mincultura':mincultura,'attendance':attendance,'attendance_offline':attendance_offline, 'created_at': created_at});
+              
             });
           }
           
-          text += user.name + '|' + user.last_name + '|' + user.email + '|' + rol + '|' + mincultura + '|' + audience + '\n';
         });
 
-        var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-        saveAs(blob, "Usuariso registrados.csv");
+        agendaList.forEach((agenda)=>{
+          textData += agenda.title+'||particiantes: '+agenda.audience.length+'|Registro|Duración (MIN)|Duración Offline (MIN)|Fecha de Registro\n';
+          //console.log(agenda.title+'|particiantes|'+agenda.audience.length);
+          agenda.audience.forEach((data)=>{
+            textData += '|'+data.user.name + ' ' + data.user.last_name + '|' + data.user.email + '|' + data.mincultura + '|' + data.attendance +'|' + data.attendance_offline + '|' + data.created_at+ '\n';
+            
+          });
+          textData += '\n';
+        });
+
+        let filename = "Usuarios_registrados.csv";
+        let type = 'text/plain';
+        this.download(textData, filename, type);
+        //saveAs(blob,filename);
 
         this.loading.dismiss();
 
@@ -429,5 +471,24 @@ export class FairPage implements OnInit {
         this.loading.dismiss();
         this.errors = `Consultando el servicio de reportes: ${error}`;
       });
+  }
+
+
+  // Function to download data to a file
+  download(data, filename, type) {
+    const BOM = "\uFEFF" 
+    let csvData = BOM + data;
+    var file = new Blob([csvData], { type: type });
+    var a = document.createElement("a"),
+      url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 0);
+
   }
 } 

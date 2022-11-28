@@ -69,12 +69,6 @@
                 <ion-label color="primary">Entrar al Evento</ion-label>
               </ion-item>
 
-              <ion-item button
-                *ngIf="loaded && agenda.audience_config == 5 && ( agenda.category.name != 'Taller_M' && agenda.category.name != 'Taller_T' ) "
-                [hidden]="profileRole && ( profileRole.speaker || profileRole.admin )">
-                <ion-label color="primary">Pronto iniciará este evento</ion-label>
-              </ion-item>
-
               <ion-item
                 *ngIf="loaded && agenda.audience_config == 5 && ( agenda.category.name == 'Taller_M' || agenda.category.name == 'Taller_T' ) "
                 [hidden]="!profileRole || (profileRole && ( profileRole.speaker || profileRole.admin || agenda.full || agenda.disableSelection))"

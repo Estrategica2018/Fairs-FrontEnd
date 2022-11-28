@@ -349,16 +349,18 @@ goToFormCatalog() {
     if (this.userDataSession != null) {
 
       this.loading.present({ message: 'Cargando...' });
+      console.log(this.agenda);
 
       const email = this.userDataSession.email;
       this.agendasService.generateMeetingToken(fair_id, meeting_id, this.userDataSession)
         .then(response => {
           const token = response.data;
-          const url = `${this.url}/viewerZoom/meetings/${token}`;
+          //const url = `${this.url}/viewerZoom/meetings/${token}`;
+          const url = `https://us02web.zoom.us/j/${this.agenda.zoom_code}`;
 
-          //const windowReference = window.open();
-          //windowReference.location.href = url;
-          window.location.href = url;
+          const windowReference = window.open();
+          windowReference.location.href = url;
+          //window.location.href = url;
           this.loading.dismiss();
 
         }, error => {

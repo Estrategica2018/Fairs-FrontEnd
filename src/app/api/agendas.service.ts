@@ -160,7 +160,7 @@ export class AgendasService {
           if (agenda) {
             url = `${SERVER_URL}/api/agenda/available/list/${fair.id}/${agenda.id}`;
           }
-          this.http.get(url,httpOptions)
+          this.http.get(url, httpOptions)
             .pipe(
               timeout(60000),
               catchError((e: any) => {
@@ -188,58 +188,129 @@ export class AgendasService {
     });
   }
 
-  register(fair: any, agenda: any, userDataSession: any): Observable<any> {
+  availableListMemories(agendaId, userDataSession): Promise<any> {
+
+    return new Promise((resolve, reject) => {
+
       const httpOptions = {
         headers: new HttpHeaders({
           'Authorization': 'Bearer ' + userDataSession.token
         })
       };
 
-      let url = `${SERVER_URL}/api/agenda/register/${fair.id}/${agenda.id}`;
-     return  this.http.get(url,httpOptions)
-        .pipe(
-          timeout(60000),
-          catchError((e: any) => {
-            console.log(e);
-            if (e.status && e.statusText) {
-              throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);
-            }
-            else {
-              throw new Error(`Consultando el servicio de agenda`);
-            }
-          })
-        );    
+      this.fairsService.getCurrentFair().
+        then(fair => {
+          let url = `${SERVER_URL}/api/agenda/available/list-memories/${fair.id}/${agendaId}`;
+          this.http.get(url, httpOptions)
+            .pipe(
+              timeout(60000),
+              catchError((e: any) => {
+                console.log(e);
+                if (e.status && e.statusText) {
+                  throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);
+                }
+                else {
+                  throw new Error(`Consultando el servicio de agenda`);
+                }
+              })
+            )
+            .subscribe((data: any) => {
+              let agendas = processData(data.data);
+              resolve(agendas);
+            }, error => {
+              reject(error)
+            });
+        }, error => {
+          reject(error)
+        });
+    });
+  }
+
+  register(fair: any, agenda: any, userDataSession: any): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + userDataSession.token
+      })
+    };
+
+    let url = `${SERVER_URL}/api/agenda/register/${fair.id}/${agenda.id}`;
+    return this.http.get(url, httpOptions)
+      .pipe(
+        timeout(60000),
+        catchError((e: any) => {
+          console.log(e);
+          if (e.status && e.statusText) {
+            throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);
+          }
+          else {
+            throw new Error(`Consultando el servicio de agenda`);
+          }
+        })
+      );
   }
 
   live(): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      
-        this.fairsService.getCurrentFair().
-          then(fair => {
-            let url = `${SERVER_URL}/api/agenda/live?fair_id=${fair.id}`;
-            
-            this.http.get(url)
-              .pipe(
-                timeout(60000),
-                catchError((e: any) => {
-                  console.log(e);
-                  if (e.status && e.statusText) {
-                    throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);
-                  }
-                  else {
-                    throw new Error(`Consultando el servicio de agenda`);
-                  }
-                })
-              )
-              .subscribe((data: any) => {
-                resolve(data);
-              }, error => {
-                reject(error)
-              });
-          }, error => {
-            reject(error)
-          }); 
+
+      this.fairsService.getCurrentFair().
+        then(fair => {
+          let url = `${SERVER_URL}/api/agenda/live?fair_id=${fair.id}`;
+
+          this.http.get(url)
+            .pipe(
+              timeout(60000),
+              catchError((e: any) => {
+                console.log(e);
+                if (e.status && e.statusText) {
+                  throw new Error(`Consultando el servicio de agenda: ${e.status} - ${e.statusText}`);
+                }
+                else {
+                  throw new Error(`Consultando el servicio de agenda`);
+                }
+              })
+            )
+            .subscribe((data: any) => {
+              resolve(data);
+            }, error => {
+              reject(error)
+            });
+        }, error => {
+          reject(error)
+        });
+    });
+  }
+
+  saveResgisterUrl(fair, agenda_id,userDataSession): Promise<any> {
+
+    return new Promise((resolve, reject) => {
+
+      let url = `${SERVER_URL}/api/viewerZoom/saveResgister/${fair.id}/${agenda_id}`;
+
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Authorization': 'Bearer ' + userDataSession.token
+        })
+      };
+
+      this.http.get(url,httpOptions)
+        .pipe(
+          timeout(60000),
+          catchError((e: any) => {
+            console.log(e);
+            if (e.status && e.statusText) {
+              throw new Error(`Consultando el servicio para registrar agenda: ${e.status} - ${e.statusText}`);
+            }
+            else {
+              throw new Error(`Consultando el servicio para registrar agenda`);
+            }
+          })
+        )
+        .subscribe((data: any) => {
+          resolve(data);
+        }, error => {
+          reject(error)
+        });
     });
   }
 

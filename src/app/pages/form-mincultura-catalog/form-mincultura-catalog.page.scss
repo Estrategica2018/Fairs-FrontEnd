@@ -130,6 +130,17 @@ input {
     font-size: .8em;
 }
 
+.event-full::before {
+    content: "Este evento está agotado!";
+    position: absolute;
+    background-color: black;
+    height: 4em;
+    color: white;
+    width: 14em;
+    padding: 1em;
+    font-size: .8em;
+}
+
 .disableSelection {
     background-color: lightblue;
     color: gray;
@@ -146,3 +157,10 @@ input {
     /* IE 6-9 */
   }
   
+.close-modal {
+    cursor: pointer;
+    position: absolute;
+    top: 2em;
+    right: 46px;
+    font-size: 3em;
+}

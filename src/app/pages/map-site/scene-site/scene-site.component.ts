@@ -2,7 +2,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { HostListener } from "@angular/core";
 import { Router } from '@angular/router';
-import { Animation, AnimationController } from '@ionic/angular';
+import { Animation, AnimationController, ModalController } from '@ionic/angular';
+import { LoginComponent } from '../../login/login.component';
 
 @Component({
   selector: 'app-scene-site',
@@ -11,7 +12,7 @@ import { Animation, AnimationController } from '@ionic/angular';
 })
 export class SceneSiteComponent implements OnInit {
 
-  constructor(private animationCtrl: AnimationController,) { }
+  constructor(private animationCtrl: AnimationController,private modalCtrl: ModalController,) { }
 
   @Input() scene: any;
   @Input() level: any;
@@ -24,6 +25,7 @@ export class SceneSiteComponent implements OnInit {
   @Input() layoutColHover: any;
   @Output() onHoverBanner = new EventEmitter<any>();
   @Output() selectLayout = new EventEmitter<any>();
+  modal: any;
 
   layoutBannerSelectTime = 0;
   showSpeakerCatalogActions = '';
@@ -114,5 +116,31 @@ export class SceneSiteComponent implements OnInit {
     this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
       this.router.navigate([uri])
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.modal) { this.modal.dismiss(); }
+  }
+
+  closeModal() {
+    if (this.modal) { this.modal.dismiss(); }
+  }
+
+  async onPresenterLogin() {
+
+    this.closeModal();
+
+    this.modal = await this.modalCtrl.create({
+      component: LoginComponent,
+      cssClass: 'boder-radius-modal',
+      componentProps: {
+        '_parent': this
+      }
+    });
+    await this.modal.present();
+    const { data } = await this.modal.onWillDismiss();
+
+    if (data) {
+    }
   }
 }

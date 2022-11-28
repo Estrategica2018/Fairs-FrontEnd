@@ -16,6 +16,8 @@ import { UsersService } from 'src/app/api/users.service';
 import { environment,SERVER_URL } from 'src/environments/environment';
 import { AgendasService } from 'src/app/api/agendas.service';
 
+declare var Vimeo;
+
 @Component({
   selector: 'app-map-site',
   templateUrl: './map-site.page.html',
@@ -87,7 +89,14 @@ export class MapSitePage implements OnInit {
   mobileApp: boolean = false;
   bannersFloat: any = [];
   toolBarSize = 0;
+  intervalVideo = {};
+  playVideo = null;
   
+  
+  ionViewWillEnter() {
+    //this.initializeBanners(this.scene);
+  }
+
   ngOnInit() {
     
     this.routerView = this.router;
@@ -101,7 +110,13 @@ export class MapSitePage implements OnInit {
   }
 
   ngOnDestroy(): void {
-
+    
+    for (const indx in this.intervalVideo) {
+     const interval =  this.intervalVideo[indx];
+      if(interval){
+        clearInterval(interval);
+      }
+    }
   }
 
   initializeScene() {
@@ -190,7 +205,7 @@ export class MapSitePage implements OnInit {
   }
 
   initializeBanners(scene: any) {
-
+    this.bannersFloat = [];
     scene.row = scene.row || [];
     for (let row of scene.rows) {
       for (let col of row.cols) {
@@ -202,17 +217,30 @@ export class MapSitePage implements OnInit {
       }
     }
 
-    if (scene && scene.videoPreview)
+    if (scene && scene.videoPreview && scene.videoPreview.length > 0) {
       scene.videoPreviewSanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(scene.videoPreview);
+    }
+    else {
+      scene.videoPreviewSanitizer = null;
+    }
 
 
     let rows = scene.rows;
+    this.intervalVideo = {};
     rows.forEach((row) => {
       row.cols.forEach((col) => {
         col.banners.forEach((banner) => {
 
           if (banner.video) {
-            banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+            if (banner.video.agenda) {
+              setTimeout(() => {
+                this.searchAgenda(banner, banner.video);  
+              }, 500);
+              banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+            }
+            else {
+              banner.video.sanitizer = this.sanitizer.bypassSecurityTrustResourceUrl(banner.video.url);
+            }
           }
 
           if(banner.iFrame) {
@@ -234,6 +262,70 @@ export class MapSitePage implements OnInit {
         });
       });
     });
+  }
+
+  stopAll(){
+
+  }
+  
+  searchAgenda(banner: any, video: any) {
+    
+    var iframe = document.querySelector('#video-id-'+banner.id);
+    var player = new Vimeo.Player(iframe);
+    this.intervalVideo['video-id-'+banner.id] = {};
+    this.intervalVideo['video-id-'+banner.id].player = player;
+    let _self = this;
+
+    player.on('play', function() {
+
+      if(_self.playVideo &&_self.playVideo.element.getAttribute('id') !=  'video-id-'+banner.id) {
+        let oldPlayVideo = _self.playVideo.element.getAttribute('id');
+        _self.playVideo.pause().then(function(paused) {
+          console.log('video pausado automaticamente '+ oldPlayVideo);
+          let interval = _self.intervalVideo[oldPlayVideo].interval;
+          if(interval){
+            clearInterval(interval);
+            _self.intervalVideo[_self.playVideo.element.getAttribute('id')].interval = null;
+          }
+        });
+      }
+
+      _self.playVideo = _self.intervalVideo['video-id-'+banner.id].player;
+
+      if(!_self.userDataSession) {
+        banner.video.showRegister = true;
+        return;
+      }
+
+      let interval = setInterval(() => {
+          
+       _self.agendasService.saveResgisterUrl(_self.fair, video.agenda,_self.userDataSession)
+       .then((response: any) => {
+          console.log('Save register the video '+video.agenda + ' - video-id-'+banner.id);
+        }, error => {
+          console.log(error);
+          _self.errors = `Ha ocurrido un error al guardar asistencia`;
+        });
+
+      }, 60000);
+
+      _self.intervalVideo['video-id-'+banner.id].interval = interval;
+      console.log('Played the video '+video.agenda + ' - video-id-'+banner.id);
+    });
+    
+    player.on('pause', function() {
+      let interval = _self.intervalVideo['video-id-'+banner.id].interval;
+      if(interval){
+        clearInterval(interval);
+        _self.intervalVideo['video-id-'+banner.id].interval = null;
+      }
+      console.log('pause the video ' +video.agenda + ' - video-id-'+banner.id);
+    });
+
+    player.getVideoTitle().then(function(title) {
+      console.log('video '+video.agenda  + ' - video-id-'+banner.id+ ' title:', title);
+    });
+    
   }
 
   setIdForRow(rows) {

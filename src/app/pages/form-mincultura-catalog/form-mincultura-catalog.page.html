@@ -1,6 +1,9 @@
 <ion-content class="">
 
   <ion-list class="padding-container patter" role="list">
+    <div (click)="closeModal() " class="close-modal">
+      <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+    </div>
     <ion-item lines="none" class="mt-3"></ion-item>
     <ion-item lines="none" class="mt-3">
       <img src="https://res.cloudinary.com/deueufyac/image/upload/v1668187745/CONGRESO%20NACIONAL%20DE%20BIBLIOTECAS/FORMULARIOS/banner_ijt47d.png"
@@ -138,6 +141,7 @@
             <div class=" ml--1 card-agenda"
               [ngClass]="{
                 'grayscale-agenda': ( agendaSelect && agendaSelect.id !=  agenda.id)  || ( disableSelection &&  agendaSelect.id !=  agenda.id) || agenda.full == 1,
+                'event-full': agenda && agenda.full  == 1  && agendaHover == agenda.id,
                 'register-finish': disableSelection && agendaHover == agenda.id && agendaSelect.id !=  agenda.id }">
               <div class="div-agenda">
                 {{agenda.title}}

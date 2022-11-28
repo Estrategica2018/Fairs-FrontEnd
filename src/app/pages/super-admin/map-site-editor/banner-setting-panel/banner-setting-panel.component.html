@@ -73,6 +73,12 @@
                      <ion-label class="tool-special"> Video</ion-label>
                   </ion-tab-button>
 
+                  <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'videoAgenda' }" (click)="tabSelect = 'videoAgenda'"
+                     *ngIf="banner.video">
+                     <ion-label class="tool-special"> Agenda</ion-label>
+                  </ion-tab-button>
+
+
                   <ion-tab-button [ngClass]="{'tool-selected': tabSelect == 'carousel' }"
                      (click)="tabSelect = 'carousel'" *ngIf="banner.carousel">
                      <ion-label class="tool-special"> Carrete</ion-label>
@@ -271,6 +277,7 @@
                <ion-buttons slot="end">
                   <select [(ngModel)]="banner.styles.marginType" (change)="goToOnChangeItem()">
                      <option value="none">Ninguno</option>
+                     <option value="auto">auto</option>
                      <option value="custom">Personalizado</option>
                   </select>
                </ion-buttons>
@@ -600,13 +607,22 @@
          <ion-card-content *ngIf="tabSelect == 'video' && banner.video">
             <ion-toolbar>
                <ion-card-subtitle slot="start"> Url de video </ion-card-subtitle>
-               <input slot="end" class="mt-2 ml-2" type="text" (change)="onChangeVideoUrl()"
+               <input slot="end" class="w-100 mt-2 ml-2" type="text" (change)="onChangeVideoUrl()"
                   [(ngModel)]="banner.video.url" />
             </ion-toolbar>
          </ion-card-content>
 
-         <ion-card-content *ngIf="tabSelect == 'contact'">
-
+         <ion-card-content *ngIf="tabSelect == 'videoAgenda' && banner.video">
+            <ion-toolbar>
+               <ion-card-subtitle slot="start"> Agenda o Evento asociado </ion-card-subtitle>
+               <input #agendaSelectFilter id="agendaSelectFilter" slot="end" class="mt-2 ml-2 agenda-video-input w-100" type="text" (keyup)="filterAgenda()"/>
+               <ion-icon name="search-outline" class="search-agenda-video"></ion-icon>
+            </ion-toolbar>
+            <ion-toolbar>
+               <select [(ngModel)]="banner.video.agenda" class="w-100" (change)="goToOnChangeItem()" *ngIf="agendaList" #agendaVideoSelect id="agendaVideoSelect">
+                  <option *ngFor="let agenda of agendaList" value="{{agenda.id}}">{{agenda.title}}</option>
+               </select>
+            </ion-toolbar>
          </ion-card-content>
 
          <ion-card-content *ngIf="tabSelect == 'carousel'" style="overflow: auto;height: 421px;">

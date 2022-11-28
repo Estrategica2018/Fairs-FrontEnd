@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 import { AlertController } from '@ionic/angular';
+import { AgendasService } from 'src/app/api/agendas.service';
 
 @Component({
   selector: 'app-banner-setting-panel',
@@ -15,6 +16,7 @@ export class BannerSettingPanelComponent implements OnInit {
   @Output() onCopyBanner = new EventEmitter<any>();
   @Output() changeItem = new EventEmitter<any>();
   @Output() deleteBanner = new EventEmitter<any>();
+  @ViewChild('agendaSelectFilter', { static: false }) agendaSelectFilter: ElementRef;
 
   fixedBannerPanel = false;
   panelPos: any = { x: '27px', y: '0px' };
@@ -63,18 +65,43 @@ export class BannerSettingPanelComponent implements OnInit {
   showSpeakerCatalogActions = null;
   tabMenuObj: any;
   showPanelTool = null;
-
+  agendaList = null;
+  agendaOri = null;
+  
 
   constructor(
     private sanitizer: DomSanitizer,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private agendasService: AgendasService,
   ) {
 
 
   }
 
   ngOnInit() {
+    if(this.agendaOri == null) {
+      this.agendasService.list(false)
+      .then((agenda) => {
+        this.agendaOri = agenda;
+        this.filterAgenda();
+      });
+    }
+  }
 
+  @ViewChild('agendaVideoSelect') agendaVideoSelect: ElementRef;
+  
+  filterAgenda() {
+    const filter = this.agendaSelectFilter && this.agendaSelectFilter.nativeElement ? this.agendaSelectFilter.nativeElement.value : '';
+    this.agendaList = this.agendaOri.filter((agenda)=>{
+      console.log(agenda.title.toUpperCase() + "==" + filter.toUpperCase() +"["+(agenda.title.toUpperCase().indexOf(filter.toUpperCase()) >= 0)+"]");
+       return filter == '' || agenda.title.toUpperCase().indexOf(filter.toUpperCase()) >= 0
+    });
+    setTimeout(() => {
+      if(filter != '') {
+        this.agendaVideoSelect.nativeElement.click();
+      }
+    }, 100);
+    
   }
 
   onCloseClick() {

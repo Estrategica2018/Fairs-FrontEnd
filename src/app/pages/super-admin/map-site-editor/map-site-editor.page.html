@@ -18,6 +18,7 @@
 
    <app-layout-component *ngIf="layoutModel" [editMode]="editMode" [windowScreenSm]="windowScreenSm"
       [windowScreenLg]="windowScreenLg" [scene]="sceneEdited" [layoutColSel]="layoutColSel"
+      (changeItem)="onChangeItem()" 
       (selectLayout)="layoutColSelect($event)" (onHoverBanner)="onHoverBanner($event)" [level]="1"
       [router]="routerView">
    </app-layout-component>

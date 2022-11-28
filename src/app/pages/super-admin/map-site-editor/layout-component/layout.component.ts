@@ -18,7 +18,8 @@ export class LayoutComponent implements OnInit {
   @Input() editMode: boolean = false;
   @Input() layoutColSel: any;
   @Input() layoutColHover: any;
-  @Input() router: Router;    
+  @Input() router: Router;   
+  @Output() changeItem = new EventEmitter<any>(); 
   @Output() onHoverBanner = new EventEmitter<any>();
   @Output() selectLayout = new EventEmitter<any>();
   
@@ -74,6 +75,7 @@ export class LayoutComponent implements OnInit {
             }
         }
     }
+    this.goToOnChangeItem();
   }
 
   addRow(colSelected, parent) {
@@ -101,6 +103,7 @@ export class LayoutComponent implements OnInit {
             }
         }
     }
+    this.goToOnChangeItem();
   }
   
   _getId() {
@@ -111,4 +114,9 @@ export class LayoutComponent implements OnInit {
       window.dispatchEvent(new CustomEvent('side-menu-button:select-panel-settingsColumnLayout'));
   }
 
+  goToOnChangeItem() {
+    if (this.changeItem) {
+      this.changeItem.emit(true);
+    }
+  }
 }

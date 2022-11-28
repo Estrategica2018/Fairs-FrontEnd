@@ -78,7 +78,7 @@
       </div>
     </div>
     <!--if banner is Video-->
-    <iframe *ngIf="banner.video" [src]="banner.video.sanitizer" frameborder="0" title="asdfasdfasdf"
+    <iframe *ngIf="banner.video" [src]="banner.video.sanitizer" frameborder="0" 
       webkitallowfullscreen mozallowfullscreen allowfullscreen id="video-id-{{banner.id}}" class="{{banner.class}}"
       [ngStyle]="{'width': banner.size.x + 'px', 'height': banner.size.y + 'px'}">
     </iframe>

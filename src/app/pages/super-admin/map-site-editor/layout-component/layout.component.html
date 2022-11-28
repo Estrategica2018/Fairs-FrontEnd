@@ -32,8 +32,7 @@
 
             <!-- Image Template -->
             <img *ngIf="banner.styles && banner.styles.image" [src]="banner.styles.image.src"
-              [ngClass]="{'cursor-pointer': editMode, 'banner-selected': editMode }"
-              [ngStyle]="{
+              [ngClass]="{'cursor-pointer': editMode, 'banner-selected': editMode }" [ngStyle]="{
                 'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
                 'padding-bottom': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingBottom + banner.styles?.paddingBottomUnit,            
                 'padding-right': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingRight + banner.styles?.paddingRightUnit,
@@ -52,8 +51,7 @@
 
             <!-- Triangle Template -->
             <div class="w-0 h-0 p-0 m-0" *ngIf="banner.triangle && banner.styles"
-              [ngClass]="{ 'cursor-pointer': editMode, 'banner-selected': editMode }"
-              [ngStyle]="{
+              [ngClass]="{ 'cursor-pointer': editMode, 'banner-selected': editMode }" [ngStyle]="{
                 'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
                 'padding-bottom': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingBottom + banner.styles?.paddingBottomUnit,            
                 'padding-right': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingRight + banner.styles?.paddingRightUnit,
@@ -66,9 +64,7 @@
             </div>
 
             <!-- Line Template -->
-            <div *ngIf="banner.line"
-              [ngClass]="{ 'cursor-pointer': editMode, 'banner-selected': editMode }"
-              [ngStyle]="{
+            <div *ngIf="banner.line" [ngClass]="{ 'cursor-pointer': editMode, 'banner-selected': editMode }" [ngStyle]="{
             'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
             'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
             'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
@@ -101,7 +97,8 @@
 
 
             <!-- Text Template -->
-            <h1 *ngIf="banner.styles" [ngClass]="{'cursor-pointer':editMode}" [ngStyle]="{
+            <h1 *ngIf="banner.styles  && banner.styles.text && banner.styles.text.value.length > 0"
+              [ngClass]="{'cursor-pointer':editMode}" [ngStyle]="{
              'width': banner.styles.width ? banner.styles?.width + '' + banner.styles?.widthUnit : 'auto',
               'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto',
              'padding-top': banner.styles?.paddingType === 'none' ? '' : banner.styles?.paddingTop + banner.styles?.paddingTopUnit,
@@ -132,21 +129,19 @@
             'height': banner.styles.height ? banner.styles?.height + '' + banner.styles?.heightUnit : 'auto'
           }">
             <!--if banner is Speakers-->
-            <app-speaker-catalog *ngIf="banner.speakerCatalog"
-               [banner]="banner">
+            <app-speaker-catalog *ngIf="banner.speakerCatalog" [banner]="banner">
             </app-speaker-catalog>
             <!--End if banner is Speakers-->
           </div>
         </div>
-  
+
         <div *ngIf="banner && banner.agendaCatalog">
           <div *ngFor="let banner of col.banners" class="{{banner.styles.class}}">
             <!--if banner is agenda-catalog -->
-            <ion-button color="light" class="edit-carousel-button"
-              *ngIf="editMode">
+            <ion-button color="light" class="edit-carousel-button" *ngIf="editMode">
               <ion-icon name="create-outline"></ion-icon>
             </ion-button>
-  
+
             <app-agenda-catalog [banner]="banner"></app-agenda-catalog>
             <!--End if banner is agenda-catalog -->
           </div>

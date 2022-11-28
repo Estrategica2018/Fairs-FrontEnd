@@ -6,7 +6,7 @@ import { FairsService } from 'src/app/api/fairs.service';
 import { MinculturaService } from 'src/app/api/mincultura.service';
 import { UsersService } from 'src/app/api/users.service';
 import { LoadingService } from 'src/app/providers/loading.service';
-import { ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 @Component({
@@ -37,6 +37,7 @@ export class FormMinculturaCatalogPage implements OnInit {
 
   constructor(
     private agendasService: AgendasService,
+    private alertCtrl: AlertController,
     private datepipe: DatePipe,
     private formBuilder: FormBuilder,
     private fairsService: FairsService,
@@ -112,16 +113,16 @@ export class FormMinculturaCatalogPage implements OnInit {
                 if (response.audience) {
                   let audiences = response.audience;
                   for (let audience of audiences) {
-                    if (this.CategorySelector == 'all' || audience.agenda.category.name == this.CategorySelector) {
+                    if (audience.agenda.category.name == 'Taller_M' || audience.agenda.category.name == 'Taller_T') {
+
                       this.agendaSelect = audience.agenda;
                       setTimeout(() => {
                         let check: any = document.querySelector<HTMLElement>('#check-agenda-' + this.agendaSelect.id);
-                        console.log('evento...'+this.agendaSelect.id);
-                        console.log('check');
                         if (check) check.checked = true;
                       }, 1000);
                       this.disableSelection = true;
                     }
+
                   }
                 }
                 if (response.meetings) {
@@ -180,7 +181,7 @@ export class FormMinculturaCatalogPage implements OnInit {
   }
 
   changeSelect(agenda) {
-    console.log('changeSelect',agenda);
+    console.log('changeSelect', agenda);
 
     let check: any = document.querySelector<HTMLElement>('#check-agenda-' + agenda.id);
     if (check && check.checked) {
@@ -190,7 +191,7 @@ export class FormMinculturaCatalogPage implements OnInit {
         if (checkAgenda) checkAgenda.checked = false;
       });
 
-      if (this.disableSelection) {
+      if (this.disableSelection || agenda.full == "1") {
         let check: any = document.querySelector<HTMLElement>('#check-agenda-' + this.agendaSelect.id);
         if (check) check.checked = true;
       } else {
@@ -199,17 +200,18 @@ export class FormMinculturaCatalogPage implements OnInit {
       }
     }
     else {
-      if (this.disableSelection) {
+      if (this.disableSelection || agenda.full == "1") {
         let lista = document.querySelectorAll('.check-agenda');
         lista.forEach((checkAgenda: any) => {
-          if(checkAgenda) checkAgenda.checked = false;
+          if (checkAgenda) checkAgenda.checked = false;
         });
 
         if (agenda.id == this.agendaSelect.id) {
           let check: any = document.querySelector<HTMLElement>('#check-agenda-' + this.agendaSelect.id);
-          if (check)  check.checked = true;
+          if (check) check.checked = true;
         }
       }
+      
       else {
         this.agendaSelect = null;
       }
@@ -243,20 +245,66 @@ export class FormMinculturaCatalogPage implements OnInit {
     if (this.agendaSelect) {
       agendaId = this.agendaSelect.id;
     }
+    else {
+      this.closeModal();
+    }
 
     this.loading.present({ message: 'Cargando...' });
-    this.minculturaService.registerMinculturaUser(this.userDataSession, this.fair, this.minculturaUser, agendaId)
-      .subscribe(
-        response => {
-          this.loading.dismiss();
-          this.success = "Evento vitual registrado exitósamente";
-          this.disableSelection = true;
-        },
-        error => {
-          this.loading.dismiss();
-          this.presentToast(error);
-          this.errors = error;
-        });
+    
+    this.minculturaService.getMinculturaUser(this.userDataSession, this.fair)
+            .subscribe(
+              response => {
+
+                this.loading.dismiss();
+                if (response.data) {
+
+                  if (response.meetings) {
+                    for (let agenda of response.meetings) {
+                      if(agenda.id == this.agendaSelect.id) {
+                        if(agenda.full == 1) {
+                          this.presentToast('Lo sentimos este evento se ha agotado');
+
+                          for (let agenda of response.meetings) {
+                            agenda.start_at *= 1000;
+                          }
+                          this.initializeAgendaFormsCatalogs(response.meetings);
+                          this.agendaSelect = null;
+                          return;
+                        }
+                      }
+                    }
+                    
+                  }
+                  
+                  this.minculturaService.registerMinculturaUser(this.userDataSession, this.fair, this.minculturaUser, agendaId)
+                  .subscribe(
+                    response => {
+                      this.loading.dismiss();
+                      this.success = "Evento vitual registrado exitósamente";
+                      this.disableSelection = true;
+            
+                      setTimeout(() => {
+                        this.closeModal();
+                      }, 1500);
+                    },
+                    error => {
+                      this.loading.dismiss();
+                      this.presentToast(error);
+                      this.errors = error;
+                    });
+
+                }
+
+              },
+              error => {
+                this.loading.dismiss();
+                this.errors = error;
+              });
+
+
+
+
+   
   }
 
   async presentToast(msg) {
@@ -272,5 +320,32 @@ export class FormMinculturaCatalogPage implements OnInit {
     this.router.navigateByUrl('/overflow', { skipLocationChange: true }).then(() => {
       this.router.navigate([uri])
     });
+  }
+
+
+  async closeModal() {
+    const redirect = this.fair.redirectTo || 'map-site/fair/7';
+    if (this.disableSelection) {      
+      this.redirectTo(redirect);
+    }
+    else {
+      const alert = await this.alertCtrl.create({
+        subHeader: '¿Está seguro que desea salir sin registrarse en algún taller?',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel'
+          },
+          {
+            text: 'Aceptar',
+            handler: (data: any) => {
+              
+              this.redirectTo(redirect);
+            }
+          }
+        ]
+      });
+      await alert.present();
+    }
   }
 }

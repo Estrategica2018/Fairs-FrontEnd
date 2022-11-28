@@ -529,7 +529,7 @@ export class MapSiteEditorPage implements OnInit {
         "fontSize": "1", "fontSizeUnit": "em", "lineHeight": "1.0", "lineHeightUnit": 1, "lineHeightMili": 0,
         "widthUnit": "em", "heightUnit": "em",
         "minWidthUnit": "em", "minHeightUnit": "em",
-        "marginType": "none", "paddingType": "none",
+        "marginType": "auto", "paddingType": "none",
         "paddingTop": 0, "paddingBottom": 0, "paddingLeft": 0, "paddingRight": 0,
         "marginTop": 0, "marginBottom": 0, "marginLeft": 0, "marginRight": 0,
         "marginTopUnit": "em", "marginLeftUnit": "em", "marginRightUnit": "em", "marginBottomUnit": "em",
